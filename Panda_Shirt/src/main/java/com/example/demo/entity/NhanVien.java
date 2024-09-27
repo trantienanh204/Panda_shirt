@@ -38,4 +38,6 @@ public class NhanVien {
 
     @Column(name = "NGAY_SUA")
     private String ngaysua;
+
+
 }

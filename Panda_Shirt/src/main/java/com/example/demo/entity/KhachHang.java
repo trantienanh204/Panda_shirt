@@ -40,4 +40,17 @@ public class KhachHang {
 
     @Column(name = "NGAY_SUA")
     private String ngaysua;
+
+
+    @ManyToOne
+    @JoinColumn(name = "ID_TINH_THANH_PHO")
+    private Tinh_TP tinh_tp;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_QUAN_HUYEN")
+    private QuanHuyen quanHuyen;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_XA_PHUONG")
+    private XaPhuong xaPhuong;
 }

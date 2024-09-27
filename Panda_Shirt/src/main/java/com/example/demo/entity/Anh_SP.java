@@ -28,7 +28,7 @@ public class Anh_SP {
     @Column(name = "MO_TA")
     private String mota ;
 
-    //    @ManyToOne
-//    @JoinColumn(name = "ID_SAN_PHAM",referencedColumnName = "id")
-//    private SanPham sanPham;
+        @ManyToOne
+    @JoinColumn(name = "ID_SAN_PHAM",referencedColumnName = "id")
+    private SanPham sanPham;
 }
