@@ -26,7 +26,7 @@ public class KhachHang {
     @Column(name = "SO_DIEN_THOAI")
     private String sdt;
 
-    @Column(name = "DIA_CHI")
+    @Column(name = "DIA_CHI_CU_THE")
     private String diachi;
 
     @Column(name = "TEN_KHACH_HANG")
