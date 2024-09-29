@@ -1,17 +1,17 @@
 package com.example.demo.services.impl;
 
 import com.example.demo.entity.KhachHang;
-import com.example.demo.respository.ResgisterRespository;
-import com.example.demo.services.ResgisterService;
+import com.example.demo.respository.RegisterRespository;
+import com.example.demo.services.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ResgisterServiceimpl implements ResgisterService {
+public class RegisterServiceimpl implements RegisterService {
     @Autowired
-    ResgisterRespository resgisterRespository;
+    RegisterRespository resgisterRespository;
     @Override
-    public void add(KhachHang khachHang) {
+    public void createAcount(KhachHang khachHang) {
         resgisterRespository.save(khachHang);
     }
 }

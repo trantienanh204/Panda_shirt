@@ -1,5 +1,8 @@
 package com.example.demo.entity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,13 +19,16 @@ public class KhachHang {
 
     @Column(name = "MA_KHACH_HANG")
     private String makhachhang;
-
+    @NotBlank(message = "Vui lòng nhập dữ liệu")
     @Column(name = "TEN_TAI_KHOAN")
     private String tentaikhoan;
-
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(max = 16, message = "Mật khẩu phải từ 12-16 ký tự")
+    @Size(min = 12, message = "Mật khẩu phải từ 12-16 ký tự")
     @Column(name = "MAT_KHAU")
     private String matkhau;
-
+    @NotBlank(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Số điện thoại phải gồm 10 số")
     @Column(name = "SO_DIEN_THOAI")
     private String sdt;
 

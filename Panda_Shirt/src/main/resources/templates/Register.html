@@ -9,16 +9,21 @@
 </head>
 <body>
 <div class="container-fluid login-container">
-    <img  th:src="@{/Image/panda.jpg}" class="background-image" alt="Background Image">
+    <img th:src="@{/Image/panda.jpg}" class="background-image" alt="Background Image">
     <div class="login-box">
         <h4 class="login-header">
-            <img th:src="@{/Image/panda_logo.png}" width="50px" height="50px">Resgister</h4>
-        <form class="login-form" method="post" action="/panda/resgister/create">
-            <input type="text" class="form-control" name="tentaikhoan" placeholder="Tên đăng nhập">
-            <input type="text" class="form-control" name="sdt" placeholder="Số điện thoại">
-            <input type="password" class="form-control" name="matkhau" placeholder="Mật khẩu">
-            <button class="btn btn-warning text-center">Đăng ký</button>
-<!--        <button type="submit" class="btn btn-warning w-100" style="color: black;">ĐĂNG NHẬP</button>-->
+            <img th:src="@{/Image/panda_logo.png}" width="50px" height="50px">Register</h4>
+        <form class="login-form" method="post" action="/panda/register/create" th:object="${khachHang}">
+            <input type="text" class="form-control" name="tentaikhoan" placeholder="Tên đăng nhập" th:field="*{tentaikhoan}">
+            <div th:if="${#fields.hasErrors('tentaikhoan')}" class="text-dark" th:errors="*{tentaikhoan}"></div>
+
+            <input type="text" class="form-control" name="sdt" placeholder="Số điện thoại" th:field="*{sdt}">
+            <div th:if="${#fields.hasErrors('sdt')}" class="text-dark" th:errors="*{sdt}"></div>
+
+            <input type="password" class="form-control" name="matkhau" placeholder="Mật khẩu" th:field="*{matkhau}">
+            <div th:if="${#fields.hasErrors('matkhau')}" class="text-dark" th:errors="*{matkhau}"></div>
+
+            <button class="btn btn-warning text-center">Đăng ký</button>
         </form>
     </div>
 </div>

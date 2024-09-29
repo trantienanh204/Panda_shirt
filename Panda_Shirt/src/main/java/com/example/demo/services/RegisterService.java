@@ -3,6 +3,6 @@ package com.example.demo.services;
 import com.example.demo.entity.KhachHang;
 import org.springframework.stereotype.Service;
 
-public interface ResgisterService {
-     void add(KhachHang khachHang);
+public interface RegisterService {
+     void createAcount(KhachHang khachHang);
 }
