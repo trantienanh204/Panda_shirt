@@ -58,4 +58,5 @@ public class SanPham {
     @JoinColumn(name = "ID_CHAT_LIEU",referencedColumnName = "id")
     private ChatLieu chatLieu;
 
+
 }
