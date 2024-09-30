@@ -19,16 +19,18 @@ public class KhachHang {
 
     @Column(name = "MA_KHACH_HANG")
     private String makhachhang;
+    @Size(max = 20, message = "Tên tài khoản từ 5 đến 20 ký tự")
+    @Size(min = 5, message = "Tên tài khoản từ 5 đến 20 ký tự")
     @NotBlank(message = "Vui lòng nhập dữ liệu")
     @Column(name = "TEN_TAI_KHOAN")
     private String tentaikhoan;
     @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(max = 16, message = "Mật khẩu phải từ 12-16 ký tự")
-    @Size(min = 12, message = "Mật khẩu phải từ 12-16 ký tự")
+    @Size(max = 14, message = "Mật khẩu phải từ 8-14 ký tự")
+    @Size(min = 8, message = "Mật khẩu phải từ 8-14 ký tự")
     @Column(name = "MAT_KHAU")
     private String matkhau;
     @NotBlank(message = "Số điện thoại không được để trống")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Số điện thoại phải gồm 10 số")
+    @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 số")
     @Column(name = "SO_DIEN_THOAI")
     private String sdt;
 
