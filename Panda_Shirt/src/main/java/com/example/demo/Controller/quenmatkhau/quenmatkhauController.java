@@ -8,8 +8,6 @@ package com.example.demo.Controller.quenmatkhau;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
-<<<<<<< HEAD
-
     import org.springframework.web.bind.annotation.*;
 
     import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +16,6 @@ package com.example.demo.Controller.quenmatkhau;
     import org.springframework.web.bind.annotation.RequestParam;
 
 
-=======
-    import org.springframework.web.bind.annotation.*;
-
->>>>>>> khai
 @Controller
 @RequestMapping("quenmatkhau")
     public class quenmatkhauController {
@@ -125,10 +119,7 @@ public String timtaikhoan (){
 
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> khai
     //quenmatkhauService.macapchaList.add(Integer.parseInt(captchaCode));
     }
 
