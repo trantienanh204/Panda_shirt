@@ -5,12 +5,11 @@ import com.example.demo.entity.NhanVien;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.*;
 
@@ -47,11 +46,7 @@ public class QuenmatkhauService {
         helper.setTo(toEmail);
         helper.setSubject(subject);
         helper.setText(body, true);
-
-
         mailSender.send(mimeMessage);
-
-
 
     }
 

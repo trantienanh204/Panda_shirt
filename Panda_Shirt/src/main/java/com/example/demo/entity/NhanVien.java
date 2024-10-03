@@ -31,7 +31,9 @@ public class NhanVien {
     private String chucvu;
 
     @Column(name = "TRANG_THAI")
+
     private int trangthai;
+
 
     @Column(name = "NGAY_TAO")
     private String ngaytao;
