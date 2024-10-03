@@ -43,11 +43,22 @@ public class QuenmatkhauService {
     public void guimail(String toEmail, String subject, String body) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+<<<<<<< HEAD
+=======
+
+>>>>>>> manh
         helper.setFrom("conbotthoiok@gmail.com");
         helper.setTo(toEmail);
         helper.setSubject(subject);
         helper.setText(body, true);
+<<<<<<< HEAD
         mailSender.send(mimeMessage);
+=======
+
+        mailSender.send(mimeMessage);
+
+
+>>>>>>> manh
     }
 
     public String random() {

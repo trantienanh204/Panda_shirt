@@ -8,7 +8,14 @@ package com.example.demo.Controller.quenmatkhau;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
+<<<<<<< HEAD
     import org.springframework.web.bind.annotation.*;
+=======
+    import org.springframework.web.bind.annotation.GetMapping;
+    import org.springframework.web.bind.annotation.PostMapping;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RequestParam;
+>>>>>>> manh
 
 @Controller
 @RequestMapping("quenmatkhau")
@@ -103,11 +110,15 @@ public String timtaikhoan (){
         }
         return "quenmatkhau/nhapcapcha";
     }
+<<<<<<< HEAD
     @ResponseBody
  @PostMapping("/listOTPEmail")
     public String listOTPEmail(@RequestParam("email")String email){
     return quenmatkhauService.getCaptchaForEmail(email);
  }
+=======
+
+>>>>>>> manh
 
 
 
