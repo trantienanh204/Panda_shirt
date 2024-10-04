@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.Controller.repository.nhanvienRepository;
+import com.example.demo.respository.nhanvienRepository;
 import com.example.demo.entity.NhanVien;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
