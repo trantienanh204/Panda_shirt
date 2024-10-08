@@ -20,17 +20,17 @@ public class KichThuoc {
     private Integer id;
 
     @Column(name = "MA_KICH_THUOC")
-    private String ma_kich_thuoc;
+    private String ma;
 
     @Column(name = "TEN_KICH_THUOC")
-    private String ten_kich_thuoc;
+    private String ten;
 
-    @Column(name = "NGAY_TAO")
-    private LocalDate ngay_tao;
+    @Column(name = "NGAY_TAO",  updatable = false,insertable = false)
+    private LocalDate ngaytao;
 
     @Column(name = "NGAY_SUA")
-    private LocalDate ngay_sua;
+    private LocalDate ngaysua;
 
     @Column(name = "TRANG_THAI")
-    private Integer trang_thai;
+    private boolean trangthai;
 }
