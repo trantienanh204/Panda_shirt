@@ -14,7 +14,6 @@ public class NhanVien {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @Column(name = "TEN_NHAN_VIEN")
     private String tennhanvien;
 

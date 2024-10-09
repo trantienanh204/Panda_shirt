@@ -2,10 +2,13 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -17,24 +20,26 @@ import java.util.Date;
 public class CoAo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Integer id;
-
+    @NotBlank(message = "Không được để trống dữ liệu")
+    @Size(min = 1, max = 50,message = "Mã phải có độ dài từ 1 đến 50 ký tự")
     @Column(name = "MA_CO_AO")
-    @NotBlank(message = "Mã trống")
     private String ma;
-
+    @NotBlank(message = "Không được để trống dữ liệu")
+    @Size(min = 1, max = 50,message = "Tên phải có độ dài từ 1 đến 100 ký tự")
     @Column(name = "TEN_CO_AO")
-    @NotBlank(message = "Tên trống")
     private String ten;
 
     @Column(name = "NGAY_TAO")
-    @Temporal(TemporalType.DATE)
-    private Date ngaytao;
+    private LocalDateTime ngayTao;
 
     @Column(name = "NGAY_SUA")
-    @Temporal(TemporalType.DATE)
-    private Date ngaysua;
-
+    private LocalDateTime ngaySua;
+    @NotNull(message = "Trạng thái không được để null")
     @Column(name = "TRANG_THAI")
-    private boolean trangthai;
+    private boolean trangThai;
+    public void toggleTrangThai() {
+        this.trangThai = !this.trangThai; // Đảo ngược giá trị
+    }
 }

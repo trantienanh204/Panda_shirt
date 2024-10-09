@@ -1,13 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body th:fragment="chatlieu">
 <h2>Chất Liệu</h2>
+<!-- Thông báo -->
+<div class="custom-alert success" id="statusMessage" th:text="${AddStatusMessage}" th:if="${AddStatusMessage != null}">
+    <i class="fa-solid fa-circle-check"></i> Thêm thành công !
+</div>
+<div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}" th:if="${UpdateStatusMessage != null}">
+    <i class="fa-solid fa-circle-check"></i> Cập nhật thành công !
+</div>
+<div class="custom-alert error" id="statusMessage" th:text="${ErrorStatusMessage}"
+     th:if="${ErrorStatusMessage != null}">
+    <i class="fa-solid fa-exclamation-circle"></i> Thêm không thành công!
+</div>
+<div class="custom-alert error" id="statusMessage" th:text="${ChangesStatusMessage}"
+     th:if="${ChangesStatusMessage!= null}">
+    <i class="fa-solid fa-exclamation-circle"></i> Chuyển trạng thái thành công !
+</div>
 <div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
+    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+    <hr>
     <div class="filter-inputs">
         <div class="filter-input">
             <label for="title-author">Tên chất liệu</label>
@@ -16,7 +33,7 @@
         <div class="filter-input">
             <label for="period">Trạng thái</label>
             <select id="period">
-                <option value="month">-- Chọn trạng thái -- </option>
+                <option value="month">-- Chọn trạng thái --</option>
             </select>
         </div>
         <div class="filter-buttons">
@@ -26,11 +43,12 @@
     </div>
 </div>
 
-<!-- Danh sách bài viết -->
-<div style="text-align: right">
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
+<div style="margin-bottom: 10px">
+    <div style="text-align: right">
+        <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
+            <a href="/panda/QLSP/ChatLieu/add"><i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i></a>
+        </button>
+    </div>
 </div>
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách chất liệu</h3>
@@ -41,18 +59,28 @@
             <th>Mã chất liệu</th>
             <th>Tên chất liệu</th>
             <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th>Ngày sửa</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Tên giảm giá</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
+        <tr th:each="chatLieu,i : ${list}">
+            <td th:text="${i.count}"></td>
+            <td th:text="${chatLieu.maChatLieu}"></td>
+            <td th:text="${chatLieu.tenChatLieu}"></td>
+            <td th:class="${chatLieu.trangThai} ? 'status-label status-green' : 'status-label status-orange'">
+                <span th:text="${chatLieu.trangThai} ? 'Hoạt động' : 'Ngừng hoạt động'"></span>
+            </td>
+            <td th:text="${chatLieu.ngayTao}"></td>
+            <td th:text="${chatLieu.ngaySua}"></td>
             <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
+                <a style="margin-right: 10px" th:href="@{/panda/QLSP/ChatLieu/update(id=${chatLieu.id})}"> <i class="fa-regular fa-pen-to-square"
+                                                                                   style="color: #000000;"></i></a>
+                <a th:href="@{/panda/QLSP/ChatLieu/change(id=${chatLieu.id})}">
+                    <i class="fa" th:class="${chatLieu.trangThai} ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"
+                       style="font-size: 24px;"></i>
+                </a>
             </td>
         </tr>
         </tbody>
@@ -178,6 +206,36 @@
         margin: 0 5px;
         cursor: pointer;
     }
+    .custom-alert {
+        position: fixed;
+        top: 20px;  /* Cách từ đỉnh */
+        right: 20px;  /* Cách từ bên phải */
+        background-color: #4CAF50;  /* Màu nền thông báo thành công */
+        color: white;  /* Màu chữ */
+        padding: 15px;  /* Padding xung quanh */
+        border-radius: 5px;  /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
+        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0;  /* Ban đầu ẩn */
+        visibility: hidden;  /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1;  /* Hiển thị thông báo */
+        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+    }
 </style>
+<script>
+    window.onload = function () {
+        var statusMessage = document.querySelector('.custom-alert');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            setTimeout(function () {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
 </body>
 </html>
