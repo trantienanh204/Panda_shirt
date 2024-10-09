@@ -1,9 +1,11 @@
 package com.example.demo.Controller;
 
 
+
 import com.example.demo.entity.ChatLieu;
 import com.example.demo.services.ChatLieuService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +20,6 @@ import java.util.List;
 public class SideBarController {
     @Autowired
     ChatLieuService chatLieuService;
-
-
     @GetMapping("/hienthi")
     public String hienthi(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
@@ -33,6 +33,7 @@ public class SideBarController {
 //    "redirect:/thongke/hienthi" (Xem lại dự án xưởng nếu quên)
 
     //    QLSP===================
+
     @GetMapping("/sanpham")
     public String sanpham(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
@@ -41,6 +42,7 @@ public class SideBarController {
     }
 
     @GetMapping("/sanpham/add")
+
 
     public String ctsp(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
@@ -53,10 +55,12 @@ public class SideBarController {
         model.addAttribute("role", role);
         return "redirect:/panda/mausac/hienthi";
     }
+
     @GetMapping("/kichthuoc")
     public String kichthuoc(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
+
         return "redirect:/panda/kichthuoc/hienthi";
     }
 //    @GetMapping("/coao")
@@ -91,6 +95,7 @@ public class SideBarController {
         model.addAttribute("role", role);
         return "/admin/QLSP/ThuongHieu";
     }
+
 
     //          QLGG ====================
     @GetMapping("/giamgia")

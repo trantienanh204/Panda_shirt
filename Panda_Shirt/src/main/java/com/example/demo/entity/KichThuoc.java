@@ -21,6 +21,7 @@ public class KichThuoc {
 
     @Column(name = "MA_KICH_THUOC")
 
+
     private String ma;
 
     @Column(name = "TEN_KICH_THUOC")
@@ -34,4 +35,5 @@ public class KichThuoc {
 
     @Column(name = "TRANG_THAI")
     private boolean trangthai;
+
 }

@@ -2,16 +2,19 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+
+    <title>Màu sắc</title>
 </head>
 <body th:fragment="danhmuc">
-<h2>Danh Mục</h2>
+<h2>Danh mục</h2>
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
     <div class="filter-inputs">
         <div class="filter-input">
-            <label for="title-author">Tên danh mục</label>
-            <input type="text" id="title-author" placeholder="Tên danh mục">
+
+            <label for="title-author">Tên nhà sản xuất</label>
+            <input type="text" id="title-author" placeholder="Tên nhà sản xuất">
+
         </div>
         <div class="filter-input">
             <label for="period">Trạng thái</label>
@@ -28,31 +31,58 @@
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
+
+    <a href="/panda/danhmuc/add">
+        <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
+            <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
+        </button>
+    </a>
 </div>
 <div class="table-container">
-    <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách danh mục</h3>
+    <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách Nhà sản xuất</h3>
+
     <table>
         <thead>
         <tr>
             <th>#</th>
-            <th>Mã danh mục</th>
+
+            <th>Mã danh mục </th>
             <th>Tên danh mục</th>
+            <th>Ngày tạo</th>
+            <th>Ngày sửa</th>
+
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Tên giảm giá</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
+
+        <tr th:each="dm,i : ${lsdanhmuc} ">
+            <td th:text="${i.count}"></td>
+            <td th:text="${dm.madanhmuc}"></td>
+            <td th:text="${dm.tendanhmuc}"></td>
+            <td th:text="${dm.ngaytao}"></td>
+            <td th:if="${dm.ngaysua != null}" th:text="${dm.ngaysua}"></td>
+            <td th:if="${dm.ngaysua == null }" >(Trống)</td>
             <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
+                <span class="status-label" th:classappend="${dm.trangthai == 1} ? 'status-green' : 'status-orange'"
+                      th:text="${dm.trangthai == 1} ? 'Hoạt động' : 'Ngừng hoạt động'"></span>
+            </td>
+            <td>
+                <a th:href="@{/panda/danhmuc/update(id=${dm.id})}" style="margin-right:15px">
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 28px"></i>
+                </a>
+                <a th:href="@{/panda/danhmuc/change(id=${dm.id})}">
+                    <i th:if="${dm.trangthai == 1}">
+                        <i class="fa-solid fa-toggle-on" style="color: #00040a; font-size: 28px">
+                        </i>
+                    </i>
+                    <i th:if="${dm.trangthai == 0}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a; font-size: 28px">
+                        </i>
+                    </i>
+                </a>
+
             </td>
         </tr>
         </tbody>
@@ -94,6 +124,7 @@
 
     .filter-input label {
         margin-bottom: 5px;
+
         font-weight: bold;
     }
 
@@ -158,6 +189,11 @@
         padding: 5px 10px;
         border-radius: 5px;
         color: white;
+
+        display: inline-block;
+        min-width: 150px; /* Đặt chiều rộng tối thiểu */
+        text-align: center; /* Canh giữa nội dung */
+
     }
 
     .status-green {

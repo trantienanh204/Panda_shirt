@@ -20,7 +20,15 @@ public class ThuongHieu {
     @Column(name = "TEN_THUONG_HIEU")
     private String tenthuonghieu;
 
-    @Column(name = "NGAY_TAO")
+
+    @Column(name = "MA_THUONG_HIEU")
+    private String mathuonghieu;
+
+    @Column(name = "TRANG_THAI")
+    private int trangthai;
+
+    @Column(name = "NGAY_TAO",updatable = false,insertable = false)
+
     private LocalDate ngaytao;
 
     @Column(name = "NGAY_SUA")

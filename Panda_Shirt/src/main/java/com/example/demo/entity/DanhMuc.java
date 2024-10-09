@@ -23,7 +23,9 @@ public class DanhMuc {
     @Column(name = "MA_DANH_MUC")
     private String madanhmuc;
 
-    @Column(name = "NGAY_TAO")
+
+    @Column(name = "NGAY_TAO",updatable = false,insertable = false)
+
     private LocalDate ngaytao;
 
     @Column(name = "NGAY_SUA")

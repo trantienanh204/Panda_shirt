@@ -1,6 +1,6 @@
 package com.example.demo.Controller.admin.QLSP;
 
-import com.example.demo.respository.MauSacRepsitory;
+import com.example.demo.Repository.MauSacRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/panda/mausac")
 public class MauSacController {
     @Autowired
-    MauSacRepsitory mauSacRepository;
+    MauSacRepository mauSacRepository;
 
     @GetMapping()
     public String mausac(Model model) {

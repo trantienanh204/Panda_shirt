@@ -1,19 +1,30 @@
 package com.example.demo.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
+import java.io.Serializable;
+import java.util.List;
+
 
 @Entity
 @Table(name = "NHAN_VIEN")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NhanVien {
+
+
+@SuppressWarnings("serial")
+public class NhanVien implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
 
     @Column(name = "TEN_NHAN_VIEN")
@@ -33,6 +44,7 @@ public class NhanVien {
 
     @Column(name = "TRANG_THAI")
 
+
     private int trangthai;
 
 
@@ -41,6 +53,11 @@ public class NhanVien {
 
     @Column(name = "NGAY_SUA")
     private String ngaysua;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "nhanVien")
+    List<UserRole> userRoles;
 
 
 }

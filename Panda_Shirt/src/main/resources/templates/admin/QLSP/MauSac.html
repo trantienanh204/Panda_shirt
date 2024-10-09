@@ -9,6 +9,7 @@
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
+
     <div class="filter-inputs">
         <div class="filter-input">
             <label for="title-author">Tên màu sắc</label>
@@ -17,6 +18,7 @@
         <div class="filter-input">
             <label for="period">Trạng thái</label>
             <select id="period">
+
                 <option value="">-- Chọn trạng thái --</option>
                 <!-- Lặp qua danh sách trạng thái từ server -->
                 <th:block>
@@ -29,6 +31,7 @@
         <div class="filter-buttons">
             <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right"
                                                                           style="color: #ffffff;"></i> Làm mới</a>
+
             <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
         </div>
     </div>
@@ -36,6 +39,7 @@
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
+
     <a th:href="@{/panda/mausac/viewadd}" class="btn btn-success ">
         <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
     </a>
@@ -44,10 +48,12 @@
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách màu săc</h3>
         <div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
              th:if="${UpdateStatusMessage != null}"><i class="fa-solid fa-circle-check"></i></div>
+
     <table>
         <thead>
         <tr>
             <th>#</th>
+
             <th>Mã màu sắc</th>
             <th>Tên màu sắc</th>
             <th>Ngày tạo</th>
@@ -56,6 +62,7 @@
         </tr>
         </thead>
         <tbody>
+
         <tr th:each="ms,i: ${listms}">
             <td th:text="${i.count}"></td>
             <td th:text="${ms.ma}"></td>
@@ -85,10 +92,16 @@
                         </i>
                     </i>
                 </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+
+        <tr th:each="ms,i :${lsmausac}">
+            <td th:text="${ms.id}"></td>
+            <td th:text="${ms.mamausac}"></td>
+            <td th:text="${ms.tenmausac}"></td>
+            <td th:style="'background-color:' + ${ms.mamausac}" style="width:10px;height: 25px; !important;" th:text="${ms.mamausac}"></td>
+            <td>
+                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
+                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
+
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:if="${currentPage > 1}">
@@ -116,6 +129,7 @@
        th:if="${Add != null}"><i class="fa-solid fa-circle-check"></i></div>
 <div class="custom-alert success" id="statusMessage" th:text="${Update}"
        th:if="${Update != null}"><i class="fa-solid fa-circle-check"></i></div>
+
 
 <style>
     * {
@@ -228,11 +242,13 @@
         background-color: #ff9800;
     }
 
+
     .action-icons i {
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
     }
+
 
     .custom-alert {
         position: fixed;
@@ -267,6 +283,7 @@
         }
     };
 </script>
+
 
 
 </body>

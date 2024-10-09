@@ -1,8 +1,10 @@
 package com.example.demo.entity;
 import jakarta.persistence.*;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,7 @@ public class KhachHang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name = "MA_KHACH_HANG")
     private String makhachhang;
     @Size(max = 20, message = "Tên tài khoản từ 5 đến 20 ký tự")

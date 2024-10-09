@@ -7,6 +7,7 @@
 <body th:fragment="kichthuoc">
 <h2>Kích Thước</h2>
 <div class="filter-container">
+
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
@@ -15,6 +16,7 @@
                     <option th:value="0">Hoạt động</option>
                     <option th:value="1">Ngừng hoạt động</option>
                 </th:block>
+
             </select>
         </div>
         <div class="filter-buttons">
@@ -26,18 +28,15 @@
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
+
     <a th:href="@{/panda/kichthuoc/viewadd}" class="btn btn-success ">
         <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
     </a>
-</div>
-<div class="table-container">
-    <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách kích thước</h3>
-    <table>
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Mã kích thước</th>
-            <th>Tên kích thước</th>
+
+    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
+        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
+    </button>
+
             <th>Ngày tạo</th>
         <tr th:each="kt,i :${listkt}">
             <td th:text="${i.count}"></td>
@@ -69,10 +68,12 @@
                         </i>
                     </i>
                 </a>
+
             </td>
         </tr>
         </tbody>
     </table>
+
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:if="${currentPage > 1}">
@@ -209,11 +210,13 @@
     .status-orange {
         background-color: #ff9800;
     }
+
     .action-icons i {
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
     }
+
     .custom-alert {
         position: fixed;
         top: 20px;  /* Cách từ đỉnh */
@@ -247,6 +250,7 @@
         }
     };
 </script>
+
 
 </body>
 </html>

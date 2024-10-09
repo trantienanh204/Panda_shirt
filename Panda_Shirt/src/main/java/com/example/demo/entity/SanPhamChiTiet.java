@@ -20,6 +20,7 @@ public class SanPhamChiTiet {
     private Integer id;
 
     @Column(name = "ANH_SAN_PHAM_CHI_TIET")
+
     private String anh_san_pham_chi_tiet;
 
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
@@ -40,6 +41,7 @@ public class SanPhamChiTiet {
     @Column(name = "TRANG_THAI")
     private boolean trang_thai;
 
+
     @OneToOne
     @JoinColumn(name = "ID_SAN_PHAM")
     private SanPham sanPham;
@@ -52,8 +54,10 @@ public class SanPhamChiTiet {
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
 
+
     @OneToOne
     @JoinColumn(name = "ID_CHAT_LIEU")
     private ChatLieu chatLieu;
+
 
 }
