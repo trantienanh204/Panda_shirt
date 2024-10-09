@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,17 +22,16 @@ public class MauSac {
     private Integer id;
 
     @Column(name = "MA_MAU_SAC")
-    private String ma_mau_sac;
+    private String ma;
 
     @Column(name = "TEN_MAU_SAC")
-    private String ten_mau_sac;
-
-    @Column(name = "NGAY_TAO")
-    private LocalDate ngay_tao;
+    private String ten;
+    @Column(name = "NGAY_TAO", updatable = false,insertable = false)
+    private LocalDate ngaytao;
 
     @Column(name = "NGAY_SUA")
-    private LocalDate ngay_sua;
+    private LocalDate ngaysua;
 
     @Column(name = "TRANG_THAI")
-    private boolean trang_thai;
+    private boolean trangthai;
 }

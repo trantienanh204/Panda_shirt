@@ -45,13 +45,13 @@ public class SideBarController {
     public String mausac(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        return "/admin/QLSP/MauSac";
+        return "redirect:/panda/mausac/hienthi";
     }
     @GetMapping("/kichthuoc")
     public String kichthuoc(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        return "/admin/QLSP/KichThuoc";
+        return "redirect:/panda/kichthuoc/hienthi";
     }
 //    @GetMapping("/coao")
 //    public String coao(Model model) {

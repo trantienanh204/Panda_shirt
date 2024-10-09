@@ -6,8 +6,10 @@
 </head>
 <body th:fragment="mausac">
 <h2>Màu Sắc</h2>
+
 <div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
+    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+    <hr>
     <div class="filter-inputs">
         <div class="filter-input">
             <label for="title-author">Tên màu sắc</label>
@@ -16,11 +18,18 @@
         <div class="filter-input">
             <label for="period">Trạng thái</label>
             <select id="period">
-                <option value="month">-- Chọn trạng thái -- </option>
+                <option value="">-- Chọn trạng thái --</option>
+                <!-- Lặp qua danh sách trạng thái từ server -->
+                <th:block>
+                    <option th:value="0">Hoạt động</option>
+                    <option th:value="1">Ngừng hoạt động</option>
+                </th:block>
             </select>
         </div>
+
         <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
+            <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right"
+                                                                          style="color: #ffffff;"></i> Làm mới</a>
             <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
         </div>
     </div>
@@ -28,36 +37,87 @@
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
+    <a th:href="@{/panda/mausac/viewadd}" class="btn btn-success ">
         <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
+    </a>
 </div>
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách màu săc</h3>
+        <div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
+             th:if="${UpdateStatusMessage != null}"><i class="fa-solid fa-circle-check"></i></div>
     <table>
         <thead>
         <tr>
             <th>#</th>
-            <th>Mã màu sắc </th>
+            <th>Mã màu sắc</th>
             <th>Tên màu sắc</th>
+            <th>Ngày tạo</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Tên giảm giá</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
+        <tr th:each="ms,i: ${listms}">
+            <td th:text="${i.count}"></td>
+            <td th:text="${ms.ma}"></td>
+            <td th:text="${ms.ten}"></td>
+            <td th:text="${ms.ngaytao != null? #temporals.format(ms.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:if="${ms.trangthai} == true">
+                <span class="status-label status-green"
+                      th:text="${ms.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                </span>
+            </td>
+            <td th:if="${ms.trangthai} == false ">
+                <span class="status-label status-orange"
+                      th:text="${ms.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                </span>
+            </td>
             <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
+                <a th:href="@{/panda/mausac/update/{id} (id=${ms.id})}">
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
+                </a>
+                <a th:href="@{/panda/mausac/remove/{id} (id=${ms.id})}">
+                    <i th:if="${ms.trangthai == true}">
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
+                        </i>
+                    </i>
+                    <i th:if="${ms.trangthai == false}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
+                        </i>
+                    </i>
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link" href="#" th:href="@{'?pageNo='+${currentPage-1}}" aria-label="Previous">
+                    <span aria-hidden="true"> << </span>
+                </a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(0,totalPage - 1)}">
+                <a class="page-link" href="#"  th:href="@{/panda/mausac/hienthi(pageNo=${i+1})}" th:text="${i + 1}"></a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPage}">
+                <a th:href="@{'?pageNo='+${currentPage+1}}" class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true"> >> </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
+<!--thông báo-->
+<div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
+       th:if="${UpdateStatusMessage != null}"><i class="fa-solid fa-circle-check"></i></div>
+<div class="custom-alert success" id="statusMessage" th:text="${Add}"
+       th:if="${Add != null}"><i class="fa-solid fa-circle-check"></i></div>
+<div class="custom-alert success" id="statusMessage" th:text="${Update}"
+       th:if="${Update != null}"><i class="fa-solid fa-circle-check"></i></div>
+
 <style>
     * {
         box-sizing: border-box;
@@ -169,16 +229,46 @@
         background-color: #ff9800;
     }
 
-    .action-icons {
-        display: flex;
-        justify-content: center;
-    }
 
     .action-icons i {
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
     }
+    .custom-alert {
+        position: fixed;
+        top: 20px;  /* Cách từ đỉnh */
+        right: 20px;  /* Cách từ bên phải */
+        background-color: #4CAF50;  /* Màu nền thông báo thành công */
+        color: white;  /* Màu chữ */
+        padding: 15px;  /* Padding xung quanh */
+        border-radius: 5px;  /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
+        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0;  /* Ban đầu ẩn */
+        visibility: hidden;  /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1;  /* Hiển thị thông báo */
+        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+    }
 </style>
+<script>
+    // Sau khi trang load xong
+    window.onload = function() {
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
+
+
 </body>
 </html>
