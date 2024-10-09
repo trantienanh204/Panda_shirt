@@ -9,14 +9,7 @@
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên kích thước</label>
-            <input type="text" id="title-author" placeholder="Tên kích thước">
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
+    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
                 <option value="">-- Chọn trạng thái --</option>
                 <th:block>
                     <option th:value="0">Hoạt động</option>
@@ -46,11 +39,6 @@
             <th>Mã kích thước</th>
             <th>Tên kích thước</th>
             <th>Ngày tạo</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
         <tr th:each="kt,i :${listkt}">
             <td th:text="${i.count}"></td>
             <td th:text="${kt.ma}"></td>
@@ -259,5 +247,6 @@
         }
     };
 </script>
+
 </body>
 </html>

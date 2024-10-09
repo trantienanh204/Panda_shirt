@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class MauSac {
 
     @Column(name = "TEN_MAU_SAC")
     private String ten;
+
     @Column(name = "NGAY_TAO", updatable = false,insertable = false)
     private LocalDate ngaytao;
 
@@ -34,4 +36,7 @@ public class MauSac {
 
     @Column(name = "TRANG_THAI")
     private boolean trangthai;
+
+
+
 }

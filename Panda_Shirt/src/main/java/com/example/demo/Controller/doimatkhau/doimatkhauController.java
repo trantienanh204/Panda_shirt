@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/panda")
-public class    doimatkhauController {
+
+public class doimatkhauController {
+
     @Autowired
     doimatkhauService doimatkhauService;
 

@@ -31,4 +31,8 @@ public class Anh_SP {
         @ManyToOne
     @JoinColumn(name = "ID_SAN_PHAM",referencedColumnName = "id")
     private SanPham sanPham;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_MAU_SAC",referencedColumnName = "id")
+    private MauSac mauSac;
 }

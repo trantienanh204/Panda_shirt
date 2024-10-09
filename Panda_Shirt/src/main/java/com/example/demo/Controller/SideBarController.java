@@ -1,14 +1,25 @@
 package com.example.demo.Controller;
 
+
+import com.example.demo.entity.ChatLieu;
+import com.example.demo.services.ChatLieuService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
+import java.util.List;
+
 @Controller
 @RequestMapping("/panda")
 public class SideBarController {
-    //  Trả về trang thống kê khi hiển thị
+    @Autowired
+    ChatLieuService chatLieuService;
+
+
     @GetMapping("/hienthi")
     public String hienthi(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
@@ -28,7 +39,9 @@ public class SideBarController {
         model.addAttribute("role", role);
         return "/admin/QLSP/SanPham";
     }
-    @GetMapping("/ctsp")
+
+    @GetMapping("/sanpham/add")
+
     public String ctsp(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
@@ -46,24 +59,27 @@ public class SideBarController {
         model.addAttribute("role", role);
         return "redirect:/panda/kichthuoc/hienthi";
     }
-    @GetMapping("/coao")
-    public String coao(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/CoAo";
-    }
+//    @GetMapping("/coao")
+//    public String coao(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/CoAo";
+//    }
+
     @GetMapping("/danhmuc")
     public String danhmuc(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         return "/admin/QLSP/DanhMuc";
     }
-    @GetMapping("/chatlieu")
-    public String chatlieu(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/ChatLieu";
-    }
+
+//    @GetMapping("/chatlieu")
+//    public String chatlieu(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/ChatLieu";
+//    }
+
     @GetMapping("/nsx")
     public String nsx(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service

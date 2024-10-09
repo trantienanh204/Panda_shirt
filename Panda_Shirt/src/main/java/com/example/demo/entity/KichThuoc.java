@@ -20,6 +20,7 @@ public class KichThuoc {
     private Integer id;
 
     @Column(name = "MA_KICH_THUOC")
+
     private String ma;
 
     @Column(name = "TEN_KICH_THUOC")

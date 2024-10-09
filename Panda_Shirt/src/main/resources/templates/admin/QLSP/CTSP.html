@@ -1,9 +1,15 @@
 <!DOCTYPE html>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
     <meta charset="UTF-8">
 <!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <title>Chi tiết sản phẩm</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body th:fragment="ctsp">
@@ -21,10 +27,50 @@
                 <option value="2">Quần jeans</option>
             </select>
         </div>
+        <label for="productName" class="col-sm-3 col-form-label">Tên danh mục</label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+        <label for="productName" class="col-sm-3 col-form-label">Tên thương hiệu</label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+        <label for="productName" class="col-sm-3 col-form-label">Tên chất liệu</label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+        <label for="productName" class="col-sm-3 col-form-label">Tên nhà sản xuất</label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+        <label for="productName" class="col-sm-3 col-form-label"> cổ áo </label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
     </div>
 
     <!-- Thuộc tính -->
-    <h5 class="mb-3">Thuộc tính</h5>
+    <h5 class="mb-3">Màu sắc & kích cỡ</h5>
 
     <div class="mb-3 row">
         <label for="material" class="col-sm-3 col-form-label">Chất liệu</label>
@@ -68,8 +114,11 @@
         </div>
     </div>
 
-    <!-- Table: Sản phẩm với thuộc tính size -->
+    <!-- Table: Sản phẩm với màu sắc -->
+    <button class="btn btn-green">Thêm tất cả</button>
     <h5>Sản phẩm với thuộc tính size</h5>
+
+
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -80,68 +129,14 @@
             <th>Số lượng</th>
             <th>Ảnh</th>
             <th>Xóa</th>
+            <th>hình ảnh</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Áo thun cổ tròn</td>
-            <td>XL</td>
-            <td><input type="text" class="form-control" value="20.000"></td>
-            <td><input type="number" class="form-control" value="20"></td>
-            <td><button class="btn btn-outline-secondary btn-sm">Ảnh</button></td>
-            <td><button class="btn btn-danger btn-sm">🗑</button></td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Giày da bóng lộn</td>
-            <td>L</td>
-            <td><input type="text" class="form-control" value="20.000"></td>
-            <td><input type="number" class="form-control" value="20"></td>
-            <td><button class="btn btn-outline-secondary btn-sm">Ảnh</button></td>
-            <td><button class="btn btn-danger btn-sm">🗑</button></td>
-        </tr>
+
         </tbody>
     </table>
 
-    <!-- Table: Sản phẩm với thuộc tính màu sắc -->
-    <h5>Sản phẩm với thuộc tính màu sắc</h5>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Tên sản phẩm</th>
-            <th>Màu sắc</th>
-            <th>Đơn giá</th>
-            <th>Số lượng</th>
-            <th>Ảnh</th>
-            <th>Xóa</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Áo thun cổ tròn</td>
-            <td>Xanh</td>
-            <td><input type="text" class="form-control" value="20.000"></td>
-            <td><input type="number" class="form-control" value="20"></td>
-            <td><button class="btn btn-outline-secondary btn-sm">Ảnh</button></td>
-            <td><button class="btn btn-danger btn-sm">🗑</button></td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Áo thun cổ tròn</td>
-            <td>Đen</td>
-            <td><input type="text" class="form-control" value="20.000"></td>
-            <td><input type="number" class="form-control" value="20"></td>
-            <td><button class="btn btn-outline-secondary btn-sm">Ảnh</button></td>
-            <td><button class="btn btn-danger btn-sm">🗑</button></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <!-- Submit Button -->
-    <button class="btn btn-green">Thêm tất cả</button>
 </div>
 <style>
     body {
@@ -206,6 +201,28 @@
         transition: transform 0.2s ease-in-out;
     }
 </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#productSelect').select2({
+            ajax: {
+                url: '/your-api-url',
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: data.map(item => ({
+                            id: item.id,
+                            text: item.name
+                        }))
+                    };
+                }
+            },
+            minimumInputLength: 1 // Người dùng cần nhập ít nhất 1 ký tự để tìm kiếm
+        });
+    });
+
+</script>
 </body>
 </html>

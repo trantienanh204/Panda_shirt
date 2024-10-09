@@ -3,11 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Cổ áo</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body th:fragment="coao">
 <h2>Cổ Áo</h2>
+<!-- Thông báo -->
+<div class="custom-alert success" id="statusMessage" th:text="${AddStatusMessage}" th:if="${AddStatusMessage != null}">
+    <i class="fa-solid fa-circle-check"></i> Thêm thành công !
+</div>
+<div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}" th:if="${UpdateStatusMessage != null}">
+    <i class="fa-solid fa-circle-check"></i> Cập nhật thành công !
+</div>
+<div class="custom-alert error" id="statusMessage" th:text="${ErrorStatusMessage}"
+     th:if="${ErrorStatusMessage != null}">
+    <i class="fa-solid fa-exclamation-circle"></i> Thêm không thành công!
+</div>
+<div class="custom-alert error" id="statusMessage" th:text="${ChangesStatusMessage}"
+     th:if="${ChangesStatusMessage!= null}">
+    <i class="fa-solid fa-exclamation-circle"></i> Chuyển trạng thái thành công !
+</div>
+
 <div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
+    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+    <hr>
     <div class="filter-inputs">
         <div class="filter-input">
             <label for="title-author">Tên cổ áo</label>
@@ -16,7 +35,9 @@
         <div class="filter-input">
             <label for="period">Trạng thái</label>
             <select id="period">
-                <option value="month">-- Chọn trạng thái -- </option>
+
+                <option value="month">-- Chọn trạng thái --</option>
+
             </select>
         </div>
         <div class="filter-buttons">
@@ -26,12 +47,17 @@
     </div>
 </div>
 
-<!-- Danh sách bài viết -->
-<div style="text-align: right">
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
+
+<!-- Danh sách cổ áo -->
+<div style="margin-bottom: 10px">
+    <div style="text-align: right">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add">
+            <a th:href="@{/panda/QLSP/CoAo/add}"><i class="fa-solid fa-plus" style="color: #fcfcfc;"></i></a>
+        </button>
+    </div>
 </div>
+
+
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách cổ áo</h3>
     <table>
@@ -41,24 +67,59 @@
             <th>Mã cổ áo</th>
             <th>Tên cổ áo</th>
             <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th>Ngày sửa</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Tên giảm giá</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
-            <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
+        <tr th:each="coAo,i : ${list}">
+            <td th:text="${i.count}"></td>
+            <td th:text="${coAo.ma}"></td>
+            <td th:text="${coAo.ten}"></td>
+            <td th:class="${coAo.trangThai} ? 'status-label status-green' : 'status-label status-orange'">
+                <span th:text="${coAo.trangThai} ? 'Hoạt động' : 'Ngừng hoạt động'"></span>
+            </td>
+            <td th:text="${coAo.ngayTao}"></td>
+            <td th:text="${coAo.ngaySua}"></td>
+            <td class="action-icons">
+                <a style="margin-right: 10px" th:href="@{/panda/QLSP/CoAo/update(id=${coAo.id})}"><i class="fa-regular fa-pen-to-square" style="color: #000000;"></i></a>
+                <a th:href="@{/panda/QLSP/CoAo/change(id=${coAo.id})}">
+                    <i class="fa" th:class="${coAo.trangThai} ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"
+                       style="font-size: 24px;"></i>
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
 <style>
+    .action-icons i {
+        font-size: 18px;
+        cursor: pointer;
+        margin: 0 10px; /* Khoảng cách giữa các icon */
+    }
+    .custom-alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;
+    }
+
+    .custom-alert.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+
     * {
         box-sizing: border-box;
         padding: 0;
@@ -94,7 +155,6 @@
 
     .filter-input label {
         margin-bottom: 5px;
-
         font-weight: bold;
     }
 
@@ -176,9 +236,29 @@
 
     .action-icons i {
         font-size: 18px;
-        margin: 0 5px;
+
         cursor: pointer;
+        margin: 0 10px; /* Khoảng cách giữa các icon */
+    }
+
+    .custom-alert i {
+        margin-right: 8px; /* Khoảng cách giữa icon và văn bản */
+        vertical-align: middle; /* Căn giữa icon với văn bản */
     }
 </style>
+<script>
+    window.onload = function () {
+        var statusMessage = document.querySelector('.custom-alert');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            setTimeout(function () {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"
+        integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>
