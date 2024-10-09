@@ -81,7 +81,7 @@ public class SideBarController {
     public String giamgia(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        return "/admin/GiamGia";
+        return "redirect:/panda/giamgia/hienthi";
     }
     //      QLTK ===================
 
