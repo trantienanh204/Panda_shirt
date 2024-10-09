@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/panda")
+<<<<<<< HEAD
 public class    doimatkhauController {
+=======
+public class doimatkhauController {
+>>>>>>> detam
     @Autowired
     doimatkhauService doimatkhauService;
 

@@ -31,5 +31,8 @@ public class NhaSanXuat {
 
     @Column(name = "TRANG_THAI")
     private int trangthai;
+<<<<<<< HEAD
 
+=======
+>>>>>>> detam
 }

@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 <!doctype html>
+=======
+<!DOCTYPE html>
+>>>>>>> detam
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+<<<<<<< HEAD
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body th:fragment="chatlieu">
@@ -25,6 +30,13 @@
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
+=======
+</head>
+<body th:fragment="chatlieu">
+<h2>Chất Liệu</h2>
+<div class="filter-container">
+    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
+>>>>>>> detam
     <div class="filter-inputs">
         <div class="filter-input">
             <label for="title-author">Tên chất liệu</label>
@@ -33,7 +45,11 @@
         <div class="filter-input">
             <label for="period">Trạng thái</label>
             <select id="period">
+<<<<<<< HEAD
                 <option value="month">-- Chọn trạng thái --</option>
+=======
+                <option value="month">-- Chọn trạng thái -- </option>
+>>>>>>> detam
             </select>
         </div>
         <div class="filter-buttons">
@@ -43,12 +59,20 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 <div style="margin-bottom: 10px">
     <div style="text-align: right">
         <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
             <a href="/panda/QLSP/ChatLieu/add"><i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i></a>
         </button>
     </div>
+=======
+<!-- Danh sách bài viết -->
+<div style="text-align: right">
+    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
+        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
+    </button>
+>>>>>>> detam
 </div>
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách chất liệu</h3>
@@ -59,12 +83,16 @@
             <th>Mã chất liệu</th>
             <th>Tên chất liệu</th>
             <th>Trạng thái</th>
+<<<<<<< HEAD
             <th>Ngày tạo</th>
             <th>Ngày sửa</th>
+=======
+>>>>>>> detam
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
+<<<<<<< HEAD
         <tr th:each="chatLieu,i : ${list}">
             <td th:text="${i.count}"></td>
             <td th:text="${chatLieu.maChatLieu}"></td>
@@ -81,6 +109,16 @@
                     <i class="fa" th:class="${chatLieu.trangThai} ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"
                        style="font-size: 24px;"></i>
                 </a>
+=======
+        <tr>
+            <td>1</td>
+            <td>Mã giảm giá</td>
+            <td>Tên giảm giá</td>
+            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
+            <td>
+                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
+                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
+>>>>>>> detam
             </td>
         </tr>
         </tbody>
@@ -206,6 +244,7 @@
         margin: 0 5px;
         cursor: pointer;
     }
+<<<<<<< HEAD
     .custom-alert {
         position: fixed;
         top: 20px;  /* Cách từ đỉnh */
@@ -237,5 +276,8 @@
         }
     };
 </script>
+=======
+</style>
+>>>>>>> detam
 </body>
 </html>

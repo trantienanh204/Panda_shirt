@@ -2,13 +2,19 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+<<<<<<< HEAD
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+=======
+>>>>>>> detam
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+<<<<<<< HEAD
 import java.time.LocalDateTime;
+=======
+>>>>>>> detam
 import java.util.Date;
 
 
@@ -20,6 +26,7 @@ import java.util.Date;
 public class CoAo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+<<<<<<< HEAD
     @Column(name = "ID")
     private Integer id;
     @NotBlank(message = "Không được để trống dữ liệu")
@@ -42,4 +49,26 @@ public class CoAo {
     public void toggleTrangThai() {
         this.trangThai = !this.trangThai; // Đảo ngược giá trị
     }
+=======
+    private Integer id;
+
+    @Column(name = "MA_CO_AO")
+    @NotBlank(message = "Mã trống")
+    private String ma;
+
+    @Column(name = "TEN_CO_AO")
+    @NotBlank(message = "Tên trống")
+    private String ten;
+
+    @Column(name = "NGAY_TAO")
+    @Temporal(TemporalType.DATE)
+    private Date ngaytao;
+
+    @Column(name = "NGAY_SUA")
+    @Temporal(TemporalType.DATE)
+    private Date ngaysua;
+
+    @Column(name = "TRANG_THAI")
+    private boolean trangthai;
+>>>>>>> detam
 }

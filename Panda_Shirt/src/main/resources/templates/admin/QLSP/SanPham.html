@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
     <meta charset="UTF-8">
@@ -90,6 +91,77 @@
     </table>
 </div>
 <style>
+=======
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://kit.fontawesome.com/bd9b5e640d.js" crossorigin="anonymous"></script>
+<style>
+    .filter-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-input {
+        display: flex;
+        flex-direction: column;
+        margin-right: 15px;
+    }
+
+    .filter-input label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    .filter-input input,
+    .filter-input select {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .filter-input input:focus,
+    .filter-input select:focus {
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .filter-buttons {
+        display: flex;
+        align-items: center;
+    }
+
+    #filter-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #filter-button:hover {
+        background-color: #0056b3;
+    }
+
+    #filter-button i {
+        margin-right: 5px;
+    }
+
+>>>>>>> detam
     * {
         box-sizing: border-box;
         padding: 0;
@@ -102,7 +174,11 @@
         padding: 20px;
     }
 
+<<<<<<< HEAD
     .filter-container {
+=======
+    .filter-container, .table-container {
+>>>>>>> detam
         background-color: #fff;
         padding: 20px;
         border-radius: 10px;
@@ -110,6 +186,14 @@
         margin-bottom: 20px;
     }
 
+<<<<<<< HEAD
+=======
+    h2, h3 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+>>>>>>> detam
     .filter-inputs {
         display: flex;
         justify-content: space-between;
@@ -118,13 +202,19 @@
     }
 
     .filter-input {
+<<<<<<< HEAD
         display: flex;
         flex-direction: column;
         width: 18%;
+=======
+        flex: 1;
+        margin-right: 10px;
+>>>>>>> detam
     }
 
     .filter-input label {
         margin-bottom: 5px;
+<<<<<<< HEAD
         padding-top: 30px;
         font-weight: bold;
     }
@@ -146,10 +236,28 @@
         background-color: #333;
         color: white;
         border: none;
+=======
+        font-weight: bold;
+    }
+
+    .filter-input input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+>>>>>>> detam
         border-radius: 5px;
         cursor: pointer;
     }
 
+<<<<<<< HEAD
     .filter-buttons button:hover {
         background-color: #555;
     }
@@ -164,11 +272,19 @@
     .table-container h3 {
         margin-bottom: 20px;
         font-size: 20px;
+=======
+    .btn-success:hover {
+        background-color: #218838;
+>>>>>>> detam
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
+<<<<<<< HEAD
+=======
+        margin-top: 20px;
+>>>>>>> detam
     }
 
     table th, table td {
@@ -185,6 +301,7 @@
         background-color: #f9f9f9;
     }
 
+<<<<<<< HEAD
     .status-label {
         padding: 5px 10px;
         border-radius: 5px;
@@ -212,3 +329,180 @@
 </style>
 </body>
 </html>
+=======
+    #pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #pagination button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        margin: 0 5px;
+    }
+
+    #pagination button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+    }
+
+    #loading {
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .spinner-border {
+        width: 2rem;
+        height: 2rem;
+    }
+</style>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản phẩm</title>
+
+
+</head>
+<body th:fragment="sanpham">
+
+<h2>Sản Phẩm</h2>
+
+<div class="filter-container">
+    <div class="filter-input">
+        <label for="title-author">Tên sản phẩm</label>
+        <input type="text" id="filter-tensp" placeholder="Nhập tên sản phẩm">
+    </div>
+    <div class="filter-input">
+        <label for="filter-trangthai">Trạng thái</label>
+        <select id="filter-trangthai">
+            <option value="">Tất cả</option>
+            <option value="1">Đang bán</option>
+            <option value="0">Ngừng bán</option>
+        </select>
+    </div>
+    <div class="filter-buttons">
+        <button id="filter-button"><i class="fa fa-search"></i> Tìm kiếm</button>
+    </div>
+</div>
+
+
+<div style="text-align: right">
+    <a class="btn btn-success" th:href="@{/panda/sanpham/add}">
+        <i class="fa-solid fa-plus" style="color: #fff;"></i> Thêm sản phẩm
+    </a>
+</div>
+
+<div class="table-container">
+    <h3><i class="fa-solid fa-list" style="color: #000;"></i> Danh sách sản phẩm</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Tên sản phẩm</th>
+            <th>Ngày thêm</th>
+            <th>Số lượng</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody id="sanPhamtable"></tbody>
+    </table>
+
+    <div id="pagination">
+        <button id="prev" disabled><i class="fa-solid fa-chevron-left"></i> Trước</button>
+        <span id="pageInfo"></span>
+        <button id="next"><i class="fa-solid fa-chevron-right"></i> Sau</button>
+    </div>
+</div>
+
+<div id="loading" class="d-none">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function($) {
+        var currentPage = 0;  // Khởi tạo trang hiện tại
+        var pageSize = 5;  // Kích thước trang
+
+        // Hàm tải danh sách sản phẩm
+        function loadSanPham(page) {
+            var tenSP = $('#filter-tensp').val();  // Lấy giá trị tên sản phẩm từ ô nhập
+            var trangThai = $('#filter-trangthai').val();  // Lấy giá trị trạng thái từ danh sách chọn
+
+            $('#loading').removeClass('d-none').addClass('d-block');  // Hiển thị loading
+
+            $.ajax({
+                type: 'GET',
+                url: '/panda/sanpham/list',
+                data: {
+                    page: page,
+                    tensp: tenSP,
+                    trangthai: trangThai
+                },  // Gửi dữ liệu lọc
+                dataType: 'json',
+                success: function (response) {
+                    $('#sanPhamtable').empty();
+                    if (response && response.content && Array.isArray(response.content)) {
+                        response.content.forEach(function (sp, index) {
+                            $('#sanPhamtable').append(
+                                '<tr>' +
+                                '<td>' + ((currentPage * pageSize) + index + 1) + '</td>' +
+                                '<td>' + sp.tensp + '</td>' +
+                                '<td>' + sp.ngaytao + '</td>' +
+                                '<td>' + sp.soluongsp + '</td>' +
+                                '<td>' + (sp.trangthai === 1 ? "đang bán" : "ngừng bán") + '</td>' +
+                                '<td><a href="/panda/ctsp?id=' + sp.id + '">Chi tiết</a></td>' +
+                                '</tr>'
+                            );
+                        });
+                        $('#pageInfo').text('Trang ' + (currentPage + 1) + ' / ' + response.totalPages);
+                        $('#prev').prop('disabled', currentPage <= 0);
+                        $('#next').prop('disabled', currentPage >= response.totalPages - 1);
+                    } else {
+                        $('#sanPhamtable').html('<tr><td colspan="6">Không có sản phẩm nào.</td></tr>');
+                    }
+                    $('#loading').removeClass('d-block').addClass('d-none');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Có lỗi xảy ra:', error);
+                    alert('Có lỗi khi lấy dữ liệu sản phẩm!');
+                    $('#loading').removeClass('d-block').addClass('d-none');
+                }
+            });
+        }
+
+// Gọi hàm loadSanPham khi người dùng ấn nút "Tìm kiếm"
+        $('#filter-button').click(function() {
+            currentPage = 0;  // Đặt lại trang về 0 khi lọc
+            loadSanPham(currentPage);  // Gọi lại hàm load với bộ lọc
+        });
+
+
+        loadSanPham(currentPage);
+
+        $('#prev').click(function() {
+            if (currentPage > 0) {
+                currentPage--;
+                loadSanPham(currentPage);
+            }
+        });
+
+        $('#next').click(function() {
+            currentPage++;
+            loadSanPham(currentPage);
+        });
+    });
+</script>
+</body>
+</html>
+>>>>>>> detam

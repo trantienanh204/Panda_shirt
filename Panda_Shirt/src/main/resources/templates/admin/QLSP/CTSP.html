@@ -1,9 +1,17 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
+=======
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+>>>>>>> detam
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
     <meta charset="UTF-8">
 <!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <title>Chi tiết sản phẩm</title>
+<<<<<<< HEAD
+=======
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+>>>>>>> detam
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body th:fragment="ctsp">
@@ -21,10 +29,57 @@
                 <option value="2">Quần jeans</option>
             </select>
         </div>
+<<<<<<< HEAD
     </div>
 
     <!-- Thuộc tính -->
     <h5 class="mb-3">Thuộc tính</h5>
+=======
+        <label for="productName" class="col-sm-3 col-form-label">Tên danh mục</label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+        <label for="productName" class="col-sm-3 col-form-label">Tên thương hiệu</label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+        <label for="productName" class="col-sm-3 col-form-label">Tên chất liệu</label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+        <label for="productName" class="col-sm-3 col-form-label">Tên nhà sản xuất</label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+        <label for="productName" class="col-sm-3 col-form-label"> cổ áo </label>
+        <div class="col-sm-9">
+            <select class="form-select" id="productTT">
+                <option selected>Chọn sản phẩm</option>
+                <option value="1">Áo thun</option>
+                <option value="2">Quần jeans</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Thuộc tính -->
+    <h5 class="mb-3">Màu sắc & kích cỡ</h5>
+>>>>>>> detam
 
     <div class="mb-3 row">
         <label for="material" class="col-sm-3 col-form-label">Chất liệu</label>
@@ -68,8 +123,15 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Table: Sản phẩm với thuộc tính size -->
     <h5>Sản phẩm với thuộc tính size</h5>
+=======
+    <!-- Table: Sản phẩm với màu sắc -->
+    <button class="btn btn-green">Thêm tất cả</button>
+    <h5>Sản phẩm với thuộc tính size</h5>
+
+>>>>>>> detam
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -80,6 +142,7 @@
             <th>Số lượng</th>
             <th>Ảnh</th>
             <th>Xóa</th>
+<<<<<<< HEAD
         </tr>
         </thead>
         <tbody>
@@ -142,6 +205,17 @@
 
     <!-- Submit Button -->
     <button class="btn btn-green">Thêm tất cả</button>
+=======
+            <th>hình ảnh</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+
+>>>>>>> detam
 </div>
 <style>
     body {
@@ -206,6 +280,31 @@
         transition: transform 0.2s ease-in-out;
     }
 </style>
+<<<<<<< HEAD
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+=======
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#productSelect').select2({
+            ajax: {
+                url: '/your-api-url',
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: data.map(item => ({
+                            id: item.id,
+                            text: item.name
+                        }))
+                    };
+                }
+            },
+            minimumInputLength: 1 // Người dùng cần nhập ít nhất 1 ký tự để tìm kiếm
+        });
+    });
+
+</script>
+>>>>>>> detam
 </body>
 </html>
