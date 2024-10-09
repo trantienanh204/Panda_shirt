@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-package com.example.demo.Controller.sanpham;public class sanphanController {
-}
-=======
+
 package com.example.demo.Controller.sanpham;
 
 import com.example.demo.entity.Anh_SP;
@@ -76,4 +73,4 @@ public class sanphanController {
 
 
 
->>>>>>> detam
+

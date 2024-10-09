@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Cổ áo</title>
-<<<<<<< HEAD
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body th:fragment="coao">
@@ -27,13 +27,6 @@
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
-=======
-</head>
-<body th:fragment="coao">
-<h2>Cổ Áo</h2>
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
->>>>>>> detam
     <div class="filter-inputs">
         <div class="filter-input">
             <label for="title-author">Tên cổ áo</label>
@@ -42,11 +35,9 @@
         <div class="filter-input">
             <label for="period">Trạng thái</label>
             <select id="period">
-<<<<<<< HEAD
+
                 <option value="month">-- Chọn trạng thái --</option>
-=======
-                <option value="month">-- Chọn trạng thái -- </option>
->>>>>>> detam
+
             </select>
         </div>
         <div class="filter-buttons">
@@ -56,7 +47,7 @@
     </div>
 </div>
 
-<<<<<<< HEAD
+
 <!-- Danh sách cổ áo -->
 <div style="margin-bottom: 10px">
     <div style="text-align: right">
@@ -66,14 +57,7 @@
     </div>
 </div>
 
-=======
-<!-- Danh sách bài viết -->
-<div style="text-align: right">
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
-</div>
->>>>>>> detam
+
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách cổ áo</h3>
     <table>
@@ -83,16 +67,12 @@
             <th>Mã cổ áo</th>
             <th>Tên cổ áo</th>
             <th>Trạng thái</th>
-<<<<<<< HEAD
             <th>Ngày tạo</th>
             <th>Ngày sửa</th>
-=======
->>>>>>> detam
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-<<<<<<< HEAD
         <tr th:each="coAo,i : ${list}">
             <td th:text="${i.count}"></td>
             <td th:text="${coAo.ma}"></td>
@@ -108,23 +88,12 @@
                     <i class="fa" th:class="${coAo.trangThai} ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"
                        style="font-size: 24px;"></i>
                 </a>
-=======
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Tên giảm giá</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
-            <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
->>>>>>> detam
             </td>
         </tr>
         </tbody>
     </table>
 </div>
 <style>
-<<<<<<< HEAD
     .action-icons i {
         font-size: 18px;
         cursor: pointer;
@@ -150,8 +119,7 @@
         visibility: visible;
     }
 
-=======
->>>>>>> detam
+
     * {
         box-sizing: border-box;
         padding: 0;
@@ -187,10 +155,6 @@
 
     .filter-input label {
         margin-bottom: 5px;
-<<<<<<< HEAD
-=======
-
->>>>>>> detam
         font-weight: bold;
     }
 
@@ -272,7 +236,7 @@
 
     .action-icons i {
         font-size: 18px;
-<<<<<<< HEAD
+
         cursor: pointer;
         margin: 0 10px; /* Khoảng cách giữa các icon */
     }
@@ -296,11 +260,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"
         integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-=======
-        margin: 0 5px;
-        cursor: pointer;
-    }
-</style>
->>>>>>> detam
 </body>
 </html>

@@ -73,12 +73,12 @@ public class SideBarController {
         return "/admin/QLSP/DanhMuc";
     }
 
-    @GetMapping("/chatlieu")
-    public String chatlieu(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/ChatLieu";
-    }
+//    @GetMapping("/chatlieu")
+//    public String chatlieu(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/ChatLieu";
+//    }
 
     @GetMapping("/nsx")
     public String nsx(Model model) {

@@ -6,15 +6,9 @@
 </head>
 <body th:fragment="mausac">
 <h2>Màu Sắc</h2>
-<<<<<<< HEAD
-
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
-=======
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
->>>>>>> detam
     <div class="filter-inputs">
         <div class="filter-input">
             <label for="title-author">Tên màu sắc</label>
@@ -23,7 +17,6 @@
         <div class="filter-input">
             <label for="period">Trạng thái</label>
             <select id="period">
-<<<<<<< HEAD
                 <option value="">-- Chọn trạng thái --</option>
                 <!-- Lặp qua danh sách trạng thái từ server -->
                 <th:block>
@@ -36,13 +29,6 @@
         <div class="filter-buttons">
             <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right"
                                                                           style="color: #ffffff;"></i> Làm mới</a>
-=======
-                <option value="month">-- Chọn trạng thái -- </option>
-            </select>
-        </div>
-        <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
->>>>>>> detam
             <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
         </div>
     </div>
@@ -50,7 +36,6 @@
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
-<<<<<<< HEAD
     <a th:href="@{/panda/mausac/viewadd}" class="btn btn-success ">
         <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
     </a>
@@ -59,32 +44,18 @@
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách màu săc</h3>
         <div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
              th:if="${UpdateStatusMessage != null}"><i class="fa-solid fa-circle-check"></i></div>
-=======
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
-</div>
-<div class="table-container">
-    <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách màu săc</h3>
->>>>>>> detam
     <table>
         <thead>
         <tr>
             <th>#</th>
-<<<<<<< HEAD
             <th>Mã màu sắc</th>
             <th>Tên màu sắc</th>
             <th>Ngày tạo</th>
-=======
-            <th>Mã màu sắc </th>
-            <th>Tên màu sắc</th>
->>>>>>> detam
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-<<<<<<< HEAD
         <tr th:each="ms,i: ${listms}">
             <td th:text="${i.count}"></td>
             <td th:text="${ms.ma}"></td>
@@ -114,21 +85,10 @@
                         </i>
                     </i>
                 </a>
-=======
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Tên giảm giá</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
-            <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
->>>>>>> detam
             </td>
         </tr>
         </tbody>
     </table>
-<<<<<<< HEAD
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:if="${currentPage > 1}">
@@ -157,9 +117,6 @@
 <div class="custom-alert success" id="statusMessage" th:text="${Update}"
        th:if="${Update != null}"><i class="fa-solid fa-circle-check"></i></div>
 
-=======
-</div>
->>>>>>> detam
 <style>
     * {
         box-sizing: border-box;
@@ -271,20 +228,12 @@
         background-color: #ff9800;
     }
 
-<<<<<<< HEAD
-=======
-    .action-icons {
-        display: flex;
-        justify-content: center;
-    }
->>>>>>> detam
-
     .action-icons i {
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
     }
-<<<<<<< HEAD
+
     .custom-alert {
         position: fixed;
         top: 20px;  /* Cách từ đỉnh */
@@ -320,8 +269,5 @@
 </script>
 
 
-=======
-</style>
->>>>>>> detam
 </body>
 </html>

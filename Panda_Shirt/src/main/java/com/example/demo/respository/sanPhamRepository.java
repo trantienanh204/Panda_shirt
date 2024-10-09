@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-package com.example.demo.respository;public interface sanPhamRepository {
-=======
+
 package com.example.demo.respository;
 
 import com.example.demo.entity.SanPham;
@@ -20,5 +18,5 @@ public interface sanPhamRepository extends JpaRepository<SanPham,Integer> {
         Page<SanPham> findByTenspAndTrangthai(String tensp, Integer trangthai, Pageable pageable);
 
 
->>>>>>> detam
+
 }

@@ -1,97 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
-<head>
-    <meta charset="UTF-8">
-    <title>Sản phẩm</title>
-</head>
-<body th:fragment="sanpham">
-<h2>Sản Phẩm</h2>
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên sản phẩm</label>
-            <input type="text" id="title-author" placeholder="Tên sản phẩm">
-        </div>
-        <!-- <div class="filter-input">
-            <label for="assignee">Tên và mã người phân công</label>
-            <input type="text" id="assignee" placeholder="Tên và mã người phân công">
-        </div> -->
-        <div class="filter-input">
-            <label for="topic">Cổ áo</label>
-            <select id="topic">
-                <option value="">-- Chọn cổ áo --</option>
-            </select>
-        </div>
-        <div class="filter-input">
-            <label for="status">Danh mục</label>
-            <select id="status">
-                <option value="">-- Chọn danh mục --</option>
-            </select>
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
-                <option value="month">-- Chọn trạng thaí -- </option>
-            </select>
-        </div>
-    </div>
-    <div class="filter-buttons">
-        <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-        <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
-    </div>
-</div>
-<div style="text-align: right">
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
-</div>
-<!-- Danh sách bài viết -->
-<div class="table-container">
-    <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách sản phẩm</h3>
-    <table>
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Mã sản phẩm </th>
-            <th>Tên sản phẩm</th>
-            <th>Cổ áo</th>
-            <th>Danh mục</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>1</td>
-            <td>001</td>
-            <td>Áo panda-black</td>
-            <td>Áo phông </td>
-            <td>Còn hàng</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
-            <td>
-                <i class="fa fa-eye"></i>
-                <a th:href="@{/panda/ctsp}"><i class="fa fa-edit"></i></a>
-            </td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>002</td>
-            <td>Áo panda-red</td>
-            <td>Áo da</td>
-            <td>Hết hàng </td>
-            <td><span class="status-label status-orange">Đã gửi cho pr</span></td>
-            <td class="">
-                <i class="fa fa-eye"></i>
-                <a th:href="@{/panda/ctsp}"><i class="fa fa-edit"></i><a/>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<style>
-=======
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -161,7 +68,6 @@
         margin-right: 5px;
     }
 
->>>>>>> detam
     * {
         box-sizing: border-box;
         padding: 0;
@@ -174,11 +80,7 @@
         padding: 20px;
     }
 
-<<<<<<< HEAD
-    .filter-container {
-=======
     .filter-container, .table-container {
->>>>>>> detam
         background-color: #fff;
         padding: 20px;
         border-radius: 10px;
@@ -186,14 +88,11 @@
         margin-bottom: 20px;
     }
 
-<<<<<<< HEAD
-=======
     h2, h3 {
         margin-bottom: 20px;
         color: #333;
     }
 
->>>>>>> detam
     .filter-inputs {
         display: flex;
         justify-content: space-between;
@@ -202,41 +101,12 @@
     }
 
     .filter-input {
-<<<<<<< HEAD
-        display: flex;
-        flex-direction: column;
-        width: 18%;
-=======
         flex: 1;
         margin-right: 10px;
->>>>>>> detam
     }
 
     .filter-input label {
         margin-bottom: 5px;
-<<<<<<< HEAD
-        padding-top: 30px;
-        font-weight: bold;
-    }
-
-    .filter-input input,
-    .filter-input select {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    .filter-buttons {
-        text-align: center;
-    }
-
-    .filter-buttons button {
-        padding: 10px 20px;
-        margin-left: 10px;
-        background-color: #333;
-        color: white;
-        border: none;
-=======
         font-weight: bold;
     }
 
@@ -252,39 +122,18 @@
         color: #fff;
         border: none;
         padding: 10px 15px;
->>>>>>> detam
         border-radius: 5px;
         cursor: pointer;
     }
 
-<<<<<<< HEAD
-    .filter-buttons button:hover {
-        background-color: #555;
-    }
-
-    .table-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .table-container h3 {
-        margin-bottom: 20px;
-        font-size: 20px;
-=======
     .btn-success:hover {
         background-color: #218838;
->>>>>>> detam
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
-<<<<<<< HEAD
-=======
         margin-top: 20px;
->>>>>>> detam
     }
 
     table th, table td {
@@ -301,35 +150,6 @@
         background-color: #f9f9f9;
     }
 
-<<<<<<< HEAD
-    .status-label {
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: white;
-    }
-
-    .status-green {
-        background-color: #4CAF50;
-    }
-
-    .status-orange {
-        background-color: #ff9800;
-    }
-
-    .action-icons {
-        display: flex;
-        justify-content: center;
-    }
-
-    .action-icons i {
-        font-size: 18px;
-        margin: 0 5px;
-        cursor: pointer;
-    }
-</style>
-</body>
-</html>
-=======
     #pagination {
         margin-top: 20px;
         display: flex;
@@ -501,8 +321,13 @@
             currentPage++;
             loadSanPham(currentPage);
         });
+
+        $('#filter-tensp').keydown(function(event) {
+            if (event.key === 'Enter') {
+                $('#filter-button').click();
+            }
+        });
     });
 </script>
 </body>
 </html>
->>>>>>> detam

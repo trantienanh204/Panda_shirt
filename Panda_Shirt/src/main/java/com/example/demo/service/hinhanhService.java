@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-package com.example.demo.service;public class hinhanhService {
-}
-=======
+
 package com.example.demo.service;
 import com.example.demo.entity.Anh_SP;
 import com.example.demo.respository.HinhAnhRepository;
@@ -67,4 +64,4 @@ public class hinhanhService {
 }
 
 
->>>>>>> detam
+

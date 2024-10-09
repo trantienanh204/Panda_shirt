@@ -1,22 +1,20 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-<<<<<<< HEAD
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-=======
->>>>>>> detam
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-<<<<<<< HEAD
+
 import java.time.LocalDateTime;
-=======
->>>>>>> detam
+
 
 @Entity
 @Getter
@@ -27,7 +25,7 @@ import java.time.LocalDateTime;
 public class ChatLieu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-<<<<<<< HEAD
+
     @Column(name = "ID")
     private int id;
     @NotBlank(message = "Không được để trống dữ liệu")
@@ -49,17 +47,5 @@ public class ChatLieu {
     public void toggleTrangThai() {
         this.trangThai = !this.trangThai; // Đảo ngược giá trị
     }
-=======
-    private Integer id;
-    @Column(name = "MA_CHAT_LIEU")
-    private String ma_chat_lieu;
-    @Column(name = "TEN_CHAT_LIEU")
-    private String ten_chat_lieu;
-    @Column(name = "NGAY_TAO")
-    private LocalDate ngay_tao;
-    @Column(name = "NGAY_SUA")
-    private LocalDate ngay_sua;
-    @Column(name = "TRANG_THAI")
-    private boolean trang_thai;
->>>>>>> detam
+
 }

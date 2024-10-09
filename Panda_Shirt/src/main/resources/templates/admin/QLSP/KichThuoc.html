@@ -7,29 +7,14 @@
 <body th:fragment="kichthuoc">
 <h2>Kích Thước</h2>
 <div class="filter-container">
-<<<<<<< HEAD
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
-=======
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
->>>>>>> detam
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên kích thước</label>
-            <input type="text" id="title-author" placeholder="Tên kích thước">
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
-<<<<<<< HEAD
                 <option value="">-- Chọn trạng thái --</option>
                 <th:block>
                     <option th:value="0">Hoạt động</option>
                     <option th:value="1">Ngừng hoạt động</option>
                 </th:block>
-=======
-                <option value="month">-- Chọn trạng thái -- </option>
->>>>>>> detam
             </select>
         </div>
         <div class="filter-buttons">
@@ -41,15 +26,9 @@
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
-<<<<<<< HEAD
     <a th:href="@{/panda/kichthuoc/viewadd}" class="btn btn-success ">
         <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
     </a>
-=======
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
->>>>>>> detam
 </div>
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách kích thước</h3>
@@ -59,16 +38,7 @@
             <th>#</th>
             <th>Mã kích thước</th>
             <th>Tên kích thước</th>
-<<<<<<< HEAD
             <th>Ngày tạo</th>
-=======
->>>>>>> detam
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-<<<<<<< HEAD
         <tr th:each="kt,i :${listkt}">
             <td th:text="${i.count}"></td>
             <td th:text="${kt.ma}"></td>
@@ -99,21 +69,10 @@
                         </i>
                     </i>
                 </a>
-=======
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Tên giảm giá</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
-            <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
->>>>>>> detam
             </td>
         </tr>
         </tbody>
     </table>
-<<<<<<< HEAD
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:if="${currentPage > 1}">
@@ -140,9 +99,6 @@
 <div class="custom-alert success" id="statusMessage" th:text="${Update}"
      th:if="${Update != null}"><i class="fa-solid fa-circle-check"></i></div>
 
-=======
-</div>
->>>>>>> detam
 <style>
     * {
         box-sizing: border-box;
@@ -253,21 +209,11 @@
     .status-orange {
         background-color: #ff9800;
     }
-<<<<<<< HEAD
-=======
-
-    .action-icons {
-        display: flex;
-        justify-content: center;
-    }
-
->>>>>>> detam
     .action-icons i {
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
     }
-<<<<<<< HEAD
     .custom-alert {
         position: fixed;
         top: 20px;  /* Cách từ đỉnh */
@@ -301,8 +247,6 @@
         }
     };
 </script>
-=======
-</style>
->>>>>>> detam
+
 </body>
 </html>

@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-package com.example.demo.service;public class sanPhamService {
-=======
+
 package com.example.demo.service;
 
 import com.example.demo.entity.SanPham;
@@ -24,5 +22,5 @@ public class sanPhamService {
         Pageable pageable = PageRequest.of(page, size);
         return sanPhamRepository.findByTenspAndTrangthai(tensp, trangthai, pageable);
     }
->>>>>>> detam
+
 }

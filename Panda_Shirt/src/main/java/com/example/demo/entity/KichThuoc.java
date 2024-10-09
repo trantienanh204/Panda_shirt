@@ -20,7 +20,7 @@ public class KichThuoc {
     private Integer id;
 
     @Column(name = "MA_KICH_THUOC")
-<<<<<<< HEAD
+
     private String ma;
 
     @Column(name = "TEN_KICH_THUOC")
@@ -34,19 +34,4 @@ public class KichThuoc {
 
     @Column(name = "TRANG_THAI")
     private boolean trangthai;
-=======
-    private String ma_kich_thuoc;
-
-    @Column(name = "TEN_KICH_THUOC")
-    private String ten_kich_thuoc;
-
-    @Column(name = "NGAY_TAO")
-    private LocalDate ngay_tao;
-
-    @Column(name = "NGAY_SUA")
-    private LocalDate ngay_sua;
-
-    @Column(name = "TRANG_THAI")
-    private Integer trang_thai;
->>>>>>> detam
 }
