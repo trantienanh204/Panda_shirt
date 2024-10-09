@@ -101,17 +101,17 @@ public class CoAoController {
         if (bindingResult.hasErrors()) {
             return "admin/QLSP/UPDATE/updateCoAo";
         }
-        // Kiểm tra mã đã tồn tại
-        if (coAoRepository.existsCoAoByMa(coAo.getMa())) {
-            model.addAttribute("errorma", "Mã đã tồn tại");
-            return "admin/QLSP/UPDATE/updateCoAo"; // Trả về trang thêm mới nếu mã đã tồn tại
-        }
-
-        // Kiểm tra tên đã tồn tại
-        if (coAoRepository.existsCoAoByTen(coAo.getTen())) {
-            model.addAttribute("errorten", "Tên đã tồn tại");
-            return "admin/QLSP/UPDATE/updateCoAo"; // Trả về trang thêm mới nếu tên đã tồn tại
-        }
+//        // Kiểm tra mã đã tồn tại
+//        if (coAoRepository.existsCoAoByMa(coAo.getMa())) {
+//            model.addAttribute("errorma", "Mã đã tồn tại");
+//            return "admin/QLSP/UPDATE/updateCoAo"; // Trả về trang thêm mới nếu mã đã tồn tại
+//        }
+//
+//        // Kiểm tra tên đã tồn tại
+//        if (coAoRepository.existsCoAoByTen(coAo.getTen())) {
+//            model.addAttribute("errorten", "Tên đã tồn tại");
+//            return "admin/QLSP/UPDATE/updateCoAo"; // Trả về trang thêm mới nếu tên đã tồn tại
+//        }
         // Nếu ID không phải là null, thực hiện cập nhật
         if (coAo.getId() != null) {
             CoAo existingCoAo = coAoRepository.findById(coAo.getId()).orElse(null);

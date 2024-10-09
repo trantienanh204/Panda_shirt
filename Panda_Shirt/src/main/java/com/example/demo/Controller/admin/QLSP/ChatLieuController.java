@@ -100,17 +100,17 @@ public class ChatLieuController {
         if (bindingResult.hasErrors()) {
             return "admin/QLSP/UPDATE/updateChatLieu";
         }
-        // Kiểm tra mã chất liệu đã tồn tại
-        if (chatLieuRespository.existsChatLieuByMaChatLieu(chatLieu.getMaChatLieu())) {
-            model.addAttribute("errorma", "Mã chất liệu đã tồn tại");
-            return "admin/QLSP/UPDATE/updateChatLieu";
-        }
-
-        // Kiểm tra tên chất liệu đã tồn tại
-        if (chatLieuRespository.existsChatLieuByTenChatLieu(chatLieu.getTenChatLieu())) {
-            model.addAttribute("errorten", "Tên chất liệu đã tồn tại");
-            return "admin/QLSP/UPDATE/updateChatLieu";
-        }
+//        // Kiểm tra mã chất liệu đã tồn tại
+//        if (chatLieuRespository.existsChatLieuByMaChatLieu(chatLieu.getMaChatLieu())) {
+//            model.addAttribute("errorma", "Mã chất liệu đã tồn tại");
+//            return "admin/QLSP/UPDATE/updateChatLieu";
+//        }
+//
+//        // Kiểm tra tên chất liệu đã tồn tại
+//        if (chatLieuRespository.existsChatLieuByTenChatLieu(chatLieu.getTenChatLieu())) {
+//            model.addAttribute("errorten", "Tên chất liệu đã tồn tại");
+//            return "admin/QLSP/UPDATE/updateChatLieu";
+//        }
 
         if (existingChatLieu != null) {
             existingChatLieu.setMaChatLieu(chatLieu.getMaChatLieu());
