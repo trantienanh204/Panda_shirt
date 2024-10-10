@@ -17,29 +17,29 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@RequestMapping("/panda/chatlieu")
 public class ChatLieuController {
-    @Autowired
-    ChatLieuService chatLieuService;
+
     @Autowired
     ChatLieuRespository chatLieuRespository;
 
-    @GetMapping("/panda/chatlieu")
+    @GetMapping("")
     public String chatlieu(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        List<ChatLieu> list = chatLieuService.list();
+        List<ChatLieu> list = chatLieuRespository.findAll();
         model.addAttribute("list", list);
         return "/admin/QLSP/ChatLieu";
     }
 
-    @GetMapping("/panda/QLSP/ChatLieu/add")
+    @GetMapping("/add")
     public String index(Model model) {
         model.addAttribute("role", "admin");
         model.addAttribute("chatLieu", new ChatLieu());
-        return "admin/QLSP/ADD/addChatLieu";
+        return "admin/QLSP/ADD/AddChatLieu";
     }
     // add
-    @PostMapping("/panda/QLSP/ChatLieu/add")
+    @PostMapping("/add")
     public String add(Model model, @Valid @ModelAttribute ChatLieu chatLieu, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
@@ -48,13 +48,13 @@ public class ChatLieuController {
 
         // Kiểm tra lỗi trong binding
         if (bindingResult.hasErrors()) {
-            return "admin/QLSP/ADD/addChatLieu";
+            return "admin/QLSP/ADD/AddChatLieu";
         }
 
         // Kiểm tra mã chất liệu đã tồn tại
         if (chatLieuRespository.existsChatLieuByMaChatLieu(chatLieu.getMaChatLieu())) {
             model.addAttribute("errorma", "Mã chất liệu đã tồn tại");
-            return "admin/QLSP/ADD/addChatLieu";
+            return "admin/QLSP/ADD/AddChatLieu";
         }
 
         // Kiểm tra tên chất liệu đã tồn tại
@@ -83,34 +83,23 @@ public class ChatLieuController {
     }
 
 
-    @GetMapping("/panda/QLSP/ChatLieu/update")
+    @GetMapping("/update")
     public String showUpdate(@RequestParam("id") int id, Model model) {
         String role = "admin";
         model.addAttribute("role", role);
         model.addAttribute("chatLieu", new ChatLieu());
         model.addAttribute("chatLieu", chatLieuRespository.findById(id).get());
-        return "admin/QLSP/UPDATE/updateChatLieu";
+        return "admin/QLSP/UPDATE/UpdateChatLieu";
     }
 
-    @PostMapping("panda/QLSP/ChatLieu/update")
+    @PostMapping("/update")
     public String update(@Validated @ModelAttribute ChatLieu chatLieu, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role",role);
         ChatLieu existingChatLieu = chatLieuRespository.findById(chatLieu.getId()).orElse(null);
         if (bindingResult.hasErrors()) {
-            return "admin/QLSP/UPDATE/updateChatLieu";
+            return "admin/QLSP/UPDATE/UpdateChatLieu";
         }
-//        // Kiểm tra mã chất liệu đã tồn tại
-//        if (chatLieuRespository.existsChatLieuByMaChatLieu(chatLieu.getMaChatLieu())) {
-//            model.addAttribute("errorma", "Mã chất liệu đã tồn tại");
-//            return "admin/QLSP/UPDATE/updateChatLieu";
-//        }
-//
-//        // Kiểm tra tên chất liệu đã tồn tại
-//        if (chatLieuRespository.existsChatLieuByTenChatLieu(chatLieu.getTenChatLieu())) {
-//            model.addAttribute("errorten", "Tên chất liệu đã tồn tại");
-//            return "admin/QLSP/UPDATE/updateChatLieu";
-//        }
 
         if (existingChatLieu != null) {
             existingChatLieu.setMaChatLieu(chatLieu.getMaChatLieu());
@@ -123,7 +112,7 @@ public class ChatLieuController {
         return "redirect:/panda/chatlieu";
     }
     // thay đổi trạng thái
-    @GetMapping("/panda/QLSP/ChatLieu/change")
+    @GetMapping("/change")
     public String changeStatus(@RequestParam("id") int id, Model model, RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
