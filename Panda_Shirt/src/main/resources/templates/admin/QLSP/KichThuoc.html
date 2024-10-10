@@ -12,17 +12,26 @@
     <hr>
     <div class="filter-inputs">
         <div class="filter-input">
-            <label for="status">Trạng thái:</label>
-            <select id="status">
+            <label for="title-author">Tên màu sắc</label>
+            <input type="text" id="title-author" placeholder="Tên màu sắc">
+        </div>
+        <div class="filter-input">
+            <label for="period">Trạng thái</label>
+            <select id="period">
                 <option value="">-- Chọn trạng thái --</option>
-                <option th:value="0">Hoạt động</option>
-                <option th:value="1">Ngừng hoạt động</option>
+                <!-- Lặp qua danh sách trạng thái từ server -->
+                <th:block>
+                    <option th:value="0">Hoạt động</option>
+                    <option th:value="1">Ngừng hoạt động</option>
+                </th:block>
             </select>
         </div>
-    </div>
-    <div class="filter-buttons">
-        <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-        <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+
+        <div class="filter-buttons">
+            <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right"
+                                                                          style="color: #ffffff;"></i> Làm mới</a>
+            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+        </div>
     </div>
 </div>
 

@@ -6,6 +6,7 @@
 </head>
 <body th:fragment="mausac">
 <h2>Màu Sắc</h2>
+
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
@@ -42,8 +43,6 @@
 </div>
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách màu săc</h3>
-    <div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
-         th:if="${UpdateStatusMessage != null}"><i class="fa-solid fa-circle-check"></i></div>
     <table>
         <thead>
         <tr>
@@ -228,12 +227,12 @@
         background-color: #ff9800;
     }
 
+
     .action-icons i {
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
     }
-
     .custom-alert {
         position: fixed;
         top: 20px;  /* Cách từ đỉnh */

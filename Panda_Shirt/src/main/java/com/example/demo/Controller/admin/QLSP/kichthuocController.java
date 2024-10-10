@@ -45,8 +45,8 @@ public class kichthuocController {
         Pattern pattern = Pattern.compile(regex);
         Pattern patternma = Pattern.compile(regexma);
 
-        Matcher tenktMatcher = pattern.matcher(kichThuoc.getMa());
-        Matcher maktMatcher = patternma.matcher(kichThuoc.getTen());
+        Matcher maktMatcher = pattern.matcher(kichThuoc.getMa());
+        Matcher tenktMatcher = patternma.matcher(kichThuoc.getTen());
 
         if(kichThuoc.getMa().isEmpty()){
             model.addAttribute("errorma","Không được để trống");

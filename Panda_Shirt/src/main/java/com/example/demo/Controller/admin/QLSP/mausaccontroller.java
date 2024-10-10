@@ -48,7 +48,7 @@ public class mausaccontroller {
 
         Pattern pattern = Pattern.compile(regex);
 
-        Matcher tenmsMatcher = pattern.matcher(mauSac.getMa());
+        Matcher tenmsMatcher = pattern.matcher(mauSac.getTen());
 
         if(mauSac.getMa().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
