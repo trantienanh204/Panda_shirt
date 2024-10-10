@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("/panda")
+@RequestMapping("/panda/coao")
 public class CoAoController {
     @Autowired
     CoAoRepository coAoRepository;
 
-    @GetMapping("/coao")
+    @GetMapping("")
     public String index(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
@@ -30,7 +30,7 @@ public class CoAoController {
         return "admin/QLSP/CoAo";
     }
 
-    @GetMapping("/QLSP/CoAo/add")
+    @GetMapping("/add")
     public String showFormAdd(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
@@ -38,26 +38,26 @@ public class CoAoController {
         return "admin/QLSP/ADD/addCoAo";
     }
 
-    @PostMapping("/QLSP/CoAo/add")
+    @PostMapping("/add")
     public String add(Model model, @Valid @ModelAttribute CoAo coAo, BindingResult result, RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
 
         // Kiểm tra lỗi trong binding
         if (result.hasErrors()) {
-            return "admin/QLSP/ADD/addCoAo"; // Trả về trang thêm mới nếu có lỗi
+            return "admin/QLSP/ADD/AddCoAo"; // Trả về trang thêm mới nếu có lỗi
         }
 
         // Kiểm tra mã đã tồn tại
         if (coAoRepository.existsCoAoByMa(coAo.getMa())) {
             model.addAttribute("errorma", "Mã đã tồn tại");
-            return "admin/QLSP/ADD/addCoAo"; // Trả về trang thêm mới nếu mã đã tồn tại
+            return "admin/QLSP/ADD/AddCoAo";
         }
 
         // Kiểm tra tên đã tồn tại
         if (coAoRepository.existsCoAoByTen(coAo.getTen())) {
             model.addAttribute("errorten", "Tên đã tồn tại");
-            return "admin/QLSP/ADD/addCoAo"; // Trả về trang thêm mới nếu tên đã tồn tại
+            return "admin/QLSP/ADD/AddCoAo";
         }
 
         // Nếu ID không phải là null, thực hiện cập nhật
@@ -82,36 +82,26 @@ public class CoAoController {
 
         // Thêm thông báo thành công
         redirectAttributes.addFlashAttribute("AddStatusMessage", "Thêm thành công !");
-        return "redirect:/panda/coao"; // Redirect về trang danh sách cổ áo
+        return "redirect:/panda/coao";
     }
 
-    @GetMapping("/QLSP/CoAo/update")
+    @GetMapping("/update")
     public String showFormUpdate(Model model, @RequestParam("id") Integer id) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         model.addAttribute("coAo", new CoAo());
         model.addAttribute("coAo", coAoRepository.findById(id).get());
-        return "admin/QLSP/UPDATE/updateCoAo";
+        return "admin/QLSP/UPDATE/UpdateCoAo";
     }
 
-    @PostMapping("/QLSP/CoAo/update")
+    @PostMapping("/update")
     public String update(@Validated @ModelAttribute CoAo coAo, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         if (bindingResult.hasErrors()) {
-            return "admin/QLSP/UPDATE/updateCoAo";
+            return "admin/QLSP/UPDATE/UpdateCoAo";
         }
-//        // Kiểm tra mã đã tồn tại
-//        if (coAoRepository.existsCoAoByMa(coAo.getMa())) {
-//            model.addAttribute("errorma", "Mã đã tồn tại");
-//            return "admin/QLSP/UPDATE/updateCoAo"; // Trả về trang thêm mới nếu mã đã tồn tại
-//        }
-//
-//        // Kiểm tra tên đã tồn tại
-//        if (coAoRepository.existsCoAoByTen(coAo.getTen())) {
-//            model.addAttribute("errorten", "Tên đã tồn tại");
-//            return "admin/QLSP/UPDATE/updateCoAo"; // Trả về trang thêm mới nếu tên đã tồn tại
-//        }
+
         // Nếu ID không phải là null, thực hiện cập nhật
         if (coAo.getId() != null) {
             CoAo existingCoAo = coAoRepository.findById(coAo.getId()).orElse(null);
@@ -134,7 +124,7 @@ public class CoAoController {
         redirectAttributes.addFlashAttribute("UpdateStatusMessage", "Cập nhật thành công !");
         return "redirect:/panda/coao";
     }
-    @GetMapping("/QLSP/CoAo/change")
+    @GetMapping("/change")
     public String changeStatus(@RequestParam("id") int id, Model model, RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
