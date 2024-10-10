@@ -44,11 +44,11 @@ public class mausaccontroller {
     public String AddVC(@ModelAttribute("MauSac") MauSac mauSac,Model model, RedirectAttributes redirectAttributes) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        String regex = "^[a-zA-Z0-9àáạảãâầấậẩăằắặẳêềếệểèẻẹéẽôồốộổơờớợởưừứựửữủũụúùìỉịíĩđòóỏọõ\\s]+$";
+        String regex = "^[\\p{L}0-9\\s]+$";
 
         Pattern pattern = Pattern.compile(regex);
 
-        Matcher tenmsMatcher = pattern.matcher(mauSac.getMa());
+        Matcher tenmsMatcher = pattern.matcher(mauSac.getTen());
 
         if(mauSac.getMa().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
@@ -61,20 +61,19 @@ public class mausaccontroller {
         if(mauSac.getTen().isEmpty() || mauSac.getMa().isEmpty()){
             model.addAttribute("errorten","Không được để trống");
             return "admin/QLSP/ADD/AddMS";
-        }else if (!tenmsMatcher.matches()) {
+        }if(mauSacRepsitory.existsMauSacByTen(mauSac.getTen())){
+            model.addAttribute("errorten","Tên đã tồn tại");
+            return "admin/QLSP/ADD/AddMS";
+        }if (!tenmsMatcher.matches()) {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/ADD/AddMS";
         }
-        if(mauSacRepsitory.existsMauSacByTen(mauSac.getTen())){
-            model.addAttribute("errorten","Tên đã tồn tại");
-            return "admin/QLSP/ADD/AddMS";
-        }
+
         mauSac.setNgaytao(LocalDate.now());
         mauSacRepsitory.save(mauSac);
         redirectAttributes.addFlashAttribute("Add","Thêm thành công");
 
-
-        return "/admin/QLSP/MauSac";
+        return "redirect:/panda/mausac/hienthi";
     }
 
     @GetMapping("/viewadd")
@@ -115,13 +114,9 @@ public class mausaccontroller {
         String ma = mauSac.getMa().trim().toLowerCase();
 
         String regex = "^[a-zA-Z0-9àáạảãâầấậẩăằắặẳêềếệểèẻẹéẽôồốộổơờớợởưừứựửữủũụúùìỉịíĩđòóỏọõ\\s]+$";
-        String regexma = "^[a-zA-Z0-9]+$";
 
         Pattern pattern = Pattern.compile(regex);
-        Pattern patternma = Pattern.compile(regexma);
 
-
-        Matcher mamsMatcher = patternma.matcher(mauSac.getMa());
         Matcher tenmsMatcher = pattern.matcher(tenms);
 
         MauSac findma = mauSacRepsitory.findByMaAndIdNot(ma,mauSac.getId());

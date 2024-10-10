@@ -39,11 +39,16 @@
             <th>Mã kích thước</th>
             <th>Tên kích thước</th>
             <th>Ngày tạo</th>
+            <th>Ngày sửa</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
         <tr th:each="kt,i :${listkt}">
             <td th:text="${i.count}"></td>
             <td th:text="${kt.ma}"></td>
             <td th:text="${kt.ten}"></td>
             <td th:text="${kt.ngaytao != null? #temporals.format(kt.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:text="${kt.ngaysua != null? #temporals.format(kt.ngaysua, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:if="${kt.trangthai} == true">
                 <span class="status-label status-green"
                       th:text="${kt.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">

@@ -1,8 +1,6 @@
 package com.example.demo.Controller;
 
 
-import com.example.demo.entity.ChatLieu;
-import com.example.demo.services.ChatLieuService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -10,14 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
-import java.util.List;
-
 @Controller
 @RequestMapping("/panda")
 public class SideBarController {
-    @Autowired
-    ChatLieuService chatLieuService;
 
 
     @GetMapping("/hienthi")
@@ -73,12 +66,12 @@ public class SideBarController {
         return "/admin/QLSP/DanhMuc";
     }
 
-//    @GetMapping("/chatlieu")
-//    public String chatlieu(Model model) {
-//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-//        model.addAttribute("role", role);
-//        return "/admin/QLSP/ChatLieu";
-//    }
+    @GetMapping("/chatlieu")
+    public String chatlieu(Model model) {
+        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+        model.addAttribute("role", role);
+        return "redirect:/panda/chatlieu/hienthi";
+    }
 
     @GetMapping("/nsx")
     public String nsx(Model model) {

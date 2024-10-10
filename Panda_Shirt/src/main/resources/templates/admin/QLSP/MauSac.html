@@ -49,6 +49,7 @@
             <th>Mã màu sắc</th>
             <th>Tên màu sắc</th>
             <th>Ngày tạo</th>
+            <th>Ngày sửa</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
@@ -59,6 +60,7 @@
             <td th:text="${ms.ma}"></td>
             <td th:text="${ms.ten}"></td>
             <td th:text="${ms.ngaytao != null? #temporals.format(ms.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:text="${ms.ngaysua != null? #temporals.format(ms.ngaysua, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:if="${ms.trangthai} == true">
                 <span class="status-label status-green"
                       th:text="${ms.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
