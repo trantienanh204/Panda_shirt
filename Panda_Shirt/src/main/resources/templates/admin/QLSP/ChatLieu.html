@@ -13,7 +13,8 @@
 <div class="custom-alert success" id="statusMessage" th:text="${AddStatusMessage}" th:if="${AddStatusMessage != null}">
     <i class="fa-solid fa-circle-check"></i> Thêm thành công !
 </div>
-<div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}" th:if="${UpdateStatusMessage != null}">
+<div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
+     th:if="${UpdateStatusMessage != null}">
     <i class="fa-solid fa-circle-check"></i> Cập nhật thành công !
 </div>
 <div class="custom-alert error" id="statusMessage" th:text="${ErrorStatusMessage}"
@@ -49,7 +50,7 @@
 <div style="margin-bottom: 10px">
     <div style="text-align: right">
         <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-            <a href="/panda/QLSP/ChatLieu/add"><i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i></a>
+            <a href="/panda/chatlieu/add"><i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i></a>
         </button>
     </div>
 
@@ -62,25 +63,42 @@
             <th>#</th>
             <th>Mã chất liệu</th>
             <th>Tên chất liệu</th>
-            <th>Trạng thái</th>
             <th>Ngày tạo</th>
             <th>Ngày sửa</th>
-
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
         <tr th:each="chatLieu,i : ${list}">
             <td th:text="${i.count}"></td>
             <td th:text="${chatLieu.maChatLieu}"></td>
             <td th:text="${chatLieu.tenChatLieu}"></td>
-            <td th:class="${chatLieu.trangThai} ? 'status-label status-green' : 'status-label status-orange'">
-                <span th:text="${chatLieu.trangThai} ? 'Hoạt động' : 'Ngừng hoạt động'"></span>
+            <td th:text="${chatLieu.ngayTao != null? #temporals.format(chatLieu.ngayTao, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:text="${chatLieu.ngaySua != null? #temporals.format(chatLieu.ngaySua, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:if="${chatLieu.trangThai} == true">
+                <span class="status-label status-green"
+                      th:text="${chatLieu.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                </span>
             </td>
-            <td th:text="${chatLieu.ngayTao}"></td>
-            <td th:text="${chatLieu.ngaySua}"></td>
+            <td th:if="${chatLieu.trangThai} == false ">
+                <span class="status-label status-orange"
+                      th:text="${chatLieu.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                </span>
+            </td>
             <td>
-                <a style="margin-right: 10px" th:href="@{/panda/QLSP/ChatLieu/update(id=${chatLieu.id})}"> <i class="fa-regular fa-pen-to-square"
-                                                                                   style="color: #000000;"></i></a>
-                <a th:href="@{/panda/QLSP/ChatLieu/change(id=${chatLieu.id})}">
-                    <i class="fa" th:class="${chatLieu.trangThai} ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"
-                       style="font-size: 24px;"></i>
+                <a style="margin-right: 10px" th:href="@{/panda/chatlieu/update(id=${chatLieu.id})}"> <i
+                        class="fa-regular fa-pen-to-square"
+                        style="color: #000000;"></i></a>
+                <a th:href="@{/panda/chatlieu/change(id=${chatLieu.id})}">
+                    <i th:if="${chatLieu.trangThai == true}">
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
+                        </i>
+                    </i>
+                    <i th:if="${chatLieu.trangThai == false}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
+                        </i>
+                    </i>
                 </a>
             </td>
         </tr>
@@ -207,24 +225,25 @@
         margin: 0 5px;
         cursor: pointer;
     }
+
     .custom-alert {
         position: fixed;
-        top: 20px;  /* Cách từ đỉnh */
-        right: 20px;  /* Cách từ bên phải */
-        background-color: #4CAF50;  /* Màu nền thông báo thành công */
-        color: white;  /* Màu chữ */
-        padding: 15px;  /* Padding xung quanh */
-        border-radius: 5px;  /* Bo góc */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
-        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
-        opacity: 0;  /* Ban đầu ẩn */
-        visibility: hidden;  /* Không hiển thị */
-        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        background-color: #4CAF50; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
     }
 
     .custom-alert.show {
-        opacity: 1;  /* Hiển thị thông báo */
-        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt thông báo là có thể nhìn thấy */
     }
 </style>
 <script>

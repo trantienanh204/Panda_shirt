@@ -55,7 +55,7 @@
 <div style="margin-bottom: 10px">
     <div style="text-align: right">
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add">
-            <a th:href="@{/panda/QLSP/CoAo/add}"><i class="fa-solid fa-plus" style="color: #fcfcfc;"></i></a>
+            <a th:href="@{/panda/coao/add}"><i class="fa-solid fa-plus" style="color: #fcfcfc;"></i></a>
         </button>
     </div>
 </div>
@@ -68,10 +68,9 @@
             <th>#</th>
             <th>Mã cổ áo</th>
             <th>Tên cổ áo</th>
-            <th>Trạng thái</th>
-
             <th>Ngày tạo</th>
             <th>Ngày sửa</th>
+            <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
         </thead>
@@ -81,16 +80,29 @@
             <td th:text="${i.count}"></td>
             <td th:text="${coAo.ma}"></td>
             <td th:text="${coAo.ten}"></td>
-            <td th:class="${coAo.trangThai} ? 'status-label status-green' : 'status-label status-orange'">
-                <span th:text="${coAo.trangThai} ? 'Hoạt động' : 'Ngừng hoạt động'"></span>
+            <td th:text="${coAo.ngayTao != null? #temporals.format(coAo.ngayTao, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:text="${coAo.ngaySua != null? #temporals.format(coAo.ngaySua, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:if="${coAo.trangThai} == true">
+                <span class="status-label status-green"
+                      th:text="${coAo.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                </span>
             </td>
-            <td th:text="${coAo.ngayTao}"></td>
-            <td th:text="${coAo.ngaySua}"></td>
-            <td class="action-icons">
-                <a style="margin-right: 10px" th:href="@{/panda/QLSP/CoAo/update(id=${coAo.id})}"><i class="fa-regular fa-pen-to-square" style="color: #000000;"></i></a>
-                <a th:href="@{/panda/QLSP/CoAo/change(id=${coAo.id})}">
-                    <i class="fa" th:class="${coAo.trangThai} ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"
-                       style="font-size: 24px;"></i>
+            <td th:if="${coAo.trangThai} == false ">
+                <span class="status-label status-orange"
+                      th:text="${coAo.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                </span>
+            </td>
+            <td>
+                <a style="margin-right: 10px" th:href="@{/panda/coao/update(id=${coAo.id})}"><i class="fa-regular fa-pen-to-square" style="color: #000000;"></i></a>
+                <a th:href="@{/panda/coao/change(id=${coAo.id})}">
+                    <i th:if="${coAo.trangThai == true}">
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
+                        </i>
+                    </i>
+                    <i th:if="${coAo.trangThai == false}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
+                        </i>
+                    </i>
                 </a>
 
             </td>
