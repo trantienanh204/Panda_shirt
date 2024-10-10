@@ -57,7 +57,9 @@
         <tbody>
         <tr th:each="ms,i: ${listms}">
             <td th:text="${i.count}"></td>
-            <td th:text="${ms.ma}"></td>
+            <td th:text="${ms.ma}">
+            </td>
+
             <td th:text="${ms.ten}"></td>
             <td th:text="${ms.ngaytao != null? #temporals.format(ms.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:if="${ms.trangthai} == true">

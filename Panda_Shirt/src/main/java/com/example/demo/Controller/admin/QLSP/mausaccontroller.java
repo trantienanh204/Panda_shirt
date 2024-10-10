@@ -41,40 +41,45 @@ public class mausaccontroller {
     }
 
     @PostMapping("/add")
-    public String AddVC(@ModelAttribute("MauSac") MauSac mauSac,Model model, RedirectAttributes redirectAttributes) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+    public String AddVC(@ModelAttribute("MauSac") MauSac mauSac, Model model, RedirectAttributes redirectAttributes) {
+        String role = "admin"; // Lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        String regex = "^[a-zA-Z0-9àáạảãâầấậẩăằắặẳêềếệểèẻẹéẽôồốộổơờớợởưừứựửữủũụúùìỉịíĩđòóỏọõ\\s]+$";
 
+
+        String regex = "^[\\p{L}0-9\\s]+$";
         Pattern pattern = Pattern.compile(regex);
-
         Matcher tenmsMatcher = pattern.matcher(mauSac.getTen());
 
-        if(mauSac.getMa().isEmpty()){
-            model.addAttribute("errorma","Không được để trống");
+        if (mauSac.getMa().isEmpty()) {
+            model.addAttribute("errorma", "Mã màu không được để trống");
             return "admin/QLSP/ADD/AddMS";
         }
-        if(mauSacRepsitory.existsMauSacByMa(mauSac.getMa())){
-            model.addAttribute("errorma","Mã đã tồn tại");
+
+        if (mauSacRepsitory.existsMauSacByMa(mauSac.getMa())) {
+            model.addAttribute("errorma", "Mã màu đã tồn tại");
             return "admin/QLSP/ADD/AddMS";
         }
-        if(mauSac.getTen().isEmpty() || mauSac.getMa().isEmpty()){
-            model.addAttribute("errorten","Không được để trống");
-            return "admin/QLSP/ADD/AddMS";
-        }else if (!tenmsMatcher.matches()) {
-            model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
+
+        if (mauSac.getTen().isEmpty()) {
+            model.addAttribute("errorten", "Tên màu không được để trống");
             return "admin/QLSP/ADD/AddMS";
         }
-        if(mauSacRepsitory.existsMauSacByTen(mauSac.getTen())){
-            model.addAttribute("errorten","Tên đã tồn tại");
+
+        if (!tenmsMatcher.matches()) {
+            model.addAttribute("errorten", "Tên màu chỉ được chứa chữ và số");
             return "admin/QLSP/ADD/AddMS";
         }
+
+        if (mauSacRepsitory.existsMauSacByTen(mauSac.getTen())) {
+            model.addAttribute("errorten", "Tên màu đã tồn tại");
+            return "admin/QLSP/ADD/AddMS";
+        }
+
         mauSac.setNgaytao(LocalDate.now());
         mauSacRepsitory.save(mauSac);
-        redirectAttributes.addFlashAttribute("Add","Thêm thành công");
 
-
-        return "/admin/QLSP/MauSac";
+        redirectAttributes.addFlashAttribute("Add", "Thêm màu sắc thành công");
+        return "redirect:/panda/mausac/hienthi";
     }
 
     @GetMapping("/viewadd")
