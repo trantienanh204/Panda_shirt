@@ -3,46 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 <body th:fragment="kichthuoc">
 <h2>Kích Thước</h2>
 <div class="filter-container">
-
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
+    <div class="filter-inputs">
+        <div class="filter-input">
+            <label for="status">Trạng thái:</label>
+            <select id="status">
                 <option value="">-- Chọn trạng thái --</option>
-                <th:block>
-                    <option th:value="0">Hoạt động</option>
-                    <option th:value="1">Ngừng hoạt động</option>
-                </th:block>
-
+                <option th:value="0">Hoạt động</option>
+                <option th:value="1">Ngừng hoạt động</option>
             </select>
         </div>
-        <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
-        </div>
+    </div>
+    <div class="filter-buttons">
+        <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
+        <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
     </div>
 </div>
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
-
     <a th:href="@{/panda/kichthuoc/viewadd}" class="btn btn-success ">
         <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
     </a>
-
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
-
+</div>
+<div class="table-container">
+    <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách kích thước</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Mã kích thước</th>
+            <th>Tên kích thước</th>
             <th>Ngày tạo</th>
-        <tr th:each="kt,i :${listkt}">
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="kt, i : ${listkt}">
             <td th:text="${i.count}"></td>
             <td th:text="${kt.ma}"></td>
             <td th:text="${kt.ten}"></td>
-            <td th:text="${kt.ngaytao != null? #temporals.format(kt.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:text="${kt.ngaytao != null ? #temporals.format(kt.ngaytao, 'dd/MM/yyyy') : 'chưa có'}"></td>
             <td th:if="${kt.trangthai} == true">
                 <span class="status-label status-green"
                       th:text="${kt.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
@@ -53,31 +61,26 @@
                       th:text="${kt.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
-
-            <td>
+            <td class="action-icons">
                 <a th:href="@{/panda/kichthuoc/update/{id} (id=${kt.id})}">
                     <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
                 </a>
                 <a th:href="@{/panda/kichthuoc/remove/{id} (id=${kt.id})}">
-                    <i th:if="${kt.trangthai == true}">
-                        <i class="fa-solid fa-toggle-on" style="color: #00040a;">
-                        </i>
+                    <i th:if="${kt.trangthai}">
+                        <i class="fa-solid fa-toggle-on" style="color: #00040a;"></i>
                     </i>
-                    <i th:if="${kt.trangthai == false}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
-                        </i>
+                    <i th:if="${!kt.trangthai}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;"></i>
                     </i>
                 </a>
-
             </td>
         </tr>
         </tbody>
     </table>
-
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:if="${currentPage > 1}">
-                <a class="page-link" href="#" th:href="@{'?pageNo='+${currentPage-1}}" aria-label="Previous">
+                <a class="page-link" th:href="@{'?pageNo=' + ${currentPage - 1}}" aria-label="Previous">
                     <span aria-hidden="true"> << </span>
                 </a>
             </li>
@@ -85,20 +88,24 @@
                 <a class="page-link" href="#" th:text="${currentPage}" disabled></a>
             </li>
             <li class="page-item" th:if="${currentPage < totalPage}">
-                <a th:href="@{'?pageNo='+${currentPage+1}}" class="page-link" href="#" aria-label="Next">
+                <a class="page-link" th:href="@{'?pageNo=' + ${currentPage + 1}}" aria-label="Next">
                     <span aria-hidden="true"> >> </span>
                 </a>
             </li>
         </ul>
     </nav>
 </div>
-<!--thông báo-->
-<div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
-     th:if="${UpdateStatusMessage != null}"><i class="fa-solid fa-circle-check"></i></div>
-<div class="custom-alert success" id="statusMessage" th:text="${Add}"
-     th:if="${Add != null}"><i class="fa-solid fa-circle-check"></i></div>
-<div class="custom-alert success" id="statusMessage" th:text="${Update}"
-     th:if="${Update != null}"><i class="fa-solid fa-circle-check"></i></div>
+
+<!-- Thông báo -->
+<div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}" th:if="${UpdateStatusMessage != null}">
+    <i class="fa-solid fa-circle-check"></i>
+</div>
+<div class="custom-alert success" id="statusMessage" th:text="${Add}" th:if="${Add != null}">
+    <i class="fa-solid fa-circle-check"></i>
+</div>
+<div class="custom-alert success" id="statusMessage" th:text="${Update}" th:if="${Update != null}">
+    <i class="fa-solid fa-circle-check"></i>
+</div>
 
 <style>
     * {
@@ -136,7 +143,6 @@
 
     .filter-input label {
         margin-bottom: 5px;
-
         font-weight: bold;
     }
 
@@ -234,23 +240,17 @@
 
     .custom-alert.show {
         opacity: 1;  /* Hiển thị thông báo */
-        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+        visibility: visible;  /* Đặt lại thành hiển thị */
     }
 </style>
 <script>
-    // Sau khi trang load xong
-    window.onload = function() {
-        var statusMessage = document.getElementById('statusMessage');
-        if (statusMessage) {
-            statusMessage.classList.add('show');
-            // Tự động ẩn sau 5 giây (5000ms)
-            setTimeout(function() {
-                statusMessage.style.display = 'none';
-            }, 5000);
-        }
-    };
+    // Tự động ẩn thông báo sau 3 giây
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.custom-alert');
+        alerts.forEach(alert => {
+            alert.classList.remove('show');
+        });
+    }, 3000);
 </script>
-
-
 </body>
 </html>

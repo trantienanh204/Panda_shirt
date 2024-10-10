@@ -1,7 +1,8 @@
 package com.example.demo.Controller.login;
 
-import com.example.demo.Repository.NhanVienRepository;
+
 import com.example.demo.entity.NhanVien;
+import com.example.demo.respository.nhanvienRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class LoginController {
 
     @Autowired
-    NhanVienRepository nhanVienRepository ;
+    nhanvienRepository nhanVienRepository ;
 
     NhanVien nv = new NhanVien();
     @Autowired

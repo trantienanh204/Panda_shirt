@@ -3,7 +3,7 @@ package com.example.demo.Controller.quenmatkhau;
 
     import com.example.demo.entity.NhanVien;
     import com.example.demo.service.QuenmatkhauService;
-    import jakarta.mail.MessagingException;
+
     import jakarta.servlet.http.HttpSession;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Controller;

@@ -18,10 +18,10 @@ public class SanPhamChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "ANH_SAN_PHAM_CHI_TIET")
-
-    private String anh_san_pham_chi_tiet;
+//
+//    @Column(name = "ANH_SAN_PHAM_CHI_TIET")
+//
+//    private String anh_san_pham_chi_tiet;
 
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
     private int so_luong_san_pham;

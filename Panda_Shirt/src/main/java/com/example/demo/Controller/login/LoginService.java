@@ -1,8 +1,8 @@
 package com.example.demo.Controller.login;
 
-import com.example.demo.Repository.NhanVienRepository;
 import com.example.demo.entity.NhanVien;
 
+import com.example.demo.respository.nhanvienRepository;
 import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +16,11 @@ import java.util.Optional;
 public class LoginService {
 
 
-    private final NhanVienRepository nhanvienRepository;
+    private final nhanvienRepository nhanvienRepository;
 
     public List<NhanVien> listk;
 
-    public LoginService(NhanVienRepository nhanvienRepository) {
+    public LoginService(nhanvienRepository nhanvienRepository) {
         this.nhanvienRepository = nhanvienRepository;
     }
 

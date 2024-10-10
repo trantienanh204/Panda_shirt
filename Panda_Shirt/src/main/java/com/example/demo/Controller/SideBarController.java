@@ -70,12 +70,12 @@ public class SideBarController {
 //        return "/admin/QLSP/CoAo";
 //    }
 
-    @GetMapping("/danhmuc")
-    public String danhmuc(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/DanhMuc";
-    }
+//    @GetMapping("/danhmuc")
+//    public String danhmuc(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/DanhMuc";
+//    }
 
 //    @GetMapping("/chatlieu")
 //    public String chatlieu(Model model) {
@@ -84,17 +84,17 @@ public class SideBarController {
 //        return "/admin/QLSP/ChatLieu";
 //    }
 
-    @GetMapping("/nsx")
-    public String nsx(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/NSX";
-    } @GetMapping("/thuonghieu")
-    public String thuonghieu(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/ThuongHieu";
-    }
+//    @GetMapping("/nsx")
+//    public String nsx(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/NSX";
+//    } @GetMapping("/thuonghieu")
+//    public String thuonghieu(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/ThuongHieu";
+//    }
 
 
     //          QLGG ====================

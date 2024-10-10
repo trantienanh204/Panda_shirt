@@ -26,7 +26,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
-    nhanvienRepository nhanvienRepository;
+   nhanvienRepository nhanvienRepository;
     // mã hóa mật khẩu
     @Bean
     public PasswordEncoder getPasswordEncoder(){
@@ -48,7 +48,7 @@ public class SecurityConfig {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                NhanVien nv = nhanVienRepository.findByTentaikhoan(username)
+                NhanVien nv = nhanvienRepository.findByTentaikhoan(username)
                         .orElseThrow(() -> new UsernameNotFoundException(username + " not found!"));
 
                 String password = nv.getMatkhau(); // Lấy mật khẩu

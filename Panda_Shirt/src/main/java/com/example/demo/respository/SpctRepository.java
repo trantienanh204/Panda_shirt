@@ -11,14 +11,14 @@ import java.util.List;
 @Repository
 public interface SpctRepository extends JpaRepository<SanPhamChiTiet,Integer> {
 
-    @Query("SELECT spct FROM SanPhamChiTiet spct " +
-            "JOIN spct.sanPham sp " +
-            "JOIN spct.mauSac ms " +
-            "WHERE spct.sanPham.id = :idSanPham " +
-            "AND spct.mauSac.id = :idMauSac " +
-            "AND spct.anhsanpham IS NULL")
-    List<SanPhamChiTiet> findBySanPhamAndMauSac(@Param("idSanPham") Integer idSanPham,
-                                                @Param("idMauSac") Integer idMauSac);
-
-    List<SanPhamChiTiet> findBySanPham_Id(int id);
+//    @Query("SELECT spct FROM SanPhamChiTiet spct " +
+//            "JOIN spct.sanPham sp " +
+//            "JOIN spct.mauSac ms " +
+//            "WHERE spct.sanPham.id = :idSanPham " +
+//            "AND spct.mauSac.id = :idMauSac " +
+//            "AND spct.anhsanpham IS NULL")
+//    List<SanPhamChiTiet> findBySanPhamAndMauSac(@Param("idSanPham") Integer idSanPham,
+//                                                @Param("idMauSac") Integer idMauSac);
+//
+//    List<SanPhamChiTiet> findBySanPham_Id(int id);
 }
