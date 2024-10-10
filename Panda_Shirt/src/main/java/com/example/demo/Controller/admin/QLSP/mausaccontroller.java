@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/panda/mausac")
-public class MauSacController {
+public class mausaccontroller {
     @Autowired
     MauSacRepsitory mauSacRepsitory;
     @Autowired
