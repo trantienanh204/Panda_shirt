@@ -42,8 +42,8 @@ public class Voucher {
     private String dieuKien;
 
 
-    @Column(name = "MA_AP_DUNG")
-    private String maApDung;
+//    @Column(name = "MA_AP_DUNG")
+//    private String maApDung;
 
     @Column(name = "NGAY_BAT_DAU")
     private LocalDate ngaybatdau;
@@ -53,4 +53,10 @@ public class Voucher {
 
     @Column(name = "TRANG_THAI")
     private boolean trangThai;
+
+    @Column(name = "NGAY_TAO")
+    private LocalDate ngaytao;
+
+    @Column(name = "NGAY_SUA")
+    private LocalDate ngaysua;
 }

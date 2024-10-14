@@ -24,22 +24,22 @@ public class SanPhamChiTiet {
 //    private String anh_san_pham_chi_tiet;
 
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
-    private int so_luong_san_pham;
+    private int soluongsanpham;
 
     @Column(name = "DON_GIA")
-    private Double don_gia;
+    private Double dongia;
 
     @Column(name = "MO_TA")
-    private String mo_ta;
+    private String mota;
 
     @Column(name = "NGAY_TAO")
-    private LocalDate ngay_tao;
+    private LocalDate ngaytao;
 
     @Column(name = "NGAY_SUA")
-    private LocalDate ngay_sua;
+    private LocalDate ngaysua;
 
     @Column(name = "TRANG_THAI")
-    private boolean trang_thai;
+    private boolean trangthai;
 
 
     @OneToOne

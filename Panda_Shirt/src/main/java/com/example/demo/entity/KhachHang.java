@@ -45,6 +45,8 @@ public class KhachHang {
     private String ngaytao;
     @Column(name = "NGAY_SUA")
     private String ngaysua;
+    @Column(name = "GIOI_TINH")
+    private String gioitinh;
     @ManyToOne
     @JoinColumn(name = "ID_TINH_THANH_PHO")
     private Tinh_TP tinh_tp;

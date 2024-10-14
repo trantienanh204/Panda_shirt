@@ -54,6 +54,8 @@ public class NhanVien implements Serializable {
     @Column(name = "NGAY_SUA")
     private String ngaysua;
 
+    @Column(name = "GIOI_TINH")
+    private String gioitinh;
 
     @JsonIgnore
     @OneToMany(mappedBy = "nhanVien")

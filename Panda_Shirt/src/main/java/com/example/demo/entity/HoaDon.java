@@ -59,4 +59,8 @@ public class HoaDon {
     @ManyToOne
     @JoinColumn(name = "ID_KHACH_HANG",referencedColumnName = "id")
     private KhachHang khachHang;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_VOUCHER",referencedColumnName = "id")
+    private Voucher voucher;
 }
