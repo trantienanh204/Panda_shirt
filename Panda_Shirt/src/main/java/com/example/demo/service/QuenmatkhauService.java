@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -71,9 +72,11 @@ public class QuenmatkhauService {
         return macapchaList.containsKey(taikhoan) && macapchaList.get(taikhoan).equals(capchaCheck);
     }
 
-    public NhanVien timkiemnhanvien(String taikhoan){
-        return nhanvienRepository.findByTentaikhoan(taikhoan);
+    public NhanVien timkiemnhanvien(String taikhoan) {
+        return nhanvienRepository.findByTentaikhoan(taikhoan)
+                .orElseThrow(() -> new UsernameNotFoundException(taikhoan + " not found!"));
     }
+
 
     public boolean sendEmail( String toEmail) {
         boolean checkemil = false;

@@ -10,7 +10,8 @@
 <!-- Bộ lọc -->
 <h2>Giảm Giá</h2>
 <div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
+    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+    <hr>
     <div class="filter-inputs">
         <div class="filter-input">
             <label for="title-author">Tên voucher</label>
@@ -31,7 +32,7 @@
         <div class="filter-input">
             <label for="period">Trạng thái</label>
             <select id="period">
-                <option value="month">-- Chọn trạng thaí -- </option>
+                <option value="month">-- Chọn trạng thaí --</option>
             </select>
         </div>
     </div>
@@ -43,9 +44,12 @@
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
-    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
+    <a th:href="@{/panda/voucher/viewadd}" class="btn btn-success ">
         <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
-    </button>
+    </a>
+    <a data-bs-toggle="modal" data-bs-target="#add" class="btn btn-success ">
+        <i class="fa-regular fa-paper-plane" style="color: #fcfcfc; top: 20px"></i>
+    </a>
 </div>
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách giảm giá</h3>
@@ -58,7 +62,8 @@
             <th>Số lượng</th>
             <th>Mức giảm</th>
             <th>Loại</th>
-            <th>Mã áp dụng</th>
+            <th>Ngày tạo</th>
+            <th>Ngày sửa</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
@@ -68,28 +73,246 @@
             <td th:text="${i.count}"></td>
             <td th:text="${vc.ma}"></td>
             <td th:text="${vc.ten}"></td>
-            <td th:text="${vc.soLuong}">Số lượng</td>
-            <td th:text="${vc.mucGiam}">Mức giảm</td>
-            <td th:text="${vc.loai == true ? '%':'Vnd'}">Loại</td>
-            <td th:text="${vc.maApDung}">Mã áp dụng</td>
-            <td th:if="${vc.trangThai} == true">
+            <td th:text="${vc.soLuong}"></td>
+            <td th:text="${vc.formattedMucGiam}"></td>
+            <td th:text="${vc.loai == true ? '%':'VND'}"></td>
+            <td th:text="${vc.ngaytao != null ? #temporals.format(vc.ngaytao, 'dd/MM/yyyy') : ''}"></td>
+            <td th:text="${vc.ngaysua != null ? #temporals.format(vc.ngaysua, 'dd/MM/yyyy') : ''}"></td>
+            <td th:if="${vc.trangThai == 'Đang hoạt động'}">
                 <span class="status-label status-green"
-                      th:text="${vc.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${vc.trangThai}">
                 </span>
             </td>
-            <td th:if="${vc.trangThai} == false ">
+            <td th:if="${vc.trangThai == 'Sắp hoạt động'}">
                 <span class="status-label status-orange"
-                      th:text="${vc.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${vc.trangThai}">
                 </span>
             </td>
+            <td th:if="${vc.trangThai == 'Hết hạn'}">
+                <span class="status-label status-red"
+                      th:text="${vc.trangThai}">
+                </span>
+            </td>
+
             <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
+                <a th:href="@{/panda/voucher/update/{id} (id=${vc.id})}">
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
+                </a>
+<!--                <a th:if="${vc.trangThai}=='Sắp hoạt động' or ${vc.trangThai}=='Đang hoạt động'" data-bs-toggle="modal" data-bs-target="#add">-->
+<!--                    <i class="fa-regular fa-paper-plane" style="color: #000000;font-size: 25px"></i>-->
+<!--                </a>-->
             </td>
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link" th:href="@{'?pageNo=' + ${currentPage - 1}}" aria-label="Previous">
+                    <span aria-hidden="true"> << </span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#" th:text="${currentPage}" disabled></a>
+            </li>
+            <li class="page-item" th:if="${currentPage < totalPage}">
+                <a class="page-link" th:href="@{'?pageNo=' + ${currentPage + 1}}" aria-label="Next">
+                    <span aria-hidden="true"> >> </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
+<div class="modal fade" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    <i class="fa-solid fa-list" style="color: #000000;"></i>
+                    Danh sách khách hàng
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <button id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Chọn tất cả</button>
+                <div class="search-container">
+                    <input type="text" id="modalSearchInput" placeholder="Tìm kiếm khách hàng..." class="search-box">
+                    <button class="btn btn-primary" onclick="searchInModal()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                </div>
+                <div class="form-group">
+                    <label for="voucherId">Chọn Voucher</label>
+                    <select class="form-control" id="voucherId" name="voucherId">
+                        <option value="" disabled selected>-- Chọn Voucher --</option>
+                        <tr th:each="voucher : ${chonmavc}"> <!-- Giả sử bạn đã có danh sách voucher -->
+                            <option th:value="${voucher.id}" th:text="${voucher.ma}"></option>
+                        </tr>
+                    </select>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tên khách hàng</th>
+                        <th>Email</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="kh,i: ${listkh}">
+                        <td>
+                            <input class="form-check-input" type="checkbox" value="" id="checkbox${i.count}">
+                        </td>
+                        <td th:text="${kh.tenkhachhang }"></td>
+                        <td th:text="${kh.tentaikhoan}"></td>
+                        <td th:if="${kh.trangthai} == true">
+                            <span class="status-label status-green"
+                                  th:text="${kh.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                            </span>
+                        </td>
+                        <td th:if="${kh.trangthai} == false ">
+                            <span class="status-label status-orange"
+                                  th:text="${kh.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="sendEmailBtn">Gửi</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
+     th:if="${UpdateStatusMessage != null}"><i class="fa-solid fa-circle-check"></i></div>
+<div class="custom-alert success" id="statusMessage" th:text="${Add}"
+     th:if="${Add != null}"><i class="fa-solid fa-circle-check"></i></div>
+<div class="custom-alert success" id="statusMessage" th:text="${Update}"
+     th:if="${Update != null}"><i class="fa-solid fa-circle-check"></i></div>
+<!--// Thông báo-->
+<script>
+
+    // Sau khi trang load xong
+    window.onload = function () {
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function () {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
+<!--Chọn ô checkbox trong modal-->
+<script>
+    function toggleSelectAll() {
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+        checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
+
+        // Đổi nội dung nút sau khi bấm
+        selectAllBtn.textContent = allChecked ? 'Chọn tất cả' : 'Bỏ chọn tất cả';
+    }
+
+</script>
+<!--//tìm kiếm trong modal -->
+<script>
+    function searchInModal() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("modalSearchInput");
+        filter = input.value.toUpperCase();
+        table = document.querySelector(".modal-body table");
+        tr = table.getElementsByTagName("tr");
+
+        // Lặp qua tất cả các hàng, ẩn những hàng không khớp với tìm kiếm
+        for (i = 1; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+<!--xử lý email -->
+<script>
+    document.getElementById('sendEmailBtn').addEventListener('click', function() {
+        const selectedKhachHangList = [];
+        const checkboxes = document.querySelectorAll('.form-check-input:checked');
+
+        checkboxes.forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            const khachHang = {
+                tenkhachhang: row.querySelector('td:nth-child(2)').innerText,
+                tentaikhoan: row.querySelector('td:nth-child(3)').innerText
+            };
+            console.log(khachHang);
+            selectedKhachHangList.push(khachHang);
+        });
+
+        const voucherId = document.getElementById('voucherId').value;
+
+        // Kiểm tra xem có khách hàng nào được chọn và mã voucher không
+        if (selectedKhachHangList.length === 0 || !voucherId) {
+            alert("Vui lòng chọn ít nhất một khách hàng và một mã voucher.");
+            return;
+        }
+
+        // Gửi dữ liệu qua API
+        fetch('/api/sendemails', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                voucherId: voucherId,
+                khachHangList: selectedKhachHangList
+            })
+        })
+            .then(response => {
+                // Kiểm tra nếu phản hồi không phải JSON
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return response.json(); // Nếu là JSON, parse dữ liệu như bình thường
+                } else {
+                    return response.text(); // Nếu không phải JSON, trả về text
+                }
+            })
+            .then(data => {
+                if (typeof data === 'string') {
+                    alert(data); // Xử lý khi dữ liệu trả về là chuỗi văn bản
+                } else {
+                    alert('Email đã được gửi thành công');
+                }
+                $('#add').modal('hide'); // Đóng modal
+
+                document.getElementById('voucherId').value = ''; // Reset dropdown voucher
+                checkboxes.forEach(checkbox => checkbox.checked = false); // Bỏ chọn tất cả các checkbox
+                document.getElementById('modalSearchInput').value = ''; // Xóa nội dung tìm kiếm
+                const rows = document.querySelectorAll('.modal-body table tr');
+                rows.forEach(row => row.style.display = ''); // Hiển thị lại tất cả các hàng trong bảng
+
+            })
+            .catch(error => {
+                alert('Lỗi: ' + error.message);
+                console.error('Error:', error);
+            });
+
+    });
+
+</script>
+
+
+<!--Css-->
 <style>
     * {
         box-sizing: border-box;
@@ -199,10 +422,28 @@
     .status-orange {
         background-color: #ff9800;
     }
+    .status-red {
+        background-color: #dc3545;
+    }
 
-    .action-icons {
-        display: flex;
-        justify-content: center;
+    .custom-alert {
+        position: fixed;
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        background-color: #4CAF50; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt thông báo là có thể nhìn thấy */
     }
 
     .action-icons i {
@@ -210,6 +451,30 @@
         margin: 0 5px;
         cursor: pointer;
     }
+    /* CSS cho ô checkbox */
+    .form-check-input {
+        transform: scale(1.5); /* Tùy chọn để làm checkbox lớn hơn một chút */
+        margin-top: -12px;
+        margin-left: 2px;
+
+    }/* CSS cho ô tìm kiếm trong modal */
+    .search-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .search-box {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 200px;
+        margin-right: 10px;
+    }
+
+
 </style>
+
+
 </body>
 </html>

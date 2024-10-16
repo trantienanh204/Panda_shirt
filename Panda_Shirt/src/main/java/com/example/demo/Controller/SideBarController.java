@@ -1,7 +1,9 @@
 package com.example.demo.Controller;
 
 
+import com.example.demo.entity.ChatLieu;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/panda")
 public class SideBarController {
 
+//    @Autowired
+//    ChatLieuService chatLieuService;
 
     @GetMapping("/hienthi")
     public String hienthi(Model model) {
@@ -26,6 +30,7 @@ public class SideBarController {
 //    "redirect:/thongke/hienthi" (Xem lại dự án xưởng nếu quên)
 
     //    QLSP===================
+
     @GetMapping("/sanpham")
     public String sanpham(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
@@ -34,7 +39,6 @@ public class SideBarController {
     }
 
     @GetMapping("/sanpham/add")
-
     public String ctsp(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
@@ -46,10 +50,12 @@ public class SideBarController {
         model.addAttribute("role", role);
         return "redirect:/panda/mausac/hienthi";
     }
+
     @GetMapping("/kichthuoc")
     public String kichthuoc(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
+
         return "redirect:/panda/kichthuoc/hienthi";
     }
 //    @GetMapping("/coao")
@@ -59,12 +65,12 @@ public class SideBarController {
 //        return "/admin/QLSP/CoAo";
 //    }
 
-    @GetMapping("/danhmuc")
-    public String danhmuc(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/DanhMuc";
-    }
+//    @GetMapping("/danhmuc")
+//    public String danhmuc(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/DanhMuc";
+//    }
 
     @GetMapping("/chatlieu")
     public String chatlieu(Model model) {
@@ -73,24 +79,25 @@ public class SideBarController {
         return "redirect:/panda/chatlieu/hienthi";
     }
 
-    @GetMapping("/nsx")
-    public String nsx(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/NSX";
-    } @GetMapping("/thuonghieu")
-    public String thuonghieu(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLSP/ThuongHieu";
-    }
+//    @GetMapping("/nsx")
+//    public String nsx(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/NSX";
+//    } @GetMapping("/thuonghieu")
+//    public String thuonghieu(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/QLSP/ThuongHieu";
+//    }
+
 
     //          QLGG ====================
     @GetMapping("/giamgia")
     public String giamgia(Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        return "redirect:/panda/giamgia/hienthi";
+        return "redirect:/panda/voucher/hienthi";
     }
     //      QLTK ===================
 

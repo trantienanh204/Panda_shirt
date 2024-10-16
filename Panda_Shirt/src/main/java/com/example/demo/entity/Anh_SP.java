@@ -35,4 +35,5 @@ public class Anh_SP {
     @ManyToOne
     @JoinColumn(name = "ID_MAU_SAC",referencedColumnName = "id")
     private MauSac mauSac;
+
 }

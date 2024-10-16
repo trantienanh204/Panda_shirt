@@ -3,22 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 </head>
 <body th:fragment="kichthuoc">
 <h2>Kích Thước</h2>
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
+    <div class="filter-inputs">
+        <div class="filter-input">
+            <label for="title-author">Tên màu sắc</label>
+            <input type="text" id="title-author" placeholder="Tên màu sắc">
+        </div>
+        <div class="filter-input">
+            <label for="period">Trạng thái</label>
+            <select id="period">
                 <option value="">-- Chọn trạng thái --</option>
+                <!-- Lặp qua danh sách trạng thái từ server -->
                 <th:block>
                     <option th:value="0">Hoạt động</option>
                     <option th:value="1">Ngừng hoạt động</option>
                 </th:block>
             </select>
         </div>
+
         <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
+            <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right"
+                                                                          style="color: #ffffff;"></i> Làm mới</a>
             <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
         </div>
     </div>
@@ -43,12 +54,14 @@
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
-        <tr th:each="kt,i :${listkt}">
+        </thead>
+        <tbody>
+        <tr th:each="kt, i : ${listkt}">
             <td th:text="${i.count}"></td>
             <td th:text="${kt.ma}"></td>
             <td th:text="${kt.ten}"></td>
-            <td th:text="${kt.ngaytao != null? #temporals.format(kt.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
-            <td th:text="${kt.ngaysua != null? #temporals.format(kt.ngaysua, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:text="${kt.ngaytao != null ? #temporals.format(kt.ngaytao, 'dd/MM/yyyy') : 'chưa có'}"></td>
+            <td th:text="${kt.ngaysua != null ? #temporals.format(kt.ngaysua, 'dd/MM/yyyy') : 'chưa có'}"></td>
             <td th:if="${kt.trangthai} == true">
                 <span class="status-label status-green"
                       th:text="${kt.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
@@ -59,19 +72,16 @@
                       th:text="${kt.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
-
-            <td>
+            <td class="action-icons">
                 <a th:href="@{/panda/kichthuoc/update/{id} (id=${kt.id})}">
                     <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
                 </a>
                 <a th:href="@{/panda/kichthuoc/remove/{id} (id=${kt.id})}">
-                    <i th:if="${kt.trangthai == true}">
-                        <i class="fa-solid fa-toggle-on" style="color: #00040a;">
-                        </i>
+                    <i th:if="${kt.trangthai}">
+                        <i class="fa-solid fa-toggle-on" style="color: #00040a;"></i>
                     </i>
-                    <i th:if="${kt.trangthai == false}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
-                        </i>
+                    <i th:if="${!kt.trangthai}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;"></i>
                     </i>
                 </a>
             </td>
@@ -81,7 +91,7 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:if="${currentPage > 1}">
-                <a class="page-link" href="#" th:href="@{'?pageNo='+${currentPage-1}}" aria-label="Previous">
+                <a class="page-link" th:href="@{'?pageNo=' + ${currentPage - 1}}" aria-label="Previous">
                     <span aria-hidden="true"> << </span>
                 </a>
             </li>
@@ -89,14 +99,15 @@
                 <a class="page-link" href="#" th:text="${currentPage}" disabled></a>
             </li>
             <li class="page-item" th:if="${currentPage < totalPage}">
-                <a th:href="@{'?pageNo='+${currentPage+1}}" class="page-link" href="#" aria-label="Next">
+                <a class="page-link" th:href="@{'?pageNo=' + ${currentPage + 1}}" aria-label="Next">
                     <span aria-hidden="true"> >> </span>
                 </a>
             </li>
         </ul>
     </nav>
 </div>
-<!--thông báo-->
+
+<!-- Thông báo -->
 <div class="custom-alert success" id="statusMessage" th:text="${UpdateStatusMessage}"
      th:if="${UpdateStatusMessage != null}"><i class="fa-solid fa-circle-check"></i></div>
 <div class="custom-alert success" id="statusMessage" th:text="${Add}"
@@ -104,6 +115,19 @@
 <div class="custom-alert success" id="statusMessage" th:text="${Update}"
      th:if="${Update != null}"><i class="fa-solid fa-circle-check"></i></div>
 
+<script>
+    // Sau khi trang load xong
+    window.onload = function() {
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
 <style>
     * {
         box-sizing: border-box;
@@ -140,7 +164,6 @@
 
     .filter-input label {
         margin-bottom: 5px;
-
         font-weight: bold;
     }
 
@@ -214,44 +237,41 @@
     .status-orange {
         background-color: #ff9800;
     }
+
     .action-icons i {
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
     }
+
     .custom-alert {
         position: fixed;
-        top: 20px;  /* Cách từ đỉnh */
-        right: 20px;  /* Cách từ bên phải */
-        background-color: #4CAF50;  /* Màu nền thông báo thành công */
-        color: white;  /* Màu chữ */
-        padding: 15px;  /* Padding xung quanh */
-        border-radius: 5px;  /* Bo góc */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
-        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
-        opacity: 0;  /* Ban đầu ẩn */
-        visibility: hidden;  /* Không hiển thị */
-        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        background-color: #4CAF50; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
     }
 
     .custom-alert.show {
-        opacity: 1;  /* Hiển thị thông báo */
-        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt lại thành hiển thị */
     }
 </style>
 <script>
-    // Sau khi trang load xong
-    window.onload = function() {
-        var statusMessage = document.getElementById('statusMessage');
-        if (statusMessage) {
-            statusMessage.classList.add('show');
-            // Tự động ẩn sau 5 giây (5000ms)
-            setTimeout(function() {
-                statusMessage.style.display = 'none';
-            }, 5000);
-        }
-    };
+    // Tự động ẩn thông báo sau 3 giây
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.custom-alert');
+        alerts.forEach(alert => {
+            alert.classList.remove('show');
+        });
+    }, 3000);
 </script>
-
 </body>
 </html>

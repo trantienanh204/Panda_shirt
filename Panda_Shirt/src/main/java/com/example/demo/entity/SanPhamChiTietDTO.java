@@ -1,0 +1,23 @@
+package com.example.demo.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class SanPhamChiTietDTO {
+    private String mauSac; // Màu sắc (dạng tên, ví dụ: "Đỏ", "Xanh")
+    private String kichThuoc; // Kích thước (dạng tên, ví dụ: "S", "M", "L")
+    private Double gia; // Giá sản phẩm
+    private Integer soLuong; // Số lượng sản phẩm
+    private Long idSanPham; // ID của sản phẩm
+}
+
+
+

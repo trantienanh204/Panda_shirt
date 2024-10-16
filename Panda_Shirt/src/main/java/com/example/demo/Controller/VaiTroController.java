@@ -17,7 +17,6 @@ public class VaiTroController {
     @PostMapping("/chia_role")
     public String switchRole(@RequestParam("role") String role, Model model) {
         model.addAttribute("role", role);
-
         // Điều hướng tới các trang tương ứng với từng role
         if ("admin".equals(role)) {
             return "redirect:/admin/SanPham"; // Admin: chuyển đến trang sản phẩm
