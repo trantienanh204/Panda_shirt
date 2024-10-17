@@ -53,6 +53,10 @@ public class mausaccontroller {
             model.addAttribute("errorma", "Mã màu không được để trống");
             return "admin/QLSP/ADD/AddMS";
         }
+        if (mauSac.getMa() == null || mauSac.getMa().length() < 5 || mauSac.getMa().length() > 14) {
+            model.addAttribute("errorma", "Mã phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
+            return "admin/QLSP/ADD/AddMS";
+        }
         if (mauSacRepsitory.existsMauSacByMa(mauSac.getMa())) {
             model.addAttribute("errorma", "Mã màu đã tồn tại");
             return "admin/QLSP/ADD/AddMS";
@@ -128,6 +132,10 @@ public class mausaccontroller {
 
         if(mauSac.getMa().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
+            return "admin/QLSP/UPDATE/UpdateMS";
+        }
+        if (mauSac.getMa() == null || mauSac.getMa().length() < 5 || mauSac.getMa().length() > 14) {
+            model.addAttribute("errorma", "Mã phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
         if(findma != null){

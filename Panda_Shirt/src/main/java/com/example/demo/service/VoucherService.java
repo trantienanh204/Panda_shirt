@@ -44,21 +44,4 @@ public class VoucherService {
         }
     }
 
-
-    // Mẫu email gửi cho khách hàng
-//    public void sendVoucherEmails(List<KhachHang> khachHangs, Voucher voucher) {
-//        for (KhachHang customer : khachHangs) {
-//            String subject = "Mã giảm giá đặc biệt cho bạn!";
-//            String text = "Chào " + customer.getTenkhachhang() + ",\n\n" +
-//                    "Dưới đây là mã giảm giá đặc biệt dành cho bạn: \n" +
-//                    "Mã giảm giá: " + voucher.getMa() + "\n" +
-//                    "Tên giảm giá: " + voucher.getTen() + "\n" +
-//                    "Điều kiện giảm giá: " + voucher.getDieuKien() + "\n" +
-//                    "Mức giảm: " + voucher.getMucGiam() + " " + (voucher.isLoai() ? "%" : "VND") + "\n\n" +
-//                    "Hạn sử dụng: Từ ngày " + voucher.getNgaybatdau() + "Đến ngày "+ voucher.getNgayketthuc() + "\n" +
-//                    "Cảm ơn bạn đã ủng hộ chúng tôi!";
-//
-//            voucherEmail.sendVoucherEmails(customer.getTentaikhoan(), String voucherid);
-//        }
-//    }
 }

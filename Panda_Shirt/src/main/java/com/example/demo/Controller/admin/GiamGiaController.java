@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,7 +37,7 @@ public class GiamGiaController {
         voucherService.updateVoucherStatus();
 //        Phân trang
         Pageable pageable = PageRequest.of(pageNo - 1, 3);
-        Page<Voucher> listVC = voucherRepository.findAll(pageable);
+        Page<Voucher> listVC = voucherRepository.listvoucher(pageable);
         model.addAttribute("totalPage", listVC.getTotalPages());
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("listvc", listVC);
