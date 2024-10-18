@@ -115,6 +115,14 @@
             <a class="nav-link" th:href="@{/panda/nhanvien/duyetdon}">
                 <i class="fas fa-check" style="color: #ffffff;"></i> Đuyệt đơn</a>
         </li>
+        <li th:if="${role == 'nhanvien'}" class="nav-item">
+            <a class="nav-link" th:href="@{/panda/nhanvien/tkkhachhang}">
+                <i class="fa-solid fa-users" style="color: #ffffff;"></i> Tài khoản khách hàng</a>
+        </li>
+        <li th:if="${role == 'nhanvien'}" class="nav-item">
+            <a class="nav-link" th:href="@{/panda/nhanvien/xemhoadon}">
+                <i class="fa-solid fa-file-invoice" style="color: #ffffff;"></i> Hóa đơn</a>
+        </li>
 
     </ul>
 </div>
@@ -132,7 +140,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Tôi</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                            <li><a class="dropdown-item" th:href="@{/panda/vaitro}">Đăng xuất</a></li>
                         </ul>
                     </li>
                 </ul>

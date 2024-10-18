@@ -141,24 +141,30 @@ public class SideBarController {
     public String banhang(Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        return "/nhanvien/BanHang";
+        return "redirect:/panda/nhanvien/banhang/hienthi";
     }
     @GetMapping("/nhanvien/duyetdon")
     public String duyetdon(Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        return "/nhanvien/DuyetDon";
+        return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
     @GetMapping("/nhanvien/xemsanpham")
     public String xemsp(Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        return "/nhanvien/XemSanPham";
+        return "redirect:/panda/nhanvien/xemsanpham/hienthi";
     }
-    @GetMapping("/nhanvien/xemctsp")
+    @GetMapping("/nhanvien/tkkhachhang")
     public String xemctsp(Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        return "/nhanvien/XemCTSP";
+        return "redirect:/panda/nhanvien/tkkhachhang/hienthi";
+    }
+    @GetMapping("/nhanvien/xemhoadon")
+    public String xemhd(Model model) {
+        String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
+        model.addAttribute("role", role);
+        return "redirect:/panda/nhanvien/xemhoadon/hienthi";
     }
 }
