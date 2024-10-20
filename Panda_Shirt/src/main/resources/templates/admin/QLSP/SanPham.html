@@ -254,15 +254,15 @@
 
 <script>
     jQuery(document).ready(function($) {
-        var currentPage = 0;  // Khởi tạo trang hiện tại
-        var pageSize = 5;  // Kích thước trang
+        var currentPage = 0;
+        var pageSize = 5;
 
-        // Hàm tải danh sách sản phẩm
+
         function loadSanPham(page) {
-            var tenSP = $('#filter-tensp').val();  // Lấy giá trị tên sản phẩm từ ô nhập
-            var trangThai = $('#filter-trangthai').val();  // Lấy giá trị trạng thái từ danh sách chọn
+            var tenSP = $('#filter-tensp').val();
+            var trangThai = $('#filter-trangthai').val();
 
-            $('#loading').removeClass('d-none').addClass('d-block');  // Hiển thị loading
+            $('#loading').removeClass('d-none').addClass('d-block');
 
             $.ajax({
                 type: 'GET',
@@ -271,9 +271,10 @@
                     page: page,
                     tensp: tenSP,
                     trangthai: trangThai
-                },  // Gửi dữ liệu lọc
+                },
                 dataType: 'json',
                 success: function (response) {
+                    console.log(response);  // Log để kiểm tra dữ liệu
                     $('#sanPhamtable').empty();
                     if (response && response.content && Array.isArray(response.content)) {
                         response.content.forEach(function (sp, index) {
@@ -284,7 +285,7 @@
                                 '<td>' + sp.ngaytao + '</td>' +
                                 '<td>' + sp.soluongsp + '</td>' +
                                 '<td>' + (sp.trangthai === 1 ? "đang bán" : "ngừng bán") + '</td>' +
-                                '<td><a href="/panda/ctsp?id=' + sp.id + '">Chi tiết</a></td>' +
+                                '<td><a href="/panda/sanpham/spct?id=' + sp.id + '"><i class="fa-solid fa-eye"></i></a></td>' +
                                 '</tr>'
                             );
                         });
@@ -302,12 +303,13 @@
                     $('#loading').removeClass('d-block').addClass('d-none');
                 }
             });
+
         }
 
-// Gọi hàm loadSanPham khi người dùng ấn nút "Tìm kiếm"
+
         $('#filter-button').click(function() {
-            currentPage = 0;  // Đặt lại trang về 0 khi lọc
-            loadSanPham(currentPage);  // Gọi lại hàm load với bộ lọc
+            currentPage = 0;
+            loadSanPham(currentPage);
         });
 
 

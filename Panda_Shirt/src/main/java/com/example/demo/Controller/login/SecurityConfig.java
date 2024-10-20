@@ -131,7 +131,6 @@ public class SecurityConfig {
     @Autowired
     private nhanvienRepository nhanvienRepository;
 
-    // Mã hóa mật khẩu
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -179,7 +178,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Tắt CSRF và CORS để kiểm tra
         http.csrf().disable().cors().disable();
 
         http.authorizeHttpRequests(requests -> requests

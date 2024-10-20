@@ -250,57 +250,41 @@
 
 <script>
     function layDuLieuSanPham() {
-        const productDetails = [];
+        const productDetails = []; // Khởi tạo mảng để lưu chi tiết sản phẩm
 
         $('#product-tables .product-row').each(function() {
-            const color = $(this).find('h3').text().split(': ')[1]; // Lấy màu sắc từ tiêu đề
-            const rows = $(this).find('tbody tr'); // Tìm tất cả các hàng trong bảng
+            const color = $(this).find('h3').text().trim(); // Lấy màu
+            const rows = $(this).find('tbody tr');
 
             rows.each(function() {
-                const size = $(this).find('td:nth-child(3)').text(); // Kích thước
-                const price = $(this).find('input[type="number"]').eq(0).val(); // Đơn giá
-                const quantity = $(this).find('input[type="number"]').eq(1).val(); // Số lượng
+                const size = $(this).find('td:nth-child(3)').text().trim(); // Lấy kích thước
+                const price = $(this).find('input[type="number"]').eq(0).val().trim();
+                const quantity = $(this).find('input[type="number"]').eq(1).val().trim();
+                const images = [];
 
-                // Tạo đối tượng chi tiết sản phẩm
-                const detail = {
-                    color: color,
-                    size: size,
-                    price: price,
-                    quantity: quantity
-                };
+                $(this).find('.product-image-cell img').each(function() {
+                    images.push($(this).attr('src')); // Thu thập nguồn ảnh
+                });
 
-                productDetails.push(detail); // Thêm vào mảng
+                // Kiểm tra nếu size, color, price và quantity có giá trị
+                if (size && color && price && quantity) {
+                    productDetails.push({ // Thêm vào mảng productDetails
+                        mauSac: color,  // Sử dụng thuộc tính mauSac
+                        kichThuoc: size, // Sử dụng thuộc tính kichThuoc
+                        gia: parseFloat(price), // Sử dụng thuộc tính gia
+                        soLuong: parseInt(quantity, 10), // Sử dụng thuộc tính soLuong
+                        images: images // Thêm danh sách hình ảnh
+                    });
+                }
             });
         });
 
         return productDetails; // Trả về mảng chi tiết sản phẩm
     }
-    async function guiDuLieuSanPham() {
-        try {
-            const productName = $('#productName option:selected').text().trim();
-            const productDetails = layDuLieuSanPham(); // Gọi hàm để lấy chi tiết sản phẩm
-
-            const dataToSend = {
-                productName: productName,
-                productDetails: productDetails // Đưa mảng chi tiết vào dữ liệu gửi
-            };
-
-            const response = await $.ajax({
-                url: '/panda/addSanPham',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(dataToSend), // Gửi dữ liệu
-            });
-
-            console.log("Thêm sản phẩm thành công:", response);
-            Swal.fire('Thành công!', 'Sản phẩm đã được thêm thành công', 'success');
-        } catch (error) {
-            console.error("Lỗi khi thêm sản phẩm:", error);
-            Swal.fire('Lỗi!', 'Không thể thêm sản phẩm. Vui lòng thử lại.', 'error');
-        }
-    }
 
 
+
+    // Hàm tải ảnh lên
     function uploadImage(cell) {
         const input = document.createElement('input');
         input.type = 'file';
@@ -325,16 +309,18 @@
         input.click();
     }
 
-
+    // Hàm hiển thị ảnh
     function displayImages(cell, imagePaths) {
-        const cellElement = $(cell);
-        cellElement.empty();
+        const imageContainer = $(cell).find('.image-preview'); // Tạo một phần tử để chứa hình ảnh
+        imageContainer.empty(); // Xóa hình ảnh cũ
 
         imagePaths.forEach(path => {
-            const imgElement = `<img src="${path}" alt="Hình ảnh sản phẩm" width="50" style="margin-right: 5px;" />`;
-            cellElement.append(imgElement);
+            const img = $('<img>').attr('src', path).css('width', '100px'); // Kích thước hình ảnh
+            imageContainer.append(img); // Thêm hình ảnh vào ô
         });
     }
+
+
     function xoaHang(button) {
         const row = $(button).closest('tr');
         row.remove();
@@ -413,30 +399,6 @@
             themTatCaSanPhamChiTiet(); // Gọi hàm để thêm tất cả sản phẩm chi tiết
         });
 
-        // function capNhatSanPhamChiTiet(id) {
-        //     const updatedDetail = {
-        //         size: $('#size').val(),
-        //         color: $('#color').val(),
-        //         price: $('#price').val(),
-        //         quantity: $('#quantity').val()
-        //     };
-        //
-        //     $.ajax({
-        //         url: `/api/capNhatSanPhamChiTiet/${id}`,
-        //         type: 'PUT',
-        //         contentType: 'application/json',
-        //         data: JSON.stringify(updatedDetail),
-        //         success: function(response) {
-        //             Swal.fire('Thành công!', response.message || 'Cập nhật thành công!', 'success');
-        //         },
-        //         error: function(xhr, status, error) {
-        //             Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error, 'error');
-        //         }
-        //     });
-        // }
-
-
-
         function themTatCaSanPhamChiTiet() {
             const productName = $('#productName option:selected').text().trim();
             const sizes = $('#size option:selected').map(function() { return $(this).text().trim(); }).get();
@@ -448,12 +410,10 @@
             console.log("Màu sắc:", colors); // Kiểm tra màu sắc
 
             if (!productName || sizes.length === 0 || colors.length === 0) {
-                return; // Không làm gì nếu không có tên sản phẩm, kích thước hoặc màu sắc
+                return;
             }
 
-            // Xóa tất cả các bảng cũ trước khi thêm mới
             mainContainer.empty();
-
             colors.forEach(color => {
                 const productRow = $(`
             <div class="product-row">
@@ -503,64 +463,78 @@
 
 
         function getImagesAndSave() {
-            const productName = $('#productName').val(); // Lấy tên sản phẩm từ input
-            const categoryName = $('#categoryName').val();
-            const brandName = $('#brandName').val();
-            const materialName = $('#materialName').val();
-            const manufacturerName = $('#manufacturerName').val();
-            const collarName = $('#collarName').val();
+            const productName = $('#productName').val(); // Đảm bảo sử dụng đúng ID
+            const categoryId = $('#categoryName').val(); // Đúng ID là 'categoryName'
+            const brandId = $('#brandName').val(); // Đúng ID là 'brandName'
+            const materialId = $('#materialName').val(); // Đúng ID là 'materialName'
+            const manufacturerId = $('#manufacturerName').val(); // Đúng ID là 'manufacturerName'
+            const collarId = $('#collarName').val(); // Đúng ID là 'collarName'
+            const productSizes = []; // Khởi tạo danh sách kích thước
+            const productColors = []; // Khởi tạo danh sách màu sắc
+            const productDetails = []; // Khởi tạo danh sách chi tiết sản phẩm
 
-            // Kiểm tra nếu tên sản phẩm hợp lệ
-            if (!productName || !categoryName || !brandName || !materialName || !manufacturerName || !collarName) {
+            console.log("Product Name:", productName);
+            console.log("Category ID:", categoryId);
+            console.log("Brand ID:", brandId);
+            console.log("Material ID:", materialId);
+            console.log("Manufacturer ID:", manufacturerId);
+            console.log("Collar ID:", collarId);
+
+            // Kiểm tra nếu thông tin sản phẩm hợp lệ
+            if (!productName || !categoryId || !brandId || !materialId || !manufacturerId || !collarId) {
                 Swal.fire('Thông báo!', 'Vui lòng điền đầy đủ thông tin sản phẩm!', 'warning');
                 return;
             }
 
             // Khởi tạo đối tượng productData
             const productData = {
-                productName: productName,
-                categoryName: categoryName,
-                brandName: brandName,
-                materialName: materialName,
-                manufacturerName: manufacturerName,
-                collarName: collarName,
-                productDetails: []
+                masp: null,
+                tenSanPham: parseInt(productName, 10),
+                danhMucId: parseInt(categoryId, 10),
+                thuongHieuId: parseInt(brandId, 10),
+                chatLieuId: parseInt(materialId, 10),
+                nhaSanXuatId: parseInt(manufacturerId, 10),
+                coAoId: parseInt(collarId, 10),
+                chiTietSanPham: [] // Khởi tạo chiTietSanPham là một mảng
             };
 
+            // Thu thập thông tin từ bảng sản phẩm
             $('#product-tables .product-row').each(function() {
-                const color = $(this).find('h3').text().trim();
+                const color = $(this).find('h3').text().trim(); // Lấy màu
                 const rows = $(this).find('tbody tr');
 
                 rows.each(function() {
-                    const size = $(this).find('td:nth-child(3)').text().trim();
+                    const size = $(this).find('td:nth-child(3)').text().trim(); // Lấy kích thước
                     const price = $(this).find('input[type="number"]').eq(0).val().trim();
                     const quantity = $(this).find('input[type="number"]').eq(1).val().trim();
                     const images = [];
 
                     $(this).find('.product-image-cell img').each(function() {
-                        images.push($(this).attr('src')); // Collect image sources
+                        images.push($(this).attr('src')); // Thu thập nguồn ảnh
                     });
 
                     if (size && color) {
-                        productData.productDetails.push({
-                            size: size,
-                            color: color,
-                            price: price,
-                            quantity: quantity,
-                            images: images
+                        // Thêm chi tiết sản phẩm vào danh sách
+                        productData.chiTietSanPham.push({
+                            mauSac: color,  // Sử dụng thuộc tính mauSac
+                            kichThuoc: size, // Sử dụng thuộc tính kichThuoc
+                            gia: parseFloat(price), // Sử dụng thuộc tính gia
+                            soLuong: parseInt(quantity, 10), // Sử dụng thuộc tính soLuong
+                            images: images // Thêm danh sách hình ảnh
                         });
                     }
                 });
             });
 
-            console.log("Dữ liệu sản phẩm:", productData); // Debugging
+            console.log("Dữ liệu sản phẩm:", JSON.stringify(productData, null, 2));
 
             $.ajax({
-                url: '/panda/addTTSP',
+                url: '/panda/addTCSP',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(productData),
                 success: function(response) {
+                    console.log("Phản hồi từ server:", response);
                     Swal.fire('Thành công!', 'Sản phẩm đã được thêm thành công', 'success');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -573,13 +547,12 @@
 
 
 
-
-
-
         // Gọi hàm getImagesAndSave khi nhấn nút "Thêm tất cả"
         $('.btn-green').on('click', function() {
             getImagesAndSave();
         });
+
+        ///
         $('#product-tables tr').each(function() {
             const size = $(this).find('.size-column').text().trim();
             const color = $(this).find('.color-column').text().trim();
@@ -615,26 +588,7 @@
         });
 
 
-        function taoSanPhamChiTiet() {
-            const productDTO = {
-                productName: $('#productName').val(),
-                sizes: $('#size').val(),
-                colors: $('#color').val(),
-            };
 
-            fetch('/taoSanPhamChiTiet', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(productDTO)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    Swal.fire('Thành công!', 'Sản phẩm chi tiết đã được tạo thành công!', 'success');
-                })
-                .catch(error => console.error('Error:', error));
-        }
         populateSelect($('#productName'), '/panda/Listsanpham');
         populateSelect($('#categoryName'), '/panda/Listdanhmuc');
         populateSelect($('#brandName'), '/panda/Listthuonghieu');
@@ -713,7 +667,7 @@
                 productDetail.images.push($(this).attr('src'));
             });
 
-            console.log("Hình ảnh:", productDetail.images); // Log hình ảnh
+            console.log("Hình ảnh:", productDetail.images);
 
             if (size && color) {
                 productData.productDetails.push(productDetail);

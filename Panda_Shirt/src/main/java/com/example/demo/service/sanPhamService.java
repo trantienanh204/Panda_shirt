@@ -5,7 +5,6 @@ import com.example.demo.entity.*;
 import com.example.demo.respository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.hibernate.engine.jdbc.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class sanPhamService {
@@ -41,7 +41,9 @@ public class sanPhamService {
     private final int size = 5;
 
     public Page<SanPham> hienThiSanPhamTheoDieuKien(int page, String tensp, Integer trangthai) {
-        Pageable pageable = PageRequest.of(page, size);
+        Sort sort = Sort.by(Sort.Direction.ASC,"id");
+
+        Pageable pageable = PageRequest.of(page, size,sort);
         return sanPhamRepository.findByTenspAndTrangthai(tensp, trangthai, pageable);
     }
 
@@ -82,54 +84,45 @@ public class sanPhamService {
     }
 
 
-    public SanPham convertToEntity(sanPhamDTO productDTO) {
+    public SanPham convertToEntity(SanPhamDTO productDTO) {
         SanPham sanPham = new SanPham();
 
         // Gán các thuộc tính từ DTO vào Entity
         sanPham.setMasp(productDTO.getMasp());
-        sanPham.setTensp(productDTO.getTenSanPham());
-        sanPham.setSoluongsp(productDTO.getQuantity());
-        sanPham.setNgaytao(productDTO.getCreatedDate());
-        sanPham.setNgaysua(productDTO.getUpdatedDate());
+        sanPham.setId(productDTO.getTenSanPham());
+        int totalQuantity = productDTO.getChiTietSanPham().stream()
+                .mapToInt(SanPhamChiTietDTO::getSoLuong)
+                .sum();
 
-        // Tìm các đối tượng từ database bằng tên
-        Optional<DanhMuc> optionalDanhMuc = danhMucRepository.findByTendanhmucIgnoreCase(productDTO.getTenDanhMuc());
-        if (optionalDanhMuc.isPresent()) {
-            sanPham.setDanhMuc(optionalDanhMuc.get());
-        } else {
-            throw new EntityNotFoundException("DanhMuc không tìm thấy với tên: " + productDTO.getTenDanhMuc());
-        }
+// Gán tổng số lượng vào sản phẩm
+        sanPham.setSoluongsp(totalQuantity);
+        sanPham.setNgaytao(LocalDate.now());
 
-        Optional<ThuongHieu> optionalThuongHieu = thuongHieuRepository.findByTenthuonghieu(productDTO.getTenThuongHieu());
-        if (optionalThuongHieu.isPresent()) {
-            sanPham.setThuongHieu(optionalThuongHieu.get());
-        } else {
-            throw new EntityNotFoundException("ThuongHieu không tìm thấy với tên: " + productDTO.getTenThuongHieu());
-        }
 
-        Optional<ChatLieu> optionalChatLieu = chatLieuRespository.findBytenChatLieu(productDTO.getTenChatLieu());
-        if (optionalChatLieu.isPresent()) {
-            sanPham.setChatLieu(optionalChatLieu.get());
-        } else {
-            throw new EntityNotFoundException("ChatLieu không tìm thấy với tên: " + productDTO.getTenChatLieu());
-        }
+        // Tìm các đối tượng từ database bằng ID
+        DanhMuc danhMuc = danhMucRepository.findById(productDTO.getDanhMucId())
+                .orElseThrow(() -> new EntityNotFoundException("DanhMuc không tìm thấy với ID: " + productDTO.getDanhMucId()));
+        sanPham.setDanhMuc(danhMuc);
 
-        Optional<NhaSanXuat> optionalNhaSanXuat = nsxRepository.findByTennsx(productDTO.getTenNhaSanXuat());
-        if (optionalNhaSanXuat.isPresent()) {
-            sanPham.setNhaSanXuat(optionalNhaSanXuat.get());
-        } else {
-            throw new EntityNotFoundException("NhaSanXuat không tìm thấy với tên: " + productDTO.getTenNhaSanXuat());
-        }
+        ThuongHieu thuongHieu = thuongHieuRepository.findById(productDTO.getThuongHieuId())
+                .orElseThrow(() -> new EntityNotFoundException("ThuongHieu không tìm thấy với ID: " + productDTO.getThuongHieuId()));
+        sanPham.setThuongHieu(thuongHieu);
 
-        Optional<CoAo> optionalCoAo = coAoRepository.findByTen(productDTO.getCoAo());
-        if (optionalCoAo.isPresent()) {
-            sanPham.setCoAo(optionalCoAo.get());
-        } else {
-            throw new EntityNotFoundException("CoAo không tìm thấy với tên: " + productDTO.getCoAo());
-        }
+        ChatLieu chatLieu = chatLieuRespository.findById(productDTO.getChatLieuId())
+                .orElseThrow(() -> new EntityNotFoundException("ChatLieu không tìm thấy với ID: " + productDTO.getChatLieuId()));
+        sanPham.setChatLieu(chatLieu);
+
+        NhaSanXuat nhaSanXuat = nsxRepository.findById(productDTO.getNhaSanXuatId())
+                .orElseThrow(() -> new EntityNotFoundException("NhaSanXuat không tìm thấy với ID: " + productDTO.getNhaSanXuatId()));
+        sanPham.setNhaSanXuat(nhaSanXuat);
+
+        CoAo coAo = coAoRepository.findById(productDTO.getCoAoId())
+                .orElseThrow(() -> new EntityNotFoundException("CoAo không tìm thấy với ID: " + productDTO.getCoAoId()));
+        sanPham.setCoAo(coAo);
 
         return sanPham;
     }
+
 
 
     public void createTemporarySanPhamChiTiet(SanPham sanPham, List<Integer> sizeIds, List<Integer> colorIds) {
@@ -264,73 +257,87 @@ public class sanPhamService {
     }
 
     @Transactional
-    public void saveSanPham(sanPhamDTO sanPhamDTO) {
+    public void saveSanPham(SanPhamDTO sanPhamDTO) {
+        if (sanPhamDTO == null || sanPhamDTO.getTenSanPham() == null) {
+            throw new IllegalArgumentException("Thông tin sản phẩm không hợp lệ!");
+        }
 
-        SanPham sanPham = new SanPham();
-        sanPham.setMasp(sanPhamDTO.getMasp());
-        sanPham.setTensp(sanPhamDTO.getTenSanPham());
-        sanPham.setSoluongsp(sanPhamDTO.getQuantity());
-        sanPham.setNgaytao(LocalDate.now());
-        sanPham.setNgaysua(LocalDate.now());
+        // Tìm sản phẩm theo tên sản phẩm
+        SanPham sanPham = sanPhamRepository.findById(sanPhamDTO.getTenSanPham())
+                .orElseThrow(() -> new EntityNotFoundException("Sản phẩm không tìm thấy với tên: " + sanPhamDTO.getTenSanPham()));
 
-        // Tìm kiếm các thực thể từ các bảng khác
-        DanhMuc danhMuc = danhMucRepository.findByTendanhmucIgnoreCase(sanPhamDTO.getTenDanhMuc())
-                .orElseThrow(() -> new EntityNotFoundException("DanhMuc không tìm thấy!"));
+        int totalQuantity = sanPhamDTO.getChiTietSanPham() != null ?
+                sanPhamDTO.getChiTietSanPham().stream().mapToInt(chitiet -> chitiet.getSoLuong() != null ? chitiet.getSoLuong() : 0).sum() : 0;
+        sanPham.setSoluongsp(totalQuantity);
+
+        // Cập nhật các thông tin khác
+        DanhMuc danhMuc = danhMucRepository.findById(sanPhamDTO.getDanhMucId())
+                .orElseThrow(() -> new EntityNotFoundException("Danh mục không tìm thấy với ID: " + sanPhamDTO.getDanhMucId()));
         sanPham.setDanhMuc(danhMuc);
 
-        ThuongHieu thuongHieu = thuongHieuRepository.findByTenthuonghieu(sanPhamDTO.getTenThuongHieu())
-                .orElseThrow(() -> new EntityNotFoundException("ThuongHieu không tìm thấy!"));
+        ThuongHieu thuongHieu = thuongHieuRepository.findById(sanPhamDTO.getThuongHieuId())
+                .orElseThrow(() -> new EntityNotFoundException("Thương hiệu không tìm thấy với ID: " + sanPhamDTO.getThuongHieuId()));
         sanPham.setThuongHieu(thuongHieu);
 
-        ChatLieu chatLieu = chatLieuRespository.findBytenChatLieu(sanPhamDTO.getTenChatLieu())
-                .orElseThrow(() -> new EntityNotFoundException("ChatLieu không tìm thấy!"));
+        ChatLieu chatLieu = chatLieuRespository.findById(sanPhamDTO.getChatLieuId())
+                .orElseThrow(() -> new EntityNotFoundException("Chất liệu không tìm thấy với ID: " + sanPhamDTO.getChatLieuId()));
         sanPham.setChatLieu(chatLieu);
 
-        NhaSanXuat nhaSanXuat = nsxRepository.findByTennsx(sanPhamDTO.getTenNhaSanXuat())
-                .orElseThrow(() -> new EntityNotFoundException("NhaSanXuat không tìm thấy!"));
+        NhaSanXuat nhaSanXuat = nsxRepository.findById(sanPhamDTO.getNhaSanXuatId())
+                .orElseThrow(() -> new EntityNotFoundException("Nhà sản xuất không tìm thấy với ID: " + sanPhamDTO.getNhaSanXuatId()));
         sanPham.setNhaSanXuat(nhaSanXuat);
+        CoAo  coAo = coAoRepository.findById(sanPhamDTO.getCoAoId())
+                .orElseThrow(() -> new EntityNotFoundException("Nhà sản xuất không tìm thấy với ID: " + sanPhamDTO.getCoAoId()));
+        sanPham.setCoAo(coAo);
 
-        // Tìm kiếm thực thể CoAo từ cơ sở dữ liệu
-        CoAo coAo = coAoRepository.findByTen(sanPhamDTO.getCoAo())
-                .orElseThrow(() -> new EntityNotFoundException("CoAo không tìm thấy!"));
-        sanPham.setCoAo(coAo); // Thiết lập mối quan hệ với sản phẩm
-
-        // Lưu sản phẩm vào cơ sở dữ liệu trước khi lưu chi tiết sản phẩm
-        sanPhamRepository.save(sanPham);
-
-        // Cập nhật thông tin chi tiết sản phẩm
-        if (sanPhamDTO.getChiTietSanPham() != null && !sanPhamDTO.getChiTietSanPham().isEmpty()) {
-            List<SanPhamChiTiet> chiTietList = new ArrayList<>();
-            for (SanPhamChiTietDTO chiTietDTO : sanPhamDTO.getChiTietSanPham()) {
+        // Cập nhật chi tiết sản phẩm
+        if (sanPhamDTO.getChiTietSanPham() != null) {
+            // Xóa các chi tiết sản phẩm cũ trước khi thêm mới
+            sanPham.getSanPhamChiTietList().clear();
+            sanPhamDTO.getChiTietSanPham().forEach(chiTietDTO -> {
                 SanPhamChiTiet chiTiet = new SanPhamChiTiet();
 
-                // Tìm kiếm MauSac từ cơ sở dữ liệu
-                MauSac mauSac = mauSacRepsitory.findByTen(chiTietDTO.getMauSac())
-                        .orElseThrow(() -> new EntityNotFoundException("MauSac không tìm thấy!"));
-                chiTiet.setMauSac(mauSac); // Thiết lập mauSac vào chi tiết sản phẩm
+                String colorInput = chiTietDTO.getMauSac();
+                String color = colorInput.contains(":") ? colorInput.split(":")[1].trim() : colorInput;
 
-                // Tìm kiếm KichThuoc từ cơ sở dữ liệu
+                // Tìm kiếm MauSac từ cơ sở dữ liệu
+                MauSac mauSac = mauSacRepsitory.findByTen(color)
+                        .orElseThrow(() -> new EntityNotFoundException("Màu sắc không tìm thấy với tên: " + color));
+                chiTiet.setMauSac(mauSac); // Thiết lập màu sắc vào chi tiết sản phẩm
+
                 KichThuoc kichThuoc = kichThuocRepository.findByten(chiTietDTO.getKichThuoc())
-                        .orElseThrow(() -> new EntityNotFoundException("KichThuoc không tìm thấy!"));
-                chiTiet.setKichThuoc(kichThuoc); // Thiết lập kichThuoc vào chi tiết sản phẩm
+                        .orElseThrow(() -> new EntityNotFoundException("Kích thước không tìm thấy với tên: " + chiTietDTO.getKichThuoc()));
+                chiTiet.setKichThuoc(kichThuoc);
 
                 chiTiet.setDongia(chiTietDTO.getGia());
                 chiTiet.setSoluongsanpham(chiTietDTO.getSoLuong());
-                chiTiet.setSanPham(sanPham); // Thiết lập mối quan hệ với sản phẩm
+                chiTiet.setSanPham(sanPham);
 
-                chiTietList.add(chiTiet);
-            }
-            // Lưu tất cả các chi tiết sản phẩm vào cơ sở dữ liệu
-            spctRepository.saveAll(chiTietList); // Sử dụng batch saving nếu có thể
+                // Thêm chi tiết vào danh sách của sản phẩm
+                sanPham.getSanPhamChiTietList().add(chiTiet);
+            });
         }
+
+        sanPhamRepository.save(sanPham);
     }
 
 
 
-
-
-
-
+    public SanPham Listtimkiemsp(Integer id) {
+        return  sanPhamRepository.findById(id).orElse(null);
+    }
+    public SanPhamChiTiet Listtimkiemspct(Integer id) {
+        return  spctRepository.findById(id).orElse(null);
+    }
+    public MauSac Listtimkiemms(Integer id) {
+        return  mauSacRepsitory.findById(id).orElse(null);
+    }
+    public KichThuoc Listtimkiemkt(Integer id) {
+        return  kichThuocRepository.findById(id).orElse(null);
+    }
+    public void addspct(SanPhamChiTiet sanPhamChiTiet) {
+        spctRepository.save(sanPhamChiTiet);
+    }
 
 
 

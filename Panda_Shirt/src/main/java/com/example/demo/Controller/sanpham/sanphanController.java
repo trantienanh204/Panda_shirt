@@ -6,15 +6,16 @@ import com.example.demo.respository.DanhMucRepository;
 import com.example.demo.service.QuenmatkhauService;
 import com.example.demo.service.hinhanhService;
 import com.example.demo.service.sanPhamService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,10 +23,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import java.util.stream.Collectors;
 
@@ -48,9 +46,19 @@ public class sanphanController {
             @RequestParam(value = "tensp", required = false) String tensp,
             @RequestParam(value = "trangthai", required = false) Integer trangthai) {
 
+        Page<SanPham> sanPhamPage = sanPhamService.hienThiSanPhamTheoDieuKien(page, tensp, trangthai);
 
-        return sanPhamService.hienThiSanPhamTheoDieuKien(page, tensp, trangthai);
+        // Kiểm tra nếu sanPhamPage là null
+        if (sanPhamPage == null) {
+            // Tạo một Pageable mới với page và size giống như bạn đã định nghĩa
+            Pageable pageable = PageRequest.of(page, 5);
+            return new PageImpl<>(Collections.emptyList(), pageable, 0); // Trả về một trang rỗng
+        }
+
+        return sanPhamPage;
     }
+
+
 
 
     @GetMapping("/Listsanpham")
@@ -142,32 +150,28 @@ public class sanphanController {
 //
 //        return ResponseEntity.ok(newProduct);
 //    }
-@PostMapping("/taoSanPhamChiTiet")
-public ResponseEntity<?> taoSanPhamChiTiet(@RequestBody sanPhamDTO productDTO) {
-    if (productDTO == null) {
-        return ResponseEntity.badRequest().body("Product data is required.");
-    }
-
-    try {
-        // Chuyển đổi DTO sang entity SanPham
-        SanPham newProduct = sanPhamService.convertToEntity(productDTO);
-
-        // Tạo sản phẩm chi tiết tạm thời
-        sanPhamService.createTemporarySanPhamChiTiet(newProduct, productDTO.getSizes(), productDTO.getColors());
-
-        // Trả về danh sách chi tiết sản phẩm tạm thời
-        return ResponseEntity.ok(sanPhamService.getTemporarySanPhamChiTietList());
-    } catch (EntityNotFoundException e) {
-        // Xử lý ngoại lệ nếu không tìm thấy dữ liệu
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
-    } catch (IllegalArgumentException e) {
-        // Xử lý ngoại lệ đối với dữ liệu không hợp lệ
-        return ResponseEntity.badRequest().body("Invalid input: " + e.getMessage());
-    } catch (Exception e) {
-        // Xử lý ngoại lệ chung
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating product details: " + e.getMessage());
-    }
-}
+//@PostMapping("/taoSanPhamChiTiet")
+//public ResponseEntity<?> taoSanPhamChiTiet(@RequestBody sanPhamDTO productDTO) {
+//    if (productDTO == null) {
+//        return ResponseEntity.badRequest().body("Product data is required.");
+//    }
+//
+//    try {
+//        SanPham newProduct = sanPhamService.convertToEntity(productDTO);
+//
+//        sanPhamService.createTemporarySanPhamChiTiet(newProduct, productDTO.getSizes(), productDTO.getColors());
+//
+//        return ResponseEntity.ok(sanPhamService.getTemporarySanPhamChiTietList());
+//    } catch (EntityNotFoundException e) {
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
+//    } catch (IllegalArgumentException e) {
+//        // Xử lý ngoại lệ đối với dữ liệu không hợp lệ
+//        return ResponseEntity.badRequest().body("Invalid input: " + e.getMessage());
+//    } catch (Exception e) {
+//        // Xử lý ngoại lệ chung
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating product details: " + e.getMessage());
+//    }
+//}
 
     @PostMapping("/themTatCaSanPhamChiTiet")
     public ResponseEntity<?> themTatCaSanPhamChiTiet() {
@@ -280,6 +284,27 @@ public ResponseEntity<?> taoSanPhamChiTiet(@RequestBody sanPhamDTO productDTO) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @PostMapping("/addChatLieu")
+    public ResponseEntity<ChatLieu> addCL(@RequestBody @Valid laytamDTO laytamDTO) {
+        if (laytamDTO == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        ChatLieu CL = new ChatLieu();
+        CL.setTenChatLieu(laytamDTO.getName());
+        CL.setTrangThai(true);
+        CL.setNgayTao(LocalDateTime.now());
+        CL.setMaChatLieu(quenmatkhauService.random());
+
+        try {
+            sanPhamService.addCL(CL);
+            logger.info("Successfully added product: {}", CL);
+            return ResponseEntity.status(HttpStatus.CREATED).body(CL);
+        } catch (Exception e) {
+            logger.error("Error adding product: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
     @PostMapping("/addCoAo")
@@ -362,27 +387,85 @@ public ResponseEntity<?> taoSanPhamChiTiet(@RequestBody sanPhamDTO productDTO) {
         }
     }
 
-        @PostMapping("/addTCSP")
-        public ResponseEntity<?> addSanPham(@RequestBody sanPhamDTO sanPhamDTO) {
-            try {
-                // Gọi logic từ service để thêm sản phẩm
-                sanPhamService.saveSanPham(sanPhamDTO);
-
-                // Trả về phản hồi thành công với mã trạng thái 201 (Created)
-                return ResponseEntity.status(HttpStatus.CREATED)
-                        .body("Sản phẩm đã được thêm thành công.");
-            } catch (Exception e) {
-                // Nếu có lỗi xảy ra, trả về phản hồi với mã trạng thái 500 (Internal Server Error)
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Không thể thêm sản phẩm. Lỗi: " + e.getMessage());
-            }
+    @PostMapping("/addTCSP")
+    public ResponseEntity<?> addSanPham(@RequestBody SanPhamDTO sanPhamDTO) {
+        try {
+            System.out.println("Dữ liệu từ sanPhamDTO: " + sanPhamDTO);
+            sanPhamService.saveSanPham(sanPhamDTO);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Sản phẩm đã được thêm thành công.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Không thể thêm sản phẩm. Lỗi: " + e.getMessage());
         }
+    }
+
 
     @GetMapping("/temporarySanPhamChiTietList")
     public ResponseEntity<List<SanPhamChiTiet>> getTemporarySanPhamChiTietList() {
         List<SanPhamChiTiet> list = sanPhamService.getTemporarySanPhamChiTietList();
         return ResponseEntity.ok(list);
     }
+
+    public sanphanController(sanPhamService sanPhamService) {
+        this.sanPhamService = sanPhamService;
+    }
+    @GetMapping("/sanpham/chitiet")
+    @ResponseBody
+    public SanPham getSanPhamChiTiet(@RequestParam("id") Integer id) {
+        return sanPhamService.Listtimkiemsp(id); // Phương thức trả về chi tiết sản phẩm theo ID
+    }
+    @PostMapping("/sanpham/update")
+    public ResponseEntity<String> updateSanPhamChiTiet(@RequestBody List<SanPhamChiTietDTO> updates) {
+        try {
+            logger.info("Cập nhật sản phẩm: {}", updates);
+
+            for (SanPhamChiTietDTO update : updates) {
+                SanPhamChiTiet spChiTiet = sanPhamService.Listtimkiemspct(update.getIdSanPham());
+
+                if (spChiTiet == null) {
+                    return ResponseEntity.badRequest().body("Sản phẩm không tồn tại với ID: " + update.getIdSanPham());
+                }
+
+                spChiTiet.setSoluongsanpham(update.getSoLuong());
+                spChiTiet.setDongia(update.getGia());
+
+                // Chuyển đổi mauSac và kichThuoc từ String sang Integer
+                Integer mauSacId = Integer.parseInt(update.getMauSac()); // Chuyển đổi từ String sang Integer
+                Integer kichThuocId = Integer.parseInt(update.getKichThuoc()); // Chuyển đổi từ String sang Integer
+
+                MauSac mauSac = sanPhamService.Listtimkiemms(mauSacId);
+                KichThuoc kichThuoc = sanPhamService.Listtimkiemkt(kichThuocId);
+
+                if (mauSac == null) {
+                    return ResponseEntity.badRequest().body("Màu sắc không tồn tại với ID: " + mauSacId);
+                }
+                if (kichThuoc == null) {
+                    return ResponseEntity.badRequest().body("Kích thước không tồn tại với ID: " + kichThuocId);
+                }
+
+                spChiTiet.setMauSac(mauSac);
+                spChiTiet.setKichThuoc(kichThuoc);
+
+                sanPhamService.addspct(spChiTiet); // Đảm bảo phương thức này thực hiện cập nhật đúng cách
+            }
+            return ResponseEntity.ok("Cập nhật thành công: " + updates.size() + " sản phẩm đã được cập nhật.");
+        } catch (NumberFormatException e) {
+            logger.warn("Có lỗi định dạng số: {}", e.getMessage());
+            return ResponseEntity.badRequest().body("ID màu sắc hoặc kích thước không hợp lệ.");
+        } catch (IllegalArgumentException e) {
+            logger.warn("Có lỗi khi cập nhật sản phẩm: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Có lỗi xảy ra khi cập nhật sản phẩm: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi xảy ra khi cập nhật: " + e.getMessage());
+        }
+    }
+
+
+
 
 
 

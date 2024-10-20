@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +19,6 @@ public class SanPhamChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-//
-//    @Column(name = "ANH_SAN_PHAM_CHI_TIET")
-//
-//    private String anh_san_pham_chi_tiet;
 
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
     private int soluongsanpham;
@@ -41,23 +38,32 @@ public class SanPhamChiTiet {
     @Column(name = "TRANG_THAI")
     private boolean trangthai;
 
-
-    @OneToOne
-    @JoinColumn(name = "ID_SAN_PHAM")
+    @ManyToOne
+    @JoinColumn(name = "ID_SAN_PHAM", referencedColumnName = "id")
+    @JsonIgnore // Ngăn không cho chuyển đổi đối tượng này thành JSON
     private SanPham sanPham;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "ID_KICH_THUOC")
     private KichThuoc kichThuoc;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
 
-
-    @OneToOne
-    @JoinColumn(name = "ID_CHAT_LIEU")
-    private ChatLieu chatLieu;
-
-
+    @Override
+    public String toString() {
+        return "SanPhamChiTiet{" +
+                "id=" + id +
+                ", soluongsanpham=" + soluongsanpham +
+                ", dongia=" + dongia +
+                ", mota='" + mota + '\'' +
+                ", ngaytao=" + ngaytao +
+                ", ngaysua=" + ngaysua +
+                ", trangthai=" + trangthai +
+                ", sanPham=" + (sanPham != null ? sanPham.getId() : "null") +  // Hoặc lấy thuộc tính khác của SanPham
+                ", kichThuoc=" + (kichThuoc != null ? kichThuoc.getId() : "null") +
+                ", mauSac=" + (mauSac != null ? mauSac.getId() : "null") +
+                '}';
+    }
 }
