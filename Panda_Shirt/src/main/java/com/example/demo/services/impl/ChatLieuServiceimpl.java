@@ -28,8 +28,4 @@ public class ChatLieuServiceimpl implements ChatLieuService {
         chatLieuRespository.save(chatLieu);
     }
 
-    @Override
-    public void delete(Integer id) {
-        chatLieuRespository.deleteById(id);
-    }
 }

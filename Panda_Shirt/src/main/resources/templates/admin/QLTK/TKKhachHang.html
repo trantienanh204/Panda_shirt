@@ -2,9 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
     <meta charset="UTF-8">
-    <title>Cổ áo</title>
+    <title>Thêm khách hàng</title>
 </head>
 <body th:fragment="tkkhachhang">
+<!-- Thông báo -->
+<div class="custom-alert success" id="statusMessage" th:text="${saveMassage}" th:if="${saveMassage != null}">
+    <i class="fa-solid fa-circle-check"></i>
+</div>
+<div class="custom-alert success" id="statusMessage" th:text="${ChangesStatusMessage}" th:if="${ChangesStatusMessage != null}">
+    <i class="fa-solid fa-circle-check"></i>
+</div>
 <h2>Tài Khoản Khách Hàng</h2>
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
@@ -29,7 +36,9 @@
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
     <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#add">
-        <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
+        <a th:href="@{/panda/tkkhachhang/save}">
+            <i class="fa-solid fa-plus" style="color: #fcfcfc; top: 20px"></i>
+        </a>
     </button>
 </div>
 <div class="table-container">
@@ -38,31 +47,59 @@
         <thead>
         <tr>
             <th>#</th>
+            <th>Ảnh đại diện</th>
             <th>Mã khách hàng</th>
             <th>Tên khách hàng</th>
             <th>Giới tính</th>
             <th>Số điện thoại</th>
             <th>Địa chỉ</th>
             <th>Email</th>
+            <th>Ngày tạo</th>
             <th>Trạng thái</th>
-            <th>Ảnh đại diện</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td>Tên giảm giá</td>
-            <td><span class="status-label status-green">Hoạt động</span></td>
+        <tr  th:each="tkkhachhang,i : ${list}">
+            <th th:text="${i.count}"></th>
             <td>
-                <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
-                <i class="fa-solid fa-trash" style="color: #00040a;"></i>
+                <img th:if="${tkkhachhang.image != null}"
+                     th:src="@{'/panda/image/'+ ${tkkhachhang.id}}"
+                     alt="Hình ảnh"
+                     style="width: 50px; height: auto;"/>
+                <img th:if="${tkkhachhang.image == null}"
+                     src="@{/images/default-avatar.png}"
+                     alt=""
+                     style="width: 100px; height: auto;"/>
+            </td>
+            <td th:text="${tkkhachhang.makhachhang}"></td>
+            <td th:text="${tkkhachhang.tentaikhoan}"></td>
+            <td th:text="${tkkhachhang.gioitinh == 1 ? 'Nam' : 'Nữ'}"></td>
+            <td th:text="${tkkhachhang.sdt}"></td>
+            <td th:text="${tkkhachhang.diachi}"></td>
+            <td th:text="${tkkhachhang.tentaikhoan}"></td>
+            <td th:text="${tkkhachhang.ngaytao != null? #temporals.format(tkkhachhang.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:if="${tkkhachhang.trangthai} == 1">
+                <span class="status-label status-green"
+                      th:text="${tkkhachhang.trangthai == 1 ? 'Hoạt động':'Không hoạt động'}">
+                </span>
+            </td>
+            <td th:if="${tkkhachhang.trangthai} == 0 ">
+                <span class="status-label status-orange"
+                      th:text="${tkkhachhang.trangthai == 0 ? 'Không hoạt động':'Hoạt động'}">
+                </span>
+            </td>
+            <td>
+                <a th:href="@{/panda/tkkhachhang/change(id=${tkkhachhang.id})}">
+                    <i th:if="${tkkhachhang.trangthai == 1}">
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
+                        </i>
+                    </i>
+                    <i th:if="${tkkhachhang.trangthai == 0}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
+                        </i>
+                    </i>
+                </a>
             </td>
         </tr>
         </tbody>
@@ -111,7 +148,7 @@
     .filter-input input,
     .filter-input select {
         padding: 10px;
-        border: 1px solid #ccc;
+        border: 1px solid #cccccc;
         border-radius: 5px;
     }
 
@@ -179,16 +216,42 @@
         background-color: #ff9800;
     }
 
-    .action-icons {
-        display: flex;
-        justify-content: center;
-    }
 
     .action-icons i {
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
     }
+    .custom-alert {
+        position: fixed;
+        top: 20px;  /* Cách từ đỉnh */
+        right: 20px;  /* Cách từ bên phải */
+        background-color: #4CAF50;  /* Màu nền thông báo thành công */
+        color: white;  /* Màu chữ */
+        padding: 15px;  /* Padding xung quanh */
+        border-radius: 5px;  /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
+        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0;  /* Ban đầu ẩn */
+        visibility: hidden;  /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1;  /* Hiển thị thông báo */
+        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+    }
 </style>
+<script>
+    window.onload = function () {
+        var statusMessage = document.querySelector('.custom-alert');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            setTimeout(function () {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
 </body>
 </html>

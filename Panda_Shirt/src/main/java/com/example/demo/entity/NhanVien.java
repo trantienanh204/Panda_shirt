@@ -1,9 +1,15 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "NHAN_VIEN")
@@ -14,18 +20,23 @@ public class NhanVien {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotBlank(message = "Vui lòng nhập tên nhân viên")
     @Column(name = "TEN_NHAN_VIEN")
     private String tennhanvien;
-
+    @NotBlank(message = "Vui lòng nhập mã nhân viên ")
     @Column(name = "MA_NHAN_VIEN")
     private String manhanvien;
 
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            message = "Địa chỉ email không hợp lệ")
+    @NotBlank(message = "Vui lòng nhập email ")
     @Column(name = "TEN_TAI_KHOAN")
     private String tentaikhoan;
 
     @Column(name = "MAT_KHAU")
     private String matkhau;
 
+    @NotBlank(message = "Bạn chưa chọn chức vụ")
     @Column(name = "CHUC_VU")
     private String chucvu;
 
@@ -33,10 +44,18 @@ public class NhanVien {
     private int trangthai;
 
     @Column(name = "NGAY_TAO")
-    private String ngaytao;
+    private LocalDate ngaytao;
 
     @Column(name = "NGAY_SUA")
-    private String ngaysua;
+    private LocalDate ngaysua;
 
+    @Column(name = "AVATAR")
+    private byte[] image;
 
+    @Column(name = "GIOI_TINH")
+    private Integer gioitinh;
+
+    public void toggleTrangThai() {
+        this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
+    }
 }
