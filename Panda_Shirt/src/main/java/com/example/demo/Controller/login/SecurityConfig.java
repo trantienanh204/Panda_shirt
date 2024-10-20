@@ -75,7 +75,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //        http.csrf().disable().cors().disable();
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers( "/panda/login","/panda/vaitro","/Image/**","panda/**").permitAll()
+                .requestMatchers( "/panda/login","/panda/vaitro","/Image/**","panda/**","/panda/banhangoffline/**").permitAll()
                 .requestMatchers("/panda/vaitro").hasAnyRole("QUANLY")
                 //.anyRequest().authenticated() // các url còn lại phải đăng nhập để sử dụng
                 .anyRequest().permitAll() // các url còn lại không cần đăng nhập vẫn có thể sử dụng

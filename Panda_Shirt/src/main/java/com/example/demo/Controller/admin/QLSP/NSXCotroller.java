@@ -157,7 +157,6 @@ public class NSXCotroller {
         }
         nhaSanXuat.setNgaysua(LocalDate.now());
         nsxRepository.save(nhaSanXuat);
-
         return "redirect:/panda/nsx";
     }
 }

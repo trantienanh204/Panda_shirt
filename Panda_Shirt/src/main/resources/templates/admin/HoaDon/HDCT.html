@@ -7,9 +7,10 @@
 <body th:fragment="hdct">
 <div class="filter-container">
     <h3>
-       <a th:href="@{/panda/hoadon}"> <i class="fa-solid fa-arrow-right fa-flip-horizontal" style="color: #000000;"></i></a>
-        Hóa đơn chi tiết mã:
+        <i class="fa-solid fa-list" style="color: #000000;"></i>
+        <span th:text="${mahd}"></span>
     </h3>
+
 </div>
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sach hóa đơn chi tiết</h3>
@@ -18,22 +19,37 @@
         <tr>
             <th>#</th>
             <th>Tên sản phẩm </th>
-            <th>Số lượng</th>
+            <th>Kích thước</th>
+            <th>Màu sắc</th>
             <th>Đơn giá</th>
+            <th>Số lượng</th>
             <th>Tổng tiền</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Áo phông nam</td>
-            <td>10</td>
-            <td>20.000</td>
-            <td>200.000</td>
+        <tr th:each="hdct,i : ${lshdct} ">
+            <td th:text="${i.count}"></td>
+            <td th:text="${hdct.sanPhamChiTiet.sanPham.tensp}"></td>
+            <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
+            <td th:text="${hdct.sanPhamChiTiet.mauSac.ten}"></td>
+            <td th:text="${hdct.sanPhamChiTiet.dongia}"></td>
+            <td th:text="${hdct.soluong}"></td>
+            <td th:text="${hdct.tongtien}"></td>
+<!--            <td>-->
+<!--                <a th:href="@{/panda/hoadon/update(id=${hd.id})}" style="margin-right:15px">-->
+<!--                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 28px"></i>-->
+<!--                </a>-->
+<!--                <a th:href="@{/panda/hoadonct(id=${hd.id})}" style="margin-right:15px">-->
+<!--                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 28px"></i>-->
+<!--                </a>-->
+
+<!--            </td>-->
         </tr>
         </tbody>
     </table>
 </div>
+<br><a class="btn btn-warning" th:href="@{/panda/hoadon}">Quay lại</a>
+
 <style>
     * {
         box-sizing: border-box;
