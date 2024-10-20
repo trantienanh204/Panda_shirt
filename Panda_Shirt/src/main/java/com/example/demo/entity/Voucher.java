@@ -23,7 +23,7 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "Mã không được để trống")
+//    @NotBlank(message = "Mã không được để trống")
 //    @Size(min = 4, max = 12,message = "Mã phải có độ dài từ 4 đến 12 ký tự")
     @Column(name = "MA_KHUYEN_MAI")
     private String ma;

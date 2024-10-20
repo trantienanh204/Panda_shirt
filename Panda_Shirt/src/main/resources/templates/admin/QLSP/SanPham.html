@@ -256,14 +256,10 @@
     jQuery(document).ready(function($) {
         var currentPage = 0;  // Khởi tạo trang hiện tại
         var pageSize = 5;  // Kích thước trang
-
-        // Hàm tải danh sách sản phẩm
         function loadSanPham(page) {
             var tenSP = $('#filter-tensp').val();  // Lấy giá trị tên sản phẩm từ ô nhập
             var trangThai = $('#filter-trangthai').val();  // Lấy giá trị trạng thái từ danh sách chọn
-
             $('#loading').removeClass('d-none').addClass('d-block');  // Hiển thị loading
-
             $.ajax({
                 type: 'GET',
                 url: '/panda/sanpham/list',

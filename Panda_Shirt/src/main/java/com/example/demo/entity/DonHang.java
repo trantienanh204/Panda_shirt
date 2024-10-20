@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -19,14 +20,36 @@ public class DonHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_HOA_DON", referencedColumnName = "id")
+    private HoaDon hoaDon;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_KHACH_HANG", referencedColumnName = "id")
+    private KhachHang khachHang;
+    @ManyToOne
+    @JoinColumn(name = "ID_nhan_vien", referencedColumnName = "id")
+    private NhanVien nhanVien;
+
     @Column(name = "NGAY_TAO")
     private LocalDate ngaytao;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_KHACH_HANG",referencedColumnName = "id")
-    private KhachHang khachHang;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_TRANG_THAI",referencedColumnName = "id")
-    private TrangThaiDonHang trangThaiDonHang;
+    @Column(name = "TONGTIEN")
+    private BigDecimal tongtien;
+
+    @Column(name = "DIACHI")
+    private String diaChi;
+
+    @Column(name = "So_Dien_Thoai")
+    private String sdt;
+
+    @Column(name = "Trang_Thai")
+    private String trangThai;
+    @Column(name = "GHICHU")
+    private String ghiChu;
+    @Column(name = "Mota")
+    private String mota;
+
+
 }

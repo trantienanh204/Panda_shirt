@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -34,6 +35,7 @@ public class HoaDon {
     @Column(name = "SO_DIEN_THOAI")
     private String sdt;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "NGAY_MUA")
     private LocalDate ngaymua;
 
