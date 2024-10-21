@@ -73,6 +73,7 @@ public class SideBarController {
 
         return "redirect:/panda/kichthuoc/hienthi";
     }
+
 //    @GetMapping("/coao")
 //    public String coao(Model model) {
 //        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
@@ -116,20 +117,6 @@ public class SideBarController {
     }
     //      QLTK ===================
 
-    @GetMapping("/tkkhachhang")
-    public String khachhang(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLTK/TKKhachHang";
-    }
-
-    @GetMapping("/tknhanvien")
-    public String tknhanvien(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/QLTK/TKNhanVien";
-    }
-    //================================
 
     @GetMapping("/hoadon")
     public String hoadon(Model model) {
