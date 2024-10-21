@@ -13,7 +13,7 @@ public class VoucherService {
     @Autowired
     VoucherRepository voucherRepository;
     @Autowired
-    private EmailSService voucherEmail;
+    private EmailService voucherEmail;
 
     // Phương thức để cập nhật trạng thái voucher
     public void updateVoucherStatus() {

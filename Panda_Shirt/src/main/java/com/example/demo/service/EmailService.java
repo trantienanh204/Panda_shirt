@@ -1,19 +1,17 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.Voucher;
 import com.example.demo.respository.VoucherRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class EmailSService {
+public class EmailService {
     @Autowired
     JavaMailSender mailSender;
     @Autowired
@@ -32,4 +30,17 @@ public class EmailSService {
     public Voucher layvoucher(Integer id){
      return  voucherRepository.findById(id).orElse(null);
     }
-}
+
+
+
+        @SneakyThrows
+        public void sendEmail(String to, String subject, String body) {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(body, true); // true để chỉ định nội dung là HTML
+            mailSender.send(message);
+        }
+    }
+

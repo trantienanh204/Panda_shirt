@@ -6,34 +6,61 @@
 </head>
 <body th:fragment="mausac">
 <h2>Màu Sắc</h2>
+<!--                                       tự sửa lại đi-->
+<!--<div class="filter-container">-->
+<!--    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>-->
+<!--    <hr>-->
+<!--    <div class="filter-inputs">-->
+<!--        <div class="filter-input">-->
+<!--            <label for="title-author">Tên màu sắc</label>-->
+<!--            <input type="text" id="title-author" placeholder="Tên màu sắc">-->
+<!--        </div>-->
+<!--        <div class="filter-input">-->
+<!--            <label for="period">Trạng thái</label>-->
+<!--            <select id="period">-->
+<!--                <option value="">&#45;&#45; Chọn trạng thái &#45;&#45;</option>-->
+<!--                &lt;!&ndash; Lặp qua danh sách trạng thái từ server &ndash;&gt;-->
+<!--                <th:block>-->
+<!--                    <option th:value="0">Hoạt động</option>-->
+<!--                    <option th:value="1">Ngừng hoạt động</option>-->
+<!--                </th:block>-->
+<!--            </select>-->
+<!--        </div>-->
 
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
-    <hr>
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên màu sắc</label>
-            <input type="text" id="title-author" placeholder="Tên màu sắc">
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
-                <option value="">-- Chọn trạng thái --</option>
-                <!-- Lặp qua danh sách trạng thái từ server -->
-                <th:block>
-                    <option th:value="0">Hoạt động</option>
-                    <option th:value="1">Ngừng hoạt động</option>
-                </th:block>
-            </select>
-        </div>
+<!--        <div class="filter-buttons">-->
+<!--            <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right"-->
+<!--                                                                          style="color: #ffffff;"></i> Làm mới</a>-->
+<!--            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<form th:action="@{/panda/mausac/hienthi}" method="get">
+    <div class="filter-container">
+        <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+        <hr>
+        <div class="filter-inputs">
+            <div class="filter-input">
+                <label for="title-author">Tên màu sắc</label>
+                <input type="text" id="title-author" name="tenms" placeholder="Tên màu sắc"
+                       th:value="${tenms}">
+            </div>
+            <div class="filter-input">
+                <label for="period">Trạng thái</label>
+                <select id="period" name="trangthai">
+                    <option value="">-- Chọn trạng thái --</option>
+                    <option th:value="0" th:selected="${trangthai == 0}">Hoạt động</option>
+                    <option th:value="1" th:selected="${trangthai == 1}">Ngừng hoạt động</option>
+                </select>
+            </div>
 
-        <div class="filter-buttons">
-            <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right"
-                                                                          style="color: #ffffff;"></i> Làm mới</a>
-            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+            <div class="filter-buttons">
+                <button type="submit" class="btn btn-dark"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+                <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</a>
+            </div>
         </div>
     </div>
-</div>
+</form>
+
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
@@ -62,14 +89,14 @@
             <td th:text="${ms.ten}"></td>
             <td th:text="${ms.ngaytao != null? #temporals.format(ms.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:text="${ms.ngaysua != null? #temporals.format(ms.ngaysua, 'dd/MM/yyyy'): 'chưa có'}"></td>
-            <td th:if="${ms.trangthai} == true">
+            <td th:if="${ms.trangthai} == 0">
                 <span class="status-label status-green"
-                      th:text="${ms.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${ms.trangthai == 0 ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
-            <td th:if="${ms.trangthai} == false ">
+            <td th:if="${ms.trangthai} == 1 ">
                 <span class="status-label status-orange"
-                      th:text="${ms.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${ms.trangthai == 0 ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
             <td>
@@ -77,11 +104,11 @@
                     <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
                 </a>
                 <a th:href="@{/panda/mausac/remove/{id} (id=${ms.id})}">
-                    <i th:if="${ms.trangthai == true}">
+                    <i th:if="${ms.trangthai == 0}">
                         <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
                         </i>
                     </i>
-                    <i th:if="${ms.trangthai == false}">
+                    <i th:if="${ms.trangthai == 1}">
                         <i class="fa-solid fa-toggle-off" style="color: #00040a;">
                         </i>
                     </i>
@@ -92,19 +119,28 @@
     </table>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-            <li class="page-item" th:if="${currentPage > 1}">
-                <a class="page-link" href="#" th:href="@{'?pageNo='+${currentPage-1}}" aria-label="Previous">
-                    <span aria-hidden="true"> << </span>
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/mausac/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, tenms=${tenms}, trangthai=${trangthai})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
 
-            <li class="page-item" th:each="i : ${#numbers.sequence(0,totalPage - 1)}">
-                <a class="page-link" href="#"  th:href="@{/panda/mausac/hienthi(pageNo=${i+1})}" th:text="${i + 1}"></a>
+            <!-- Hiển thị danh sách trang -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/panda/mausac/hienthi(page=${i}, tenms=${tenms}, trangthai=${trangthai})}"
+                   th:text="${i + 1}"></a>
             </li>
 
-            <li class="page-item" th:if="${currentPage < totalPage}">
-                <a th:href="@{'?pageNo='+${currentPage+1}}" class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true"> >> </span>
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/mausac/hienthi(page=${currentPage + 1}, tenms=${tenms}, trangthai=${trangthai})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
