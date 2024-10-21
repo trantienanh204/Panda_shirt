@@ -154,10 +154,8 @@ public class sanPhamService {
 
     public boolean updateTemporarySanPhamChiTiet(Long id, SanPhamChiTietDTO updatedProductDetail) {
         if (updatedProductDetail == null) {
-            return false; // Không thực hiện nếu DTO là null
+            return false;
         }
-
-        // Tìm chi tiết sản phẩm hiện có trong danh sách tạm
         SanPhamChiTiet existingProductDetail = temporarySanPhamChiTietList.stream()
                 .filter(detail -> detail.getId().equals(id))
                 .findFirst()
@@ -172,24 +170,24 @@ public class sanPhamService {
             if (updatedProductDetail.getMauSac() != null) {
                 Optional<MauSac> optionalMauSac = mauSacRepsitory.findByTen(updatedProductDetail.getMauSac());
                 if (optionalMauSac.isPresent()) {
-                    existingProductDetail.setMauSac(optionalMauSac.get()); // Cập nhật màu sắc
+                    existingProductDetail.setMauSac(optionalMauSac.get());
                 } else {
                     throw new EntityNotFoundException("Màu sắc không tìm thấy với tên: " + updatedProductDetail.getMauSac());
                 }
             }
 
-// Cập nhật kích thước nếu có tên kích thước trong DTO
+
             if (updatedProductDetail.getKichThuoc() != null) {
                 Optional<KichThuoc> optionalKichThuoc = kichThuocRepository.findByten(updatedProductDetail.getKichThuoc());
                 if (optionalKichThuoc.isPresent()) {
-                    existingProductDetail.setKichThuoc(optionalKichThuoc.get()); // Cập nhật kích thước
+                    existingProductDetail.setKichThuoc(optionalKichThuoc.get());
                 } else {
                     throw new EntityNotFoundException("Kích thước không tìm thấy với tên: " + updatedProductDetail.getKichThuoc());
                 }
             }
 
 
-            return true; // Trả về true nếu cập nhật thành công
+            return true;
         }
 
         return false; // Trả về false nếu không tìm thấy sản phẩm chi tiết
@@ -214,20 +212,19 @@ public class sanPhamService {
 
 
 
-    //    public List<SanPhamChiTiet> getTemporarySanPhamChiTietList() {
-//        return temporarySanPhamChiTietList;
+
 //    }
     public List<SanPhamChiTiet> getTemporarySanPhamChiTietList() {
         return temporarySanPhamChiTietList;
     }
 
     public boolean deleteTemporarySanPhamChiTiet(Long id) {
-        // Kiểm tra xem sản phẩm có tồn tại không trước khi xóa
+
         boolean exists = temporarySanPhamChiTietList.stream().anyMatch(product -> product.getId().equals(id));
         if (exists) {
             temporarySanPhamChiTietList.removeIf(product -> product.getId().equals(id));
         }
-        return exists; // Trả về true nếu xóa thành công, false nếu không tìm thấy
+        return exists;
     }
 
 
@@ -290,9 +287,9 @@ public class sanPhamService {
                 .orElseThrow(() -> new EntityNotFoundException("Nhà sản xuất không tìm thấy với ID: " + sanPhamDTO.getCoAoId()));
         sanPham.setCoAo(coAo);
 
-        // Cập nhật chi tiết sản phẩm
+
         if (sanPhamDTO.getChiTietSanPham() != null) {
-            // Xóa các chi tiết sản phẩm cũ trước khi thêm mới
+
             sanPham.getSanPhamChiTietList().clear();
             sanPhamDTO.getChiTietSanPham().forEach(chiTietDTO -> {
                 SanPhamChiTiet chiTiet = new SanPhamChiTiet();
@@ -300,7 +297,7 @@ public class sanPhamService {
                 String colorInput = chiTietDTO.getMauSac();
                 String color = colorInput.contains(":") ? colorInput.split(":")[1].trim() : colorInput;
 
-                // Tìm kiếm MauSac từ cơ sở dữ liệu
+
                 MauSac mauSac = mauSacRepsitory.findByTen(color)
                         .orElseThrow(() -> new EntityNotFoundException("Màu sắc không tìm thấy với tên: " + color));
                 chiTiet.setMauSac(mauSac); // Thiết lập màu sắc vào chi tiết sản phẩm
@@ -313,7 +310,6 @@ public class sanPhamService {
                 chiTiet.setSoluongsanpham(chiTietDTO.getSoLuong());
                 chiTiet.setSanPham(sanPham);
 
-                // Thêm chi tiết vào danh sách của sản phẩm
                 sanPham.getSanPhamChiTietList().add(chiTiet);
             });
         }

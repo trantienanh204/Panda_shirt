@@ -2,7 +2,8 @@ package com.example.demo.Controller.admin.QLTK;
 
 import com.example.demo.entity.KhachHang;
 import com.example.demo.respository.KhachHangRepository;
-import com.example.demo.services.EmailService;
+
+import com.example.demo.service.EmailService;
 import com.example.demo.services.KhachHangService;
 import jakarta.validation.Valid;
 import org.mindrot.jbcrypt.BCrypt;

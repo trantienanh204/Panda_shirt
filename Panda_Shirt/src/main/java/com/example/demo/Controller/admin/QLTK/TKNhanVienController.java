@@ -1,7 +1,7 @@
 package com.example.demo.Controller.admin.QLTK;
 import com.example.demo.entity.NhanVien;
 import com.example.demo.respository.NhanVienRespository;
-import com.example.demo.services.EmailService;
+import com.example.demo.service.EmailService;
 import com.example.demo.services.NhanVienService;
 import jakarta.validation.Valid;
 import org.mindrot.jbcrypt.BCrypt;

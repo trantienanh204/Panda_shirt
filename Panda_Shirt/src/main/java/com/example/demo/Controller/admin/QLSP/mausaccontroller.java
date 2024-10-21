@@ -1,10 +1,12 @@
 package com.example.demo.Controller.admin.QLSP;
 
 import com.example.demo.entity.MauSac;
+import com.example.demo.entity.SanPham;
 import com.example.demo.respository.MauSacRepsitory;
 import com.example.demo.service.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,19 +29,45 @@ public class mausaccontroller {
     @Autowired
     MauSacService mauSacService;
     @GetMapping("/hienthi")
-    public String viewVC(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo) {
-//        slide bar
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+    public String viewVC(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "tenms", required = false) String tenms,
+            @RequestParam(value = "trangthai", required = false) Integer trangthai,
+            Model model) {
+        String role = "admin";
         model.addAttribute("role", role);
-//        phân trang
-        Pageable pageable = PageRequest.of(pageNo - 1, 3);
-        Page<MauSac> listMS = mauSacRepsitory.findAll(pageable);
+        if (page < 0) {
+            page = 0;
+        }
+        Page<MauSac> listMS = mauSacService.hienThimausac(page, tenms, trangthai);
+        model.addAttribute("listms", listMS.getContent());
+        model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", listMS.getTotalPages());
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("listms", listMS);
+        model.addAttribute("tenms", tenms);
+        model.addAttribute("trangthai", trangthai);
         model.addAttribute("MauSac", new MauSac());
         return "/admin/QLSP/MauSac";
     }
+
+
+
+
+
+
+
+//    public String viewVC(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo) {
+////        slide bar
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+////        phân trang
+//        Pageable pageable = PageRequest.of(pageNo - 1, 3);
+//        Page<MauSac> listMS = mauSacRepsitory.findAll(pageable);
+//        model.addAttribute("totalPage", listMS.getTotalPages());
+//        model.addAttribute("currentPage", pageNo);
+//        model.addAttribute("listms", listMS);
+//        model.addAttribute("MauSac", new MauSac());
+//        return "/admin/QLSP/MauSac";
+//    }
 
     @PostMapping("/add")
     public String AddVC(@ModelAttribute("MauSac") MauSac mauSac, Model model, RedirectAttributes redirectAttributes) {
@@ -96,7 +125,7 @@ public class mausaccontroller {
     public String removePB(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         MauSac mauSac = mauSacRepsitory.findById(id).orElse(null);
         if (mauSac != null) {
-            mauSac.setTrangthai(!mauSac.isTrangthai());
+            mauSac.setTrangthai(mauSac.getTrangthai() == 1 ? 0 : 1);
             mauSacRepsitory.save(mauSac);
             redirectAttributes.addFlashAttribute("UpdateStatusMessage", "Chuyển trạng thái thành công!");
         }
