@@ -57,7 +57,7 @@ public class GiamGiaController {
 
     @PostMapping("/add")
     public String AddVC(@ModelAttribute("Voucher") Voucher voucher, Model model,
-                        RedirectAttributes redirectAttributes) {
+                            RedirectAttributes redirectAttributes) {
         //slide bar
         String role = "admin"; // Lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
