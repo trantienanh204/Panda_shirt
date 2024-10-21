@@ -131,6 +131,7 @@ public class SecurityConfig {
     @Autowired
     private nhanvienRepository nhanvienRepository;
 
+
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -178,6 +179,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http.csrf().disable().cors().disable();
 
         http.authorizeHttpRequests(requests -> requests

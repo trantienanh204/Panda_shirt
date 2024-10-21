@@ -63,8 +63,7 @@
                     <label>Mã chất liệu:</label>
                     <input type="text" class="form-control" name="maChatLieu" th:field="*{maChatLieu}">
                     <div th:if="${errorma}" th:text="${errorma}" style="color: red;"></div>
-                    <div th:if="${#fields.hasErrors('maChatLieu')}" class="text-danger">
-                        <span th:errors="*{maChatLieu}"></span>
+                    <div th:if="${#fields.hasErrors('maChatLieu')}" class="text-danger"><span th:errors="*{maChatLieu}"></span>
                     </div>
                 </div>
                 <div class="form-group">

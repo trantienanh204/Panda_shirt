@@ -84,6 +84,12 @@
             <artifactId>spring-security-crypto</artifactId>
             <version>6.1.4</version>
         </dependency>
+        <!--email-->
+<!--        <dependency>-->
+<!--            <groupId>com.sun.mail</groupId>-->
+<!--            <artifactId>javax.mail</artifactId>-->
+<!--            <version>1.6.2</version>-->
+<!--        </dependency>-->
 
         <!-- JWT -->
         <dependency>

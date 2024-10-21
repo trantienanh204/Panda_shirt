@@ -254,6 +254,7 @@
 
 <script>
     jQuery(document).ready(function($) {
+
         var currentPage = 0;
         var pageSize = 5;
 
@@ -263,6 +264,7 @@
             var trangThai = $('#filter-trangthai').val();
 
             $('#loading').removeClass('d-none').addClass('d-block');
+
 
             $.ajax({
                 type: 'GET',

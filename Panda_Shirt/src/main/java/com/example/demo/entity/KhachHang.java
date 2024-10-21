@@ -40,7 +40,7 @@ public class KhachHang {
     @Column(name = "TEN_KHACH_HANG")
     private String tenkhachhang;
     @Column(name = "TRANG_THAI")
-    private int trangthai;
+    private boolean trangthai;
     @Column(name = "NGAY_TAO")
     private String ngaytao;
     @Column(name = "NGAY_SUA")

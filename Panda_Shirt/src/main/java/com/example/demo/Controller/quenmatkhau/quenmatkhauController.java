@@ -1,8 +1,9 @@
 package com.example.demo.Controller.quenmatkhau;
 
 
-    import com.example.demo.entity.NhanVien;
-    import com.example.demo.service.QuenmatkhauService;
+import com.example.demo.entity.NhanVien;
+import com.example.demo.service.QuenmatkhauService;
+
 
     import jakarta.mail.MessagingException;
     import jakarta.servlet.http.HttpSession;
@@ -11,24 +12,33 @@ package com.example.demo.Controller.quenmatkhau;
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.*;
 
-    import org.springframework.web.bind.annotation.GetMapping;
-    import org.springframework.web.bind.annotation.PostMapping;
-    import org.springframework.web.bind.annotation.RequestMapping;
-    import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
 @RequestMapping("quenmatkhau")
-    public class quenmatkhauController {
+public class quenmatkhauController {
 
-        @Autowired
-        private QuenmatkhauService quenmatkhauService;
-@GetMapping("/timtaikhoan")
-public String timtaikhoan (){
-    return "quenmatkhau/QuenMatKhai";
-}
+    @Autowired
+    private QuenmatkhauService quenmatkhauService;
+
+    @GetMapping("/timtaikhoan")
+    public String timtaikhoan() {
+        return "quenmatkhau/QuenMatKhai";
+    }
+
     @PostMapping("/guimail")
-    public String guimail(@RequestParam("tentaikhoan") String tentaikhoan,HttpSession session, Model model) {
+    public String guimail(@RequestParam("tentaikhoan") String tentaikhoan, HttpSession session, Model model) {
         String regexEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         if (tentaikhoan == null || tentaikhoan.isEmpty() || !tentaikhoan.matches(regexEmail)) {
             model.addAttribute("errorMessage", "Tên tài khoản không hợp lệ. Vui lòng nhập địa chỉ email hợp lệ.");
@@ -55,7 +65,7 @@ public String timtaikhoan (){
 
     @PostMapping("/xacnhan")
     public String xacNhanOTP(@RequestParam("OTP") String OTP, HttpSession session, Model model) {
-    //ờmmmmmmmmmmmmmmmmmmmmmmmmmmm
+        //ờmmmmmmmmmmmmmmmmmmmmmmmmmmm
         String email = (String) session.getAttribute("email");
 
         String maCaptchaDaGui = quenmatkhauService.getCaptchaForEmail(email);
@@ -93,6 +103,7 @@ public String timtaikhoan (){
             return "quenmatkhau/DoiMatKhau";
         }
     }
+
     @PostMapping("/guiLaiMa")
     public String guiLaiMa(HttpSession session, Model model) {
         String email = (String) session.getAttribute("email");
@@ -215,6 +226,15 @@ public String timtaikhoan (){
 
 
     //quenmatkhauService.macapchaList.add(Integer.parseInt(captchaCode));
-    }
+
+//    @PostMapping("/listOTPEmail")
+//    public String listOTPEmail(@RequestParam("email") String email) {
+//        return quenmatkhauService.getCaptchaForEmail(email);
+//
+//    }
+
+
+    //quenmatkhauService.macapchaList.add(Integer.parseInt(captchaCode));
+}
 
 

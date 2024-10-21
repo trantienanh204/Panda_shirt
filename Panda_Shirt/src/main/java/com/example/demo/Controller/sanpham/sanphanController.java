@@ -388,7 +388,7 @@ public class sanphanController {
     }
 
     @PostMapping("/addTCSP")
-    public ResponseEntity<?> addSanPham(@RequestBody SanPhamDTO sanPhamDTO) {
+    public ResponseEntity<?> addSanPham(@RequestBody sanPhamDTO sanPhamDTO) {
         try {
             System.out.println("Dữ liệu từ sanPhamDTO: " + sanPhamDTO);
             sanPhamService.saveSanPham(sanPhamDTO);

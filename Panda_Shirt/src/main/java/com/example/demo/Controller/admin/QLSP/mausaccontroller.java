@@ -45,7 +45,6 @@ public class mausaccontroller {
         String role = "admin"; // Lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
 
-
         String regex = "^[\\p{L}0-9\\s]+$";
         Pattern pattern = Pattern.compile(regex);
         Matcher tenmsMatcher = pattern.matcher(mauSac.getTen());
@@ -54,22 +53,25 @@ public class mausaccontroller {
             model.addAttribute("errorma", "Mã màu không được để trống");
             return "admin/QLSP/ADD/AddMS";
         }
-
+        if (mauSac.getMa() == null || mauSac.getMa().length() < 5 || mauSac.getMa().length() > 14) {
+            model.addAttribute("errorma", "Mã phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
+            return "admin/QLSP/ADD/AddMS";
+        }
         if (mauSacRepsitory.existsMauSacByMa(mauSac.getMa())) {
             model.addAttribute("errorma", "Mã màu đã tồn tại");
             return "admin/QLSP/ADD/AddMS";
         }
-
-        if (mauSac.getTen().isEmpty()) {
-            model.addAttribute("errorten", "Tên màu không được để trống");
+        if(mauSac.getTen().isEmpty() || mauSac.getMa().isEmpty()){
+            model.addAttribute("errorten","Không được để trống");
+            return "admin/QLSP/ADD/AddMS";
+        }if (!tenmsMatcher.matches()) {
+            model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/ADD/AddMS";
         }
-
-        if (!tenmsMatcher.matches()) {
-            model.addAttribute("errorten", "Tên màu chỉ được chứa chữ và số");
+        if (mauSac.getTen() == null || mauSac.getTen().length() < 5 || mauSac.getTen().length() > 14) {
+            model.addAttribute("errorten", "Tên phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/ADD/AddMS";
         }
-
         if (mauSacRepsitory.existsMauSacByTen(mauSac.getTen())) {
             model.addAttribute("errorten", "Tên màu đã tồn tại");
             return "admin/QLSP/ADD/AddMS";
@@ -77,8 +79,8 @@ public class mausaccontroller {
 
         mauSac.setNgaytao(LocalDate.now());
         mauSacRepsitory.save(mauSac);
-
         redirectAttributes.addFlashAttribute("Add", "Thêm màu sắc thành công");
+
         return "redirect:/panda/mausac/hienthi";
     }
 
@@ -119,14 +121,10 @@ public class mausaccontroller {
         String tenms = mauSac.getTen().trim().toLowerCase();
         String ma = mauSac.getMa().trim().toLowerCase();
 
-        String regex = "^[a-zA-Z0-9àáạảãâầấậẩăằắặẳêềếệểèẻẹéẽôồốộổơờớợởưừứựửữủũụúùìỉịíĩđòóỏọõ\\s]+$";
-        String regexma = "^[a-zA-Z0-9]+$";
+        String regex = "^[\\p{L}0-9\\s]+$";
 
         Pattern pattern = Pattern.compile(regex);
-        Pattern patternma = Pattern.compile(regexma);
 
-
-        Matcher mamsMatcher = patternma.matcher(mauSac.getMa());
         Matcher tenmsMatcher = pattern.matcher(tenms);
 
         MauSac findma = mauSacRepsitory.findByMaAndIdNot(ma,mauSac.getId());
@@ -134,6 +132,10 @@ public class mausaccontroller {
 
         if(mauSac.getMa().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
+            return "admin/QLSP/UPDATE/UpdateMS";
+        }
+        if (mauSac.getMa() == null || mauSac.getMa().length() < 5 || mauSac.getMa().length() > 14) {
+            model.addAttribute("errorma", "Mã phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
         if(findma != null){
@@ -145,6 +147,10 @@ public class mausaccontroller {
             return "admin/QLSP/UPDATE/UpdateMS";
         }else if (!tenmsMatcher.matches()) {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
+            return "admin/QLSP/UPDATE/UpdateMS";
+        }
+        if (mauSac.getTen() == null || mauSac.getTen().length() < 5 || mauSac.getTen().length() > 14) {
+            model.addAttribute("errorten", "Tên phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
         if(findten != null){

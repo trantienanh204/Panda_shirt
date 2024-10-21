@@ -84,44 +84,44 @@ public class sanPhamService {
     }
 
 
-    public SanPham convertToEntity(SanPhamDTO productDTO) {
-        SanPham sanPham = new SanPham();
-
-        // Gán các thuộc tính từ DTO vào Entity
-        sanPham.setMasp(productDTO.getMasp());
-        sanPham.setId(productDTO.getTenSanPham());
-        int totalQuantity = productDTO.getChiTietSanPham().stream()
-                .mapToInt(SanPhamChiTietDTO::getSoLuong)
-                .sum();
-
-// Gán tổng số lượng vào sản phẩm
-        sanPham.setSoluongsp(totalQuantity);
-        sanPham.setNgaytao(LocalDate.now());
-
-
-        // Tìm các đối tượng từ database bằng ID
-        DanhMuc danhMuc = danhMucRepository.findById(productDTO.getDanhMucId())
-                .orElseThrow(() -> new EntityNotFoundException("DanhMuc không tìm thấy với ID: " + productDTO.getDanhMucId()));
-        sanPham.setDanhMuc(danhMuc);
-
-        ThuongHieu thuongHieu = thuongHieuRepository.findById(productDTO.getThuongHieuId())
-                .orElseThrow(() -> new EntityNotFoundException("ThuongHieu không tìm thấy với ID: " + productDTO.getThuongHieuId()));
-        sanPham.setThuongHieu(thuongHieu);
-
-        ChatLieu chatLieu = chatLieuRespository.findById(productDTO.getChatLieuId())
-                .orElseThrow(() -> new EntityNotFoundException("ChatLieu không tìm thấy với ID: " + productDTO.getChatLieuId()));
-        sanPham.setChatLieu(chatLieu);
-
-        NhaSanXuat nhaSanXuat = nsxRepository.findById(productDTO.getNhaSanXuatId())
-                .orElseThrow(() -> new EntityNotFoundException("NhaSanXuat không tìm thấy với ID: " + productDTO.getNhaSanXuatId()));
-        sanPham.setNhaSanXuat(nhaSanXuat);
-
-        CoAo coAo = coAoRepository.findById(productDTO.getCoAoId())
-                .orElseThrow(() -> new EntityNotFoundException("CoAo không tìm thấy với ID: " + productDTO.getCoAoId()));
-        sanPham.setCoAo(coAo);
-
-        return sanPham;
-    }
+//    public SanPham convertToEntity(sanPhamDTO productDTO) {
+//        SanPham sanPham = new SanPham();
+//
+//        // Gán các thuộc tính từ DTO vào Entity
+//        sanPham.setMasp(productDTO.getMasp());
+//        sanPham.setId(productDTO.getTenSanPham());
+//        int totalQuantity = productDTO.getChiTietSanPham().stream()
+//                .mapToInt(SanPhamChiTietDTO::getSoLuong)
+//                .sum();
+//
+//// Gán tổng số lượng vào sản phẩm
+//        sanPham.setSoluongsp(totalQuantity);
+//        sanPham.setNgaytao(LocalDate.now());
+//
+//
+//        // Tìm các đối tượng từ database bằng ID
+//        DanhMuc danhMuc = danhMucRepository.findById(productDTO.getDanhMucId())
+//                .orElseThrow(() -> new EntityNotFoundException("DanhMuc không tìm thấy với ID: " + productDTO.getDanhMucId()));
+//        sanPham.setDanhMuc(danhMuc);
+//
+//        ThuongHieu thuongHieu = thuongHieuRepository.findById(productDTO.getThuongHieuId())
+//                .orElseThrow(() -> new EntityNotFoundException("ThuongHieu không tìm thấy với ID: " + productDTO.getThuongHieuId()));
+//        sanPham.setThuongHieu(thuongHieu);
+//
+//        ChatLieu chatLieu = chatLieuRespository.findById(productDTO.getChatLieuId())
+//                .orElseThrow(() -> new EntityNotFoundException("ChatLieu không tìm thấy với ID: " + productDTO.getChatLieuId()));
+//        sanPham.setChatLieu(chatLieu);
+//
+//        NhaSanXuat nhaSanXuat = nsxRepository.findById(productDTO.getNhaSanXuatId())
+//                .orElseThrow(() -> new EntityNotFoundException("NhaSanXuat không tìm thấy với ID: " + productDTO.getNhaSanXuatId()));
+//        sanPham.setNhaSanXuat(nhaSanXuat);
+//
+//        CoAo coAo = coAoRepository.findById(productDTO.getCoAoId())
+//                .orElseThrow(() -> new EntityNotFoundException("CoAo không tìm thấy với ID: " + productDTO.getCoAoId()));
+//        sanPham.setCoAo(coAo);
+//
+//        return sanPham;
+//    }
 
 
 
@@ -257,7 +257,7 @@ public class sanPhamService {
     }
 
     @Transactional
-    public void saveSanPham(SanPhamDTO sanPhamDTO) {
+    public void saveSanPham(sanPhamDTO sanPhamDTO) {
         if (sanPhamDTO == null || sanPhamDTO.getTenSanPham() == null) {
             throw new IllegalArgumentException("Thông tin sản phẩm không hợp lệ!");
         }

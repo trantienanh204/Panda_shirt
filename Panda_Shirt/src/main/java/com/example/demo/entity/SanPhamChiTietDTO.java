@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class SanPhamChiTietDTO {
     private Double gia; // Giá sản phẩm
     private Integer soLuong; // Số lượng sản phẩm
     private Integer idSanPham; // ID của sản phẩm
-
+//    private Long idSanPham; // ID của sản phẩm
     @Override
     public String toString() {
         return "SanPhamChiTietDTO{" +
@@ -27,3 +28,8 @@ public class SanPhamChiTietDTO {
                 '}';
     }
 }
+
+
+
+
+
