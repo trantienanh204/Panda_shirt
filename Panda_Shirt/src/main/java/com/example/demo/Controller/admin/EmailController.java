@@ -2,7 +2,7 @@ package com.example.demo.Controller.admin;
 
 import com.example.demo.entity.Customer;
 import com.example.demo.entity.EmailRequest;
-import com.example.demo.service.EmailService;
+import com.example.demo.service.EmailSService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import java.util.List;
 public class EmailController {
 
     @Autowired
-    EmailService emailService;
+    EmailSService emailService;
 
     @PostMapping("/sendemails")
     public ResponseEntity<String> sendVoucherEmails(@RequestBody EmailRequest emailRequest) {

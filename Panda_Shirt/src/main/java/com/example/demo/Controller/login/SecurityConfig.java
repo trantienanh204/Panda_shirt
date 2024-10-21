@@ -131,7 +131,7 @@ public class SecurityConfig {
     @Autowired
     private nhanvienRepository nhanvienRepository;
 
-    // Mã hóa mật khẩu
+
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -179,11 +179,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Tắt CSRF và CORS để kiểm tra
+
         http.csrf().disable().cors().disable();
 
         http.authorizeHttpRequests(requests -> requests
-                .anyRequest().permitAll() // Cho phép tất cả các URL không cần xác thực
+//<<<<<<< HEAD
+//                .anyRequest().permitAll() // Cho phép tất cả các URL không cần xác thực
+//=======
+                .requestMatchers( "/panda/login","/panda/vaitro","/Image/**","panda/**","/panda/banhangoffline/**").permitAll()
+                .requestMatchers("/panda/vaitro").hasAnyRole("QUANLY")
+                //.anyRequest().authenticated() // các url còn lại phải đăng nhập để sử dụng
+                .anyRequest().permitAll() // các url còn lại không cần đăng nhập vẫn có thể sử dụng
+
         );
 
         // Cấu hình đăng nhập

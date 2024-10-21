@@ -73,6 +73,7 @@ public class Voucher {
     @Column(name = "LOAI")
     private boolean loai;
 
+
     @Column(name = "TRANG_THAI")
     private String trangThai;
 
@@ -85,5 +86,6 @@ public class Voucher {
             return "Không hợp lệ"; //
         }
     }
+
 
 }

@@ -15,27 +15,33 @@ import java.util.List;
 @NoArgsConstructor
 public class sanPhamDTO {
 
+    private String masp; // ID sản phẩm
+    private Integer tenSanPham; // Tên sản phẩm
+    private Integer danhMucId; // ID danh mục
+    private Integer thuongHieuId; // ID thương hiệu
+    private Integer chatLieuId; // ID chất liệu
+    private Integer nhaSanXuatId; // ID nhà sản xuất
+    private Integer coAoId; // ID cổ áo
 
 
-                private String masp; // ID sản phẩm
-                private String tenSanPham; // Tên sản phẩm
-                private Integer quantity; // Số lượng sản phẩm
-                private LocalDate createdDate; // Ngày tạo
-                private LocalDate updatedDate; // Ngày sửa
-                private String tenDanhMuc; // Tên danh mục
-                private String tenThuongHieu; // Tên thương hiệu
-                private String tenChatLieu; // Tên chất liệu
-                private String tenNhaSanXuat; // Tên nhà sản xuất
-                private String coAo; // Cổ áo
 
-                // Danh sách kích thước và màu sắc
-                private List<Integer> sizes; // Thêm danh sách kích thước
-                private List<Integer> colors; // Thêm danh sách màu sắc
+    // Danh sách sản phẩm chi tiết
+    private List<SanPhamChiTietDTO> chiTietSanPham;
 
-                // Danh sách sản phẩm chi tiết
-                private List<SanPhamChiTietDTO> chiTietSanPham;
+    @Override
+    public String toString() {
+        return "SanPhamDTO{" +
+                "masp='" + masp + '\'' +
+                ", tenSanPham='" + tenSanPham + '\'' +
+                ", danhMucId=" + danhMucId +
+                ", thuongHieuId=" + thuongHieuId +
+                ", chatLieuId=" + chatLieuId +
+                ", nhaSanXuatId=" + nhaSanXuatId +
+                ", coAoId=" + coAoId +
 
-
+                ", chiTietSanPham=" + chiTietSanPham +
+                '}';
+    }
 
 
 }

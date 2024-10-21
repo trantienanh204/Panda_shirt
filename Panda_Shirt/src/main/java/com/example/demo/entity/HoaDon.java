@@ -62,7 +62,22 @@ public class HoaDon {
     @JoinColumn(name = "ID_KHACH_HANG",referencedColumnName = "id")
     private KhachHang khachHang;
 
+
     @ManyToOne
     @JoinColumn(name = "ID_VOUCHER",referencedColumnName = "id")
     private Voucher voucher;
+
+    public HoaDon(String mahoadon, int soluong, BigDecimal dongia, String sdt, LocalDate ngaymua, LocalDate ngaytao, LocalDate ngaysua, BigDecimal tongtien, BigDecimal thanhtien, int trangthai) {
+        this.mahoadon = mahoadon;
+        this.soluong = soluong;
+        this.dongia = dongia;
+        this.sdt = sdt;
+        this.ngaymua = ngaymua;
+        this.ngaytao = ngaytao;
+        this.ngaysua = ngaysua;
+        this.tongtien = tongtien;
+        this.thanhtien = thanhtien;
+        this.trangthai = trangthai;
+    }
+
 }

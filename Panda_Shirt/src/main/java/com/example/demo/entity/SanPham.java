@@ -1,11 +1,14 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -17,7 +20,7 @@ public class SanPham {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "MA_SAN_PHAM")
+    @Column(name = "MA_SAN_PHAM", unique = true)
     private String masp;
 
     @Column(name = "TEN_SAN_PHAM")
@@ -35,28 +38,44 @@ public class SanPham {
     @Column(name = "SO_LUONG_SAN_PHAM")
     private Integer soluongsp;
 
-    @Column(name = "Trang_thai")
+    @Column(name = "TRANG_THAI")
     private Integer trangthai;
 
     @ManyToOne
-    @JoinColumn(name = "ID_DANH_MUC",referencedColumnName = "id")
+    @JoinColumn(name = "ID_DANH_MUC", referencedColumnName = "id")
     private DanhMuc danhMuc;
 
     @ManyToOne
-    @JoinColumn(name = "ID_NHA_SAN_XUAT",referencedColumnName = "id")
+    @JoinColumn(name = "ID_NHA_SAN_XUAT", referencedColumnName = "id")
     private NhaSanXuat nhaSanXuat;
 
     @ManyToOne
-    @JoinColumn(name = "ID_THUONG_HIEU",referencedColumnName = "id")
+    @JoinColumn(name = "ID_THUONG_HIEU", referencedColumnName = "id")
     private ThuongHieu thuongHieu;
 
     @ManyToOne
-    @JoinColumn(name = "ID_CO_AO",referencedColumnName = "id")
+    @JoinColumn(name = "ID_CO_AO", referencedColumnName = "id")
     private CoAo coAo;
 
     @OneToOne
-    @JoinColumn(name = "ID_CHAT_LIEU",referencedColumnName = "id")
+    @JoinColumn(name = "ID_CHAT_LIEU", referencedColumnName = "id")
     private ChatLieu chatLieu;
 
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>(); // Khởi tạo danh sách
 
+    public void addSanPhamChiTiet(SanPhamChiTiet chiTiet) {
+        if (!this.sanPhamChiTietList.contains(chiTiet)) { // Kiểm tra trùng lặp
+            chiTiet.setSanPham(this); // Thiết lập mối quan hệ
+            this.sanPhamChiTietList.add(chiTiet); // Thêm vào danh sách
+        }
+    }
+
+    public void removeSanPhamChiTiet(SanPhamChiTiet chiTiet) {
+        if (this.sanPhamChiTietList.contains(chiTiet)) { // Kiểm tra tồn tại
+            chiTiet.setSanPham(null); // Thiết lập lại mối quan hệ
+            this.sanPhamChiTietList.remove(chiTiet); // Xóa khỏi danh sách
+        }
+    }
 }

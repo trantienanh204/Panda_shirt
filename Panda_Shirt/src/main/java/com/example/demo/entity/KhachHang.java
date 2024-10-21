@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "KHACH_HANG")
@@ -17,36 +18,49 @@ import lombok.NoArgsConstructor;
 public class KhachHang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    @Column(name = "ID")
+    private Integer id;
+    @Size(min = 4 , max = 8, message = "Mã từ 4 - 8 ký tự")
+    @NotBlank(message = "Mã khách hàng không được để trống")
     @Column(name = "MA_KHACH_HANG")
     private String makhachhang;
-    @Size(max = 20, message = "Tên tài khoản từ 5 đến 20 ký tự")
-    @Size(min = 5, message = "Tên tài khoản từ 5 đến 20 ký tự")
-    @NotBlank(message = "Vui lòng nhập dữ liệu")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Địa chỉ email không hợp lệ")
+    @NotBlank(message = "Email không được bỏ trống ")
     @Column(name = "TEN_TAI_KHOAN")
     private String tentaikhoan;
-    @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(max = 14, message = "Mật khẩu phải từ 8-14 ký tự")
-    @Size(min = 8, message = "Mật khẩu phải từ 8-14 ký tự")
     @Column(name = "MAT_KHAU")
     private String matkhau;
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 số")
     @Column(name = "SO_DIEN_THOAI")
     private String sdt;
+
+    @NotBlank(message = "Địa chỉ không được để trống")
     @Column(name = "DIA_CHI_CU_THE")
     private String diachi;
+    @NotBlank(message = "Tên khách hàng không được để trống")
+
     @Column(name = "TEN_KHACH_HANG")
     private String tenkhachhang;
     @Column(name = "TRANG_THAI")
-    private boolean trangthai;
+    private Integer trangthai;
     @Column(name = "NGAY_TAO")
-    private String ngaytao;
+
+    private LocalDate ngaytao;
+
     @Column(name = "NGAY_SUA")
-    private String ngaysua;
+    private LocalDate ngaysua;
+
+    @Column(name = "AVATAR")
+    private byte[] image;
+
     @Column(name = "GIOI_TINH")
-    private String gioitinh;
+    private Integer gioitinh;
+
+    public void toggleTrangThai() {
+        this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
+    }
+
     @ManyToOne
     @JoinColumn(name = "ID_TINH_THANH_PHO")
     private Tinh_TP tinh_tp;

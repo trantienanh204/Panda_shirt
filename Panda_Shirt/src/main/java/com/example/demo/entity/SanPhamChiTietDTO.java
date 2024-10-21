@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 
 @Getter
 @Setter
@@ -16,8 +15,21 @@ public class SanPhamChiTietDTO {
     private String kichThuoc; // Kích thước (dạng tên, ví dụ: "S", "M", "L")
     private Double gia; // Giá sản phẩm
     private Integer soLuong; // Số lượng sản phẩm
-    private Long idSanPham; // ID của sản phẩm
+    private Integer idSanPham; // ID của sản phẩm
+//    private Long idSanPham; // ID của sản phẩm
+    @Override
+    public String toString() {
+        return "SanPhamChiTietDTO{" +
+                "mauSac='" + mauSac + '\'' +
+                ", kichThuoc='" + kichThuoc + '\'' +
+                ", gia=" + gia +
+                ", soLuong=" + soLuong +
+                ", idSanPham=" + idSanPham +
+                '}';
+    }
 }
+
+
 
 
 

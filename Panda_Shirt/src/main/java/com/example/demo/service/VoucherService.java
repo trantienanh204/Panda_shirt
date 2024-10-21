@@ -1,10 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.Voucher;
 import com.example.demo.respository.VoucherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,7 +13,7 @@ public class VoucherService {
     @Autowired
     VoucherRepository voucherRepository;
     @Autowired
-    private EmailService voucherEmail;
+    private EmailSService voucherEmail;
 
     // Phương thức để cập nhật trạng thái voucher
     public void updateVoucherStatus() {

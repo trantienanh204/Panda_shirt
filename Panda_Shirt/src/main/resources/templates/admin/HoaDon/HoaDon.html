@@ -28,13 +28,14 @@
 <!-- Danh sách bài viết -->
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách hóa đơn</h3>
-    <table>
+    <table style="font-size: 12px">
         <thead>
         <tr>
             <th>#</th>
             <th>Mã hóa đơn </th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
+<!--            <th>Số lượng</th>-->
             <th>Tổng tiền</th>
             <th>Ngày mua</th>
             <th>Trạng thái</th>
@@ -42,22 +43,125 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td>Mã giảm giá</td>
-            <td><span class="status-label status-green">Đã gửi cho pr</span></td>
+        <tr th:each="hd,i : ${lshd} ">
+            <td th:text="${i.count}"></td>
+            <td th:text="${hd.mahoadon}"></td>
+            <td th:text="${hd.nhanVien.tennhanvien}"></td>
+            <td th:text="${hd.khachHang.tenkhachhang}"></td>
+<!--            <td th:text="${hd.soluong}"></td>-->
+            <td th:text="${hd.tongtien}"></td>
+            <td th:text="${hd.ngaymua}"></td>
             <td>
-                <a th:href="@{/panda/hdct}"><i class="fa-regular fa-pen-to-square" style="color: #000000;"></i></a>
-               <a><i class="fa-solid fa-trash" style="color: #00040a;"></i></a>
+                <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
+                      th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
+            </td>
+            <td>
+                <a class="btn " th:href="@{/panda/hoadon/update(id=${hd.id})}" >
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 20px"></i>
+                </a>
+                <a class="btn " href="#" data-toggle="modal" data-target="#invoiceDetailModal"
+                   th:data-invoice-id="${hd.id}">
+                    <i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>
+                </a>
+                <a class="btn " th:href="@{/panda/hoadon/xuatfile(id=${hd.id})}">
+                    <i class="fa-solid fa-inbox" style="color: #000000;font-size: 20px"></i>
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
+<!-- modal-->
+<div class="modal fade" id="invoiceDetailModal" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="invoiceDetailModalLabel">Chi Tiết Hóa Đơn</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID HDCT</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Kích thước</th>
+                        <th>Màu sắc</th>
+                        <th>Đơn giá</th>
+                        <th>Số Lượng</th>
+                        <th>Thành tiến</th>
+                    </tr>
+                    </thead>
+                    <tbody id="invoiceDetailBody">
+                    <!-- Dữ liệu chi tiết hóa đơn sẽ được thêm vào đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#invoiceDetailModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Nút đã kích hoạt modal
+            var invoiceId = button.data('invoice-id'); // Lấy ID hóa đơn
+
+            // Gửi yêu cầu đến server để lấy thông tin chi tiết hóa đơn
+            $.ajax({
+                url: '/panda/hoadonct?id=' + invoiceId, // Đường dẫn đến API hoặc controller
+                method: 'GET',
+                success: function(lshdct) {
+                    // Xóa dữ liệu cũ
+                    $('#invoiceDetailBody').empty();
+                    // Kiểm tra nếu có chi tiết hóa đơn
+                    if (lshdct.length > 0) {
+                        var mahd = "Danh sách hóa đơn chi tiết: " + lshdct[0].hoaDon.mahoadon;
+                        $('#invoiceDetailModalLabel').text(mahd);
+
+                        // Điền thông tin chi tiết hóa đơn vào modal
+                        lshdct.forEach(function(ls) {
+                            $('#invoiceDetailBody').append(`
+                                <tr class="invoice-row" data-id="${ls.id}">
+                                    <td>${ls.id}</td>
+                                    <td>Trống</td>
+                                    <td>${ls.sanPhamChiTiet.sanPham.tensp}</td>
+                                    <td>${ls.sanPhamChiTiet.kichThuoc.ten}</td>
+                                    <td>${ls.sanPhamChiTiet.mauSac.ten}</td>
+                                    <td>${ls.dongia}</td>
+                                    <td>${ls.soluong}</td>
+                                    <td>${ls.tongtien}</td>
+                                </tr>
+                            `);
+                        });
+                    } else {
+                        // Nếu không có chi tiết, hiển thị thông báo
+                        $('#invoiceDetailModalLabel').text("Không có chi tiết hóa đơn.");
+                        $('#invoiceDetailBody').append(`
+                        <tr>
+                            <td colspan="3" class="text-center">Không có chi tiết hóa đơn.</td>
+                        </tr>
+                        `);
+                    }
+                },
+                error: function() {
+                    // Xử lý lỗi nếu cần
+                    alert('Không thể tải dữ liệu chi tiết hóa đơn.');
+                }
+            });
+        });
+        // Thêm sự kiện click cho các dòng trong bảng
+        $(document).on('click', '.invoice-row', function() {
+            var hoadonctid = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
+            window.location.href = '/panda/hoadonct/update/' + hoadonctid; // Chuyển hướng đến URL update
+        });
+    });
+</script>
 <style>
     * {
         box-sizing: border-box;

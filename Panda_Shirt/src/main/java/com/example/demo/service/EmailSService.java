@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class EmailService {
+public class EmailSService {
     @Autowired
     JavaMailSender mailSender;
     @Autowired
