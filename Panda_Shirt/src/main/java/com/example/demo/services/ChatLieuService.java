@@ -8,5 +8,4 @@ public interface ChatLieuService {
     List<ChatLieu> list();
     void add(ChatLieu chatLieu);
     void update(ChatLieu chatLieu);
-    void delete(Integer id);
 }
