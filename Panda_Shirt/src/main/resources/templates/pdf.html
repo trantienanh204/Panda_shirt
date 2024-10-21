@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa Đơn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #d7d7d7;
+            padding-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .company-info {
+            text-align: left;
+        }
+        .company-info-3{
+            text-align: center;
+        }
+
+        .company-info h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #9a2b31;
+        }
+
+        .customer-info {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-table th, .invoice-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #d7d7d7;
+        }
+
+        .invoice-table th {
+            background-color: #f1f1f1;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .total strong {
+            font-size: 18px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            border-top: 2px dashed #d7d7d7;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer div {
+            font-size: 14px;
+        }
+
+        .footer div h3 {
+            margin: 0 0 5px;
+            font-size: 16px;
+            color: #9a2b31;
+        }
+
+        a {
+            text-decoration: none;
+            color: #9a2b31;
+        }
+        .background-image {
+            width: 15%;
+            height: 15%;
+            margin-right: 40px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-container">
+    <div class="company-info-3">
+        <h2>Shop Panda-Shirt</h2>
+    </div>
+
+    <div class="header">
+        <div class="company-info">
+           <h1>HÓA ĐƠN</h1>
+           <p th:text="'Hóa đơn : ' + ${hoadonct[0].hoaDon.mahoadon}"></p>
+           <p th:text="'Ngày mua : ' +${hoadonct[0].hoaDon.ngaymua}"></p>
+           <p th:text="'Nhân viên : ' +${hoadonct[0].hoaDon.nhanVien.tennhanvien}"></p>
+        </div>
+        <div>
+
+        </div>
+
+    </div>
+
+    <div class="customer-info">
+        <strong>Thông tin khách hàng</strong><br>
+        <span th:text="'Tên khách hàng : ' + ${hoadonct[0].hoaDon.khachHang.tenkhachhang}"></span> <br>
+        <span th:text="'Số điện  thoại : ' + ${hoadonct[0].hoaDon.khachHang.sdt}"></span><br>
+    </div>
+
+    <table class="invoice-table">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên sản phẩm</th>
+            <th>Màu sắc</th>
+            <th>Kích cỡ</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="hdct,i: ${hoadonct}">
+            <td th:text="${i.count}"></td>
+            <td th:text="${hdct.sanPhamChiTiet.sanPham.tensp}"></td>
+            <td th:text="${hdct.sanPhamChiTiet.mauSac.ten}"></td>
+            <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
+            <td th:text="${hdct.sanPhamChiTiet.dongia}"></td>
+            <td th:text="${hdct.soluong}"></td>
+            <td th:text="${hdct.tongtien}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="total">
+        <p th:text="'Tổng cộng: ' + ${hoadonct[0].hoaDon.tongtien}"></p>
+        <p>Thuế (0%): 0đ</p>
+        <strong>TỔNG TIỀN: </strong>
+    </div>
+
+    <div class="footer">
+        <div>
+            <h3>Thông tin thanh toán</h3>
+            Ngân hàng MB<br>
+            Tên tài khoản: NGO VAN THAI<br>
+            Số tài khoản: 0368864959<br>
+        </div>
+    </div>
+</div>
+</body>
+</html>

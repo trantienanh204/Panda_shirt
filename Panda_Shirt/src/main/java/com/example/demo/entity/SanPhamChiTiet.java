@@ -51,6 +51,7 @@ public class SanPhamChiTiet {
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
 
+
     @Override
     public String toString() {
         return "SanPhamChiTiet{" +
@@ -66,4 +67,5 @@ public class SanPhamChiTiet {
                 ", mauSac=" + (mauSac != null ? mauSac.getId() : "null") +
                 '}';
     }
+
 }

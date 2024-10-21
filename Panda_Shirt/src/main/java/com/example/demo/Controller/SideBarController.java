@@ -118,18 +118,18 @@ public class SideBarController {
     //      QLTK ===================
 
 
-    @GetMapping("/hoadon")
-    public String hoadon(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/HoaDon/HoaDon";
-    }
-    @GetMapping("/hdct")
-    public String hdct(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/HoaDon/HDCT";
-    }
+//    @GetMapping("/hoadon")
+//    public String hoadon(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/HoaDon/HoaDon";
+//    }
+//    @GetMapping("/hdct")
+//    public String hdct(Model model) {
+//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+//        model.addAttribute("role", role);
+//        return "/admin/HoaDon/HDCT";
+//    }
 
     @GetMapping("/thongke")
     public String thongke(Model model) {

@@ -37,8 +37,8 @@ public class HoaDonCT {
     private String hinhthucthanhtoan;
 
     @ManyToOne
-    @JoinColumn(name = "ID_SAN_PHAM",referencedColumnName = "id")
-    private SanPham sanPham;
+    @JoinColumn(name = "ID_SAN_PHAM_CHI_TIET",referencedColumnName = "id")
+    private SanPhamChiTiet sanPhamChiTiet;
 
     @ManyToOne
     @JoinColumn(name = "ID_HOA_DON",referencedColumnName = "id")

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
+
     boolean existsKhachHangByMakhachhang(String makhachhang);
     boolean existsKhachHangBySdt(String sdt);
+
 }
