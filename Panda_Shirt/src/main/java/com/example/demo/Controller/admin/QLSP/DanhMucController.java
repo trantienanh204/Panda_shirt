@@ -1,8 +1,11 @@
 package com.example.demo.Controller.admin.QLSP;
 
+import com.example.demo.entity.ChatLieu;
 import com.example.demo.respository.DanhMucRepository;
 import com.example.demo.entity.DanhMuc;
+import com.example.demo.service.DanhMucService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +21,27 @@ public class DanhMucController {
     @Autowired
     DanhMucRepository danhMucRepository;
 
+    @Autowired
+    DanhMucService danhMucService;
     DanhMuc danhMuc = new DanhMuc();
 
     @GetMapping()
-    public String danhmuc(Model model) {
+    public String danhmuc(@RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "tendm", required = false) String tendm,
+                          @RequestParam(value = "trangthai", required = false) Integer trangthai,
+                          Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-
-        model.addAttribute("lsdanhmuc",danhMucRepository.findAll());
+        if (page < 0) {
+            page = 0;
+        }
+        Page<DanhMuc> listDM = danhMucService.hienThiDM(page, tendm, trangthai);
+        model.addAttribute("lsdanhmuc", listDM.getContent());
+        model.addAttribute("totalPage", listDM.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("tendm", tendm);
+        model.addAttribute("trangthai", trangthai);
+        model.addAttribute("pageSize", listDM.getSize());
         return "admin/QLSP/DanhMuc";
     }
 

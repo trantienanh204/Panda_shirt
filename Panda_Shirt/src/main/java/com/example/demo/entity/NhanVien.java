@@ -52,8 +52,6 @@ public class NhanVien implements Serializable {
     private String chucvu;
 
     @Column(name = "TRANG_THAI")
-
-
     private Integer trangthai;
 
 

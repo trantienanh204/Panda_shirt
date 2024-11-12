@@ -1,10 +1,7 @@
 package com.example.demo.Controller;
 
 
-import com.example.demo.entity.ChatLieu;
-
-import com.example.demo.entity.SanPham;
-import com.example.demo.service.sanPhamService;
+import com.example.demo.service.SanPhamService;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/panda")
 public class SideBarController {
 
     @Autowired
-    private sanPhamService sanPhamService;
+    private SanPhamService sanPhamService;
 
 
     @GetMapping("/hienthi")
@@ -74,12 +70,12 @@ public class SideBarController {
         return "redirect:/panda/kichthuoc/hienthi";
     }
 
-//    @GetMapping("/coao")
-//    public String coao(Model model) {
-//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-//        model.addAttribute("role", role);
-//        return "/admin/QLSP/CoAo";
-//    }
+    @GetMapping("/coao")
+    public String coao(Model model) {
+        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+        model.addAttribute("role", role);
+        return "redirect:/panda/coao/hienthi";
+    }
 
 //    @GetMapping("/danhmuc")
 //    public String danhmuc(Model model) {

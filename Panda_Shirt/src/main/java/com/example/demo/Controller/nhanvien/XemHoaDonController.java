@@ -1,17 +1,20 @@
-package com.example.demo.Controller.admin.QLSP;
+package com.example.demo.Controller.nhanvien;
 
 import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.HoaDonCT;
 import com.example.demo.entity.KhachHang;
-import com.example.demo.entity.NhanVien;
-import com.example.demo.respository.*;
+import com.example.demo.respository.HoaDonCTRepository;
+import com.example.demo.respository.HoaDonRepository;
 import com.example.demo.service.HoaDonService;
 import com.itextpdf.html2pdf.HtmlConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -21,39 +24,24 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/panda/hoadon")
-public class HoaDonCotroller {
-
-    @Autowired
-    HoaDonCTRepository hoaDonCTRepository;
+@RequestMapping("/panda/nhanvien/xemhoadon")
+public class XemHoaDonController {
     @Autowired
     HoaDonService hoaDonService;
     @Autowired
-    SanPhamChiTietRepository sanPhamChiTietRepository;
-    @Autowired
     HoaDonRepository hoaDonRepository;
     @Autowired
-    nhanvienRepository nhanvien;
+    HoaDonCTRepository hoaDonCTRepository;
     @Autowired
-    KhachHangRepository khachHangRepository;
-
-    @Autowired
-    private TemplateEngine templateEngine; // Thymeleaf engine
-
-    @ModelAttribute("listnhanvien")
-    List<NhanVien> getnv (){return nhanvien.findAll();}
-
-    @ModelAttribute("listkhachhang")
-    List<KhachHang> getkh (){return khachHangRepository.findAll();}
-
-    @GetMapping
+    private TemplateEngine templateEngine;
+    @GetMapping("/hienthi")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
                           @RequestParam(value = "tennv", required = false) String tennv,
                           @RequestParam(value = "tenkh", required = false) String tenkh,
                           @RequestParam(value = "trangThai", required = false) Integer trangThai,
                           Model model){
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
+        String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
 
         if (page < 0) {
@@ -68,36 +56,9 @@ public class HoaDonCotroller {
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listHD.getSize());
-        return "admin/HoaDon/HoaDon";
-    }
-
-    @GetMapping("update")
-    public String formupdate(@RequestParam("id") int id,Model model){
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        model.addAttribute("hoadon",hoaDonRepository.findById(id).get());
-        return "admin/HoaDon/UPDATE/UpdateHd";
-    }
-
-    @PostMapping("update")
-    public String update(@ModelAttribute("hoadon")HoaDon hoaDon, Model model){
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        hoaDon.setTrangthai(1);
-        hoaDonRepository.save(hoaDon);
-        return "redirect:/panda/hoadon";
-    }
-
-    @GetMapping("import")
-    public String importpdf(Model model){
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        List<HoaDonCT> lshdct  = hoaDonCTRepository.findhoadonct(1);
-        model.addAttribute("hoadonct",lshdct);
-        model.addAttribute("lshd",hoaDonRepository.findAll().get(0));
-        System.out.println(lshdct .size());
-        System.out.println(lshdct.get(0).getSanPhamChiTiet().getSanPham().getTensp());
-        return "pdf";
+        List<HoaDonCT> listhdct = hoaDonCTRepository.findAll();
+        model.addAttribute("listhdct",listhdct);
+        return "/nhanvien/XemHoaDon";
     }
     @GetMapping("xuatfile")
     public String filePdf(@RequestParam("id") int id, Model model) {
@@ -133,11 +94,12 @@ public class HoaDonCotroller {
             return "pdf"+ e.getMessage();
         }
     }
+
     @GetMapping("/chitiet")
     public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
         List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
         model.addAttribute("hoaDonCTs", hoaDonCT);
-        return "/nhanvien/DuyetDon :: chiTiet"; // Trả về fragment HTML
+        return "/nhanvien/XemHoaDon :: chiTiet"; // Trả về fragment HTML
     }
 
 }

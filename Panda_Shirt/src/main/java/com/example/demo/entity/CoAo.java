@@ -46,9 +46,9 @@ public class CoAo {
     private LocalDateTime ngaySua;
     @NotNull(message = "Trạng thái không được để null")
     @Column(name = "TRANG_THAI")
-    private boolean trangThai;
-    public void toggleTrangThai() {
-        this.trangThai = !this.trangThai; // Đảo ngược giá trị
-    }
+    private Integer trangThai;
+//    public void toggleTrangThai() {
+//        this.trangThai = !this.trangThai; // Đảo ngược giá trị
+//    }
 
 }

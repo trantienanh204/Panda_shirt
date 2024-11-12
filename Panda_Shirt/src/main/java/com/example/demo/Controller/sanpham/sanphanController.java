@@ -5,7 +5,7 @@ import com.example.demo.entity.*;
 import com.example.demo.respository.DanhMucRepository;
 import com.example.demo.service.QuenmatkhauService;
 import com.example.demo.service.hinhanhService;
-import com.example.demo.service.sanPhamService;
+import com.example.demo.service.SanPhamService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class sanphanController {
     @Autowired
     private hinhanhService hinhanhService;
     @Autowired
-    private sanPhamService sanPhamService;
+    private SanPhamService sanPhamService;
     @Autowired
     private QuenmatkhauService quenmatkhauService;
     @Autowired
@@ -54,7 +54,6 @@ public class sanphanController {
             Pageable pageable = PageRequest.of(page, 5);
             return new PageImpl<>(Collections.emptyList(), pageable, 0); // Trả về một trang rỗng
         }
-
         return sanPhamPage;
     }
 
@@ -292,7 +291,7 @@ public class sanphanController {
 
         ChatLieu CL = new ChatLieu();
         CL.setTenChatLieu(laytamDTO.getName());
-        CL.setTrangThai(true);
+        CL.setTrangThai(0);
         CL.setNgayTao(LocalDateTime.now());
         CL.setMaChatLieu(quenmatkhauService.random());
 
@@ -315,7 +314,7 @@ public class sanphanController {
 
         CoAo coAo = new CoAo();
         coAo.setTen(laytamDTO.getName());
-        coAo.setTrangThai(true);
+        coAo.setTrangThai(0);
         coAo.setNgayTao(LocalDateTime.now());
         coAo.setMa(quenmatkhauService.random());
         try {
@@ -408,7 +407,7 @@ public class sanphanController {
         return ResponseEntity.ok(list);
     }
 
-    public sanphanController(sanPhamService sanPhamService) {
+    public sanphanController(SanPhamService sanPhamService) {
         this.sanPhamService = sanPhamService;
     }
     @GetMapping("/sanpham/chitiet")
