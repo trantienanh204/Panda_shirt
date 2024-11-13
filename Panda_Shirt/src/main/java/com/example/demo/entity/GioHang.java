@@ -24,12 +24,13 @@ public class GioHang {
     private Integer soluong;
 
     @Column(name = "TONG_TIEN")
-    private BigDecimal tongtien;
-    //    @ManyToOne
-//    @JoinColumn(name = "ID_KHACH_HANG",referencedColumnName = "id")
-//    private KhachHang khachHang;
+    private double tongtien;
 
-    //    @ManyToOne
-//    @JoinColumn(name = "ID_SAN_PHAM_CHI_TIET",referencedColumnName = "id")
-//    private SanPham sanPham;
+    @ManyToOne
+    @JoinColumn(name = "ID_KHACH_HANG", referencedColumnName = "id")
+    private KhachHang khachHang;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_SAN_PHAM_CHI_TIET", referencedColumnName = "id")
+    private SanPhamChiTiet sanPhamChiTiet;
 }

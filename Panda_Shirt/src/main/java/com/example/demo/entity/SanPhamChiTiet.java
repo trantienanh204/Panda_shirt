@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -21,10 +22,10 @@ public class SanPhamChiTiet {
     private Integer id;
 
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
-    private int soluongsanpham;
+    private Integer soluongsanpham;
 
     @Column(name = "DON_GIA")
-    private Double dongia;
+    private double dongia;
 
     @Column(name = "MO_TA")
     private String mota;
@@ -40,7 +41,7 @@ public class SanPhamChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_SAN_PHAM", referencedColumnName = "id")
-    @JsonIgnore // Ngăn không cho chuyển đổi đối tượng này thành JSON
+//    @JsonIgnore
     private SanPham sanPham;
 
     @ManyToOne
@@ -50,6 +51,10 @@ public class SanPhamChiTiet {
     @ManyToOne
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
+
+
+    @Column(name = "ANH_SAN_PHAM_CHI_TIET")
+    private byte[] anhSanPhamChiTiet;
 
 
     @Override
