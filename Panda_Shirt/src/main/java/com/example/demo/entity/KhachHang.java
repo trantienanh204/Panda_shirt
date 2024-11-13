@@ -57,6 +57,7 @@ public class KhachHang {
     @Column(name = "GIOI_TINH")
     private Integer gioitinh;
 
+
     public void toggleTrangThai() {
         this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
     }
@@ -70,4 +71,13 @@ public class KhachHang {
     @ManyToOne
     @JoinColumn(name = "ID_XA_PHUONG")
     private XaPhuong xaPhuong;
+
+
+    @Column(name = "DELETEAT")
+    private boolean delete;
+    @Column(name = "TINH_TRANG")
+    private Boolean tinhtrang;
+    @OneToOne
+    @JoinColumn(name = "TEN_DANG_NHAP") // Tên cột khóa ngoại trong bảng KhachHang
+    private TaiKhoan taiKhoan;
 }

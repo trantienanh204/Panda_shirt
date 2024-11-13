@@ -1,7 +1,9 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +19,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "SAN_PHAM")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class SanPham {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,6 +69,7 @@ public class SanPham {
     private ChatLieu chatLieu;
 
     @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
+
     @JsonManagedReference
     private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>();
 
@@ -78,7 +83,6 @@ public class SanPham {
                 .min(Double::compareTo)
                 .orElse(0.0);
     }
-
 
 
 

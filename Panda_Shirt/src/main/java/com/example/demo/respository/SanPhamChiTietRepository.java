@@ -5,6 +5,7 @@ import com.example.demo.entity.MauSac;
 import com.example.demo.entity.SanPhamChiTiet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -42,8 +43,11 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 
     @Query("SELECT hdct FROM SanPhamChiTiet hdct WHERE hdct.sanPham.id = :id")
     List<SanPhamChiTiet> findsanphamct(@Param("id") int id);
-    }
 
-
-
+    @Query("""
+        SELECT sp FROM SanPhamChiTiet sp 
+        WHERE LOWER(sp.sanPham.tensp) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """)
+    List<SanPhamChiTiet> findByTenSanPham(String keyword);
+}
 

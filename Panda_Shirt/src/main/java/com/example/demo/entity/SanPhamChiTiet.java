@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +19,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "SAN_PHAM_CHI_TIET")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class SanPhamChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +45,9 @@ public class SanPhamChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_SAN_PHAM", referencedColumnName = "id")
-//    @JsonIgnore
+////    @JsonIgnore // Ngăn không cho chuyển đổi đối tượng này thành JSON
+////    @JsonBackReference
+//
     private SanPham sanPham;
 
     @ManyToOne
@@ -51,6 +57,10 @@ public class SanPhamChiTiet {
     @ManyToOne
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
+
+    public SanPhamChiTiet(Integer id) {
+        this.id = id;
+    }
 
 
     @Column(name = "ANH_SAN_PHAM_CHI_TIET")
@@ -67,7 +77,7 @@ public class SanPhamChiTiet {
                 ", ngaytao=" + ngaytao +
                 ", ngaysua=" + ngaysua +
                 ", trangthai=" + trangthai +
-                ", sanPham=" + (sanPham != null ? sanPham.getId() : "null") +  // Hoặc lấy thuộc tính khác của SanPham
+//                ", sanPham=" + (sanPham != null ? sanPham.getId() : "null") +  // Hoặc lấy thuộc tính khác của SanPham
                 ", kichThuoc=" + (kichThuoc != null ? kichThuoc.getId() : "null") +
                 ", mauSac=" + (mauSac != null ? mauSac.getId() : "null") +
                 '}';

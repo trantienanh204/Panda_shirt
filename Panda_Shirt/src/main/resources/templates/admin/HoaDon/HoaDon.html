@@ -58,14 +58,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="hd,i : ${lshd} ">
-            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
-            <td th:text="${hd.mahoadon}"></td>
-            <td th:text="${hd.nhanVien.tennhanvien}"></td>
-            <td th:text="${hd.khachHang.tenkhachhang}"></td>
+
+<!--        <tr th:each="hd,i : ${lshd} " th:if="${hd.nhanVien != null || hd.khachHang != null}">-->
+        <tr th:each="hd,i : ${lshd} " >
+            <td  th:text="${i.count}"></td>
+            <td th:text="${hd.mahoadon != null ? hd.mahoadon : '(Trống)'}"></td>
+            <td th:text="${hd.nhanVien != null ? hd.nhanVien.tennhanvien : '(Trống)'}"></td>
+            <td th:text="${hd.khachHang != null ? hd.khachHang.tenkhachhang : '(Trống)'}"></td>
 <!--            <td th:text="${hd.soluong}"></td>-->
-            <td th:text="${hd.tongtien}"></td>
-            <td th:text="${hd.ngaymua}"></td>
+            <td th:text="${hd.tongtien != null ? hd.tongtien :'(Trống)'}"></td>
+<!--            <td th:text="${hd.tongtien != null ? #numbers.formatDecimal(hd.tongtien, 0, 'COMMA') : '(Trống)'}"></td>-->
+            <td th:text="${hd.ngaymua != null ? hd.ngaymua :'(Trống)'}"></td>
             <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
@@ -159,6 +162,7 @@
                 url: '/panda/hoadonct?id=' + invoiceId, // Đường dẫn đến API hoặc controller
                 method: 'GET',
                 success: function(lshdct) {
+                    console.log("Dữ liệu trả về:", lshdct);
                     // Xóa dữ liệu cũ
                     $('#invoiceDetailBody').empty();
                     // Kiểm tra nếu có chi tiết hóa đơn
@@ -168,18 +172,23 @@
 
                         // Điền thông tin chi tiết hóa đơn vào modal
                         lshdct.forEach(function(ls) {
-                            $('#invoiceDetailBody').append(`
+                            const sanPhamTen = ls.sanPhamChiTiet.sanPham ? ls.sanPhamChiTiet.sanPham.tensp : '';
+                            const kichThuocTen = ls.sanPhamChiTiet.kichThuoc ? ls.sanPhamChiTiet.kichThuoc.ten : '';
+                            const mauSacTen = ls.sanPhamChiTiet.mauSac ? ls.sanPhamChiTiet.mauSac.ten : '';
+                            if (sanPhamTen || kichThuocTen || mauSacTen) {
+                                $('#invoiceDetailBody').append(`
                                 <tr class="invoice-row" data-id="${ls.id}">
                                     <td>${ls.id}</td>
                                     <td>Trống</td>
-                                    <td>${ls.sanPhamChiTiet.sanPham.tensp}</td>
-                                    <td>${ls.sanPhamChiTiet.kichThuoc.ten}</td>
-                                    <td>${ls.sanPhamChiTiet.mauSac.ten}</td>
-                                    <td>${ls.dongia}</td>
-                                    <td>${ls.soluong}</td>
-                                    <td>${ls.tongtien}</td>
+                                    <td>${ls.sanPhamChiTiet.sanPham ? ls.sanPhamChiTiet.sanPham.tensp : ''}</td>
+                                    <td>${ls.sanPhamChiTiet.kichThuoc ? ls.sanPhamChiTiet.kichThuoc.ten : ''}</td>
+                                    <td>${ls.sanPhamChiTiet.mauSac ? ls.sanPhamChiTiet.mauSac.ten : ''}</td>
+                                    <td>${ls.dongia ? ls.dongia : ""}</td>
+                                    <td>${ls.soluong ? ls.soluong : ""}</td>
+                                    <td>${ls.tongtien ? ls.tongtien : ""}</td>
                                 </tr>
                             `);
+                            }
                         });
                     } else {
                         // Nếu không có chi tiết, hiển thị thông báo

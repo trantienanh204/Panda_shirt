@@ -8,7 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
+
 public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
 
     @Query("SELECT hd FROM HoaDon hd WHERE " +
@@ -17,5 +20,13 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             "(?3 IS NULL OR hd.khachHang.tenkhachhang LIKE %?3%) AND " +
             "(?4 IS NULL OR hd.trangthai = ?4)")
     Page<HoaDon> findByMaAndTenAndTrangthaiHD(String mahd, String tennv, String tenkh, Integer trangThai, Pageable pageable);
+
+      HoaDon findTopByOrderByIdDesc();
+
+    @Query("SELECT MAX(h.mahoadon) FROM HoaDon h")
+    String findMaxMaHoaDon();
+
+    @Query("SELECT h FROM HoaDon h WHERE h.khachHang IS NULL OR h.nhanVien IS NULL")
+    List<HoaDon> findHoaDonsWithNullId();
 
 }
