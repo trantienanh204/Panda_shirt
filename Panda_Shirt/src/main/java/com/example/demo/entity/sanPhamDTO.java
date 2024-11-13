@@ -17,7 +17,7 @@ public class SanPhamDTO {
     private Integer thuongHieuId;
     private Integer chatLieuId;
     private Integer nhaSanXuatId;
-    private Integer coAoId; 
+    private Integer coAoId;
     private List<SanPhamChiTietDTO> chiTietSanPham;
 
     @Override
