@@ -3,6 +3,10 @@ package com.example.demo.service;
 import com.example.demo.entity.Voucher;
 import com.example.demo.respository.VoucherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,9 +16,16 @@ import java.util.List;
 public class VoucherService {
     @Autowired
     VoucherRepository voucherRepository;
-    @Autowired
-    private EmailService voucherEmail;
 
+    private final int size = 5;
+    public Page<Voucher> hienThiVC(int page,String ma, String ten,LocalDate startDate, LocalDate endDate, String trangThai) {
+        if (page < 0) {
+            throw new IllegalArgumentException("Chỉ số trang không được nhỏ hơn số không");
+        }
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return voucherRepository.findByMaAndTenAndTrangthaiVC(ma, ten, startDate,endDate,trangThai, pageable);
+    }
     // Phương thức để cập nhật trạng thái voucher
     public void updateVoucherStatus() {
         LocalDate currentDate = LocalDate.now();

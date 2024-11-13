@@ -1,5 +1,6 @@
 package com.example.demo.Controller.admin.QLSP;
 
+import com.example.demo.entity.KichThuoc;
 import com.example.demo.entity.MauSac;
 import com.example.demo.entity.SanPham;
 import com.example.demo.respository.MauSacRepsitory;
@@ -46,28 +47,9 @@ public class mausaccontroller {
         model.addAttribute("tenms", tenms);
         model.addAttribute("trangthai", trangthai);
         model.addAttribute("MauSac", new MauSac());
+        model.addAttribute("pageSize", listMS.getSize());
         return "/admin/QLSP/MauSac";
     }
-
-
-
-
-
-
-
-//    public String viewVC(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo) {
-////        slide bar
-//        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-//        model.addAttribute("role", role);
-////        phân trang
-//        Pageable pageable = PageRequest.of(pageNo - 1, 3);
-//        Page<MauSac> listMS = mauSacRepsitory.findAll(pageable);
-//        model.addAttribute("totalPage", listMS.getTotalPages());
-//        model.addAttribute("currentPage", pageNo);
-//        model.addAttribute("listms", listMS);
-//        model.addAttribute("MauSac", new MauSac());
-//        return "/admin/QLSP/MauSac";
-//    }
 
     @PostMapping("/add")
     public String AddVC(@ModelAttribute("MauSac") MauSac mauSac, Model model, RedirectAttributes redirectAttributes) {
@@ -97,15 +79,18 @@ public class mausaccontroller {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/ADD/AddMS";
         }
-        if (mauSac.getTen() == null || mauSac.getTen().length() < 5 || mauSac.getTen().length() > 14) {
-            model.addAttribute("errorten", "Tên phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
+        if (mauSac.getTen() == null || mauSac.getTen().length() < 2 || mauSac.getTen().length() > 14) {
+            model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/ADD/AddMS";
         }
         if (mauSacRepsitory.existsMauSacByTen(mauSac.getTen())) {
             model.addAttribute("errorten", "Tên màu đã tồn tại");
             return "admin/QLSP/ADD/AddMS";
         }
-
+        if (mauSac.getTrangthai() == null) {
+            model.addAttribute("errortt", "Trạng thái không được để trống");
+            return "admin/QLSP/ADD/AddMS";
+        }
         mauSac.setNgaytao(LocalDate.now());
         mauSacRepsitory.save(mauSac);
         redirectAttributes.addFlashAttribute("Add", "Thêm màu sắc thành công");
@@ -118,6 +103,9 @@ public class mausaccontroller {
         model.addAttribute("MauSac", new MauSac());
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
+        MauSac mauSac = new MauSac();
+        mauSac.setTrangthai(0); // Giá trị mặc định là 0 (Hoạt động)
+        model.addAttribute("MauSac",mauSac);
         return "/admin/QLSP/ADD/AddMS";
     }
 
@@ -163,8 +151,8 @@ public class mausaccontroller {
             model.addAttribute("errorma","Không được để trống");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
-        if (mauSac.getMa() == null || mauSac.getMa().length() < 5 || mauSac.getMa().length() > 14) {
-            model.addAttribute("errorma", "Mã phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
+        if (mauSac.getMa() == null || mauSac.getMa().length() < 2 || mauSac.getMa().length() > 14) {
+            model.addAttribute("errorma", "Mã phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
         if(findma != null){
@@ -178,12 +166,16 @@ public class mausaccontroller {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
-        if (mauSac.getTen() == null || mauSac.getTen().length() < 5 || mauSac.getTen().length() > 14) {
-            model.addAttribute("errorten", "Tên phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
+        if (mauSac.getTen() == null || mauSac.getTen().length() < 2 || mauSac.getTen().length() > 14) {
+            model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
         if(findten != null){
             model.addAttribute("errorten","Tên đã tồn tại");
+            return "admin/QLSP/UPDATE/UpdateMS";
+        }
+        if (mauSac.getTrangthai() == null) {
+            model.addAttribute("errortt", "Trạng thái không được để trống");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
         mauSac.setNgaysua(LocalDate.now());

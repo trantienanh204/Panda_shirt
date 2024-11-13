@@ -4,28 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class sanPhamDTO {
-
-    private String masp; // ID sản phẩm
-    private Integer tenSanPham; // Tên sản phẩm
-    private Integer danhMucId; // ID danh mục
-    private Integer thuongHieuId; // ID thương hiệu
-    private Integer chatLieuId; // ID chất liệu
-    private Integer nhaSanXuatId; // ID nhà sản xuất
-    private Integer coAoId; // ID cổ áo
-
-
-
-    // Danh sách sản phẩm chi tiết
+public class SanPhamDTO {
+    private String masp;
+    private Integer tenSanPham;
+    private Integer danhMucId;
+    private Integer thuongHieuId;
+    private Integer chatLieuId;
+    private Integer nhaSanXuatId;
+    private Integer coAoId;
     private List<SanPhamChiTietDTO> chiTietSanPham;
 
     @Override
@@ -38,11 +30,7 @@ public class sanPhamDTO {
                 ", chatLieuId=" + chatLieuId +
                 ", nhaSanXuatId=" + nhaSanXuatId +
                 ", coAoId=" + coAoId +
-
                 ", chiTietSanPham=" + chiTietSanPham +
                 '}';
     }
-
-
 }
-

@@ -35,12 +35,24 @@ public class TKNhanVienController {
     EmailService emailService;
 
     @GetMapping("/tknhanvien")
-    public String tknhanvien(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String tknhanvien(@RequestParam(value = "page", defaultValue = "0") int page,
+                             @RequestParam(value = "manv", required = false) String manv,
+                             @RequestParam(value = "tennv", required = false) String tennv,
+                             @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                             Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        Pageable pageable = PageRequest.of(page,3);
-        Page<NhanVien> tknhanvienPage = nhanVienService.findPaginated(pageable);
-        model.addAttribute("list",tknhanvienPage);
         model.addAttribute("role", role);
+        if (page < 0) {
+            page = 0;
+        }
+        Page<NhanVien> listNV = nhanVienService.hienThiNV(page, manv , tennv, trangThai);
+        model.addAttribute("totalPage", listNV.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("list", listNV.getContent());
+        model.addAttribute("manv", manv);
+        model.addAttribute("tennv", tennv);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("pageSize", listNV.getSize());
         return "/admin/QLTK/TKNhanVien";
     }
     @GetMapping("/tknhanvien/create")
@@ -187,7 +199,7 @@ public class TKNhanVienController {
 
         NhanVien nhanVien = nhanVienService.findById(id);
         if (nhanVien != null) {
-            nhanVien.toggleTrangThai(); // Đảo ngược trạng thái
+            nhanVien.setTrangthai(nhanVien.getTrangthai() == 1 ? 0 : 1); // Đảo ngược trạng thái
             nhanVienRespository.save(nhanVien);
         }
         redirectAttributes.addFlashAttribute("ChangesStatusMessage", "Chuyển trạng thái thành công !");

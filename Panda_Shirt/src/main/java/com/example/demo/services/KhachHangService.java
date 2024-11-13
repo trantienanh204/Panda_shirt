@@ -4,6 +4,10 @@ import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.NhanVien;
 import com.example.demo.respository.KhachHangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +18,16 @@ public class KhachHangService {
     @Autowired
     KhachHangRepository khachHangRepository;
 
+    private final int size = 5;
+
+    public Page<KhachHang> hienThiKH(int page, String makh, String tenkh, Integer trangThai) {
+        if (page < 0) {
+            throw new IllegalArgumentException("Chỉ số trang không được nhỏ hơn số không");
+        }
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return khachHangRepository.findByMaAndTenAndTrangthaiKH(makh, tenkh, trangThai, pageable);
+    }
     // savetknhanvientodb
     public void saveCustomerToDb(MultipartFile file, KhachHang khachHang) {
         if (file != null && !file.isEmpty()) {
@@ -43,4 +57,8 @@ public class KhachHangService {
     public KhachHang findById(Integer id) {
         return khachHangRepository.findById(id).get();
     }
+
+//    public String getTenTinhByKhachHangId(Integer id) {
+//        return khachHangRepository.findTenTinhByKhachHangId(id);
+//    }
 }

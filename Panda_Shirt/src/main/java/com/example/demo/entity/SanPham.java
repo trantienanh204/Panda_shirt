@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +19,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "SAN_PHAM")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class SanPham {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,20 +69,34 @@ public class SanPham {
     private ChatLieu chatLieu;
 
     @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
-    private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>(); // Khởi tạo danh sách
+
+    @JsonManagedReference
+    private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>();
+
+
+    @Transient
+    private Double minPrice;
+
+    public Double getMinPrice() {
+        return sanPhamChiTietList.stream()
+                .map(SanPhamChiTiet::getDongia)
+                .min(Double::compareTo)
+                .orElse(0.0);
+    }
+
+
 
     public void addSanPhamChiTiet(SanPhamChiTiet chiTiet) {
-        if (!this.sanPhamChiTietList.contains(chiTiet)) { // Kiểm tra trùng lặp
-            chiTiet.setSanPham(this); // Thiết lập mối quan hệ
-            this.sanPhamChiTietList.add(chiTiet); // Thêm vào danh sách
+        if (!this.sanPhamChiTietList.contains(chiTiet)) {
+            chiTiet.setSanPham(this);
+            this.sanPhamChiTietList.add(chiTiet);
         }
     }
 
     public void removeSanPhamChiTiet(SanPhamChiTiet chiTiet) {
-        if (this.sanPhamChiTietList.contains(chiTiet)) { // Kiểm tra tồn tại
-            chiTiet.setSanPham(null); // Thiết lập lại mối quan hệ
-            this.sanPhamChiTietList.remove(chiTiet); // Xóa khỏi danh sách
+        if (this.sanPhamChiTietList.contains(chiTiet)) {
+            chiTiet.setSanPham(null);
+            this.sanPhamChiTietList.remove(chiTiet);
         }
     }
 }

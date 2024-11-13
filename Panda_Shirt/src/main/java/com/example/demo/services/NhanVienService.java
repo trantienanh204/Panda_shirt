@@ -4,7 +4,9 @@ import com.example.demo.entity.NhanVien;
 import com.example.demo.respository.NhanVienRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,9 +18,15 @@ public class NhanVienService {
     // phân trang
     @Autowired
     NhanVienRespository nhanVienRespository;
+    private final int size = 5;
 
-    public Page<NhanVien> findPaginated(Pageable pageable) {
-        return nhanVienRespository.findAll(pageable);
+    public Page<NhanVien> hienThiNV(int page, String manv, String tennv, Integer trangThai) {
+        if (page < 0) {
+            throw new IllegalArgumentException("Chỉ số trang không được nhỏ hơn số không");
+        }
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return nhanVienRespository.findByMaAndTenAndTrangthaiNV(manv, tennv, trangThai, pageable);
     }
 
     // savetknhanvientodb

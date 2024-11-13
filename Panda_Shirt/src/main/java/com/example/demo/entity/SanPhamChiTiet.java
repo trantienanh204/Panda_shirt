@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -25,10 +26,10 @@ public class SanPhamChiTiet {
     private Integer id;
 
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
-    private int soluongsanpham;
+    private Integer soluongsanpham;
 
     @Column(name = "DON_GIA")
-    private Double dongia;
+    private double dongia;
 
     @Column(name = "MO_TA")
     private String mota;
@@ -44,8 +45,9 @@ public class SanPhamChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_SAN_PHAM", referencedColumnName = "id")
-//    @JsonIgnore // Ngăn không cho chuyển đổi đối tượng này thành JSON
-//    @JsonBackReference
+////    @JsonIgnore // Ngăn không cho chuyển đổi đối tượng này thành JSON
+////    @JsonBackReference
+//
     private SanPham sanPham;
 
     @ManyToOne
@@ -61,6 +63,10 @@ public class SanPhamChiTiet {
     }
 
 
+    @Column(name = "ANH_SAN_PHAM_CHI_TIET")
+    private byte[] anhSanPhamChiTiet;
+
+
     @Override
     public String toString() {
         return "SanPhamChiTiet{" +
@@ -71,7 +77,7 @@ public class SanPhamChiTiet {
                 ", ngaytao=" + ngaytao +
                 ", ngaysua=" + ngaysua +
                 ", trangthai=" + trangthai +
-                ", sanPham=" + (sanPham != null ? sanPham.getId() : "null") +  // Hoặc lấy thuộc tính khác của SanPham
+//                ", sanPham=" + (sanPham != null ? sanPham.getId() : "null") +  // Hoặc lấy thuộc tính khác của SanPham
                 ", kichThuoc=" + (kichThuoc != null ? kichThuoc.getId() : "null") +
                 ", mauSac=" + (mauSac != null ? mauSac.getId() : "null") +
                 '}';
