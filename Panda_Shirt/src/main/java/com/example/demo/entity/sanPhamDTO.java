@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -22,10 +19,6 @@ public class sanPhamDTO {
     private Integer chatLieuId; // ID chất liệu
     private Integer nhaSanXuatId; // ID nhà sản xuất
     private Integer coAoId; // ID cổ áo
-
-
-
-    // Danh sách sản phẩm chi tiết
     private List<SanPhamChiTietDTO> chiTietSanPham;
 
     @Override
@@ -38,7 +31,6 @@ public class sanPhamDTO {
                 ", chatLieuId=" + chatLieuId +
                 ", nhaSanXuatId=" + nhaSanXuatId +
                 ", coAoId=" + coAoId +
-
                 ", chiTietSanPham=" + chiTietSanPham +
                 '}';
     }
