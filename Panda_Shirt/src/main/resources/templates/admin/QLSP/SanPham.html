@@ -48,6 +48,7 @@
     .filter-buttons {
         display: flex;
         align-items: center;
+        padding-top: 25px;
     }
 
     #filter-button {
@@ -185,6 +186,24 @@
         width: 2rem;
         height: 2rem;
     }
+    .status-active {
+        background-color: #28a745; /* Màu xanh lá */
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .status-inactive {
+        background-color: #dc3545; /* Màu đỏ */
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
 </style>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
@@ -212,7 +231,7 @@
         </select>
     </div>
     <div class="filter-buttons">
-        <button id="filter-button"><i class="fa fa-search"></i> Tìm kiếm</button>
+        <button id="filter-button" class="btn btn-dark"><i class="fa fa-search" style="color: #ffffff;"></i> Tìm kiếm</button>
     </div>
 </div>
 
@@ -229,9 +248,10 @@
         <thead>
         <tr>
             <th>#</th>
+            <th>Mã sản phẩm</th>
             <th>Tên sản phẩm</th>
-            <th>Ngày thêm</th>
             <th>Số lượng</th>
+            <th>Ngày tạo</th>
             <th>Trạng thái</th>
             <th>Thao tác</th>
         </tr>
@@ -280,14 +300,22 @@
                     $('#sanPhamtable').empty();
                     if (response && response.content && Array.isArray(response.content)) {
                         response.content.forEach(function (sp, index) {
+                            let ngayTaoFormatted = new Date(sp.ngaytao).toLocaleDateString("vi-VN");
+                            var statusClass = sp.trangthai === 1 ? 'status-active' : 'status-inactive';
+                            var statusText = sp.trangthai === 1 ? "Đang bán" : "Ngừng bán";
                             $('#sanPhamtable').append(
                                 '<tr>' +
                                 '<td>' + ((currentPage * pageSize) + index + 1) + '</td>' +
+                                '<td>' + sp.masp + '</td>' +
                                 '<td>' + sp.tensp + '</td>' +
-                                '<td>' + sp.ngaytao + '</td>' +
-                                '<td>' + (sp.soluongsp == null ? "0":sp.soluongsp) +'</td>' +
-                                '<td>' + (sp.trangthai === 1 ? "đang bán" : "ngừng bán") + '</td>' +
-                                '<td><a href="/panda/sanpham/spct?id=' + sp.id + '"><i class="fa-solid fa-eye"></i></a></td>' +
+
+                                '<td>' + sp.soluongsp + '</td>' +
+                                '<td>' + ngayTaoFormatted + '</td>' +
+                                '<td class="' + statusClass + '">' + statusText + '</td>' +
+                                '<td><a href="/panda/sanpham/spct?id=' + sp.id + '">' +
+                                '<i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>' +
+                                '</a></td>' +
+
                                 '</tr>'
                             );
                         });

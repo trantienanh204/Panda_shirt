@@ -134,6 +134,7 @@
                             <input type="radio" th:field="*{loai}" th:value="false">
                             VND
                         </div>
+                        <div th:if="${errorloai}" th:text="${errorloai}" style="color: red;"></div>
                     </div>
                 </div>
                 <div class="row mb-3">

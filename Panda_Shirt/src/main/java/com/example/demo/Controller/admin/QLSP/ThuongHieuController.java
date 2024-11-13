@@ -1,8 +1,11 @@
 package com.example.demo.Controller.admin.QLSP;
 
+import com.example.demo.entity.DanhMuc;
 import com.example.demo.respository.ThuongHieuRepository;
 import com.example.demo.entity.ThuongHieu;
+import com.example.demo.service.ThuongHieuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +21,27 @@ public class ThuongHieuController {
     @Autowired
     ThuongHieuRepository thuongHieuRepository;
 
+    @Autowired
+    ThuongHieuService thuongHieuService;
     ThuongHieu thuongHieu = new ThuongHieu();
 
     @GetMapping()
-    public String danhmuc(Model model) {
+    public String danhmuc(@RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "tenth", required = false) String tenth,
+                          @RequestParam(value = "trangthai", required = false) Integer trangthai,
+                          Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        model.addAttribute("lsth", thuongHieuRepository.findAll());
+        if (page < 0) {
+            page = 0;
+        }
+        Page<ThuongHieu> listTH  = thuongHieuService.hienThiTH(page, tenth, trangthai);
+        model.addAttribute("lsth", listTH.getContent());
+        model.addAttribute("totalPage", listTH.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("tenth", tenth);
+        model.addAttribute("trangthai", trangthai);
+        model.addAttribute("pageSize", listTH.getSize());
         return "admin/QLSP/ThuongHieu";
     }
 

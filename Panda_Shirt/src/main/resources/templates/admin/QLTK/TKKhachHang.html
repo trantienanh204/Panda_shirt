@@ -13,25 +13,38 @@
     <i class="fa-solid fa-circle-check"></i>
 </div>
 <h2>Tài Khoản Khách Hàng</h2>
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên khách hàng</label>
-            <input type="text" id="title-author" placeholder="Tên khách hàng">
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
-                <option value="month">-- Chọn trạng thái -- </option>
-            </select>
+<form th:action="@{/panda/tkkhachhang}" method="get">
+    <div class="filter-container">
+        <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+        <hr>
+        <div class="filter-inputs">
+            <div class="filter-input">
+                <label >Mã khách hàng</label>
+                <input type="text" name="makh" th:value="${makh}" placeholder="Mã khách hàng ">
+            </div>
+            <div class="filter-input">
+                <label >Tên khách hàng</label>
+                <input type="text" name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng">
+            </div>
+            <div class="filter-input">
+                <label for="period">Trạng thái</label>
+                <select id="period" name="trangThai">
+                    <option value="">-- Chọn trạng thái --</option>
+                    <option th:value="1" th:selected="${trangthai == 1}">Hoạt động</option>
+                    <option th:value="0" th:selected="${trangthai == 0}">Ngừng hoạt động</option>
+                </select>
+            </div>
         </div>
         <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+            <button type="submit" class="btn btn-dark">
+                <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
+            </button>
+            <a class="btn btn-dark" th:href="@{/panda/tkkhachhang}">
+                <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
+            </a>
         </div>
     </div>
-</div>
+</form>
 
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
@@ -51,17 +64,18 @@
             <th>Mã khách hàng</th>
             <th>Tên khách hàng</th>
             <th>Giới tính</th>
-            <th>Số điện thoại</th>
-            <th>Địa chỉ</th>
-            <th>Email</th>
+<!--            <th>Số điện thoại</th>-->
+<!--            <th>Địa chỉ</th>-->
+<!--            <th>Email</th>-->
             <th>Ngày tạo</th>
+            <th>Ngày sửa</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
         <tr  th:each="tkkhachhang,i : ${list}">
-            <th th:text="${i.count}"></th>
+            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td>
                 <img th:if="${tkkhachhang.image != null}"
                      th:src="@{'/panda/image/'+ ${tkkhachhang.id}}"
@@ -73,12 +87,13 @@
                      style="width: 100px; height: auto;"/>
             </td>
             <td th:text="${tkkhachhang.makhachhang}"></td>
-            <td th:text="${tkkhachhang.tentaikhoan}"></td>
+            <td th:text="${tkkhachhang.tenkhachhang}"></td>
             <td th:text="${tkkhachhang.gioitinh == 1 ? 'Nam' : 'Nữ'}"></td>
-            <td th:text="${tkkhachhang.sdt}"></td>
-            <td th:text="${tkkhachhang.diachi}"></td>
-            <td th:text="${tkkhachhang.tentaikhoan}"></td>
+<!--            <td th:text="${tkkhachhang.sdt}"></td>-->
+<!--            <td th:text="${tkkhachhang.diachi}"></td>-->
+<!--            <td th:text="${tkkhachhang.tentaikhoan}"></td>-->
             <td th:text="${tkkhachhang.ngaytao != null? #temporals.format(tkkhachhang.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
+            <td th:text="${tkkhachhang.ngaysua != null? #temporals.format(tkkhachhang.ngaysua, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:if="${tkkhachhang.trangthai} == 1">
                 <span class="status-label status-green"
                       th:text="${tkkhachhang.trangthai == 1 ? 'Hoạt động':'Không hoạt động'}">
@@ -104,6 +119,33 @@
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/tkkhachhang(page=${currentPage == 0 ? 0 : currentPage - 1}, makh=${makh},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Hiển thị danh sách trang -->
+            <li class="page-item">
+                <a class="page-link"
+                   th:text="${currentPage +1 }" disabled></a>
+            </li>
+
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/tkhachhang(page=${currentPage + 1},makh=${makh},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 <style>
     * {
@@ -141,25 +183,25 @@
 
     .filter-input label {
         margin-bottom: 5px;
-
+        padding-top: 10px;
         font-weight: bold;
     }
 
     .filter-input input,
     .filter-input select {
         padding: 10px;
-        border: 1px solid #cccccc;
+        border: 1px solid #ccc;
         border-radius: 5px;
     }
 
     .filter-buttons {
-        display: flex;
-        gap: 10px;
-        padding-top: 25px;
+        text-align: center;
+        margin-top: 10px;
     }
 
     .filter-buttons button {
         padding: 10px 20px;
+        margin-left: 10px;
         background-color: #333;
         color: white;
         border: none;

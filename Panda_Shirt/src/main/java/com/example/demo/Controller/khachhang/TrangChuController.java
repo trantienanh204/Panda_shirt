@@ -4,8 +4,8 @@ import com.example.demo.entity.KichThuoc;
 import com.example.demo.entity.MauSac;
 import com.example.demo.entity.SanPham;
 import com.example.demo.entity.SanPhamChiTiet;
+import com.example.demo.service.SanPhamService;
 import com.example.demo.service.TrangchuService;
-import com.example.demo.service.sanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +21,7 @@ public class TrangChuController {
     @Autowired
     TrangchuService trangchuService;
     @Autowired
-    sanPhamService sanPhamService;
+    SanPhamService sanPhamService;
     @GetMapping("/trangchu")
     public String hienthi(Model model){
         model.addAttribute("sanpham",trangchuService.spfinall());

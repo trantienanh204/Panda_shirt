@@ -78,12 +78,12 @@
                 <!-- Trạng thái màu sắc -->
                 <div class="form-group">
                     <label class="form-label"><b style="color: red">*</b> Trạng thái màu sắc</label><br>
-                    <input type="radio" th:field="*{trangthai}" th:value="true">
+                    <input type="radio" th:field="*{trangthai}" th:value="0" >
                     Hoạt động
-                    <input type="radio" th:field="*{trangthai}" th:value="false">
+                    <input type="radio" th:field="*{trangthai}" th:value="1">
                     Ngừng hoạt động
                 </div>
-
+                <div th:if="${errortt}" th:text="${errortt}" style="color: red;"></div>
                 <!-- Nút thêm màu sắc -->
                 <button type="submit" class="btn btn-primary btn-block mt-4">Thêm Kích Thước</button>
             </form>

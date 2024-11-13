@@ -42,10 +42,10 @@ public class ChatLieu {
     private LocalDateTime ngaySua;
     @NotNull(message = "Trạng thái không được để null")
     @Column(name = "TRANG_THAI")
-    private boolean trangThai;
+    private Integer trangThai;
 
-    public void toggleTrangThai() {
-        this.trangThai = !this.trangThai; // Đảo ngược giá trị
-    }
+//    public void toggleTrangThai() {
+//        this.trangThai = !this.trangThai; // Đảo ngược giá trị
+//    }
 
 }

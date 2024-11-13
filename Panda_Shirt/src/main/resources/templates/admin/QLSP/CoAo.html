@@ -25,31 +25,32 @@
     <i class="fa-solid fa-exclamation-circle"></i> Chuyển trạng thái thành công !
 </div>
 
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
-    <hr>
+<form th:action="@{/panda/coao/hienthi}" method="get">
+    <div class="filter-container">
+        <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+        <hr>
+        <div class="filter-inputs">
+            <div class="filter-input">
+                <label for="title-author">Tên cổ áo</label>
+                <input type="text" id="title-author" name="tenca" placeholder="Tên cổ áo"
+                       th:value="${tenca}">
+            </div>
+            <div class="filter-input">
+                <label for="period">Trạng thái</label>
+                <select id="period" name="trangthai">
+                    <option value="">-- Chọn trạng thái --</option>
+                    <option th:value="0" th:selected="${trangthai == 0}">Hoạt động</option>
+                    <option th:value="1" th:selected="${trangthai == 1}">Ngừng hoạt động</option>
+                </select>
+            </div>
 
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên cổ áo</label>
-            <input type="text" id="title-author" placeholder="Tên cổ áo">
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
-
-
-                <option value="month">-- Chọn trạng thái --</option>
-
-
-            </select>
-        </div>
-        <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+            <div class="filter-buttons">
+                <button type="submit" class="btn btn-dark"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+                <a class="btn btn-dark" th:href="@{/panda/coao/hienthi}"><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</a>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
 <!-- Danh sách cổ áo -->
     <div style="text-align: right">
@@ -75,30 +76,30 @@
         <tbody>
 
         <tr th:each="coAo,i : ${list}">
-            <td th:text="${i.count}"></td>
+            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${coAo.ma}"></td>
             <td th:text="${coAo.ten}"></td>
             <td th:text="${coAo.ngayTao != null? #temporals.format(coAo.ngayTao, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:text="${coAo.ngaySua != null? #temporals.format(coAo.ngaySua, 'dd/MM/yyyy'): 'chưa có'}"></td>
-            <td th:if="${coAo.trangThai} == true">
+            <td th:if="${coAo.trangThai} == 0">
                 <span class="status-label status-green"
-                      th:text="${coAo.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${coAo.trangThai == 0 ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
-            <td th:if="${coAo.trangThai} == false ">
+            <td th:if="${coAo.trangThai} == 1 ">
                 <span class="status-label status-orange"
-                      th:text="${coAo.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${coAo.trangThai == 0 ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
             <td>
-                <a style="margin-right: 10px" th:href="@{/panda/coao/update(id=${coAo.id})}"><i class="fa-regular fa-pen-to-square" style="color: #000000;"></i></a>
+                <a style="margin-right: 10px" th:href="@{/panda/coao/update(id=${coAo.id})}"><i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i></a>
                 <a th:href="@{/panda/coao/change(id=${coAo.id})}">
-                    <i th:if="${coAo.trangThai == true}">
-                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
+                    <i th:if="${coAo.trangThai == 0}">
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;font-size: 25px">
                         </i>
                     </i>
-                    <i th:if="${coAo.trangThai == false}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
+                    <i th:if="${coAo.trangThai == 1}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;font-size: 25px">
                         </i>
                     </i>
                 </a>
@@ -107,6 +108,33 @@
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/coao/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, tenca=${tenca}, trangthai=${trangthai})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Hiển thị danh sách trang -->
+            <li class="page-item">
+                <a class="page-link"
+                   th:text="${currentPage +1 }" disabled></a>
+            </li>
+
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/chatlieu/hienthi(page=${currentPage + 1}, tenca=${tenca}, trangthai=${trangthai})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 <style>
 

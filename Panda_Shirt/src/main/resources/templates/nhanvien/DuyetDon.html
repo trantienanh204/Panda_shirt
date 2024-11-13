@@ -6,42 +6,40 @@
 </head>
 <body th:fragment="duyetdon">
 <h2>Duyệt Đơn</h2>
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
-    <hr>
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên sản phẩm</label>
-            <input type="text" id="title-author" placeholder="Tên sản phẩm">
+<form th:action="${trangThai == 'Chờ duyệt' ? '/panda/nhanvien/duyetdon/hienthi' : (trangThai == 'Đã duyệt' ? '/panda/nhanvien/duyetdon/hienthi/daduyet' : '/panda/nhanvien/duyetdon/hienthi/dahuy')}"
+      method="get">
+    <div class="filter-container">
+        <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+        <hr>
+        <div class="filter-inputs">
+            <div class="filter-input">
+                <label>Mã hóa đơn</label>
+                <input type="text" name="mahd" th:value="${mahd}" placeholder="Mã hóa đơn">
+            </div>
+            <div class="filter-input">
+                <label>Tên nhân viên</label>
+                <input type="text" name="tennv" th:value="${tennv}" placeholder="Tên nhân viên ">
+            </div>
+            <div class="filter-input">
+                <label>Tên khách hàng</label>
+                <input type="text" name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng ">
+            </div>
         </div>
-        <div class="filter-input">
-            <label for="topic">Cổ áo</label>
-            <select id="topic">
-                <option value="">-- Chọn cổ áo --</option>
-            </select>
-        </div>
-        <div class="filter-input">
-            <label for="status">Danh mục</label>
-            <select id="status">
-                <option value="">-- Chọn danh mục --</option>
-            </select>
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
-                <option value="month">-- Chọn trạng thaí --</option>
-            </select>
+        <div class="filter-buttons">
+            <button type="submit" class="btn btn-dark">
+                <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
+            </button>
+            <a class="btn btn-dark"
+               th:href="${trangThai == 'Chờ duyệt' ? '/panda/nhanvien/duyetdon/hienthi' : (trangThai == 'Đã duyệt' ? '/panda/nhanvien/duyetdon/hienthi/daduyet' : '/panda/nhanvien/duyetdon/hienthi/dahuy')}">
+                <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
+            </a>
         </div>
     </div>
-    <div class="filter-buttons">
-        <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-        <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
-    </div>
-</div>
-<!-- Nút xem lịch sử nhân viên duyệt bài -->
+</form>
+
 <div class="history-btn-container">
     <a th:href="@{/panda/nhanvien/duyetdon/hienthi}">
-        <button class="btn btn-warning">Chờ duyệt</button>
+        <button type="submit" class="btn btn-warning">Chờ duyệt</button>
     </a>
     <a th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet}">
         <button class="btn btn-success">Đã duyệt</button>
@@ -51,10 +49,11 @@
     </a>
 </div>
 
-<div class="container">
+<div class="table-container">
     <table class="table table-hover table-bordered">
         <thead class="thead-dark">
         <tr>
+            <th>#</th>
             <th>Mã Hóa Đơn</th>
             <th>Tên nhân viên</th>
             <th>Tên Khách hàng</th>
@@ -66,11 +65,12 @@
         </thead>
         <tbody>
         <tr th:each="dd,i: ${listcd}">
+            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${dd.hoaDon.mahoadon}"></td>
             <td th:text="${dd.nhanVien.tennhanvien}"></td>
             <td th:text="${dd.khachHang.tenkhachhang}"></td>
-            <td th:text="${dd.hoaDon.ngaymua != null ? #temporals.format(dd.hoaDon.ngaymua, 'dd/MM/yyyy') : ''}"></td>
-            <td th:text="${dd.hoaDon.thanhtien}"></td>
+            <td th:text="${dd.ngaytao != null ? #temporals.format(dd.hoaDon.ngaymua, 'dd/MM/yyyy') : ''}"></td>
+            <td th:text="${dd.tongtien}"></td>
             <td th:if="${dd.trangThai == 'Chờ duyệt'}">
                 <span class="status-label status-orange"
                       th:text="${dd.trangThai}">
@@ -88,16 +88,69 @@
             </td>
 
             <td class="btn-actions" style="gap: 10px">
-                <a th:unless="${dd.trangThai}=='Đã duyệt' or ${dd.trangThai}=='Đã hủy'">
+                <a th:unless="${dd.trangThai}=='Đã duyệt' or ${dd.trangThai}=='Đã hủy'"
+                   th:href="@{/panda/nhanvien/duyetdon/update/{id} (id=${dd.id})}">
                     <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
                 </a>
-                <a>
+                <a th:if="${dd.trangThai}=='Đã duyệt' or ${dd.trangThai}=='Đã hủy'"
+                   th:href="@{/panda/nhanvien/duyetdon/detail/{id} (id=${dd.id})}">
                     <i class="fa fa-eye" style="color: #000000;font-size: 25px"></i>
                 </a>
             </td>
         </tr>
         </tbody>
-    </table>
+    </table> <!--    phân trang -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:if="${trangThai == 'Chờ duyệt'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="page-link"
+                   th:if="${trangThai == 'Đã duyệt'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="page-link"
+                   th:if="${trangThai == 'Đã hủy'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <!-- Hiển thị danh sách trang -->
+            <li class="page-item">
+                <a class="page-link"
+                   th:text="${currentPage +1 }" disabled></a>
+            </li>
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:if="${trangThai == 'Chờ duyệt'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                <a class="page-link"
+                   th:if="${trangThai == 'Đã duyệt'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                <a class="page-link"
+                   th:if="${trangThai == 'Đã hủy'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 <style>
     body {
@@ -116,20 +169,20 @@
 
     .filter-inputs {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        margin-bottom: 10px;
+        gap: 20px;
     }
 
     .filter-input {
         display: flex;
         flex-direction: column;
-        width: 18%;
+        width: auto;
     }
 
     .filter-input label {
         margin-bottom: 5px;
-        padding-top: 30px;
+        padding-top: 10px;
         font-weight: bold;
     }
 
@@ -142,6 +195,7 @@
 
     .filter-buttons {
         text-align: center;
+        margin-top: 10px;
     }
 
     .filter-buttons button {
@@ -161,6 +215,7 @@
     .history-btn-container {
         margin: 20px 0;
         text-align: right;
+        gap: 20px;
     }
 
     .btn-warning {

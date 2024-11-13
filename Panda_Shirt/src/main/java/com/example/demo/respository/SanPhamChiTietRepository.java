@@ -9,8 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
-
 @Repository
 public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, Integer> {
     @Query("SELECT c FROM SanPhamChiTiet c WHERE c.sanPham.id = :sanPhamId")
@@ -41,7 +39,11 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
         Double findPriceByProductSizeColor(@Param("productId") Integer productId,
                                            @Param("sizeId") Integer sizeId,
                                            @Param("colorId") Integer colorId);
+
+    @Query("SELECT hdct FROM SanPhamChiTiet hdct WHERE hdct.sanPham.id = :id")
+    List<SanPhamChiTiet> findsanphamct(@Param("id") int id);
     }
+
 
 
 

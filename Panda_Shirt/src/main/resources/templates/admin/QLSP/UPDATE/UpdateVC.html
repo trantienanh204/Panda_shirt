@@ -112,7 +112,7 @@
                         <input type="number" th:field="*{mucGiam}" class="form-control" placeholder="Mức giảm...">
                         <div th:if="${errormg}" th:text="${errormg}" style="color: red;"></div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label"><b style="color: red">*</b> Loại</label>
                         <div>
                             <input type="radio" th:field="*{loai}" th:value="true" checked>
@@ -120,6 +120,16 @@
                             <input type="radio" th:field="*{loai}" th:value="false">
                             VND
                         </div>
+                        <div th:if="${errorloai}" th:text="${errorloai}" style="color: red;"></div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label"><b style="color: red">*</b> Ngày tạo</label>
+                        <input type="date" th:field="*{ngaytao}" class="form-control"   readonly>
+
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label"><b style="color: red">*</b> Ngày sửa</label>
+                        <input type="date" th:field="*{ngaysua}" class="form-control"   readonly>
                     </div>
                 </div>
                 <div class="row mb-3">

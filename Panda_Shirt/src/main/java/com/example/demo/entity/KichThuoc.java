@@ -32,6 +32,6 @@ public class KichThuoc {
     private LocalDate ngaysua;
 
     @Column(name = "TRANG_THAI")
-    private boolean trangthai;
+    private Integer trangthai;
 
 }

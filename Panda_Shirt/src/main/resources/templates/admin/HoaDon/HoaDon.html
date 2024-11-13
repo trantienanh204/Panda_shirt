@@ -5,30 +5,45 @@
     <title>Title</title>
 </head>
 <body th:fragment="hoadon">
+<form th:action="@{/panda/hoadon}" method="get">
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
     <div class="filter-inputs">
         <div class="filter-input">
-            <label for="title-author">Mã hóa đơn</label>
-            <input type="text" id="title-author" placeholder="Mã hóa đơn">
+            <label >Mã hóa đơn</label>
+            <input type="text" name="mahd" th:value="${mahd}"  placeholder="Mã hóa đơn">
+        </div>
+        <div class="filter-input">
+            <label >Tên nhân viên</label>
+            <input type="text"  name="tennv" th:value="${tennv}" placeholder="Tên nhân viên ">
+        </div>
+        <div class="filter-input">
+            <label >Tên khách hàng</label>
+            <input type="text"  name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng ">
         </div>
         <div class="filter-input">
             <label for="period">Trạng thái</label>
-            <select id="period">
-                <option value="month">-- Chọn trạng thái -- </option>
+            <select id="period" name="trangThai">
+                <option value="">-- Chọn trạng thái --</option>
+                <option th:value="1" th:selected="${trangthai == 1}">Hoàn thành</option>
+                <option th:value="0" th:selected="${trangthai == 0}">Đã hủy</option>
             </select>
         </div>
-        <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
-        </div>
+    </div>
+    <div class="filter-buttons">
+        <button type="submit" class="btn btn-dark">
+            <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
+        </button>
+        <a class="btn btn-dark" th:href="@{/panda/hoadon}">
+            <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
+        </a>
     </div>
 </div>
-
+</form>
 <!-- Danh sách bài viết -->
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách hóa đơn</h3>
-    <table style="font-size: 12px">
+    <table>
         <thead>
         <tr>
             <th>#</th>
@@ -44,7 +59,7 @@
         </thead>
         <tbody>
         <tr th:each="hd,i : ${lshd} ">
-            <td th:text="${i.count}"></td>
+            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
@@ -70,6 +85,33 @@
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Hiển thị danh sách trang -->
+            <li class="page-item">
+                <a class="page-link"
+                   th:text="${currentPage +1 }" disabled></a>
+            </li>
+
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 <!-- modal-->
 <div class="modal fade" id="invoiceDetailModal" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel" aria-hidden="true">
@@ -198,7 +240,7 @@
 
     .filter-input label {
         margin-bottom: 5px;
-
+        padding-top: 10px;
         font-weight: bold;
     }
 
@@ -210,13 +252,13 @@
     }
 
     .filter-buttons {
-        display: flex;
-        gap: 10px;
-        padding-top: 25px;
+        text-align: center;
+        margin-top: 10px;
     }
 
     .filter-buttons button {
         padding: 10px 20px;
+        margin-left: 10px;
         background-color: #333;
         color: white;
         border: none;

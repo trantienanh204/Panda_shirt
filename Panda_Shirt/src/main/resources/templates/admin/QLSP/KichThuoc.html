@@ -7,34 +7,32 @@
 </head>
 <body th:fragment="kichthuoc">
 <h2>Kích Thước</h2>
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
-    <hr>
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên màu sắc</label>
-            <input type="text" id="title-author" placeholder="Tên màu sắc">
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
-                <option value="">-- Chọn trạng thái --</option>
-                <!-- Lặp qua danh sách trạng thái từ server -->
-                <th:block>
-                    <option th:value="0">Hoạt động</option>
-                    <option th:value="1">Ngừng hoạt động</option>
-                </th:block>
-            </select>
-        </div>
+<form th:action="@{/panda/kichthuoc/hienthi}" method="get">
+    <div class="filter-container">
+        <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+        <hr>
+        <div class="filter-inputs">
+            <div class="filter-input">
+                <label for="title-author">Tên kích thước</label>
+                <input type="text" id="title-author" name="tenkt" placeholder="Tên kích thước"
+                       th:value="${tenkt}">
+            </div>
+            <div class="filter-input">
+                <label for="period">Trạng thái</label>
+                <select id="period" name="trangthai">
+                    <option value="">-- Chọn trạng thái --</option>
+                    <option th:value="0" th:selected="${trangthai == 0}">Hoạt động</option>
+                    <option th:value="1" th:selected="${trangthai == 1}">Ngừng hoạt động</option>
+                </select>
+            </div>
 
-        <div class="filter-buttons">
-            <a class="btn btn-dark" th:href="@{/panda/mausac/hienthi}"><i class="fa-solid fa-rotate-right"
-                                                                          style="color: #ffffff;"></i> Làm mới</a>
-            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+            <div class="filter-buttons">
+                <button type="submit" class="btn btn-dark"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+                <a class="btn btn-dark" th:href="@{/panda/kichthuoc/hienthi}"><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</a>
+            </div>
         </div>
     </div>
-</div>
-
+</form>
 <!-- Danh sách bài viết -->
 <div style="text-align: right">
     <a th:href="@{/panda/kichthuoc/viewadd}" class="btn btn-success ">
@@ -57,31 +55,31 @@
         </thead>
         <tbody>
         <tr th:each="kt, i : ${listkt}">
-            <td th:text="${i.count}"></td>
+            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${kt.ma}"></td>
             <td th:text="${kt.ten}"></td>
             <td th:text="${kt.ngaytao != null ? #temporals.format(kt.ngaytao, 'dd/MM/yyyy') : 'chưa có'}"></td>
             <td th:text="${kt.ngaysua != null ? #temporals.format(kt.ngaysua, 'dd/MM/yyyy') : 'chưa có'}"></td>
-            <td th:if="${kt.trangthai} == true">
+            <td th:if="${kt.trangthai} == 0">
                 <span class="status-label status-green"
-                      th:text="${kt.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${kt.trangthai == 0 ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
-            <td th:if="${kt.trangthai} == false ">
+            <td th:if="${kt.trangthai} == 1 ">
                 <span class="status-label status-orange"
-                      th:text="${kt.trangthai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${kt.trangthai == 0 ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
             <td class="action-icons">
                 <a th:href="@{/panda/kichthuoc/update/{id} (id=${kt.id})}">
-                    <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
                 </a>
                 <a th:href="@{/panda/kichthuoc/remove/{id} (id=${kt.id})}">
-                    <i th:if="${kt.trangthai}">
-                        <i class="fa-solid fa-toggle-on" style="color: #00040a;"></i>
+                    <i th:if="${kt.trangthai == 0}">
+                        <i class="fa-solid fa-toggle-on" style="color: #00040a;font-size: 25px"></i>
                     </i>
-                    <i th:if="${!kt.trangthai}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a;"></i>
+                    <i th:if="${kt.trangthai == 1}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;font-size: 25px"></i>
                     </i>
                 </a>
             </td>
@@ -90,17 +88,27 @@
     </table>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-            <li class="page-item" th:if="${currentPage > 1}">
-                <a class="page-link" th:href="@{'?pageNo=' + ${currentPage - 1}}" aria-label="Previous">
-                    <span aria-hidden="true"> << </span>
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/kichthuoc/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, tenkt=${tenkt}, trangthai=${trangthai})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
+
+            <!-- Hiển thị danh sách trang -->
             <li class="page-item">
-                <a class="page-link" href="#" th:text="${currentPage}" disabled></a>
+                <a class="page-link"
+                   th:text="${currentPage +1 }" disabled></a>
             </li>
-            <li class="page-item" th:if="${currentPage < totalPage}">
-                <a class="page-link" th:href="@{'?pageNo=' + ${currentPage + 1}}" aria-label="Next">
-                    <span aria-hidden="true"> >> </span>
+
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/kichthuoc/hienthi(page=${currentPage + 1}, tenkt=${tenkt}, trangthai=${trangthai})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>

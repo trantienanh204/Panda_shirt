@@ -1,20 +1,24 @@
 package com.example.demo.Controller.admin;
 
 
+import com.example.demo.entity.ThuongHieu;
 import com.example.demo.entity.Voucher;
-import com.example.demo.respository.KhachHangRespository;
+import com.example.demo.respository.KhachHangRepository;
 import com.example.demo.respository.VoucherRepository;
 import com.example.demo.service.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,26 +28,40 @@ public class GiamGiaController {
     @Autowired
     VoucherRepository voucherRepository;
     @Autowired
-    KhachHangRespository khachHangRespository;
+    KhachHangRepository khachHangRespository;
     @Autowired
     VoucherService voucherService;
 
     @GetMapping("/hienthi")
-    public String viewKT(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo) {
+    public String viewKT(@RequestParam(value = "page", defaultValue = "0") int page,
+                         @RequestParam(value = "ma", required = false) String ma,
+                         @RequestParam(value = "ten", required = false) String ten,
+                         @RequestParam(value = "startDate", required = false)@DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+                         @RequestParam(value = "endDate", required = false)@DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate,
+                         @RequestParam(value = "trangThai", required = false) String trangThai,
+                         Model model) {
 //        slide bar
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
 //        check ngày hết hạn
         voucherService.updateVoucherStatus();
 //        Phân trang
-        Pageable pageable = PageRequest.of(pageNo - 1, 3);
-        Page<Voucher> listVC = voucherRepository.listvoucher(pageable);
+        if (page < 0) {
+            page = 0;
+        }
+        Page<Voucher> listVC  = voucherService.hienThiVC(page, ma, ten,startDate,endDate, trangThai);
         model.addAttribute("totalPage", listVC.getTotalPages());
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("listvc", listVC);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("listvc", listVC.getContent());
+        model.addAttribute("ma", ma);
+        model.addAttribute("ten", ten);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("chonmavc", voucherRepository.chonVC());
         model.addAttribute("listkh", khachHangRespository.dskhhoatdong());
-        model.addAttribute("chonmavc", voucherRepository.listvc());
-        model.addAttribute("Voucher", new Voucher());
+        model.addAttribute("pageSize", listVC.getSize());
+//        model.addAttribute("Voucher", new Voucher());
         return "/admin/GiamGia";
     }
 
@@ -57,7 +75,7 @@ public class GiamGiaController {
 
     @PostMapping("/add")
     public String AddVC(@ModelAttribute("Voucher") Voucher voucher, Model model,
-                        RedirectAttributes redirectAttributes) {
+                            RedirectAttributes redirectAttributes) {
         //slide bar
         String role = "admin"; // Lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
@@ -217,6 +235,10 @@ public class GiamGiaController {
             model.addAttribute("errormg", "Mức giảm chỉ chứa số");
             return "admin/QLSP/ADD/AddVC";
         }
+        if (voucher.isLoai() == false) {
+            model.addAttribute("errorloai", "Trạng thái không được để trống hoặc không hợp lệ");
+            return "admin/QLSP/ADD/AddVC";
+        }
         //mô tả
         if (voucher.getMota().isEmpty()) {
             model.addAttribute("errormt", "Không được để trống");
@@ -245,7 +267,7 @@ public class GiamGiaController {
 
     @PostMapping("/update")
     public String update(Model model, @ModelAttribute("Voucher") Voucher voucher, RedirectAttributes
-            redirectAttributes) {
+            redirectAttributes, @RequestParam("id") Integer id) {
 
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
@@ -408,7 +430,6 @@ public class GiamGiaController {
             model.addAttribute("errormg", "Mức giảm chỉ chứa số");
             return "admin/QLSP/UPDATE/UpdateVC";
         }
-
         //mô tả
         if (voucher.getMota().isEmpty()) {
             model.addAttribute("errormt", "Không được để trống");
@@ -417,11 +438,17 @@ public class GiamGiaController {
             model.addAttribute("errormt", "Mô tả chỉ được chứa chữ và số");
             return "admin/QLSP/UPDATE/UpdateVC";
         }
+        List<Voucher> listvc = voucherRepository.findAll();
+        LocalDate ngayTao = null;
+        for (Voucher vc : listvc) {
+            if (vc.getId() == id) {
+                ngayTao = vc.getNgaytao();
+            }
+        }
+        voucher.setNgaytao(ngayTao);
         voucher.setNgaysua(LocalDate.now());
         voucherRepository.save(voucher);
         redirectAttributes.addFlashAttribute("Update", "Sửa thành công!");
         return "redirect:/panda/voucher/hienthi";
-
-
     }
 }

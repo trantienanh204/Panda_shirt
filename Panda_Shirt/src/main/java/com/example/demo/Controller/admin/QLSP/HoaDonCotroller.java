@@ -5,8 +5,10 @@ import com.example.demo.entity.HoaDonCT;
 import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.NhanVien;
 import com.example.demo.respository.*;
+import com.example.demo.service.HoaDonService;
 import com.itextpdf.html2pdf.HtmlConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,8 @@ public class HoaDonCotroller {
 
     @Autowired
     HoaDonCTRepository hoaDonCTRepository;
+    @Autowired
+    HoaDonService hoaDonService;
     @Autowired
     SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
@@ -43,10 +47,27 @@ public class HoaDonCotroller {
     List<KhachHang> getkh (){return khachHangRepository.findAll();}
 
     @GetMapping
-    public String hienthi(Model model){
+    public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "mahd", required = false) String mahd,
+                          @RequestParam(value = "tennv", required = false) String tennv,
+                          @RequestParam(value = "tenkh", required = false) String tenkh,
+                          @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                          Model model){
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        model.addAttribute("lshd",hoaDonRepository.findAll());
+
+        if (page < 0) {
+            page = 0;
+        }
+        Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, tennv , tenkh, trangThai);
+        model.addAttribute("totalPage", listHD.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("lshd",listHD.getContent());
+        model.addAttribute("mahd", mahd);
+        model.addAttribute("tennv", tennv);
+        model.addAttribute("tenkh", tenkh);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("pageSize", listHD.getSize());
         return "admin/HoaDon/HoaDon";
     }
 
@@ -111,6 +132,12 @@ public class HoaDonCotroller {
             e.printStackTrace();
             return "pdf"+ e.getMessage();
         }
+    }
+    @GetMapping("/chitiet")
+    public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
+        List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
+        model.addAttribute("hoaDonCTs", hoaDonCT);
+        return "/nhanvien/DuyetDon :: chiTiet"; // Trả về fragment HTML
     }
 
 }

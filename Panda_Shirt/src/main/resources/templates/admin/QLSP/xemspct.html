@@ -43,23 +43,23 @@
         </div>
     </div>
     <div class="table-container">
-        <h3><i class="fa-solid fa-list" style="color: #000;"></i> Danh sách sản phẩm</h3>
+        <h3><i class="fa-solid fa-list" style="color: #000;"></i> Danh sách sản phẩm chi tiết</h3>
         <table class="table table-bordered table-striped">
-            <thead class="table-light">
+            <thead class="thead-dark">
             <tr>
-                <th><input type="checkbox" id="select-all"></th>
-                <th>#</th>
-                <th>Tên danh mục</th>
-                <th>Tên nhà sản xuất</th>
-                <th>Tên thương hiệu</th>
-                <th>Tên cổ áo</th>
-                <th>Tên chất liệu</th>
-                <th>Số lượng sản phẩm</th>
-                <th>Đơn giá</th>
-                <th>Trạng thái</th>
-                <th>Kích thước</th>
-                <th>Màu sắc</th>
-                <th>Thao tác</th>
+                <th style="width: 1%;"><input type="checkbox" id="select-all"></th>
+                <th style="width: 10%;">Danh mục</th>
+                <th style="width: 7%;">NSX</th>
+                <th style="width: 10%;">Thương hiệu</th>
+                <th style="width: 7%;">Cổ áo</th>
+                <th style="width: 8%;">Chất liệu</th>
+                <th style="width: 8%;">Số lượng</th>
+                <th style="width: 8%;">Đơn giá</th>
+                <th style="width: 8%;">Ngày tạo</th>
+                <th style="width: 8%;">Trạng thái</th>
+                <th style="width: 9%;">Kích thước</th>
+                <th style="width: 7%;">Màu sắc</th>
+                <th style="width: 15%;">Thao tác</th>
             </tr>
             </thead>
             <tbody id="sanPhamDetails">
@@ -140,9 +140,7 @@
                         data.sanPhamChiTietList.forEach(function(chiTiet, index) {
                             productDetailHtml += `
                                 <tr data-id="${chiTiet.id}">
-                                    <td><input type="checkbox" class="select-row"></td>
-                                    <td>${index + 1}</td>
-                                    <td>${data.danhMuc.tendanhmuc}</td>
+                                    <td><input type="checkbox" class="select-row"></td>                                    <td>${data.danhMuc.tendanhmuc}</td>
                                     <td>${data.nhaSanXuat.tennsx}</td>
                                     <td>${data.thuongHieu.tenthuonghieu}</td>
                                     <td>${data.coAo.ten}</td>
@@ -156,7 +154,7 @@
                                         ${chiTiet.kichThuoc.ten}
                                     </td>
                                     <td>
-                                        <input type="hidden" class="mau-sac-id" value="${chiTiet.mauSac.id}"> <!-- ID màu sắc -->
+                                        <input type="hidden" class="mau-sac-id" value="${chiTiet.mauSac.id}">
                                         ${chiTiet.mauSac.ten}
                                     </td>
                                     <td>
@@ -267,10 +265,5 @@
 
 
 </script>
-
-
-
-
-
 </body>
 </html>

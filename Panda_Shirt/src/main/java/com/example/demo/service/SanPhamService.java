@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class sanPhamService {
+public class SanPhamService {
     @Autowired
     sanPhamRepository sanPhamRepository;
     @Autowired
@@ -255,7 +255,7 @@ public class sanPhamService {
     }
 
     @Transactional
-    public void saveSanPham(sanPhamDTO sanPhamDTO) {
+    public void saveSanPham(SanPhamDTO sanPhamDTO) {
         if (sanPhamDTO == null || sanPhamDTO.getTenSanPham() == null) {
             throw new IllegalArgumentException("Thông tin sản phẩm không hợp lệ!");
         }
