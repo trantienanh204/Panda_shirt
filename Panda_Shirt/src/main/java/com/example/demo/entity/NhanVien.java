@@ -74,17 +74,6 @@ public class NhanVien implements Serializable {
         this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
     }
 
-    @OneToMany(mappedBy = "nhanVien", fetch = FetchType.EAGER)
-    private Set<UserRole> userRoles;  // Danh sách các quyền của nhân viên
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "nhanvien_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
-
 
     @Column(name = "DELETEAT")
     private boolean delete;
