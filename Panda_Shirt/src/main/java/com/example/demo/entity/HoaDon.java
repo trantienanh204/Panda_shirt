@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,11 +19,11 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class HoaDon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "MAHD")
     private String mahoadon;
@@ -54,6 +56,9 @@ public class HoaDon {
     @Column(name = "TRANG_THAI")
     private int trangthai;
 
+    @Column(name = "ACTIVE")
+    private Boolean active;
+
     @ManyToOne
     @JoinColumn(name = "ID_NHAN_VIEN",referencedColumnName = "id")
     private NhanVien nhanVien;
@@ -62,22 +67,14 @@ public class HoaDon {
     @JoinColumn(name = "ID_KHACH_HANG",referencedColumnName = "id")
     private KhachHang khachHang;
 
-
-    @ManyToOne
-    @JoinColumn(name = "ID_VOUCHER",referencedColumnName = "id")
-    private Voucher voucher;
-
-    public HoaDon(String mahoadon, int soluong, BigDecimal dongia, String sdt, LocalDate ngaymua, LocalDate ngaytao, LocalDate ngaysua, BigDecimal tongtien, BigDecimal thanhtien, int trangthai) {
-        this.mahoadon = mahoadon;
-        this.soluong = soluong;
-        this.dongia = dongia;
-        this.sdt = sdt;
-        this.ngaymua = ngaymua;
-        this.ngaytao = ngaytao;
-        this.ngaysua = ngaysua;
-        this.tongtien = tongtien;
-        this.thanhtien = thanhtien;
-        this.trangthai = trangthai;
+    public HoaDon(Integer id) {
+        this.id = id;
     }
+
+
+//    @ManyToOne
+//    @JoinColumn(name = "ID_VOUCHER",referencedColumnName = "id")
+//    private Voucher voucher;
+
 
 }

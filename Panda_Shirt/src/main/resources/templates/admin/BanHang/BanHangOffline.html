@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hóa đơn</title>
@@ -19,7 +21,38 @@
         }
         .invoice-btn-group {
             display: flex;
+            align-items: center;
             gap: 10px;
+        }
+        .invoice-btn-group input {
+            flex: 1;                    /* Cho phép ô input chiếm không gian còn lại */
+            max-width: 200px;           /* Đặt chiều rộng tối đa cho ô input (tùy chọn) */
+        }
+
+        .invoice-btn-group button {
+            padding: 6px 12px;
+        }
+
+        .input-container {
+            position: relative;
+            display: inline-block;
+        }
+        #productList {
+            max-height: 200px;
+            overflow-y: auto;
+            display: none; /* Ban đầu ẩn danh sách */
+            position: absolute;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .list-group-item:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+        .active {
+            background-color: blue; /* Màu nền cho tab đang hoạt động */
+            color: red; /* Màu văn bản cho tab đang hoạt động */
         }
     </style>
 </head>
@@ -28,32 +61,281 @@
     <!-- Phần tiêu đề và nút -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <ul id="invoiceTabs" class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" href="#">Hóa đơn 1</a>
+            <li class="nav-item " th:if="${not #lists.isEmpty(hoaDons)}" th:each="hoaDon : ${hoaDons}"
+                th:classappend="${hoaDon.active ? 'active' : ''}">
+                <a class="nav-link" th:text="${hoaDon.mahoadon}"
+                   th:href="@{/panda/banhangoffline/muahang/{id}(id=${hoaDon.id})}"
+                ></a>
+            </li>
+            <li class="nav-item " th:if="${#lists.isEmpty(hoaDons)}">
+                <a class="nav-link active" href="#" th:text="trống"></a>
             </li>
         </ul>
         <div class="invoice-btn-group">
             <button id="createInvoiceBtn" class="btn btn-primary">Tạo hóa đơn</button>
         </div>
     </div>
-
     <!-- Phần tiêu đề danh sách sản phẩm và các nút -->
-    <div class="product-header">
-        <h3>Danh sách sản phẩm</h3>
-        <div class="invoice-btn-group">
-            <button id="qrCodeBtn" class="btn btn-primary">QR Code</button>
-            <button id="addProductBtn" class="btn btn-primary">Thêm sản phẩm</button>
+    <div class="product-header" style="position: relative;">
+    <h3>Danh sách sản phẩm</h3>
+        <div class="invoice-btn-group" >
+            <input type="text" class="input-container" id="searchInput" placeholder="Tìm sản phẩm..."
+                   style="border-radius: 10px;padding-bottom: 10px; margin-right: 15px">
+            <button id="addProductBtn" class="btn btn-secondary"><i class="fa-solid fa-plus"></i> </button>
+            <button id="qrCodeBtn" class="btn btn-secondary">QR Code</button>
+            <ul id="productList" class="list-group" style="position: relative; z-index: 1050;">
+
+            </ul>
         </div>
     </div>
 
     <!-- Phần giỏ hàng -->
-    <div class="row mb-4">
+    <div id="productTable" class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Màu sắc</th>
+                <th>Kích thước</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="hdct : ${hoaDonCTList}">
+                <td th:text="${hdct.sanPhamChiTiet.sanPham.tensp}"></td>
+                <td th:text="${hdct.sanPhamChiTiet.mauSac.ten}"></td>
+                <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
+                <td th:text="${hdct.sanPhamChiTiet.dongia}"></td>
+<!--                <td th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.dongia, 0, 'COMMA')}"></td>-->
+                <td class="so-luong">
+                    <input type="number" th:value="${hdct.soluong}" min="1"
+                           style="width: 70px; border-radius: 10px; text-align: center"
+                           id="soluong-${hdct.id}"
+                           class="quantity-input" th:data-id="${hdct.id}"
+                    >
+                <td class="tong-tien" th:text="${hdct.tongtien}"></td>
+<!--               <td class="tong-tien" th:text="${#numbers.formatDecimal(hdct.tongtien, 0, '.')}"></td>-->
+                <td><button class="btn btn-danger remove-btn">
+                    <i class="fa-solid fa-trash"></i></button></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="emptyCartMessage" class="row mb-4">
         <div class="col-md-12 text-center">
             <img src="https://img.pikbest.com/png-images/shopping-cart-icon---vector-template---transparent-background_1794341.png!sw800" alt="Không có sản phẩm" class="img-fluid" style="max-height: 300px;">
             <p>Không có sản phẩm nào trong giỏ</p>
         </div>
     </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Hàm kiểm tra giỏ hàng
+        function checkCart() {
+            const tableBody = $('#productTable tbody');
+            const productTable = $('#productTable');
+            const emptyCartMessage = $('#emptyCartMessage');
+
+            if (tableBody.children().length === 0) {
+                // Nếu giỏ hàng rỗng
+                productTable.hide(); // Ẩn bảng giỏ hàng
+                emptyCartMessage.show(); // Hiện thông báo giỏ hàng trống
+            } else {
+                // Nếu giỏ hàng có sản phẩm
+                productTable.show(); // Hiện bảng giỏ hàng
+                emptyCartMessage.hide(); // Ẩn thông báo giỏ hàng trống
+            }
+        }
+
+        $('#searchInput').on('input', function () {
+            const keyword = $(this).val().trim();
+            if (keyword.length >= 1) {
+                $.ajax({
+                    url: `/panda/banhangoffline/find`,
+                    method: 'GET',
+                    data: { keyword: keyword },
+                    success: function (data) {
+                        $('#productList').empty();
+                        if (data.length >= 1 ) {
+                            data.forEach(function (item) {
+                                const parts = item.split(' - '); // Phân tách chuỗi
+                                const product = {
+                                    id: parts[0],
+                                    tensp: parts[1],
+                                    mausac : parts[2],
+                                    kichthuoc : parts[3],
+                                    dongia : parts[4],
+                                    // Các thuộc tính khác nếu cần
+                                };
+                                $('#productList').append(
+                                    `<li class="list-group-item product-item" data-product='${JSON.stringify(product)}'>
+                                    ${product.tensp} - ${product.mausac} - ${product.kichthuoc}</li>`
+                                );
+                            });
+                        } else {
+                            $('#productList').append(
+                                `<li class="list-group-item">Không tìm thấy sản phẩm</li>`
+                            );
+                        }
+                    },
+                    error: function () {
+                        alert('Lỗi tìm sản phẩm!');
+                    }
+                });
+            } else {
+                $('#productList').empty();
+            }
+        });
+
+        $(document).on('click', '.product-item', function () {
+            const product = $(this).data('product'); // Lấy sản phẩm từ data attribute
+            const productId = product.id; // Lấy ID từ sản phẩm
+            const quantityInput = $(`tr[data-id="${product.id}"] .so-luong input`); // Lấy input số lượng
+            const quantity = parseInt(quantityInput.val()) || 1; // Lấy số lượng (mặc định là 1 nếu không có)
+            const totalPrice = quantity * product.dongia; // Tính thành tiền
+
+            // Kiểm tra xem productId có được xác định không
+            if (productId) {
+                addToCart(product); // Thêm vào giỏ hàng
+                $('#productList').empty(); // Xóa danh sách sản phẩm gợi ý
+                $('#searchInput').val('');
+            } else {
+                console.error('Product ID is not defined');
+            }
+            $.ajax({
+                url: `/panda/banhangoffline/taohdct`,
+                method: 'POST',
+                contentType: 'application/json', // Đặt kiểu nội dung cho yêu cầu
+                data: JSON.stringify({
+                    idSanPhamCT: product.id,
+                    donGia : product.dongia,
+                    soLuong: quantity, // Gửi số lượng
+                    thanhTien: totalPrice // Gửi thành tiền
+                }),
+                success: function (response) {
+                },
+                error: function () {
+
+                }
+            });
+        });
+
+        // Hàm thêm sản phẩm vào giỏ hàng
+        function addToCart(product) {
+            const tableBody = $('#productTable tbody');
+            const existingRow = tableBody.find(`tr[data-id="${product.id}"]`);
+
+            if (existingRow.length > 0) {
+                // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng lên 1
+                const soluong = existingRow.find('.so-luong input'); // Lấy ô input để tăng số lượng
+                const tongsl = parseInt(soluong.val());
+                soluong.val(tongsl + 1); // Cập nhật giá trị của ô input
+                updatetongtien(existingRow,product.dongia);
+            } else {
+                const newRow = `
+                <tr data-id="${product.id}">
+                    <td>${product.tensp}</td>
+                    <td>${product.mausac}</td>
+                    <td>${product.kichthuoc}</td>
+                    <td>${product.dongia}</td>
+                    <td class="so-luong"><input type="number" value="1" min="1"
+                     style="width: 70px;border-radius: 10px;text-align: center"></td>
+                    <td class="tong-tien">${product.dongia}</td>
+                    <td><button class="btn btn-danger remove-btn">
+                    <i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `;
+                tableBody.append(newRow);
+            }
+            soluongthaydoi(tableBody.find(`tr[data-id="${product.id}"]`), product.dongia);
+            // Kiểm tra giỏ hàng
+            checkCart();
+        }
+        function soluongthaydoi(row, dongia) {
+            row.find('.so-luong input').off('input').on('input', function() {
+                let soluong = $(this).val();
+
+                // if (soluong.empty()) {
+                //      soluong = 1; // Nếu ô trống, đặt lại thành 1
+                // } else
+                    if (isNaN(soluong) || parseInt(soluong) === 0) {
+                     soluong = 1; // Nếu không phải là số hoặc < 1, đặt lại thành 1
+                } else {
+                    soluong = parseInt(soluong); // Chuyển đổi thành số nguyên
+                }
+
+                // Đặt lại giá trị cho ô input
+                $(this).val(soluong);
+
+                updatetongtien(row, dongia);
+            });
+        }
+        $(document).on('input', '.quantity-input', function() {
+            const inputElement = $(this); // Lấy phần tử input đã thay đổi
+            const idHoaDonCT = inputElement.data('id'); // Lấy ID từ data-id
+            const row = $(this).closest('tr'); // Lấy hàng tương ứng
+            const dongia = parseFloat(row.find('td:nth-child(4)').text()); // Lấy đơn giá từ cột thứ 4
+            const soluong = parseInt($(this).val()) || 1; // Lấy số lượng
+            //updatetongtien(row, dongia); // Gọi hàm cập nhật thành tiền
+            console.log('ID HoaDonCT: ', idHoaDonCT);
+            const thanhtien = dongia * soluong;
+            row.find('.tong-tien').text(thanhtien.toFixed(2));
+            $.ajax({
+                url: '/panda/banhangoffline/update', // Địa chỉ endpoint cập nhật
+                type: 'POST', // Phương thức POST
+                contentType: 'application/json', // Gửi dữ liệu dưới dạng JSON
+                data: JSON.stringify({
+                    idHoadon: parseInt(idHoaDonCT),   // ID của hóa đơn chi tiết
+                    soLuong: soluong, // Số lượng mới
+                    thanhTien: thanhtien // Tổng tiền mới
+                }),
+                success: function(response) {
+                    console.log('Cập nhật thành công:', response);
+                    $("#tongTien").text(response.tongTien);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Lỗi khi cập nhật:', error);
+                }
+            });
+        });
+
+         function updatetongtien(row, dongia) {
+            const soluong = parseInt(row.find('.so-luong input').val());
+            const tongtien = soluong * dongia;
+            row.find('.tong-tien').text(tongtien);
+        }
+        // Sự kiện click cho nút xóa sản phẩm trong giỏ hàng
+        $(document).on('click', '.remove-btn', function () {
+            $(this).closest('tr').remove(); // Xóa hàng sản phẩm
+            checkCart(); // Kiểm tra giỏ hàng
+        });
+
+        // Khởi tạo hiển thị thông báo không có sản phẩm
+        checkCart();
+    });
+    function setActiveTab(tab) {
+        // Lấy tất cả các tab
+        var navLinks = document.querySelectorAll('#invoiceTabs .nav-link');
+
+        // Loại bỏ class active khỏi tất cả các tab
+        navLinks.forEach(function(link) {
+            link.classList.remove('active');
+        });
+
+        // Thêm class active cho tab được click
+        tab.classList.add('active');
+    }
+    $(document).ajaxSend(function(event, xhr, settings) {
+        var csrfToken = $('meta[name="_csrf"]').attr('content');
+        var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+        xhr.setRequestHeader(csrfHeader, csrfToken);
+    });
+</script>
     <!-- Phần khách hàng và thông tin thanh toán -->
     <div class="row">
         <div class="col-md-6">
@@ -103,12 +385,13 @@
                     <label>Khách thanh toán</label>
                     <span>0 VND</span>
                 </div>
-                <label>Mã hóa đơn</label>
-                <input type="text" class="form-control w-50 me-2" placeholder="Nhập mã" th:name="mahoadon">
-
                 <div class="d-flex justify-content-between mb-3">
-                    <label>Mã giảm giá</label>
-                    <input type="text" class="form-control w-50 me-2" placeholder="Nhập mã">
+                    <label>Hóa đơn :</label>
+                    <span th:text="${idhoadon}"></span>
+                </div>
+                <div class="justify-content-between mb-3">
+                    <label>Mã giảm giá</label> <br>
+                    <input type="text" class="form-control w-50 me-2" placeholder="Nhập mã"><br>
                     <button class="btn btn-secondary">Chọn mã</button>
                 </div>
                 <div class="mb-3">
@@ -119,7 +402,7 @@
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <label>Tiền hàng</label>
-                    <span>9.500.000 VND</span>
+                    <span id="thanhTien" th:text="${tongTien}"></span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <label>Phí vận chuyển</label>
@@ -129,12 +412,12 @@
                     <label>Giảm giá</label>
                     <span>300.000 VND</span>
                 </div>
+<!--                <div class="d-flex justify-content-between mb-3">-->
+<!--                    <label>Điểm hiện tại</label>-->
+<!--                    <span>430</span>-->
+<!--                </div>-->
                 <div class="d-flex justify-content-between mb-3">
-                    <label>Điểm hiện tại</label>
-                    <span>430</span>
-                </div>
-                <div class="d-flex justify-content-between mb-3">
-                    <span class="total-price">Tổng tiền: 9.200.000 VND</span>
+                    <span class="total-price" th:text="${'Tổng tiền : ' + tongTien}"></span>
                 </div>
                 <button class="btn btn-danger w-100">Xác nhận đặt hàng</button>
             </form>
@@ -144,46 +427,51 @@
 
 <script>
     // Tạo hóa đơn mới
-    document.getElementById('createInvoiceBtn').addEventListener('click', function () {
-        var invoiceTabs = document.getElementById('invoiceTabs');
-
-        // Gửi yêu cầu đến server để tạo hóa đơn mới
-        fetch('/panda/banhangoffline/taohd', {
-            method: 'POST'
-        })
-            .then(response => response.json()) // Giả sử bạn trả về một đối tượng JSON với mã hóa đơn
-            .then(data => {
-                console.log('Mã hóa đơn:', data.mahoadon);
-                var idhd = data.mahoadon; // Lấy mã hóa đơn từ phản hồi
-                var mahd = data.mahoadon; // Lấy mã hóa đơn từ phản hồi
-                var newTabIndex = invoiceTabs.getElementsByTagName('li').length + 1;
-
-                // Tạo thẻ tab mới
-                var newTab = document.createElement('li');
-                newTab.classList.add('nav-item');
-                var newLink = document.createElement('a');
-                newLink.classList.add('nav-link');
-
-                // Thay đổi nội dung của newLink bằng mã hóa đơn
-                newLink.textContent = mahd; // Sử dụng mã hóa đơn thay vì "Hóa đơn" + newTabIndex
-                newLink.setAttribute('href', '/invoice/'+idhd); // Cập nhật href nếu cần
-                newTab.appendChild(newLink);
-
-                // Thêm tab mới vào danh sách
-                invoiceTabs.appendChild(newTab);
-
-                // Chuyển đổi active class
-                var tabs = document.querySelectorAll('#invoiceTabs .nav-link');
-                tabs.forEach(function (tab) {
-                    tab.classList.remove('active');
-                });
-                newLink.classList.add('active');
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('createInvoiceBtn').addEventListener('click', function () {
+            var invoiceTabs = document.getElementById('invoiceTabs');
+            var tabs = invoiceTabs.getElementsByTagName('li');
+            // Kiểm tra số lượng tab hiện có
+            if (tabs.length >= 3) {
+                alert('Bạn không thể tạo thêm hóa đơn. Tối đa là 3 hóa đơn.');
+                return; // Không gửi yêu cầu nếu đã có 3 tab
+            }
+            // Gửi yêu cầu đến server để tạo hóa đơn mới
+            fetch('/panda/banhangoffline/taohd', {
+                method: 'POST'
             })
-            .catch(error => {
-                console.error('Error creating invoice:', error);
-            });
+                .then(response => {
+                    if (!response.ok) {
+                    }
+                    return response.json(); // Nhận JSON từ server
+                })
+                .then(data => {
+                    var mahd = data.mahoadon; // Lấy mã hóa đơn từ phản hồi
+                    if (tabs.length === 1 && tabs[0].querySelector('.nav-link').textContent === 'trống') {
+                        // Nếu chỉ có một tab mặc định và không có hóa đơn nào
+                        tabs[0].querySelector('.nav-link').textContent = `${mahd}`;
+                    } else {
+                        // Tạo thẻ tab mới
+                        var newTab = document.createElement('li');
+                        newTab.classList.add('nav-item');
+                        var newLink = document.createElement('a');
+                        newLink.classList.add('nav-link');
+                        newLink.textContent = `${mahd}`;
+                        newTab.appendChild(newLink);
+                        invoiceTabs.appendChild(newTab);
+                        // Chuyển đổi active class
+                        // var navLinks = invoiceTabs.querySelectorAll('.nav-link');
+                        // navLinks.forEach(function (tab) {
+                        //     tab.classList.remove('active');
+                        // });
+                        // newLink.classList.add('active');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating invoice:', error);
+                });
+        });
     });
-
     // Hiển thị hoặc ẩn form khách hàng khi bật/tắt giao hàng
     document.getElementById('giaoHangToggle').addEventListener('change', function () {
         var customerForm = document.getElementById('customerForm');

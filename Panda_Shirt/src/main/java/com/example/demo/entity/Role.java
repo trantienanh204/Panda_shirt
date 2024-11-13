@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "ROLE")
@@ -24,7 +25,15 @@ public class Role implements Serializable {
     @Column(name = "NAME")
     private String name ;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "role")
-    List<UserRole> userRoles;
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserRole> userRoles;
+
+    public List<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
 }

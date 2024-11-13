@@ -155,7 +155,7 @@ public class kichthuocController {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/UPDATE/UpdateKT";
         }
-        if (kichThuoc.getTen() == null || kichThuoc.getTen().length() < 5 || kichThuoc.getTen().length() > 14) {
+        if (kichThuoc.getTen() == null || kichThuoc.getTen().length() < 1 || kichThuoc.getTen().length() > 14) {
             model.addAttribute("errorten", "Tên phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/UPDATE/UpdateKT";
         }

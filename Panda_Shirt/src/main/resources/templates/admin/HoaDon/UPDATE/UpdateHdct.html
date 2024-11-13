@@ -34,13 +34,7 @@
             <div th:if="${errorten}" th:text="${errorten}" style="color: red;"></div>
 
             <label class="form-lable">Sản phẩm</label>
-<!--            <select name="sanPhamChiTiet" id="sanPhamChiTiet" class="form-control">-->
-<!--                <th:block th:each="spct : ${lsspct}">-->
-<!--                    <option th:value="${spct.id}"-->
-<!--                            th:text="${spct.sanPham.tensp}"-->
-<!--                            th:selected="${spct.khachHang.id == kh.id}"></option>-->
-<!--                </th:block>-->
-<!--            </select>-->
+            <input class="form-control" type="text" th:field="*{sanPhamChiTiet.sanPham.tensp}">
 
              <br><label class="form-lable">Hóa đơn</label>
             <br>
