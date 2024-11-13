@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -22,8 +20,6 @@ public class sanPhamDTO {
     private Integer chatLieuId;
     private Integer nhaSanXuatId;
     private Integer coAoId;
-
-
     private List<SanPhamChiTietDTO> chiTietSanPham;
 
     @Override
@@ -36,11 +32,8 @@ public class sanPhamDTO {
                 ", chatLieuId=" + chatLieuId +
                 ", nhaSanXuatId=" + nhaSanXuatId +
                 ", coAoId=" + coAoId +
-
                 ", chiTietSanPham=" + chiTietSanPham +
                 '}';
     }
-
-
 }
 
