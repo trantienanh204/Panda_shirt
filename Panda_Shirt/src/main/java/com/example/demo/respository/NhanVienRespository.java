@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface NhanVienRespository extends JpaRepository<NhanVien,Integer> {
     boolean existsNhanVienByManhanvien(String manhanvien);
 
-    NhanVien findByTentaikhoan(String name);
-
-    @Query("SELECT nv FROM NhanVien nv LEFT JOIN FETCH nv.userRoles WHERE nv.tentaikhoan = :taiKhoan")
-    NhanVien findByTenTaiKhoanWithRoles(@Param("taiKhoan") String taiKhoan);
+//    NhanVien findByTentaikhoan(String name);
+//
+//    @Query("SELECT nv FROM NhanVien nv LEFT JOIN FETCH nv.userRoles WHERE nv.tentaikhoan = :taiKhoan")
+//    NhanVien findByTenTaiKhoanWithRoles(@Param("taiKhoan") String taiKhoan);
 }
