@@ -1,8 +1,11 @@
 package com.example.demo.Controller.admin.QLSP;
 
+import com.example.demo.entity.DanhMuc;
 import com.example.demo.respository.NSXRepository;
 import com.example.demo.entity.NhaSanXuat;
+import com.example.demo.service.NSXService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,26 +20,42 @@ import java.util.regex.Pattern;
 public class NSXCotroller {
     @Autowired
     NSXRepository nsxRepository;
+    @Autowired
+    NSXService nsxService;
     NhaSanXuat nhaSanXuat = new NhaSanXuat();
 
+
     @GetMapping()
-    public String nsx(Model model) {
+    public String nsx(@RequestParam(value = "page", defaultValue = "0") int page,
+                      @RequestParam(value = "tennsx", required = false) String tennsx,
+                      @RequestParam(value = "trangthai", required = false) Integer trangthai,
+                      Model model) {
         String role = "admin";
         model.addAttribute("role", role);
-        model.addAttribute("lsnsx",nsxRepository.findAll());
+        if (page < 0) {
+            page = 0;
+        }
+        Page<NhaSanXuat> listNSX = nsxService.hienThiNSX(page, tennsx, trangthai);
+        model.addAttribute("lsnsx",listNSX.getContent());
+        model.addAttribute("totalPage", listNSX.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("tennsx", tennsx);
+        model.addAttribute("trangthai", trangthai);
+        model.addAttribute("pageSize", listNSX.getSize());
         return "admin/QLSP/NSX";
     }
 
     @GetMapping("add")
-    public String formadd(Model model) {
+    public String formadd(Model model,RedirectAttributes redirectAttributes) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         model.addAttribute( "nsx", nhaSanXuat);
+
         return "admin/QLSP/ADD/AddNsx";
     }
 
     @GetMapping("update")
-    public String formupdate(@RequestParam("id") int id, Model model) {
+    public String formupdate(@RequestParam("id") int id, Model model,RedirectAttributes redirectAttributes) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         model.addAttribute( "nsx", nsxRepository.findById(id));
@@ -76,9 +95,7 @@ public class NSXCotroller {
         String ten = nhaSanXuat.getTennsx().toLowerCase().trim();
         Matcher mansxMatcher = patternma.matcher(nhaSanXuat.getMansx());
         Matcher tennsxMatcher = pattern.matcher(ten);
-
         boolean loi = true ;
-
         if(nhaSanXuat.getMansx().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
 
@@ -113,7 +130,7 @@ public class NSXCotroller {
     }
 
     @PostMapping("update")
-    public String update(@ModelAttribute("nsx") NhaSanXuat nhaSanXuat , Model model) {
+    public String update(@ModelAttribute("nsx") NhaSanXuat nhaSanXuat , Model model,RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         model.addAttribute( "nsx", nhaSanXuat);
@@ -156,6 +173,7 @@ public class NSXCotroller {
             return "admin/QLSP/UPDATE/UpdateNsx";
         }
         nhaSanXuat.setNgaysua(LocalDate.now());
+        redirectAttributes.addFlashAttribute("thongbao","Sửa thành công !");
         nsxRepository.save(nhaSanXuat);
         return "redirect:/panda/nsx";
     }

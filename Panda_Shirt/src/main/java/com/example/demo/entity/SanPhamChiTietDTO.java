@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,8 @@ public class SanPhamChiTietDTO {
     private Double gia; // Giá sản phẩm
     private Integer soLuong; // Số lượng sản phẩm
     private Integer idSanPham; // ID của sản phẩm
-//    private Long idSanPham; // ID của sản phẩm
+
+    private byte[] images; // ID của sản phẩm
     @Override
     public String toString() {
         return "SanPhamChiTietDTO{" +
@@ -25,6 +27,7 @@ public class SanPhamChiTietDTO {
                 ", gia=" + gia +
                 ", soLuong=" + soLuong +
                 ", idSanPham=" + idSanPham +
+                ", images=" + images +
                 '}';
     }
 }

@@ -19,6 +19,7 @@ public class MauSacService {
     MauSacRepsitory mauSacRepsitory;
 
     private final int size = 5;
+
     public Optional<MauSac> finByMauSac(Integer ma_mau_sac) {
         return mauSacRepsitory.findById(ma_mau_sac);
     }
@@ -29,14 +30,13 @@ public class MauSacService {
 
     public Page<MauSac> hienThimausac(int page, String tenms, Integer trangthai) {
         if (page < 0) {
-            throw new IllegalArgumentException("Page index must not be less than zero");
+            throw new IllegalArgumentException("Chỉ số trang không được nhỏ hơn số không");
         }
 
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
         return mauSacRepsitory.findByTenAndTrangthai(tenms, trangthai, pageable);
     }
-
 
 
 }

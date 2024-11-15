@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class DonHang {
     @JoinColumn(name = "ID_nhan_vien", referencedColumnName = "id")
     private NhanVien nhanVien;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "NGAY_TAO")
     private LocalDate ngaytao;
 
@@ -46,10 +48,12 @@ public class DonHang {
 
     @Column(name = "Trang_Thai")
     private String trangThai;
+
     @Column(name = "GHICHU")
     private String ghiChu;
+
     @Column(name = "Mota")
-    private String mota;
+    private String lydohuy;
 
 
 }

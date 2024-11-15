@@ -25,28 +25,32 @@
      th:if="${ChangesStatusMessage!= null}">
     <i class="fa-solid fa-exclamation-circle"></i> Chuyển trạng thái thành công !
 </div>
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
-    <hr>
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label for="title-author">Tên chất liệu</label>
-            <input type="text" id="title-author" placeholder="Tên chất liệu">
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period">
+<form th:action="@{/panda/chatlieu/hienthi}" method="get">
+    <div class="filter-container">
+        <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+        <hr>
+        <div class="filter-inputs">
+            <div class="filter-input">
+                <label for="title-author">Tên chất liệu</label>
+                <input type="text" id="title-author" name="tencl" placeholder="Tên chất liệu"
+                       th:value="${tencl}">
+            </div>
+            <div class="filter-input">
+                <label for="period">Trạng thái</label>
+                <select id="period" name="trangthai">
+                    <option value="">-- Chọn trạng thái --</option>
+                    <option th:value="0" th:selected="${trangthai == 0}">Hoạt động</option>
+                    <option th:value="1" th:selected="${trangthai == 1}">Ngừng hoạt động</option>
+                </select>
+            </div>
 
-                <option value="month">-- Chọn trạng thái --</option>
-
-            </select>
-        </div>
-        <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+            <div class="filter-buttons">
+                <button type="submit" class="btn btn-dark"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
+                <a class="btn btn-dark" th:href="@{/panda/chatlieu/hienthi}"><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</a>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
 <div style="margin-bottom: 10px">
 
@@ -74,32 +78,32 @@
         </thead>
         <tbody>
         <tr th:each="chatLieu,i : ${list}">
-            <td th:text="${i.count}"></td>
+            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${chatLieu.maChatLieu}"></td>
             <td th:text="${chatLieu.tenChatLieu}"></td>
             <td th:text="${chatLieu.ngayTao != null? #temporals.format(chatLieu.ngayTao, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:text="${chatLieu.ngaySua != null? #temporals.format(chatLieu.ngaySua, 'dd/MM/yyyy'): 'chưa có'}"></td>
-            <td th:if="${chatLieu.trangThai} == true">
+            <td th:if="${chatLieu.trangThai} == 0">
                 <span class="status-label status-green"
-                      th:text="${chatLieu.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${chatLieu.trangThai == 0 ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
-            <td th:if="${chatLieu.trangThai} == false ">
+            <td th:if="${chatLieu.trangThai} == 1 ">
                 <span class="status-label status-orange"
-                      th:text="${chatLieu.trangThai == true ? 'Hoạt động':'Ngừng hoạt động'}">
+                      th:text="${chatLieu.trangThai == 0 ? 'Hoạt động':'Ngừng hoạt động'}">
                 </span>
             </td>
             <td>
                 <a style="margin-right: 10px" th:href="@{/panda/chatlieu/update(id=${chatLieu.id})}"> <i
                         class="fa-regular fa-pen-to-square"
-                        style="color: #000000;"></i></a>
+                        style="color: #000000;font-size: 25px"></i></a>
                 <a th:href="@{/panda/chatlieu/change(id=${chatLieu.id})}">
-                    <i th:if="${chatLieu.trangThai == true}">
-                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
+                    <i th:if="${chatLieu.trangThai == 0}">
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;font-size: 25px">
                         </i>
                     </i>
-                    <i th:if="${chatLieu.trangThai == false}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
+                    <i th:if="${chatLieu.trangThai == 1}">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a;font-size: 25px">
                         </i>
                     </i>
                 </a>
@@ -107,6 +111,33 @@
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/chatlieu/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, tencl=${tencl}, trangthai=${trangthai})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Hiển thị danh sách trang -->
+            <li class="page-item">
+                <a class="page-link"
+                   th:text="${currentPage +1 }" disabled></a>
+            </li>
+
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/chatlieu/hienthi(page=${currentPage + 1}, tencl=${tencl}, trangthai=${trangthai})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 <style>
     * {

@@ -1,6 +1,10 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "SAN_PHAM")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class SanPham {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,39 +51,54 @@ public class SanPham {
 
     @ManyToOne
     @JoinColumn(name = "ID_DANH_MUC", referencedColumnName = "id")
+    @JsonBackReference
     private DanhMuc danhMuc;
 
     @ManyToOne
     @JoinColumn(name = "ID_NHA_SAN_XUAT", referencedColumnName = "id")
+    @JsonBackReference
     private NhaSanXuat nhaSanXuat;
 
     @ManyToOne
     @JoinColumn(name = "ID_THUONG_HIEU", referencedColumnName = "id")
+    @JsonBackReference
     private ThuongHieu thuongHieu;
 
     @ManyToOne
     @JoinColumn(name = "ID_CO_AO", referencedColumnName = "id")
+    @JsonBackReference
     private CoAo coAo;
 
     @OneToOne
     @JoinColumn(name = "ID_CHAT_LIEU", referencedColumnName = "id")
+    @JsonBackReference
     private ChatLieu chatLieu;
 
-    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
-    private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>(); // Khởi tạo danh sách
+
+
+    @Transient
+    private Double minPrice;
+
+    public Double getMinPrice() {
+        return sanPhamChiTietList.stream()
+                .map(SanPhamChiTiet::getDongia)
+                .min(Double::compareTo)
+                .orElse(0.0);
+    }
+
+
 
     public void addSanPhamChiTiet(SanPhamChiTiet chiTiet) {
-        if (!this.sanPhamChiTietList.contains(chiTiet)) { // Kiểm tra trùng lặp
-            chiTiet.setSanPham(this); // Thiết lập mối quan hệ
-            this.sanPhamChiTietList.add(chiTiet); // Thêm vào danh sách
+        if (!this.sanPhamChiTietList.contains(chiTiet)) {
+            chiTiet.setSanPham(this);
+            this.sanPhamChiTietList.add(chiTiet);
         }
     }
 
     public void removeSanPhamChiTiet(SanPhamChiTiet chiTiet) {
-        if (this.sanPhamChiTietList.contains(chiTiet)) { // Kiểm tra tồn tại
-            chiTiet.setSanPham(null); // Thiết lập lại mối quan hệ
-            this.sanPhamChiTietList.remove(chiTiet); // Xóa khỏi danh sách
+        if (this.sanPhamChiTietList.contains(chiTiet)) {
+            chiTiet.setSanPham(null);
+            this.sanPhamChiTietList.remove(chiTiet);
         }
     }
 }

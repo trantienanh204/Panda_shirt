@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -42,10 +44,6 @@ public class ChatLieu {
     private LocalDateTime ngaySua;
     @NotNull(message = "Trạng thái không được để null")
     @Column(name = "TRANG_THAI")
-    private boolean trangThai;
-
-    public void toggleTrangThai() {
-        this.trangThai = !this.trangThai; // Đảo ngược giá trị
-    }
+    private Integer trangThai;
 
 }

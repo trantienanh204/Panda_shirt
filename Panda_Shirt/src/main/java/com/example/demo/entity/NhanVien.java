@@ -29,7 +29,6 @@ public class NhanVien implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private int id;
 
     @NotBlank(message = "Vui lòng nhập tên nhân viên")
@@ -73,9 +72,6 @@ public class NhanVien implements Serializable {
     public void toggleTrangThai() {
         this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
     }
-
-
-
 
     @Column(name = "DELETEAT")
     private boolean delete;

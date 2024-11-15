@@ -75,15 +75,11 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Trạng thái:</label><br>
-                    <div>
-                        <input type="radio" name="trangThai" th:field="*{trangThai}" value="true" checked>
-                        <label>Hoạt động</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="trangThai" th:field="*{trangThai}" value="false">
-                        <label>Ngừng hoạt động</label>
-                    </div>
+                    <label class="form-label"> Trạng thái</label><br>
+                    <input type="radio" th:field="*{trangThai}" th:value="0" >
+                    Hoạt động
+                    <input type="radio" th:field="*{trangThai}" th:value="1">
+                    Ngừng hoạt động
                     <div th:if="${#fields.hasErrors('trangThai')}" class="text-danger">
                         <span th:errors="*{trangThai}"></span>
                     </div>

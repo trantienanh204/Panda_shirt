@@ -1,14 +1,19 @@
 package com.example.demo.Controller.admin.QLTK;
+
+import com.example.demo.entity.ChiTietVaiTro;
 import com.example.demo.entity.NhanVien;
+import com.example.demo.entity.TaiKhoan;
+import com.example.demo.entity.VaiTro;
+import com.example.demo.respository.ChiTietVaiTroRepo;
 import com.example.demo.respository.NhanVienRespository;
+import com.example.demo.respository.TaiKhoanRepo;
+import com.example.demo.respository.VaiTroRepo;
 import com.example.demo.service.EmailService;
 import com.example.demo.services.NhanVienService;
 import jakarta.validation.Valid;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,17 +35,35 @@ public class TKNhanVienController {
     @Autowired
     NhanVienService nhanVienService;
     @Autowired
+    TaiKhoanRepo taiKhoanRepo;
+    @Autowired
+    VaiTroRepo vaiTroRepo;
+    @Autowired
+    ChiTietVaiTroRepo chiTietVaiTroRepo;
+    @Autowired
     NhanVienRespository nhanVienRespository;
     @Autowired
     EmailService emailService;
 
     @GetMapping("/tknhanvien")
-    public String tknhanvien(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String tknhanvien(@RequestParam(value = "page", defaultValue = "0") int page,
+                             @RequestParam(value = "manv", required = false) String manv,
+                             @RequestParam(value = "tennv", required = false) String tennv,
+                             @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                             Model model) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        Pageable pageable = PageRequest.of(page,3);
-        Page<NhanVien> tknhanvienPage = nhanVienService.findPaginated(pageable);
-        model.addAttribute("list",tknhanvienPage);
         model.addAttribute("role", role);
+        if (page < 0) {
+            page = 0;
+        }
+        Page<NhanVien> listNV = nhanVienService.hienThiNV(page, manv , tennv, trangThai);
+        model.addAttribute("totalPage", listNV.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("list", listNV.getContent());
+        model.addAttribute("manv", manv);
+        model.addAttribute("tennv", tennv);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("pageSize", listNV.getSize());
         return "/admin/QLTK/TKNhanVien";
     }
     @GetMapping("/tknhanvien/create")
@@ -119,16 +142,39 @@ public class TKNhanVienController {
                     "</div>" +
                     "</body>" +
                     "</html>";
-            emailService.sendEmail(nhanVien.getTentaikhoan(), subject, body); // Gửi email
-            // Lưu nhân viên vào cơ sở dữ liệu
-            nhanVienService.saveSafftoDbCreate(file, nhanVien);
 
+            emailService.sendEmail(nhanVien.getTentaikhoan(), subject, body); // Gửi email
+
+            TaiKhoan tk = new TaiKhoan();
+            ChiTietVaiTro ctvt = new ChiTietVaiTro();
+
+            String tentk = nhanVien.getTentaikhoan();
+            // Lưu nhân viên vào cơ sở dữ liệu
+            int vaitro = 1;
+            if(nhanVien.getChucvu().equals("Nhân viên")){
+                vaitro = 2;
+            }
+            tk.setMatKhau(hashedPassword);
+            tk.setTenDangNhap(tentk);
+            taiKhoanRepo.save(tk);
+            VaiTro vt = vaiTroRepo.findById(vaitro).get();
+            TaiKhoan tenDangNhap = taiKhoanRepo.findByTenDangNhap(tentk);
+            System.out.println("vaitro " +vt.getTenVaiTro());
+            System.out.println("tên " +tenDangNhap.getTenDangNhap());
+            System.out.println("tên " +tentk);
+            ctvt.setVaiTro(vt);
+            ctvt.setTaiKhoan(tenDangNhap);
+            chiTietVaiTroRepo.save(ctvt);
+
+            nhanVien.setTinhtrang(true);
+            nhanVien.setTaiKhoan(tenDangNhap);
+            nhanVienService.saveSafftoDbCreate(file, nhanVien);
             // Thêm thông báo thành công
             redirectAttributes.addFlashAttribute("saveMassage", "Thêm nhân viên thành công");
             return "redirect:/panda/tknhanvien";
         } catch (Exception e) {
             // Xử lý lỗi khi lưu dữ liệu
-            System.out.println("Lỗi" + e.getMessage());
+            System.out.println("Lỗi :" + e.getMessage());
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
     }
@@ -187,7 +233,7 @@ public class TKNhanVienController {
 
         NhanVien nhanVien = nhanVienService.findById(id);
         if (nhanVien != null) {
-            nhanVien.toggleTrangThai(); // Đảo ngược trạng thái
+            nhanVien.setTrangthai(nhanVien.getTrangthai() == 1 ? 0 : 1); // Đảo ngược trạng thái
             nhanVienRespository.save(nhanVien);
         }
         redirectAttributes.addFlashAttribute("ChangesStatusMessage", "Chuyển trạng thái thành công !");

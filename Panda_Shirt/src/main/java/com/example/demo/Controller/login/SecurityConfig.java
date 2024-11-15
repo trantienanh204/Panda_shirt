@@ -24,9 +24,9 @@ import java.util.Set;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/panda/vaitro","/Image/**","panda/mahoa"};
-    private final String[] QUANLY_ENDPOINTS= {"/panda/vaitro"};
-    private final String[] NHANVIEN_ENDPOINTS= {"/panda/nsx"};
+    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa"};
+    private final String[] QUANLY_ENDPOINTS= {};
+    private final String[] NHANVIEN_ENDPOINTS= {};
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http, TaiKhoanService taiKhoanService) throws Exception {
             http
@@ -38,7 +38,8 @@ public class SecurityConfig {
                                     .requestMatchers(QUANLY_ENDPOINTS).hasRole("QUANLY")
                                     .requestMatchers(NHANVIEN_ENDPOINTS).hasAnyRole("QUANLY","NHANVIEN")
 //                        .requestMatchers("/").hasAnyRole("CUSTOMER")
-                                    .anyRequest().authenticated()
+//                                    .anyRequest().authenticated()
+                                    .anyRequest().permitAll()
                     )
                     .formLogin(form -> form
                             .loginPage("/panda/login")
@@ -48,8 +49,8 @@ public class SecurityConfig {
                             .passwordParameter("password")
                     )
                     .logout(logoff -> logoff
-                            .logoutUrl("/logoff")
-                            .logoutSuccessUrl("/")
+                            .logoutUrl("/panda/logout")
+                            .logoutSuccessUrl("/panda/login")
                             .permitAll()
                     )
                     .userDetailsService(userDetailsService(taiKhoanService));

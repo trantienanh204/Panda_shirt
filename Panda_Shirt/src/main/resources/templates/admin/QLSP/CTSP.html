@@ -250,7 +250,7 @@
 
 <script>
     function layDuLieuSanPham() {
-        const productDetails = []; // Khởi tạo mảng để lưu chi tiết sản phẩm
+        const productDetails = [];
 
         $('#product-tables .product-row').each(function() {
             const color = $(this).find('h3').text().trim(); // Lấy màu
@@ -289,36 +289,57 @@
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
-        input.multiple = true; // Cho phép chọn nhiều ảnh
+        input.multiple = true;
+
         input.onchange = function(event) {
             const files = event.target.files;
-            const imagePaths = []; // Mảng lưu đường dẫn ảnh
+            const imageUrls = []; // Mảng lưu URL của hình ảnh
 
-            for (let i = 0; i < Math.min(files.length, 3); i++) {
-                const file = files[i];
+            const loadImage = (index) => {
+                if (index >= files.length) {
+                    // Khi tất cả ảnh đã được load
+                    displayImages(cell, imageUrls);
+                    return;
+                }
+
+                const file = files[index];
                 const reader = new FileReader();
 
                 reader.onload = function(e) {
-                    imagePaths.push(e.target.result);
-                    // Hiển thị ảnh trong ô ảnh
-                    displayImages(cell, imagePaths);
+                    // Tạo một Blob từ dữ liệu nhị phân và tạo URL
+                    const blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
+                    const url = URL.createObjectURL(blob);
+                    imageUrls.push(url); // Thêm URL vào mảng
+                    loadImage(index + 1); // Load ảnh tiếp theo
                 };
-                reader.readAsDataURL(file); // Đọc tệp dưới dạng URL
-            }
+
+                reader.readAsArrayBuffer(file); // Đọc file dưới dạng ArrayBuffer
+            };
+
+            loadImage(0); // Bắt đầu load ảnh từ vị trí đầu tiên
         };
+
         input.click();
     }
 
-    // Hàm hiển thị ảnh
-    function displayImages(cell, imagePaths) {
-        const imageContainer = $(cell).find('.image-preview'); // Tạo một phần tử để chứa hình ảnh
-        imageContainer.empty(); // Xóa hình ảnh cũ
 
-        imagePaths.forEach(path => {
-            const img = $('<img>').attr('src', path).css('width', '100px'); // Kích thước hình ảnh
-            imageContainer.append(img); // Thêm hình ảnh vào ô
+    function displayImages(cell, imageUrls) {
+        // Xóa tất cả hình ảnh hiện có trước khi hiển thị mới
+        cell.innerHTML = '';
+
+        imageUrls.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url; // Đặt URL của hình ảnh
+            img.alt = 'Uploaded Image'; // Mô tả hình ảnh
+            img.style.maxWidth = '100px'; // Giới hạn kích thước hình ảnh
+            img.style.maxHeight = '100px';
+            cell.appendChild(img); // Thêm hình ảnh vào ô
         });
     }
+
+
+
+
 
 
     function xoaHang(button) {
@@ -434,10 +455,11 @@
                     </table>
                 </div>
                 <div class="image-container">
-                    <div class="product-image-cell" onclick="uploadImage(this)">
-                        <span>Click để thêm ảnh</span>
-                    </div>
-                </div>
+                     <div class="product-image-cell" onclick="uploadImage(this)">
+                       <span>Click để thêm ảnh</span>
+                     <div class="image-preview"></div>
+                  </div>
+               </div>
             </div>
         `);
 
@@ -463,30 +485,18 @@
 
 
         function getImagesAndSave() {
-            const productName = $('#productName').val(); // Đảm bảo sử dụng đúng ID
-            const categoryId = $('#categoryName').val(); // Đúng ID là 'categoryName'
-            const brandId = $('#brandName').val(); // Đúng ID là 'brandName'
-            const materialId = $('#materialName').val(); // Đúng ID là 'materialName'
-            const manufacturerId = $('#manufacturerName').val(); // Đúng ID là 'manufacturerName'
-            const collarId = $('#collarName').val(); // Đúng ID là 'collarName'
-            const productSizes = []; // Khởi tạo danh sách kích thước
-            const productColors = []; // Khởi tạo danh sách màu sắc
-            const productDetails = []; // Khởi tạo danh sách chi tiết sản phẩm
+            const productName = $('#productName').val();
+            const categoryId = $('#categoryName').val();
+            const brandId = $('#brandName').val();
+            const materialId = $('#materialName').val();
+            const manufacturerId = $('#manufacturerName').val();
+            const collarId = $('#collarName').val();
 
-            console.log("Product Name:", productName);
-            console.log("Category ID:", categoryId);
-            console.log("Brand ID:", brandId);
-            console.log("Material ID:", materialId);
-            console.log("Manufacturer ID:", manufacturerId);
-            console.log("Collar ID:", collarId);
-
-            // Kiểm tra nếu thông tin sản phẩm hợp lệ
             if (!productName || !categoryId || !brandId || !materialId || !manufacturerId || !collarId) {
                 Swal.fire('Thông báo!', 'Vui lòng điền đầy đủ thông tin sản phẩm!', 'warning');
                 return;
             }
 
-            // Khởi tạo đối tượng productData
             const productData = {
                 masp: null,
                 tenSanPham: parseInt(productName, 10),
@@ -495,32 +505,33 @@
                 chatLieuId: parseInt(materialId, 10),
                 nhaSanXuatId: parseInt(manufacturerId, 10),
                 coAoId: parseInt(collarId, 10),
-                chiTietSanPham: [] // Khởi tạo chiTietSanPham là một mảng
+                chiTietSanPham: []
             };
 
-            // Thu thập thông tin từ bảng sản phẩm
             $('#product-tables .product-row').each(function() {
-                const color = $(this).find('h3').text().trim(); // Lấy màu
+                const color = $(this).find('h3').text().trim();
                 const rows = $(this).find('tbody tr');
 
                 rows.each(function() {
-                    const size = $(this).find('td:nth-child(3)').text().trim(); // Lấy kích thước
+                    const size = $(this).find('td:nth-child(3)').text().trim();
                     const price = $(this).find('input[type="number"]').eq(0).val().trim();
                     const quantity = $(this).find('input[type="number"]').eq(1).val().trim();
                     const images = [];
 
                     $(this).find('.product-image-cell img').each(function() {
-                        images.push($(this).attr('src')); // Thu thập nguồn ảnh
+                        // Lấy đường dẫn ảnh và đọc nó dưới dạng byte
+                        const src = $(this).attr('src');
+                        const byteArray = getImageBytes(src); // Hàm cần tạo
+                        images.push(byteArray);
                     });
 
                     if (size && color) {
-                        // Thêm chi tiết sản phẩm vào danh sách
                         productData.chiTietSanPham.push({
-                            mauSac: color,  // Sử dụng thuộc tính mauSac
-                            kichThuoc: size, // Sử dụng thuộc tính kichThuoc
-                            gia: parseFloat(price), // Sử dụng thuộc tính gia
-                            soLuong: parseInt(quantity, 10), // Sử dụng thuộc tính soLuong
-                            images: images // Thêm danh sách hình ảnh
+                            mauSac: color,
+                            kichThuoc: size,
+                            gia: parseFloat(price),
+                            soLuong: parseInt(quantity, 10),
+                            images: images // Đưa vào danh sách byte
                         });
                     }
                 });
@@ -542,9 +553,15 @@
                 }
             });
         }
-
-
-
+        function getImageBytes(src) {
+            return new Promise((resolve, reject) => {
+                fetch(src)
+                    .then(response => response.arrayBuffer())
+                    .then(buffer => new Uint8Array(buffer))
+                    .then(byteArray => resolve(byteArray))
+                    .catch(error => reject(error));
+            });
+        }
 
 
         // Gọi hàm getImagesAndSave khi nhấn nút "Thêm tất cả"
@@ -677,6 +694,7 @@
         function showError(message) {
             alert("Lỗi: " + message);
         }
+
     });
 </script>
 

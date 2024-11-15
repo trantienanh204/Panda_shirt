@@ -6,26 +6,38 @@
 </head>
 <body th:fragment="tknhanvien">
 <h2>Tài Khoản Nhân Viên</h2>
+<form th:action="@{/panda/tknhanvien}" method="get">
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
     <hr>
     <div class="filter-inputs">
         <div class="filter-input">
-            <label for="title-author">Tên nhân viên</label>
-            <input type="text" id="title-author" placeholder="Tên nhân viên">
+            <label >Mã nhân viên</label>
+            <input type="text" name="manv" th:value="${manv}" placeholder="Mã nhân viên">
+        </div>
+        <div class="filter-input">
+            <label >Tên nhân viên</label>
+            <input type="text" name="tennv" th:value="${tennv}" placeholder="Tên nhân viên">
         </div>
         <div class="filter-input">
             <label for="period">Trạng thái</label>
-            <select id="period">
-                <option value="month">-- Chọn trạng thái --</option>
+            <select id="period" name="trangThai">
+                <option value="">-- Chọn trạng thái --</option>
+                <option th:value="1" th:selected="${trangthai == 1}">Hoạt động</option>
+                <option th:value="0" th:selected="${trangthai == 0}">Ngừng hoạt động</option>
             </select>
         </div>
-        <div class="filter-buttons">
-            <button><i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới</button>
-            <button><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm</button>
-        </div>
+    </div>
+    <div class="filter-buttons">
+        <button type="submit" class="btn btn-dark">
+            <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
+        </button>
+        <a class="btn btn-dark" th:href="@{/panda/tknhanvien}">
+            <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
+        </a>
     </div>
 </div>
+</form>
 
 <!-- Thông báo -->
 <div class="custom-alert success" id="statusMessage" th:text="${saveMassage}" th:if="${saveMassage != null}">
@@ -60,8 +72,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="taikhoannv,i : ${list.content}">
-            <td th:text="${i.count}"></td>
+        <tr th:each="taikhoannv,i : ${list}">
+            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td>
                 <img th:if="${taikhoannv.image != null}"
                      th:src="@{'/panda/hinh-anh/' + ${taikhoannv.id}}"
@@ -106,18 +118,33 @@
         </tbody>
     </table>
     <!--Phân trang-->
-    <div>
-    <span style="margin-right: 5px" th:if="${list.hasPrevious()}">
-        <a style="  text-decoration: none; /* Bỏ gạch chân */" th:href="@{/panda/tknhanvien(page=${list.number - 1})}">Previous</a>
-    </span>
-        <span style="margin-left: 5px" th:if="${list.hasNext()}">
-        <a style="  text-decoration: none; /* Bỏ gạch chân */" th:href="@{/panda/tknhanvien(page=${list.number + 1})}">Next</a>
-    </span>
-    </div>
-    <!--số trang-->
-    <p style="margin-bottom: 5px" th:if="${list != null}">Page <span th:text="${list.number + 1}"></span> of <span
-            th:text="${list.totalPages}"></span></p>
-</div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/tknhanvien(page=${currentPage == 0 ? 0 : currentPage - 1}, manv=${manv},tennv=${tennv}, trangThai=${trangthai})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Hiển thị danh sách trang -->
+            <li class="page-item">
+                <a class="page-link"
+                   th:text="${currentPage +1 }" disabled></a>
+            </li>
+
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/panda/tknhanvien(page=${currentPage + 1},manv=${manv},tennv=${tennv}, trangThai=${trangthai})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 <style>
     * {
         box-sizing: border-box;
@@ -154,7 +181,7 @@
 
     .filter-input label {
         margin-bottom: 5px;
-
+        padding-top: 10px;
         font-weight: bold;
     }
 
@@ -166,13 +193,13 @@
     }
 
     .filter-buttons {
-        display: flex;
-        gap: 10px;
-        padding-top: 25px;
+        text-align: center;
+        margin-top: 10px;
     }
 
     .filter-buttons button {
         padding: 10px 20px;
+        margin-left: 10px;
         background-color: #333;
         color: white;
         border: none;

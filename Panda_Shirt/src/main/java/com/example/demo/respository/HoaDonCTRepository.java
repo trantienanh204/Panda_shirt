@@ -14,7 +14,8 @@ public interface HoaDonCTRepository extends JpaRepository<HoaDonCT,Integer> {
         @Query("SELECT hdct FROM HoaDonCT hdct WHERE hdct.hoaDon.id = :id")
         List<HoaDonCT> findhoadonct(@Param("id") int id);
 
-
+//        @Query("SELECT hdct FROM HoaDonCT hdct LEFT JOIN FETCH hdct.hoaDon WHERE hdct.hoaDon.id = :id")
+//        List<HoaDonCT> findhoadonct(@Param("id") int id);
 
         @Query("SELECT COALESCE(SUM(hdct.tongtien), 0) FROM HoaDonCT hdct WHERE hdct.hoaDon.id = :hoaDonId")
         BigDecimal TongTienByHoaDonId(int hoaDonId);
