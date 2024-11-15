@@ -12,6 +12,7 @@ import lombok.*;
 @Table(name = "CHI_TIET_VAI_TRO")
 public class ChiTietVaiTro {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer idChiTietVaiTro;
 
@@ -23,4 +24,8 @@ public class ChiTietVaiTro {
     @JoinColumn(name = "TEN_DANG_NHAP")
     private TaiKhoan taiKhoan;
 
+    public ChiTietVaiTro(VaiTro vaiTro, TaiKhoan taiKhoan) {
+        this.vaiTro = vaiTro;
+        this.taiKhoan = taiKhoan;
+    }
 }

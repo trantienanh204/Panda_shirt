@@ -19,7 +19,6 @@ import java.util.Set;
 @Table(name = "TAI_KHOAN")
 public class TaiKhoan {
 
-
         @Id
         @Column(name = "TEN_DANG_NHAP")
         @NotBlank(message = "Tên đăng nhập không được để trống")

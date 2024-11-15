@@ -58,8 +58,8 @@ public class HoaDon {
     @Column(name = "DIA_CHI_CU_THE")
     private String diaChi;
 
-    @Column(name = "GHI_CHU")
-    private String ghiChu;
+//    @Column(name = "GHI_CHU")
+//    private String ghiChu;
 
     @Column(name = "ACTIVE")
     private Boolean active;
@@ -89,12 +89,6 @@ public class HoaDon {
         this.thanhtien = thanhtien;
         this.trangthai = trangthai;
 
-
-
-
-//    @ManyToOne
-//    @JoinColumn(name = "ID_VOUCHER",referencedColumnName = "id")
-//    private Voucher voucher;
 
 
     }

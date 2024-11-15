@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -62,7 +63,7 @@ public class DanhMucController {
     }
 
     @GetMapping("change")
-    public String delete(@RequestParam("id") int id, Model model) {
+    public String change(@RequestParam("id") int id, Model model, RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         DanhMuc dm = danhMucRepository.findById(id).orElse(null);
@@ -73,6 +74,7 @@ public class DanhMucController {
                 dm.setTrangthai(1);
             }
             danhMucRepository.save(dm);
+            redirectAttributes.addFlashAttribute("thongbao","Thành công !");
         }
         return "redirect:/panda/danhmuc";
     }

@@ -115,13 +115,14 @@
             </li>
         </ul>
     </nav>
-    <div class="custom-alert success" id="statusMessage"  th:if="${thongbao != null}">
+    <div class="custom-alert success " id="statusMessage"  th:if="${thongbao != null}">
         <i class="fa-solid fa-circle-check"></i> <span th:text="${thongbao}"></span>
     </div>
 </div>
 <script>
     // Sau khi trang load xong
     window.onload = function() {
+        // Xử lý thông báo thành công
         var statusMessage = document.getElementById('statusMessage');
         if (statusMessage) {
             statusMessage.classList.add('show');
@@ -130,15 +131,15 @@
                 statusMessage.style.display = 'none';
             }, 5000);
         }
-    };
+    };;
 </script>
 <style>
     .custom-alert {
+        background-color: #4CAF50;  /* Màu nền thông báo thành công */
+        color: white;  /* Màu chữ */
         position: fixed;
         top: 20px;  /* Cách từ đỉnh */
         right: 20px;  /* Cách từ bên phải */
-        background-color: #4CAF50;  /* Màu nền thông báo thành công */
-        color: white;  /* Màu chữ */
         padding: 15px;  /* Padding xung quanh */
         border-radius: 5px;  /* Bo góc */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */

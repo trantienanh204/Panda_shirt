@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -50,28 +51,29 @@ public class SanPham {
 
     @ManyToOne
     @JoinColumn(name = "ID_DANH_MUC", referencedColumnName = "id")
+    @JsonBackReference
     private DanhMuc danhMuc;
 
     @ManyToOne
     @JoinColumn(name = "ID_NHA_SAN_XUAT", referencedColumnName = "id")
+    @JsonBackReference
     private NhaSanXuat nhaSanXuat;
 
     @ManyToOne
     @JoinColumn(name = "ID_THUONG_HIEU", referencedColumnName = "id")
+    @JsonBackReference
     private ThuongHieu thuongHieu;
 
     @ManyToOne
     @JoinColumn(name = "ID_CO_AO", referencedColumnName = "id")
+    @JsonBackReference
     private CoAo coAo;
 
     @OneToOne
     @JoinColumn(name = "ID_CHAT_LIEU", referencedColumnName = "id")
+    @JsonBackReference
     private ChatLieu chatLieu;
 
-    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
-
-    @JsonManagedReference
-    private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>();
 
 
     @Transient

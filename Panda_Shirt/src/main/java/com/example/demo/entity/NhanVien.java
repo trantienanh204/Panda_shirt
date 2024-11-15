@@ -29,7 +29,6 @@ public class NhanVien implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private int id;
 
     @NotBlank(message = "Vui lòng nhập tên nhân viên")

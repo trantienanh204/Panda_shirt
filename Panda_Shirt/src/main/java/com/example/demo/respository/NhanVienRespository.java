@@ -24,9 +24,13 @@ public interface NhanVienRespository extends JpaRepository<NhanVien,Integer> {
     Page<NhanVien> findByMaAndTenAndTrangthaiNV(String manv, String tennv, Integer trangThai, Pageable pageable);
 
 
+
 //    NhanVien findByTentaikhoan(String name);
 //
 //    @Query("SELECT nv FROM NhanVien nv LEFT JOIN FETCH nv.userRoles WHERE nv.tentaikhoan = :taiKhoan")
 //    NhanVien findByTenTaiKhoanWithRoles(@Param("taiKhoan") String taiKhoan);
+
+
+
 
 }
