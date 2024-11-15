@@ -1,5 +1,8 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -16,6 +19,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -23,6 +27,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "CO_AO")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class CoAo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,5 +55,4 @@ public class CoAo {
 //    public void toggleTrangThai() {
 //        this.trangThai = !this.trangThai; // Đảo ngược giá trị
 //    }
-
 }

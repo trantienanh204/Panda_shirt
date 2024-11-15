@@ -1,9 +1,11 @@
 package com.example.demo.Controller.admin.QLTK;
 
-import com.example.demo.entity.KhachHang;
-import com.example.demo.entity.NhanVien;
+import com.example.demo.entity.*;
+import com.example.demo.respository.ChiTietVaiTroRepo;
 import com.example.demo.respository.KhachHangRepository;
 
+import com.example.demo.respository.TaiKhoanRepo;
+import com.example.demo.respository.VaiTroRepo;
 import com.example.demo.service.EmailService;
 import com.example.demo.services.KhachHangService;
 import jakarta.validation.Valid;
@@ -33,6 +35,14 @@ public class TKKhachHangController {
     KhachHangRepository khachHangRepository;
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    TaiKhoanRepo taiKhoanRepo;
+    @Autowired
+    VaiTroRepo vaiTroRepo;
+    @Autowired
+    ChiTietVaiTroRepo chiTietVaiTroRepo;
+
     @GetMapping("/tkkhachhang")
     public String khachhang(@RequestParam(value = "page", defaultValue = "0") int page,
                             @RequestParam(value = "makh", required = false) String makh,
@@ -140,7 +150,25 @@ public class TKKhachHangController {
             // Set trạng thái và ngày tạo
             khachHang.setTrangthai(1);
             khachHang.setNgaytao(LocalDate.now());
+            TaiKhoan tk = new TaiKhoan();
+            ChiTietVaiTro ctvt = new ChiTietVaiTro();
 
+            String tentk = khachHang.getTentaikhoan();
+            // Lưu nhân viên vào cơ sở dữ liệu
+            int vaitro = 3;
+            tk.setMatKhau(hashedPassword);
+            tk.setTenDangNhap(tentk);
+            taiKhoanRepo.save(tk);
+            VaiTro vt = vaiTroRepo.findById(vaitro).get();
+            TaiKhoan tenDangNhap = taiKhoanRepo.findByTenDangNhap(tentk);
+            System.out.println("vaitro " +vt.getTenVaiTro());
+            System.out.println("tên " +tenDangNhap.getTenDangNhap());
+            System.out.println("tên " +tentk);
+            ctvt.setVaiTro(vt);
+            ctvt.setTaiKhoan(tenDangNhap);
+            chiTietVaiTroRepo.save(ctvt);
+
+            khachHang.setTaiKhoan(tenDangNhap);
             // Lưu khách hàng vào cơ sở dữ liệu
             khachHangService.saveCustomerToDb(file, khachHang);
             redirectAttributes.addFlashAttribute("saveMassage", "Thêm khách hàng thành công");

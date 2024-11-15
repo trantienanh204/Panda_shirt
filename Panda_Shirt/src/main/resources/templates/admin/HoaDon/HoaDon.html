@@ -43,7 +43,7 @@
 <!-- Danh sách bài viết -->
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách hóa đơn</h3>
-    <table>
+    <table style="font-size: 13px">
         <thead>
         <tr>
             <th>#</th>
@@ -58,9 +58,8 @@
         </tr>
         </thead>
         <tbody>
-
 <!--        <tr th:each="hd,i : ${lshd} " th:if="${hd.nhanVien != null || hd.khachHang != null}">-->
-        <tr th:each="hd,i : ${lshd} " >
+        <tr th:each="hd,i : ${lshd} " style="width: 10px">
             <td  th:text="${i.count}"></td>
             <td th:text="${hd.mahoadon != null ? hd.mahoadon : '(Trống)'}"></td>
             <td th:text="${hd.nhanVien != null ? hd.nhanVien.tennhanvien : '(Trống)'}"></td>
