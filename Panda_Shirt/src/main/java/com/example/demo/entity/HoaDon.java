@@ -58,8 +58,8 @@ public class HoaDon {
     @Column(name = "DIA_CHI_CU_THE")
     private String diaChi;
 
-//    @Column(name = "GHI_CHU")
-//    private String ghiChu;
+    @Column(name = "GHI_CHU")
+    private String ghiChu;
 
     @Column(name = "ACTIVE")
     private Boolean active;

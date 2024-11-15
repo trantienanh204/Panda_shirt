@@ -26,7 +26,7 @@ import java.util.Set;
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/panda/vaitro","/Image/**","panda/mahoa"};
     private final String[] QUANLY_ENDPOINTS= {"/panda/vaitro"};
-    private final String[] NHANVIEN_ENDPOINTS= {"/panda/nsx"};
+    private final String[] NHANVIEN_ENDPOINTS= {"/panda/nhanvien/banhang/hienthi"};
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http, TaiKhoanService taiKhoanService) throws Exception {
             http
@@ -73,7 +73,7 @@ public class SecurityConfig {
                     response.sendRedirect("/panda/vaitro");
                 } else if (roles.contains("ROLE_NHANVIEN")) {
                     System.out.println("Chuyển hướng đến");
-                    response.sendRedirect("/panda/nsx");
+                    response.sendRedirect("/panda/nhanvien/banhang/hienthi");
                 } else {
                     System.out.println("Chuyển hướng mặc định đến /khach-hang");
                     response.sendRedirect("/panda/thongke");
