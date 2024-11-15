@@ -74,6 +74,9 @@ public class SanPham {
     @JsonBackReference
     private ChatLieu chatLieu;
 
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>();
 
 
     @Transient
