@@ -85,6 +85,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${listvc.empty}">
+            <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="vc,i: ${listvc}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${vc.ma}"></td>
@@ -138,7 +141,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${listvc.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/voucher/hienthi(page=${currentPage + 1},ma=${ma}, ten=${ten},startDate=${startDate},endDate=${endDate}, trangThai=${trangThai})}"
                    aria-label="Next">

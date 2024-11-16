@@ -64,6 +64,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${listcd.empty}">
+            <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="dd,i: ${listcd}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${dd.hoaDon.mahoadon}"></td>
@@ -129,7 +132,7 @@
                    th:text="${currentPage +1 }" disabled></a>
             </li>
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${listcd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:if="${trangThai == 'Chờ duyệt'}"
                    th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"

@@ -52,6 +52,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${listsp.empty}">
+            <td colspan="7" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="sp,i: ${listsp}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${sp.masp}"></td>
@@ -95,7 +98,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${listsp.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/nhanvien/xemsanpham/hienthi(page=${currentPage + 1}, tensp=${tensp}, trangthai=${trangthai})}"
                    aria-label="Next">
