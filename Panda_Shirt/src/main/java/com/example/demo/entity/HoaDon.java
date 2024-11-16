@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -66,10 +67,12 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "ID_NHAN_VIEN", referencedColumnName = "id")
+    @JsonBackReference
     private NhanVien nhanVien;
 
     @ManyToOne
     @JoinColumn(name = "ID_KHACH_HANG", referencedColumnName = "id")
+    @JsonBackReference
     private KhachHang khachHang;
 
 

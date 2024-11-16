@@ -1,4 +1,5 @@
 package com.example.demo.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -32,6 +33,7 @@ public class TaiKhoan {
         private NhanVien nhanVien; // Đảm bảo thuộc tính này có mặt
 
         @OneToOne(mappedBy = "taiKhoan",cascade = CascadeType.ALL)
+        @JsonBackReference
         private KhachHang khachHang;
 
         @OneToMany(mappedBy = "taiKhoan",fetch = FetchType.EAGER)

@@ -45,17 +45,14 @@ public class SanPhamChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_SAN_PHAM", referencedColumnName = "id")
-    @JsonBackReference
     private SanPham sanPham;
 
     @ManyToOne
     @JoinColumn(name = "ID_KICH_THUOC")
-    @JsonBackReference
     private KichThuoc kichThuoc;
 
     @ManyToOne
     @JoinColumn(name = "ID_MAU_SAC")
-    @JsonBackReference
     private MauSac mauSac;
 
     public SanPhamChiTiet(Integer id) {

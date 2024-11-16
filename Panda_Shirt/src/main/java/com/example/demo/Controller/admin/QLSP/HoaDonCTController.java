@@ -27,7 +27,8 @@ public class HoaDonCTController {
     HoaDonRepository hoaDonRepository;
 
     @ModelAttribute("lsspct")
-    public List<SanPhamChiTiet> getspct(){return sanPhamChiTietRepository.findAll();}
+    public List<SanPhamChiTiet> getspct(){
+        return sanPhamChiTietRepository.findAll();}
     @ModelAttribute("lshoadon")
     public List<HoaDon> gethd(){return  hoaDonRepository.findAll();}
 //
