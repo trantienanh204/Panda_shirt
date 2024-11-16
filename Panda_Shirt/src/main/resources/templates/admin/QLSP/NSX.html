@@ -58,6 +58,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${lsnsx.empty}">
+            <td colspan="7" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="nsx,i : ${lsnsx} ">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${nsx.mansx}"></td>
@@ -106,7 +109,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${lsnsx.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/nsx(page=${currentPage + 1}, tennsx=${tennsx}, trangthai=${trangthai})}"
                    aria-label="Next">

@@ -48,6 +48,7 @@ public class mausaccontroller {
         model.addAttribute("trangthai", trangthai);
         model.addAttribute("MauSac", new MauSac());
         model.addAttribute("pageSize", listMS.getSize());
+
         return "/admin/QLSP/MauSac";
     }
 

@@ -60,6 +60,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${lshd.empty}">
+            <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="hd,i : ${lshd} ">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${hd.mahoadon}"></td>
@@ -104,7 +107,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage + 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">

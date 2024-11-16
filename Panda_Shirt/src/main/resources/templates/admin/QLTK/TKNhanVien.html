@@ -72,6 +72,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${list.empty}">
+            <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="taikhoannv,i : ${list}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td>
@@ -136,7 +139,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${list.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/tknhanvien(page=${currentPage + 1},manv=${manv},tennv=${tennv}, trangThai=${trangthai})}"
                    aria-label="Next">

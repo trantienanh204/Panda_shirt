@@ -25,7 +25,8 @@ import java.util.Set;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/panda/vaitro","/Image/**","panda/mahoa"};
+//    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/panda/vaitro","/Image/**","panda/mahoa"};
+private final String[] PUBLIC_ENDPOINTS = {};
     private final String[] QUANLY_ENDPOINTS= {"/panda/vaitro"};
     private final String[] NHANVIEN_ENDPOINTS= {"/panda/nhanvien/banhang/hienthi"};
 

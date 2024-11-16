@@ -52,21 +52,23 @@ public class kichthuocController {
     public String AddVC( @ModelAttribute("KichThuoc") KichThuoc kichThuoc, Model model,RedirectAttributes redirectAttributes) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
+
         String regex = "^[\\p{L}0-9\\s]+$";
         String regexma = "^[a-zA-Z0-9]+$";
 
         Pattern pattern = Pattern.compile(regex);
         Pattern patternma = Pattern.compile(regexma);
 
-        Matcher maktMatcher = pattern.matcher(kichThuoc.getMa());
-        Matcher tenktMatcher = patternma.matcher(kichThuoc.getTen());
+        Matcher maktMatcher = patternma.matcher(kichThuoc.getMa());
+        Matcher tenktMatcher = pattern.matcher(kichThuoc.getTen());
+
 
         if(kichThuoc.getMa().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
             return "admin/QLSP/ADD/AddKT";
         }
-        if (kichThuoc.getMa() == null || kichThuoc.getMa().length() < 2 || kichThuoc.getMa().length() > 14) {
-            model.addAttribute("errorma", "Mã phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
+        if (kichThuoc.getMa() == null || kichThuoc.getMa().length() < 3 || kichThuoc.getMa().length() > 14) {
+            model.addAttribute("errorma", "Mã phải lớn hơn hoặc bằng 3 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/ADD/AddKT";
         }
         if (!maktMatcher.matches()) {
@@ -84,8 +86,8 @@ public class kichthuocController {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/ADD/AddKT";
         }
-        if (kichThuoc.getTen() == null || kichThuoc.getTen().length() < 5 || kichThuoc.getTen().length() > 14) {
-            model.addAttribute("errorten", "Tên phải lớn hơn 4 ký tự và nhỏ hơn 15 ký tự");
+        if (kichThuoc.getTen() == null || kichThuoc.getTen().length() < 1 || kichThuoc.getTen().length() > 14) {
+            model.addAttribute("errorten", "Tên phải lớn hơn hoặc bằng 1 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/ADD/AddKT";
         }
         if(kichThuocRepository.existsKichThuocByTen(kichThuoc.getTen())){
@@ -160,8 +162,8 @@ public class kichthuocController {
             model.addAttribute("errorma" ,"Mã chỉ được chứa chữ và số");
             return "admin/QLSP/UPDATE/UpdateKT";
         }
-        if (kichThuoc.getMa() == null || kichThuoc.getMa().length() < 2 || kichThuoc.getMa().length() > 14) {
-            model.addAttribute("errorma", " Mã phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
+        if (kichThuoc.getMa() == null || kichThuoc.getMa().length() < 3 || kichThuoc.getMa().length() > 14) {
+            model.addAttribute("errorma", "Mã phải lớn hơn hoặc bằng 3 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/UPDATE/UpdateKT";
         }
         if(findma != null){
@@ -176,8 +178,8 @@ public class kichthuocController {
             return "admin/QLSP/UPDATE/UpdateKT";
         }
 
-        if (kichThuoc.getTen() == null || kichThuoc.getTen().length() < 2 || kichThuoc.getTen().length() > 14) {
-            model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
+        if (kichThuoc.getTen() == null || kichThuoc.getTen().length() < 1 || kichThuoc.getTen().length() > 14) {
+            model.addAttribute("errorten", "Tên phải lớn hơn hoặc bằng 1 ký tự và nhỏ hơn 15 ký tự");
 
             return "admin/QLSP/UPDATE/UpdateKT";
         }

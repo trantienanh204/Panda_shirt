@@ -59,7 +59,9 @@
         </tr>
         </thead>
         <tbody>
-
+        <tr th:if="${lsdanhmuc.empty}">
+            <td colspan="7" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="dm,i : ${lsdanhmuc} ">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${dm.madanhmuc}"></td>
@@ -108,7 +110,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${lsdanhmuc.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/danhmuc(page=${currentPage + 1}, tendm=${tendm}, trangthai=${trangthai})}"
                    aria-label="Next">

@@ -58,12 +58,23 @@
         </tr>
         </thead>
         <tbody>
-<!--        <tr th:each="hd,i : ${lshd} " th:if="${hd.nhanVien != null || hd.khachHang != null}">-->
-        <tr th:each="hd,i : ${lshd} " style="width: 10px">
-            <td  th:text="${i.count}"></td>
-            <td th:text="${hd.mahoadon != null ? hd.mahoadon : '(Trống)'}"></td>
-            <td th:text="${hd.nhanVien != null ? hd.nhanVien.tennhanvien : '(Trống)'}"></td>
-            <td th:text="${hd.khachHang != null ? hd.khachHang.tenkhachhang : '(Trống)'}"></td>
+<!--<<<<<<< HEAD-->
+<!--&lt;!&ndash;        <tr th:each="hd,i : ${lshd} " th:if="${hd.nhanVien != null || hd.khachHang != null}">&ndash;&gt;-->
+<!--        <tr th:each="hd,i : ${lshd} " style="width: 10px">-->
+<!--            <td  th:text="${i.count}"></td>-->
+<!--            <td th:text="${hd.mahoadon != null ? hd.mahoadon : '(Trống)'}"></td>-->
+<!--            <td th:text="${hd.nhanVien != null ? hd.nhanVien.tennhanvien : '(Trống)'}"></td>-->
+<!--            <td th:text="${hd.khachHang != null ? hd.khachHang.tenkhachhang : '(Trống)'}"></td>-->
+<!--=======-->
+        <tr th:if="${lshd.empty}">
+            <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
+        <tr th:each="hd,i : ${lshd} ">
+            <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
+            <td th:text="${hd.mahoadon}"></td>
+            <td th:text="${hd.nhanVien.tennhanvien}"></td>
+            <td th:text="${hd.khachHang.tenkhachhang}"></td>
+
 <!--            <td th:text="${hd.soluong}"></td>-->
             <td th:text="${hd.tongtien != null ? hd.tongtien :'(Trống)'}"></td>
 <!--            <td th:text="${hd.tongtien != null ? #numbers.formatDecimal(hd.tongtien, 0, 'COMMA') : '(Trống)'}"></td>-->
@@ -105,7 +116,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
