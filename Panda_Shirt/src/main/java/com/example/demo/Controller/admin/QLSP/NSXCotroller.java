@@ -86,8 +86,9 @@ public class NSXCotroller {
         model.addAttribute("role", role);
         model.addAttribute( "nsx", nhaSanXuat);
 
-        String regex = "^[a-zA-Z0-9àáạảãâầấậẩăằắặẳêềếệểèẻẹéẽôồốộổơờớợởưừứựửữủũụúùìỉịíĩđòóỏọõ\\s]+$";
+        String regex = "^[\\p{L}0-9\\s]+$";
         Pattern pattern = Pattern.compile(regex);
+
         String regexma = "^[a-zA-Z0-9]+$";
         Pattern patternma = Pattern.compile(regexma);
 
