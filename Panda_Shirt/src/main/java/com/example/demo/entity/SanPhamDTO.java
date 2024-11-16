@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SanPhamDTO { // Đổi tên lớp thành SanPhamDTO để tuân thủ quy tắc đặt tên Java
+public class SanPhamDTO {
+
     private String masp; // ID sản phẩm
     private Integer tenSanPham; // Tên sản phẩm
     private Integer danhMucId; // ID danh mục
@@ -19,10 +19,6 @@ public class SanPhamDTO { // Đổi tên lớp thành SanPhamDTO để tuân th�
     private Integer chatLieuId; // ID chất liệu
     private Integer nhaSanXuatId; // ID nhà sản xuất
     private Integer coAoId; // ID cổ áo
-
-
-
-    // Danh sách sản phẩm chi tiết
     private List<SanPhamChiTietDTO> chiTietSanPham;
 
     @Override
@@ -35,8 +31,10 @@ public class SanPhamDTO { // Đổi tên lớp thành SanPhamDTO để tuân th�
                 ", chatLieuId=" + chatLieuId +
                 ", nhaSanXuatId=" + nhaSanXuatId +
                 ", coAoId=" + coAoId +
-
                 ", chiTietSanPham=" + chiTietSanPham +
                 '}';
     }
+
+
 }
+
