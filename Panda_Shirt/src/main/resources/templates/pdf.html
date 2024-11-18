@@ -152,13 +152,13 @@
             <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
             <td th:text="${hdct.sanPhamChiTiet.dongia}"></td>
             <td th:text="${hdct.soluong}"></td>
-            <td th:text="${hdct.tongtien}"></td>
+            <td th:text="${hdct.thanhtien}"></td>
         </tr>
         </tbody>
     </table>
 
     <div class="total">
-        <p th:text="'Tổng cộng: ' + ${hoadonct[0].hoaDon.tongtien}"></p>
+        <p th:text="'Tổng cộng: ' + ${hoadonct[0].hoaDon.thanhtien}"></p>
         <p>Thuế (0%): 0đ</p>
         <strong>TỔNG TIỀN: </strong>
     </div>

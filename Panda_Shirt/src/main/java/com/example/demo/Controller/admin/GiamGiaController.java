@@ -235,11 +235,7 @@ public class GiamGiaController {
             model.addAttribute("errormg", "Mức giảm chỉ chứa số");
             return "admin/QLSP/ADD/AddVC";
         }
-        if (voucher.isLoai() == false) {
-            model.addAttribute("errorloai", "Trạng thái không được để trống hoặc không hợp lệ");
-            return "admin/QLSP/ADD/AddVC";
-        }
-        //mô tả
+
         if (voucher.getMota().isEmpty()) {
             model.addAttribute("errormt", "Không được để trống");
             return "admin/QLSP/ADD/AddVC";

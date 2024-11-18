@@ -23,7 +23,6 @@ public class BanHangService {
     private EntityManager entityManager;
     // Phương thức tìm kiếm sản phẩm
     public List<SanPhamChiTiet> findByTenSanPham(String keyword) {
-        // Kiểm tra xem keyword có phải null hoặc rỗng không
         if (keyword == null || keyword.trim().isEmpty()) {
             return List.of(); // Trả về danh sách rỗng nếu không có từ khóa
         }

@@ -26,6 +26,9 @@ public class HoaDonCT {
     @Column(name = "SO_LUONG")
     private int soluong;
 
+    @Column(name = "TRANG_THAI")
+    private int trangthai;
+
     @Column(name = "DON_GIA")
     private BigDecimal dongia;
 
