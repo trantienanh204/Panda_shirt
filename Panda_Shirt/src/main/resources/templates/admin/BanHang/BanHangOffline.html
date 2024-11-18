@@ -114,7 +114,9 @@
                            style="width: 70px; border-radius: 10px; text-align: center"
                            id="soluong-${hdct.id}"
                            class="quantity-input" th:data-id="${hdct.id}"
+                           th:data-product="${hdct.sanPhamChiTiet.id}"
                     >
+                    <span class="error-message" style="color: red; display: none;"></span>
                 <td class="tong-tien" th:text="${hdct.tongtien}"></td>
                 <td>
                     <button class="btn btn-danger remove-btn" th:data-id="${hdct.id}">
@@ -194,7 +196,7 @@
                                 };
                                 $('#productList').append(
                                     `<li class="list-group-item product-item" data-product='${JSON.stringify(product)}'>
-                                    ${product.tensp} - ${product.mausac} - ${product.kichthuoc}</li>`
+                                ${product.id} -   ${product.tensp} - ${product.mausac} - ${product.kichthuoc}</li>`
                                 );
                             });
                         } else {
@@ -238,7 +240,8 @@
                     thanhTien: totalPrice // Gửi thành tiền
                 }),
                 success: function (response) {
-                    location.reload();
+                    console.log('Dữ liệu gửi thành công:', response);
+                    // location.reload();
                 }
             });
         });
@@ -294,13 +297,22 @@
                 updatetongtien(row, dongia);
             });
         }
+
+        let previousValue = 0; // Biến lưu giá trị trước đó
+
+        $(document).on('focus', '.quantity-input', function () {
+            previousValue = $(this).val(); // Lưu giá trị cũ của ô input
+        });
+
         $(document).on('input', '.quantity-input', function() {
             const inputElement = $(this); // Lấy phần tử input đã thay đổi
             const idHoaDonCT = inputElement.data('id'); // Lấy ID từ data-id
+            const productId = inputElement.data('product');// Lấy ID từ data-product
             const row = $(this).closest('tr'); // Lấy hàng tương ứng
             const dongia = parseFloat(row.find('td:nth-child(4)').text());
             const soluong = parseInt($(this).val()) || 1;
             console.log('ID HoaDonCT: ', idHoaDonCT);
+            console.log('ID spct: ', productId);
             const thanhtien = dongia * soluong;
             row.find('.tong-tien').text(thanhtien.toFixed(2));
             $.ajax({
@@ -308,6 +320,7 @@
                 type: 'POST', // Phương thức POST
                 contentType: 'application/json',
                 data: JSON.stringify({
+                    idSanPhamCT: productId,
                     idHoadon: parseInt(idHoaDonCT),
                     soLuong: soluong,
                     thanhTien: thanhtien
@@ -317,8 +330,16 @@
                     location.reload();
 
                 },
-                error: function(xhr, status, error) {
-                    console.error('Lỗi khi cập nhật:', error);
+                error: function(xhr) {
+                    // Xử lý lỗi từ server
+                    const errorMessage = xhr.responseText || 'Có lỗi xảy ra';
+                    alert(errorMessage); // Hiển thị thông báo lỗi
+
+                    inputElement.val(previousValue);
+
+                    // Hiển thị lại thành tiền cũ
+                    const previousTotal = dongia * previousValue;
+                    row.find('.tong-tien').text(previousTotal.toFixed(2));
                 }
             });
         });

@@ -15,10 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -222,6 +219,19 @@ public class BanHangOffline {
     public ResponseEntity<String> updateProduct(@RequestBody HoaDonCTDTO dto,Model model) {
             HoaDonCT hoaDonCT = hoaDonCTRepository.findById(dto.getIdHoadon())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn chi tiết"));
+            System.out.println("idspct = "  +dto.getIdSanPhamCT());
+            Optional<SanPhamChiTiet> spctOptional = sanPhamChiTietRepository.findById(dto.getIdSanPhamCT());
+            if (spctOptional.isEmpty()) {
+                return ResponseEntity.badRequest().body("Không tìm thấy sản phẩm chi tiết.");
+            }
+            SanPhamChiTiet spct = spctOptional.get();
+
+            // Kiểm tra số lượng tồn
+            if (dto.getSoLuong() > spct.getSoluongsanpham()) {
+                return ResponseEntity.badRequest().body("Số lượng nhập vượt quá số lượng tồn kho.");
+            }
+
+
             hoaDonCT.setSoluong(dto.getSoLuong());
             hoaDonCT.setTongtien(dto.getThanhTien());
             hoaDonCT.setTrangthai(1);
