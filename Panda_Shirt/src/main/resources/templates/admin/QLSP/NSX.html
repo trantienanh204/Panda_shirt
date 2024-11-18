@@ -66,7 +66,7 @@
             <td th:if="${nsx.ngaysua !=null }" th:text="${nsx.ngaysua}"></td>
             <td th:if="${nsx.ngaysua ==null }" >(Trống)</td>
             <td>
-                <span class="status-label" th:classappend="${nsx.trangthai == 1} ? 'status-green' : 'status-orange'"
+                <span style="font-style: italic;" class="status-label" th:classappend="${nsx.trangthai == 1} ? 'status-green' : 'status-orange'"
                       th:text="${nsx.trangthai == 1} ? 'Hoạt động' : 'Ngừng hoạt động'"></span>
             </td>
             <td>

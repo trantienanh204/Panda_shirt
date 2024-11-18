@@ -53,13 +53,6 @@ public class HoaDonCTController {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         List<HoaDonCT> lshdct  = hoaDonCTRepository.findhoadonct(id);
-//        if(lshdct.isEmpty() || lshdct.size() <= 0){
-//            System.out.println(lshdct .size());
-//            System.out.println(lshdct.get(0).getSanPhamChiTiet().getSanPham().getTensp());
-//            return null;
-//        }else {
-//            System.out.println("Trống");
-//        }
         return ResponseEntity.ok(lshdct);
     }
 
