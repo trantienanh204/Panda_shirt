@@ -100,39 +100,31 @@ public class GioHangController {
     }
 
     @PostMapping("/updateQuantity")
-    public ResponseEntity<String> updateQuantity(@RequestParam int sanPhamChiTietId,
-                                                 @RequestParam int quantity,
-                                                 @AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            String tenDangNhap = userDetails.getUsername();
+@ResponseBody
+    public ResponseEntity<String> updateQuantity(@RequestParam int sanPhamChiTietId, @RequestParam int quantity, @AuthenticationPrincipal UserDetails userDetails) {
+        try { String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
-            if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
-            }
+            if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null)
+            { return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản."); }
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
-            gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
-            return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
-        }
-    }
+        gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
+        return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật."); }
+        catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage()); } }
 
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteFromCart(@RequestParam int sanPhamChiTietId,
-                                                 @AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            String tenDangNhap = userDetails.getUsername();
+    @ResponseBody
+    public ResponseEntity<String> deleteFromCart(
+            @RequestParam int sanPhamChiTietId, @AuthenticationPrincipal UserDetails userDetails) {
+        try { String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
-            }
-            int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+            } int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
             gioHangService.deleteFromCart(khachHangId, sanPhamChiTietId);
             return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
-        }
-    }
+    } catch (Exception e) { return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage()); } }
+
 
     @GetMapping("/thanhtoan")
     public String thanhToan(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -250,20 +242,19 @@ public class GioHangController {
         int khachHangId = khachHang.getId();
         List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
 
-        // Kiểm tra nếu danh sách giỏ hàng trống
+
         if (cartItems == null || cartItems.isEmpty()) {
             model.addAttribute("message", "Giỏ hàng của bạn đang trống.");
             return "khachhang/GioHang";
         }
 
-        // Tạo hóa đơn
         HoaDon hoaDon = new HoaDon();
         hoaDon.setKhachHang(khachHang);
         hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
         hoaDon.setNgaytao(LocalDate.now());
-        hoaDon.setTrangthai(1); // 1 là trạng thái chờ xử lý
-        hoaDon.setDiaChi(khachHang.getDiachi()); // Địa chỉ thực tế từ khách hàng
-        hoaDon.setGhiChu(note); // Ghi chú đơn hàng nếu cần thiết
+        hoaDon.setTrangthai(1);
+        hoaDon.setDiaChi(khachHang.getDiachi());
+       hoaDon.setGhiChu(note);
         hoaDon.setChiTietHoaDons(new ArrayList<>());
 
         for (GioHang item : cartItems) {
@@ -280,7 +271,7 @@ public class GioHangController {
 
         hoaDonService.save(hoaDon);
 
-        // Xóa giỏ hàng sau khi thanh toán thành công
+
         gioHangService.clearCart(khachHangId);
 
         model.addAttribute("message", "Đơn hàng của bạn đã được đặt thành công!");

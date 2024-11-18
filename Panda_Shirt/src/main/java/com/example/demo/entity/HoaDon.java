@@ -65,6 +65,9 @@ public class HoaDon {
     @Column(name = "ACTIVE")
     private Boolean active;
 
+    @Column(name = "GHI_CHU")
+    private String GhiChu;
+
     @ManyToOne
     @JoinColumn(name = "ID_NHAN_VIEN", referencedColumnName = "id")
     @JsonBackReference

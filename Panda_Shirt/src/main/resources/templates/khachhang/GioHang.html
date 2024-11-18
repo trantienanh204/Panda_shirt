@@ -267,9 +267,7 @@
             });
         });
 
-        buyButton.addEventListener('click', function(event) {
-            event.preventDefault();  // Thêm dòng này để ngăn form gửi ngay lập tức
-
+        buyButton.addEventListener('click', function() {
             const selectedItems = [];
             checkboxes.forEach(checkbox => {
                 if (checkbox.checked) {
@@ -277,7 +275,7 @@
                 }
             });
 
-            console.log("Selected Items:", selectedItems); // Log để kiểm tra
+            console.log("Selected Items:", selectedItems); // Thêm log để kiểm tra
 
             if (selectedItems.length === 0) {
                 alert("Vui lòng chọn ít nhất một sản phẩm.");
@@ -300,13 +298,12 @@
             totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
             form.appendChild(totalAmountInput);
 
-            console.log("Form Data:", form); // Log để kiểm tra form
-
             document.body.appendChild(form);
             form.submit();
         });
     });
 </script>
+
 
 </body>
 </html>
