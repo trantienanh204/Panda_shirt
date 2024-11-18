@@ -4,7 +4,8 @@ import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.SanPham;
 import com.example.demo.respository.HoaDonRepository;
 import com.example.demo.respository.KhachHangRepository;
-import com.example.demo.respository.SanPhamRepository;
+
+import com.example.demo.respository.sanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class ThongKeService {
     @Autowired
-    SanPhamRepository sanPhamRepository;
+    sanPhamRepository sanPhamRepository;
     @Autowired
     HoaDonRepository hoaDonRepository;
     @Autowired

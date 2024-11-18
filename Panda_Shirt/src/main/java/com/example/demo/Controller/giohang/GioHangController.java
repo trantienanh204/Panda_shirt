@@ -180,17 +180,32 @@ public class GioHangController {
                                 @RequestParam("selectedItems") String selectedItemsJson,
                                 Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
+            // Log dữ liệu nhận được
+            System.out.println("Total Amount: " + totalAmount);
+            System.out.println("Selected Items JSON: " + selectedItemsJson);
+
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
                 return "redirect:/login";
             }
 
+            // Chuyển đổi JSON thành danh sách Integer
             ObjectMapper objectMapper = new ObjectMapper();
             List<Integer> selectedItems = Arrays.asList(objectMapper.readValue(selectedItemsJson, Integer[].class));
 
+            System.out.println("Selected Items: " + selectedItems); // Log danh sách sản phẩm đã chọn
+
+            if (selectedItems.isEmpty()) {
+                model.addAttribute("message", "Không có sản phẩm nào được chọn.");
+                return "khachhang/GioHang";
+            }
+
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+            System.out.println("KhachHang ID: " + khachHangId); // Log ID khách hàng
+
             List<GioHang> cartItems = gioHangService.getCartItemsByIds(khachHangId, selectedItems);
+            System.out.println("Cart Items: " + cartItems); // Log danh sách sản phẩm trong giỏ hàng
 
             if (cartItems == null || cartItems.isEmpty()) {
                 model.addAttribute("message", "Không có sản phẩm nào được chọn.");
@@ -206,6 +221,73 @@ public class GioHangController {
             return "khachhang/GioHang";
         }
     }
+
+    @PostMapping("/thanhtoan/hoadon")
+    public String xuLyHoaDon(@RequestParam double totalAmount,
+                             @RequestParam String paymentMethod,
+                             @RequestParam String note,
+                             @AuthenticationPrincipal UserDetails userDetails, Model model) {
+        String tenDangNhap = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+
+        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+            return "redirect:/login";
+        }
+
+        KhachHangDTO khachHangDto = taiKhoanDto.getKhachHangDTO();
+        if (khachHangDto == null) {
+            model.addAttribute("message", "Không tìm thấy thông tin khách hàng.");
+            return "khachhang/ThongBaoLoi";
+        }
+
+        KhachHang khachHang = new KhachHang();
+        khachHang.setId(khachHangDto.getId());
+        khachHang.setMakhachhang(khachHangDto.getMakhachhang());
+        khachHang.setTenkhachhang(khachHangDto.getTenkhachhang());
+        khachHang.setSdt(khachHangDto.getSdt());
+        khachHang.setDiachi(khachHangDto.getDiachi());
+
+        int khachHangId = khachHang.getId();
+        List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
+
+        // Kiểm tra nếu danh sách giỏ hàng trống
+        if (cartItems == null || cartItems.isEmpty()) {
+            model.addAttribute("message", "Giỏ hàng của bạn đang trống.");
+            return "khachhang/GioHang";
+        }
+
+        // Tạo hóa đơn
+        HoaDon hoaDon = new HoaDon();
+        hoaDon.setKhachHang(khachHang);
+        hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
+        hoaDon.setNgaytao(LocalDate.now());
+        hoaDon.setTrangthai(1); // 1 là trạng thái chờ xử lý
+        hoaDon.setDiaChi(khachHang.getDiachi()); // Địa chỉ thực tế từ khách hàng
+        hoaDon.setGhiChu(note); // Ghi chú đơn hàng nếu cần thiết
+        hoaDon.setChiTietHoaDons(new ArrayList<>());
+
+        for (GioHang item : cartItems) {
+            HoaDonCT chiTiet = new HoaDonCT();
+            chiTiet.setSanPhamChiTiet(item.getSanPhamChiTiet());
+            chiTiet.setSoluong(item.getSoluong());
+            chiTiet.setDongia(BigDecimal.valueOf(item.getSanPhamChiTiet().getDongia()));
+            chiTiet.setNgaytao(LocalDate.now());
+            chiTiet.setTongtien(chiTiet.getDongia().multiply(BigDecimal.valueOf(chiTiet.getSoluong())));
+            chiTiet.setHinhthucthanhtoan(paymentMethod);
+            chiTiet.setHoaDon(hoaDon);
+            hoaDon.getChiTietHoaDons().add(chiTiet);
+        }
+
+        hoaDonService.save(hoaDon);
+
+        // Xóa giỏ hàng sau khi thanh toán thành công
+        gioHangService.clearCart(khachHangId);
+
+        model.addAttribute("message", "Đơn hàng của bạn đã được đặt thành công!");
+
+        return "khachhang/ThanhToanThanhCong"; // Tên trang thông báo thanh toán thành công
+    }
+
 }
 
 

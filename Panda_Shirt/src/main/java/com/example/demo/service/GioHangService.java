@@ -74,6 +74,7 @@ import java.util.Optional;
         if (gioHang != null) { gioHangRepository.delete(gioHang); } }
 
         public List<GioHang> getCartItemsByIds(int khachHangId, List<Integer> itemIds) { return gioHangRepository.findAllByIdInAndKhachHangId(itemIds, khachHangId); }
+
     }
 
 

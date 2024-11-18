@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 package com.example.demo.respository;
 
@@ -24,15 +23,5 @@ public interface sanPhamRepository extends JpaRepository<SanPham,Integer> {
         @Query("SELECT s FROM SanPham s WHERE s.sanPhamChiTietList IS NOT EMPTY")
         List<SanPham> findSanPhamWithDetails();
 
-
-=======
-package com.example.demo.respository;
-import com.example.demo.entity.SanPham;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public interface SanPhamRepository extends JpaRepository<SanPham,Integer> {
->>>>>>> manh
 
 }
