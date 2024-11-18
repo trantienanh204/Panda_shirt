@@ -16,7 +16,7 @@ public interface DonHangRepository extends JpaRepository<DonHang, Integer> {
             "(?1 IS NULL OR dh.hoaDon.mahoadon LIKE %?1%) AND " +
             "(?2 IS NULL OR dh.nhanVien.tennhanvien LIKE %?2%) AND " +
             "(?3 IS NULL OR dh.khachHang.tenkhachhang LIKE %?3%) AND " +
-            "dh.trangThai = ?4")
+            "(?4 IS NULL OR dh.trangThai LIKE %?4%)")
     Page<DonHang> findByMaAndTenAndDH(String mahd, String tennv, String tenkh, String trangThai, Pageable pageable);
 
 }

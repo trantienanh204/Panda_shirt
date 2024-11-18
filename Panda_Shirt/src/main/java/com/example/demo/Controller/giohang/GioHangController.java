@@ -1,11 +1,9 @@
 package com.example.demo.Controller.giohang;
 
 import com.example.demo.Controller.login.UserUtils;
-import com.example.demo.entity.GioHang;
+import com.example.demo.entity.*;
 import com.example.demo.DTO.KhachHangDTO;
-import com.example.demo.entity.HoaDon;
-import com.example.demo.entity.HoaDonCT;
-import com.example.demo.entity.KhachHang;
+import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.GioHangService;
 import com.example.demo.service.HoaDonService;
 import com.example.demo.service.SanPhamService;
@@ -24,12 +22,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Arrays;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,6 +44,8 @@ public class GioHangController {
     private SanPhamService sanPhamService;
     @Autowired
     private HoaDonService hoaDonService;
+    @Autowired
+    private DonHangRepository donHangRepository;
 
     @PostMapping("/add")
     public ResponseEntity<String> addToCart(@AuthenticationPrincipal UserDetails userDetails,
@@ -98,32 +99,48 @@ public class GioHangController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
     @PostMapping("/updateQuantity")
-@ResponseBody
-    public ResponseEntity<String> updateQuantity(@RequestParam int sanPhamChiTietId, @RequestParam int quantity, @AuthenticationPrincipal UserDetails userDetails) {
-        try { String tenDangNhap = userDetails.getUsername();
-            TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
-            if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null)
-            { return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản."); }
-            int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
-        gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
-        return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật."); }
-        catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage()); } }
-
-    @PostMapping("/delete")
     @ResponseBody
-    public ResponseEntity<String> deleteFromCart(
-            @RequestParam int sanPhamChiTietId, @AuthenticationPrincipal UserDetails userDetails) {
-        try { String tenDangNhap = userDetails.getUsername();
+    public ResponseEntity<String> updateQuantity(@RequestParam int sanPhamChiTietId,
+                                                 @RequestParam int quantity,
+                                                 @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            System.out.println("Received updateQuantity request for: " + sanPhamChiTietId + " quantity: " + quantity);
+            String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
-            } int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+            }
+            int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+            gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
+            return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<String> deleteFromCart(@RequestParam int sanPhamChiTietId,
+                                                 @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            System.out.println("Received delete request for product: " + sanPhamChiTietId);
+            String tenDangNhap = userDetails.getUsername();
+            TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+            if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
+            }
+            int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
             gioHangService.deleteFromCart(khachHangId, sanPhamChiTietId);
             return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
-    } catch (Exception e) { return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage()); } }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
+        }
+    }
 
 
     @GetMapping("/thanhtoan")
@@ -242,23 +259,28 @@ public class GioHangController {
         int khachHangId = khachHang.getId();
         List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
 
-
         if (cartItems == null || cartItems.isEmpty()) {
             model.addAttribute("message", "Giỏ hàng của bạn đang trống.");
             return "khachhang/GioHang";
         }
 
+        // Tạo hóa đơn
         HoaDon hoaDon = new HoaDon();
+        String maHoaDonCT = "HD" + (int)(Math.random() * 100000);
+        hoaDon.setMahoadon(maHoaDonCT);
         hoaDon.setKhachHang(khachHang);
         hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
         hoaDon.setNgaytao(LocalDate.now());
+        hoaDon.setNgaymua(LocalDate.now());
         hoaDon.setTrangthai(1);
         hoaDon.setDiaChi(khachHang.getDiachi());
-       hoaDon.setGhiChu(note);
+        hoaDon.setGhiChu(note);
+        hoaDon.setActive(true);
         hoaDon.setChiTietHoaDons(new ArrayList<>());
 
         for (GioHang item : cartItems) {
             HoaDonCT chiTiet = new HoaDonCT();
+            chiTiet.setMahoadonct( "HDCT" + (int)(Math.random() * 10000));
             chiTiet.setSanPhamChiTiet(item.getSanPhamChiTiet());
             chiTiet.setSoluong(item.getSoluong());
             chiTiet.setDongia(BigDecimal.valueOf(item.getSanPhamChiTiet().getDongia()));
@@ -271,11 +293,25 @@ public class GioHangController {
 
         hoaDonService.save(hoaDon);
 
+        // Tạo đơn hàng
+        DonHang donHang = new DonHang();
 
+        donHang.setHoaDon(hoaDon);
+        donHang.setKhachHang(khachHang);
+        donHang.setNgaytao(LocalDate.now());
+        donHang.setTongtien(BigDecimal.valueOf(totalAmount));
+        donHang.setDiaChi(khachHang.getDiachi());
+        donHang.setSdt(khachHang.getSdt());
+        donHang.setTrangThai("Chờ duyệt");
+        donHang.setGhiChu(note);
+        donHang.setLydohuy("");
+
+        donHangRepository.save(donHang);
+
+        // Xóa giỏ hàng sau khi thanh toán thành công
         gioHangService.clearCart(khachHangId);
 
         model.addAttribute("message", "Đơn hàng của bạn đã được đặt thành công!");
-
         return "khachhang/ThanhToanThanhCong"; // Tên trang thông báo thanh toán thành công
     }
 

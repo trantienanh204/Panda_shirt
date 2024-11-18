@@ -58,21 +58,11 @@ import java.util.Optional;
             return gioHangRepository.findByKhachHangId(khachHangId);
         }
 
-        public void updateQuantity(int khachHangId, int sanPhamChiTietId, int quantity) {
-            GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
-            if (gioHang != null) {
-                gioHang.setSoluong(quantity);
-                gioHangRepository.save(gioHang);
-            }
-        }
+        public void updateQuantity(int khachHangId, int sanPhamChiTietId, int quantity) { GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId); if (gioHang != null) { gioHang.setSoluong(quantity); gioHangRepository.save(gioHang); } else { throw new RuntimeException("Product not found in the cart."); } } public void deleteFromCart(int khachHangId, int sanPhamChiTietId) { GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId); if (gioHang != null) { gioHangRepository.delete(gioHang); } else { throw new RuntimeException("Product not found in the cart."); } }
+
         public void clearCart(int khachHangId) { List<GioHang> cartItems = gioHangRepository.findByKhachHangId(khachHangId);
-        if (cartItems != null && !cartItems.isEmpty())
-        { gioHangRepository.deleteAll(cartItems); } }
-
-        public void deleteFromCart(int khachHangId, int sanPhamChiTietId) {
-            GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
-        if (gioHang != null) { gioHangRepository.delete(gioHang); } }
-
+            if (cartItems != null && !cartItems.isEmpty())
+            { gioHangRepository.deleteAll(cartItems); } }
         public List<GioHang> getCartItemsByIds(int khachHangId, List<Integer> itemIds) { return gioHangRepository.findAllByIdInAndKhachHangId(itemIds, khachHangId); }
 
     }
