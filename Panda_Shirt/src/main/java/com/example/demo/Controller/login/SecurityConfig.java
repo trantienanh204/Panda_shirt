@@ -3,6 +3,7 @@ package com.example.demo.Controller.login;
 import com.example.demo.DTO.ChiTietVaiTroDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.service.TaiKhoanService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -62,32 +63,39 @@ private final String[] PUBLIC_ENDPOINTS = {};
         }
 
 
-        @Bean
-        public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-            return (request, response, authentication) -> {
-                // Lấy vai trò của người dùng
-                Set<String> roles = AuthorityUtils
-                        .authorityListToSet(authentication.getAuthorities());
-                // In log để kiểm tra vai trò hiện tại của người dùng
-                System.out.println("Các vai trò của người dùng: " + roles);
+    // Thêm vào lớp xử lý đăng nhập hoặc lớp bảo mật
+    @Bean
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            // Lấy vai trò của người dùng
+            Set<String> roles = AuthorityUtils
+                    .authorityListToSet(authentication.getAuthorities());
 
-                // Điều hướng dựa trên vai trò
-                if (roles.contains("ROLE_QUANLY")) {
-                    System.out.println("Chuyển hướng đến /thongke");
-                    response.sendRedirect("/panda/vaitro");
-                } else if (roles.contains("ROLE_NHANVIEN")) {
-                    System.out.println("Chuyển hướng đến");
-                    response.sendRedirect("/panda/nhanvien/banhang/hienthi");
-                } else {
-                    System.out.println("Chuyển hướng mặc định đến /khach-hang");
-                    response.sendRedirect("/panda/thongke");
-                }
-            };
-        }
+            // In log để kiểm tra vai trò hiện tại của người dùng
+            System.out.println("Các vai trò của người dùng: " + roles);
+
+            // Log thông tin session
+            HttpSession session = request.getSession();
+            System.out.println("Session ID: " + session.getId());
+
+            // Điều hướng dựa trên vai trò
+            if (roles.contains("ROLE_QUANLY")) {
+                System.out.println("Chuyển hướng đến /panda/vaitro");
+                response.sendRedirect("/panda/vaitro");
+            } else if (roles.contains("ROLE_NHANVIEN")) {
+                System.out.println("Chuyển hướng đến /panda/nhanvien/banhang/hienthi");
+                response.sendRedirect("/panda/nhanvien/banhang/hienthi");
+            } else {
+                System.out.println("Chuyển hướng mặc định đến /panda/thongke");
+                response.sendRedirect("/panda/thongke");
+            }
+        };
+    }
 
 
 
-        @Bean
+
+    @Bean
         public UserDetailsService userDetailsService(TaiKhoanService taiKhoanService) {
             return tenDangNhap -> {
                 TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);

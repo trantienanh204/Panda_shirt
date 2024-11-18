@@ -49,5 +49,20 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
         WHERE LOWER(sp.sanPham.tensp) LIKE LOWER(CONCAT('%', :keyword, '%'))
     """)
     List<SanPhamChiTiet> findByTenSanPham(String keyword);
+
+
+
+
+
+
+        @Query("SELECT sp FROM SanPhamChiTiet sp WHERE sp.kichThuoc.id = :sizeId AND sp.mauSac.id = :colorId")
+        SanPhamChiTiet findBySizeIdAndColorId(@Param("sizeId") Integer sizeId, @Param("colorId") Integer colorId);
+
+
+
+
+
+
+
 }
 

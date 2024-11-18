@@ -27,93 +27,53 @@ public class LoginController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    NhanVienRespository nhanVienRepository;
 
     @Autowired
-    TaiKhoanRepo taiKhoan ;
-
-    NhanVien nv = new NhanVien();
-
-    @GetMapping("/checkRoles")
-    public String checkRoles(Authentication authentication) {
-        encodeAllPasswords();
-        return "ok";
-    }
-
-    @GetMapping("/mahoa")
-    @Transactional
-    public void encodeAllPasswords() {
-        List<TaiKhoan> tkls = taiKhoan.findAll();
-        for (TaiKhoan tk : tkls) {
-            // Kiểm tra nếu mật khẩu chưa được mã hóa
-            String plainPassword = tk.getMatKhau();
-            if (!passwordEncoder.matches(plainPassword, plainPassword)) {
-                String encodedPassword = passwordEncoder.encode(plainPassword);
-                tk.setMatKhau(encodedPassword);
-                taiKhoan.save(tk);
-            }
-        }
-    }
-
-//    @GetMapping("/account")
-//    public String login(@RequestParam("username") String username,
-//                        @RequestParam("password") String password,
-//                        Model model, HttpSession session) {
-//        System.out.println("dsafdsfd");
-//
-//        String regex = "^[a-zA-Z0-9@._]*$";
-//        if (!username.matches(regex) || !password.matches(regex)) {
-//            model.addAttribute("saitk", "Tài khoản hoặc mật khẩu sai định dạng");
-//            return "Login";
-//        }
-//
-//        model.addAttribute("error", "Sai tài khoản hoặc mật khẩu");
-//        return "login";  // Trả về lại trang đăng nhập nếu đăng nhập thất bại
-//    }
-
+    private TaiKhoanRepo taiKhoanRepo;
 
     @GetMapping("/login")
-    public String account() {
-        return "Login";
+    public String showLoginPage() {
+        return "Login";  // Hiển thị trang đăng nhập
     }
 
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute TaiKhoanDTO taiKhoanDTO, Model model, HttpSession session) {
         String tenDangNhap = taiKhoanDTO.getTenDangNhap();
         String matKhau = taiKhoanDTO.getMatKhau();
-        // Tìm tài khoản
+
+        // Tìm tài khoản trong cơ sở dữ liệu
         TaiKhoanDTO foundTaiKhoan = taiKhoanService.findByTenDangNhap(tenDangNhap);
 
         if (foundTaiKhoan == null) {
             model.addAttribute("error", "Tên đăng nhập không tồn tại.");
-            return "redirect:/panda/login";
+            return "Login"; // Hiển thị lỗi nếu không tìm thấy tài khoản
         }
 
         // Kiểm tra mật khẩu
         if (!passwordEncoder.matches(matKhau, foundTaiKhoan.getMatKhau())) {
             model.addAttribute("error", "Mật khẩu không chính xác.");
-            return "redirect:/panda/login";
+            return "Login"; // Hiển thị lỗi nếu mật khẩu không đúng
         }
-        // Lấy thông tin khách hàng
+
+        // Lấy thông tin khách hàng từ tài khoản
         KhachHangDTO khachHangDTO = foundTaiKhoan.getKhachHangDTO();
         if (khachHangDTO == null) {
             model.addAttribute("error", "Không tìm thấy thông tin khách hàng.");
-            return "redirect:/panda/login";
-
+            return "Login"; // Hiển thị lỗi nếu không tìm thấy thông tin khách hàng
         }
+
         // Lưu thông tin người dùng vào session
-//        session.setAttribute("loggedInUser", khachHangDTO);
+        session.setAttribute("loggedInUser", khachHangDTO);
 
-        // Lấy roomId từ session
-//        Integer roomId = (Integer) session.getAttribute("roomId");
+        // Kiểm tra nếu có mục tiêu chuyển hướng sau khi đăng nhập
+        String roomId = (String) session.getAttribute("roomId");
+        if (roomId != null) {
+            return "redirect:/showRoomDetailPhong?roomId=" + roomId; // Chuyển hướng đến chi tiết phòng nếu có
+        }
 
-        // Chuyển hướng đến trang chi tiết phòng nếu roomId có
-//        if (roomId != null) {
-//            return "redirect:/showRoomDetailPhong?roomId=" + roomId;
-//        }
-        return "redirect:/"; // Trở về trang chính
+        return "redirect:/"; // Trở về trang chính nếu không có mục tiêu chuyển hướng
     }
-
-
 }
+
+
+

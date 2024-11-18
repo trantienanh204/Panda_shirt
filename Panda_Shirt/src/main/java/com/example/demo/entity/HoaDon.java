@@ -13,6 +13,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "HOA_DON")
@@ -56,11 +58,9 @@ public class HoaDon {
 
     @Column(name = "TRANG_THAI")
     private int trangthai;
+
     @Column(name = "DIA_CHI_CU_THE")
     private String diaChi;
-
-//    @Column(name = "GHI_CHU")
-//    private String ghiChu;
 
     @Column(name = "ACTIVE")
     private Boolean active;
@@ -75,10 +75,12 @@ public class HoaDon {
     @JsonBackReference
     private KhachHang khachHang;
 
-
     @ManyToOne
     @JoinColumn(name = "ID_VOUCHER", referencedColumnName = "id")
     private Voucher voucher;
+
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HoaDonCT> chiTietHoaDons = new ArrayList<>();
 
     public HoaDon(String mahoadon, int soluong, BigDecimal dongia, String sdt, LocalDate ngaymua, LocalDate ngaytao, LocalDate ngaysua, BigDecimal tongtien, BigDecimal thanhtien, int trangthai) {
         this.mahoadon = mahoadon;
@@ -91,12 +93,9 @@ public class HoaDon {
         this.tongtien = tongtien;
         this.thanhtien = thanhtien;
         this.trangthai = trangthai;
-
-
-
     }
+
     public HoaDon(Integer id) {
         this.id = id;
-
     }
 }

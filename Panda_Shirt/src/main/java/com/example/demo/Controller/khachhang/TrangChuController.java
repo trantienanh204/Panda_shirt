@@ -1,12 +1,14 @@
 package com.example.demo.Controller.khachhang;
 
-import com.example.demo.entity.KichThuoc;
-import com.example.demo.entity.MauSac;
-import com.example.demo.entity.SanPham;
-import com.example.demo.entity.SanPhamChiTiet;
+import com.example.demo.DTO.TaiKhoanDTO;
+import com.example.demo.entity.*;
+import com.example.demo.service.GioHangService;
 import com.example.demo.service.SanPhamService;
+import com.example.demo.service.TaiKhoanService;
 import com.example.demo.service.TrangchuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,10 @@ public class TrangChuController {
     TrangchuService trangchuService;
     @Autowired
     SanPhamService sanPhamService;
+    @Autowired
+    private GioHangService gioHangService;
+    @Autowired
+    private TaiKhoanService taiKhoanService;
     @GetMapping("/trangchu")
     public String hienthi(Model model){
         model.addAttribute("sanpham",trangchuService.spfinall());
@@ -44,18 +50,24 @@ public class TrangChuController {
 
             // Lấy danh sách kích thước
             List<Map<String, Object>> sizesAndColors = sanPhamService.getSizesAndColors(id);
-            for (Map<String, Object> item : sizesAndColors) {
-                System.out.println("Size: " + ((KichThuoc) item.get("size")).getTen());
-                System.out.println("Color: " + ((MauSac) item.get("color")).getTen());
-            }
             model.addAttribute("sizesAndColors", sizesAndColors);
         }
         return "/khachhang/SPCT";
     }
 
 
+
     @GetMapping("/giohang")
-    public String giohang(){
+    public String giohang(
+            Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        String tenDangNhap = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+            return "redirect:/panda/login"; }
+        int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+        List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
+        model.addAttribute("cartItems", cartItems);
+
         return "/khachhang/GioHang";
 
     }

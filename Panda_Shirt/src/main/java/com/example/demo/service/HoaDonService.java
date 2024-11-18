@@ -35,5 +35,8 @@ public class HoaDonService {
     public HoaDon findById(Integer id) {
         return hoaDonRepository.findById(id).get();
     }
+    public void save(HoaDon hoaDon){
+        hoaDonRepository.save(hoaDon);
+    }
 
 }

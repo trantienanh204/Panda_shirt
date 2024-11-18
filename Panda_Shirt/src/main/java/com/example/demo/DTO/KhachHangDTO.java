@@ -25,6 +25,8 @@ public class KhachHangDTO {
     private Boolean delete;
 
     private Boolean tinhtrang;
+    private String sdt;
+    private String diachi;
 
     public KhachHangDTO(Integer id, String makhachhang, String tenkhachhang, String tenDangNhap, String matKhau, Boolean delete) {
         this.id = id;

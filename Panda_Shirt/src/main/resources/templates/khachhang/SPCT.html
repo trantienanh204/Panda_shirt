@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -152,33 +153,28 @@
         <!-- Product Details -->
         <div class="col-md-6 product-details">
             <h1 th:text="${sanPham.tensp}">Tên sản phẩm</h1>
-            <p>Giá từ: <span th:text="${minPrice}"></span> đến <span th:text="${maxPrice}"></span></p>
+            <p>Giá từ: <span id="minPrice" th:text="${minPrice}"></span> đến <span id="maxPrice" th:text="${maxPrice}"></span></p>
 
-      
-
-            <!-- Product Options -->
-            <div class="my-4">
-                <!-- Color Option -->
-                <div class="mb-3">
-                    <label for="colorSelect">Chọn màu sắc:</label>
-                    <select id="colorSelect" class="form-select" onchange="filterSizesByColor(this.value)">
-                        <option th:each="color : ${colors}" th:value="${color.ten}" th:text="${color.ten}"></option>
-                    </select>
-                </div>
-
-                <!-- Size Option -->
-                <div class="mb-3">
-                    <label for="sizeSelect">Chọn kích thước:</label>
-                    <select id="sizeSelect" class="form-select" aria-label="Chọn kích thước" onchange="autoSelectColor(this)">
-                        <option th:each="item : ${sizesAndColors}"
-                                class="size-option"
-                                th:data-color="${item['color'].ten}"
-                                th:value="${item['size'].id}"
-                                th:text="${item['size'].ten} + ' - ' + ${item['color'].ten}">
-                        </option>
-                    </select>
-                </div>
+            <div>
+                <p>Giá tiền: <span id="productPrice"></span></p>
             </div>
+            <!-- Màu sắc -->
+            <select id="colorSelect" class="form-select" aria-label="Chọn màu sắc">
+                <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.ten}">
+                </option>
+            </select>
+
+            <!-- Kích thước -->
+            <select id="sizeSelect" class="form-select" aria-label="Chọn kích thước">
+                <option th:each="item : ${sizesAndColors}"
+                        class="size-option" th:data-color="${item['color'].id}"
+                        th:value="${item['size'].id}"
+                        th:text="${item['size'].ten} + ' - ' + ${item['color'].ten}"
+                        th:data-price="${item['sanPhamChiTiet'].dongia}">
+                </option>
+            </select>
+
+
 
             <!-- Quantity Option -->
             <div class="mb-3">
@@ -191,9 +187,9 @@
             </div>
 
             <!-- Buttons -->
-            <div class="my-4">
-                <button class="btn btn-primary btn-lg me-3"><i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng</button>
-                <a th:href="@{/panda/thanhtoan}" class="btn btn-success btn-lg"><i class="fas fa-bolt"></i> Mua ngay</a>
+            <div class="my-4"> <button id="addToCartBtn" class="btn btn-primary btn-lg me-3"><i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng</button>
+                <a th:href="@{/panda/thanhtoan}" class="btn btn-success btn-lg">
+                    <i class="fas fa-bolt"></i> Mua ngay</a>
             </div>
 
             <!-- Extra Information -->
@@ -222,46 +218,146 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
-    function filterSizesByColor(selectedColor) {
-        const sizes = document.querySelectorAll('.size-option');
-        sizes.forEach(size => {
-            const sizeColor = size.getAttribute('data-color');
-            if (sizeColor === selectedColor || !selectedColor) {
-                size.style.display = 'block'; // Hiển thị kích thước nếu màu sắc khớp
-            } else {
-                size.style.display = 'none'; // Ẩn kích thước nếu không khớp
-            }
-        });
-    }
-
-    function autoSelectColor(sizeSelect) {
-        const selectedSize = sizeSelect.options[sizeSelect.selectedIndex];
-        const selectedColor = selectedSize.dataset.color;
-
+    document.addEventListener('DOMContentLoaded', function() {
         const colorSelect = document.getElementById('colorSelect');
-        const colors = colorSelect.options;
+        const sizeSelect = document.getElementById('sizeSelect');
+        const priceElement = document.getElementById('productPrice');
 
-        // Deselect all colors
-        for (let i = 0; i < colors.length; i++) {
-            colors[i].selected = false;
+        function filterSizesByColor(selectedColor) {
+            const sizes = document.querySelectorAll('.size-option');
+            let firstSize = null;
+            sizes.forEach(size => {
+                const sizeColor = size.getAttribute('data-color');
+                if (sizeColor === selectedColor) {
+                    size.style.display = 'block'; // Hiển thị kích thước nếu màu sắc khớp
+                    if (!firstSize) firstSize = size; // Lưu kích thước đầu tiên phù hợp
+                } else {
+                    size.style.display = 'none'; // Ẩn kích thước nếu không khớp
+                }
+            });
+            if (firstSize) {
+                firstSize.selected = true; // Tự động chọn kích thước đầu tiên phù hợp
+            }
+            updatePrice(); // Cập nhật giá ngay khi lọc kích thước
         }
 
-        // Select the color that matches the selected size
-        for (let i = 0; i < colors.length; i++) {
-            if (colors[i].text.includes(selectedColor)) {
-                colors[i].selected = true;
-                break;
+        function filterColorsBySize(selectedSize) {
+            const sizes = document.querySelectorAll('.size-option');
+            const availableColors = new Set();
+            sizes.forEach(size => {
+                if (size.value === selectedSize) {
+                    availableColors.add(size.getAttribute('data-color'));
+                }
+            });
+
+            const colors = colorSelect.options;
+            for (let i = 0; i < colors.length; i++) {
+                if (availableColors.has(colors[i].value)) {
+                    colors[i].style.display = 'block'; // Hiển thị màu sắc tương ứng
+                } else {
+                    colors[i].style.display = 'none'; // Ẩn màu sắc khác
+                }
+            }
+            updatePrice(); // Cập nhật giá ngay khi lọc màu sắc
+        }
+
+        function restoreAllColors() {
+            const colors = colorSelect.options;
+            for (let i = 0; i < colors.length; i++) {
+                colors[i].style.display = 'block';
             }
         }
 
-        // Gọi hàm filterSizesByColor để chỉ hiển thị các kích thước cho màu sắc đã chọn
-        filterSizesByColor(selectedColor);
-    }
+        function restoreAllSizes() {
+            const sizes = document.querySelectorAll('.size-option');
+            sizes.forEach(size => {
+                size.style.display = 'block';
+            });
+        }
+
+        function updatePrice() {
+            const selectedSize = sizeSelect.options[sizeSelect.selectedIndex];
+            const sizePrice = parseFloat(selectedSize.getAttribute('data-price') || 0);
+            priceElement.textContent = sizePrice.toLocaleString('vi-VN') + ' VND';
+        }
+
+        colorSelect.addEventListener('change', function() {
+            restoreAllSizes();
+            const selectedColor = this.value;
+            filterSizesByColor(selectedColor);
+        });
+
+        sizeSelect.addEventListener('change', function() {
+            restoreAllColors();
+            const selectedSize = this.value;
+            filterColorsBySize(selectedSize);
+        });
+
+        // Tự động chọn kích thước và màu sắc khi trang được tải
+        if (colorSelect.value) {
+            filterSizesByColor(colorSelect.value);
+        }
+        if (sizeSelect.value) {
+            filterColorsBySize(sizeSelect.value);
+        }
+
+        // Hiển thị giá ngay khi trang được tải
+        updatePrice();
+    });
+
+
 </script>
+<script>
+    $(document).ready(function() {
+        $('#addToCartBtn').click(function() {
+            const selectedSizeId = $('#sizeSelect').val();
+            const selectedColorId = $('#colorSelect').val();
+            const quantity = $('#quantityInput').val();
+
+            // Thêm log để kiểm tra giá trị
+            console.log("Selected SizeId: " + selectedSizeId);
+            console.log("Selected ColorId: " + selectedColorId);
+            console.log("Quantity: " + quantity);
+
+            // AJAX request để lấy sanPhamChiTietId từ sizeId và colorId
+            $.ajax({
+                type: 'GET',
+                url: '/panda/giohang/findSanPhamChiTietId',
+                data: {
+                    sizeId: selectedSizeId,
+                    colorId: selectedColorId
+                },
+                success: function(sanPhamChiTietId) {
+                    console.log("SanPhamChiTietId: " + sanPhamChiTietId);
+                    // Sau khi có sanPhamChiTietId, gửi request để thêm vào giỏ hàng
+                    $.ajax({
+                        type: 'POST',
+                        url: '/panda/giohang/add',
+                        data: {
+                            sanPhamChiTietId: sanPhamChiTietId,
+                            quantity: quantity
+                        },
+                        success: function(response) {
+                            alert(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Có lỗi xảy ra:', error);
+                            alert('Có lỗi khi thêm sản phẩm vào giỏ hàng!');
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Có lỗi xảy ra khi lấy sanPhamChiTietId:', error);
+                    alert('Không thể tìm thấy sanPhamChiTietId!');
+                }
+            });
+        });
+    });
+</script>
+
 
 <script>
     function validateQuantity() {
-
         const quantityInput = document.getElementById('quantityInput');
         // Nếu giá trị không phải là số hoặc nhỏ hơn 1, đặt lại về 1
         if (quantityInput.value === '' || parseInt(quantityInput.value) < 1) {
@@ -270,6 +366,16 @@
             quantityInput.value = 10000; // Đảm bảo không vượt quá 10000
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        function formatCurrency(value) {
+            return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        } const minPriceElement = document.getElementById('minPrice');
+        const maxPriceElement = document.getElementById('maxPrice');
+    if (minPriceElement && maxPriceElement) { const minPrice = parseFloat(minPriceElement.textContent);
+    const maxPrice = parseFloat(maxPriceElement.textContent);
+    minPriceElement.textContent = formatCurrency(minPrice);
+    maxPriceElement.textContent = formatCurrency(maxPrice); } });
 
     document.getElementById('incrementBtn').addEventListener('click', function() {
         const quantityInput = document.getElementById('quantityInput');

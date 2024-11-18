@@ -368,24 +368,13 @@ public class SanPhamService {
         return sanPhamChiTietRepository.findkichThuocsBySanPhamId(sanPhamId);
     }
 
-    public List<Map<String, Object>> getSizesAndColors(Integer sanPhamId) {
-        List<Object[]> result = sanPhamChiTietRepository.findSizesAndColorsBySanPhamId(sanPhamId);
-        List<Map<String, Object>> sizesAndColors = new ArrayList<>();
-
-        for (Object[] row : result) {
-            KichThuoc size = (KichThuoc) row[0];
-            MauSac color = (MauSac) row[1];
-
-            System.out.println("Size: " + size.getTen() + ", Color: " + color.getTen()); // Kiểm tra dữ liệu
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("size", size);
-            map.put("color", color);
-            sizesAndColors.add(map);
-        }
-
-        return sizesAndColors;
-    }
+    public List<Map<String, Object>> getSizesAndColors(Integer sanPhamId)
+    { List<Map<String, Object>> sizesAndColors = new ArrayList<>();
+    List<SanPhamChiTiet> chiTiets = sanPhamChiTietRepository.findBySanPhamId(sanPhamId);
+    for (SanPhamChiTiet chiTiet : chiTiets) { Map<String, Object> map = new HashMap<>();
+        map.put("size", chiTiet.getKichThuoc()); map.put("color", chiTiet.getMauSac());
+        map.put("sanPhamChiTiet", chiTiet); // Bao gồm thông tin SanPhamChiTiet
+         sizesAndColors.add(map); } return sizesAndColors; }
 
 //    public List<Map<String, Object>> getSizesAndColorsWithPriceAndQuantity(Integer productId) {
 //        return sanPhamChiTietRepository.getSizesAndColorsWithPriceAndQuantity(productId);
@@ -416,4 +405,13 @@ public class SanPhamService {
 
 
 
+        public int findIdBySizeAndColorId(Integer sizeId, Integer colorId) {
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findBySizeIdAndColorId(sizeId, colorId);
+            if (sanPhamChiTiet != null) {
+                return sanPhamChiTiet.getId();
+            } else {
+                throw new RuntimeException("Không tìm thấy sản phẩm chi tiết với kích thước và màu sắc đã chọn.");
+            }
+
+        }
 }

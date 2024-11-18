@@ -17,6 +17,7 @@ import java.util.Optional;
     @Service
     public class GioHangService {
 
+
         @Autowired
         private GioHangRepository gioHangRepository;
 
@@ -52,9 +53,27 @@ import java.util.Optional;
             }
         }
 
-        public GioHang getallgiohang(int khachHangId) {
-            return gioHangRepository.findById(khachHangId).orElse(null);
+
+        public List<GioHang> getCartItems(int khachHangId) {
+            return gioHangRepository.findByKhachHangId(khachHangId);
         }
+
+        public void updateQuantity(int khachHangId, int sanPhamChiTietId, int quantity) {
+            GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
+            if (gioHang != null) {
+                gioHang.setSoluong(quantity);
+                gioHangRepository.save(gioHang);
+            }
+        }
+        public void clearCart(int khachHangId) { List<GioHang> cartItems = gioHangRepository.findByKhachHangId(khachHangId);
+        if (cartItems != null && !cartItems.isEmpty())
+        { gioHangRepository.deleteAll(cartItems); } }
+
+        public void deleteFromCart(int khachHangId, int sanPhamChiTietId) {
+            GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
+        if (gioHang != null) { gioHangRepository.delete(gioHang); } }
+
+        public List<GioHang> getCartItemsByIds(int khachHangId, List<Integer> itemIds) { return gioHangRepository.findAllByIdInAndKhachHangId(itemIds, khachHangId); }
     }
 
 
