@@ -44,7 +44,7 @@
 <!-- Danh sách bài viết -->
 <div class="table-container">
     <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách hóa đơn</h3>
-    <table>
+    <table style="font-size: 13px">
         <thead>
         <tr>
             <th>#</th>
@@ -59,6 +59,14 @@
         </tr>
         </thead>
         <tbody>
+<!--<<<<<<< HEAD-->
+<!--&lt;!&ndash;        <tr th:each="hd,i : ${lshd} " th:if="${hd.nhanVien != null || hd.khachHang != null}">&ndash;&gt;-->
+<!--        <tr th:each="hd,i : ${lshd} " style="width: 10px">-->
+<!--            <td  th:text="${i.count}"></td>-->
+<!--            <td th:text="${hd.mahoadon != null ? hd.mahoadon : '(Trống)'}"></td>-->
+<!--            <td th:text="${hd.nhanVien != null ? hd.nhanVien.tennhanvien : '(Trống)'}"></td>-->
+<!--            <td th:text="${hd.khachHang != null ? hd.khachHang.tenkhachhang : '(Trống)'}"></td>-->
+<!--=======-->
         <tr th:if="${lshd.empty}">
             <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
         </tr>
@@ -67,9 +75,11 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
+
 <!--            <td th:text="${hd.soluong}"></td>-->
-            <td th:text="${hd.tongtien}"></td>
-            <td th:text="${hd.ngaymua}"></td>
+            <td th:text="${hd.thanhtien != null ? hd.thanhtien :'(Trống)'}"></td>
+<!--            <td th:text="${hd.tongtien != null ? #numbers.formatDecimal(hd.tongtien, 0, 'COMMA') : '(Trống)'}"></td>-->
+            <td th:text="${hd.ngaymua != null ? hd.ngaymua :'(Trống)'}"></td>
             <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
@@ -154,59 +164,56 @@
 
 <script>
     $(document).ready(function() {
-        $('#invoiceDetailModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Nút đã kích hoạt modal
-            var invoiceId = button.data('invoice-id'); // Lấy ID hóa đơn
+        $('#invoiceDetailModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var invoiceId = button.data('invoice-id');
+            console.log("Invoice ID:", invoiceId);
 
-            // Gửi yêu cầu đến server để lấy thông tin chi tiết hóa đơn
             $.ajax({
-                url: '/panda/hoadonct?id=' + invoiceId, // Đường dẫn đến API hoặc controller
+                url: '/panda/hoadonct?id=' + invoiceId,
                 method: 'GET',
                 success: function(lshdct) {
-                    // Xóa dữ liệu cũ
+                    console.log("Dữ liệu trả về từ server:", lshdct);
                     $('#invoiceDetailBody').empty();
-                    // Kiểm tra nếu có chi tiết hóa đơn
-                    if (lshdct.length > 0) {
-                        var mahd = "Danh sách hóa đơn chi tiết: " + lshdct[0].hoaDon.mahoadon;
-                        $('#invoiceDetailModalLabel').text(mahd);
-
-                        // Điền thông tin chi tiết hóa đơn vào modal
+                    if (lshdct && lshdct.length > 0) {
                         lshdct.forEach(function(ls) {
+                            const sanPhamTen = ls.sanPhamChiTiet?.sanPham?.tensp || '';
+                            const kichThuocTen = ls.sanPhamChiTiet?.kichThuoc?.ten || '';
+                            const mauSacTen = ls.sanPhamChiTiet?.mauSac?.ten || '';
                             $('#invoiceDetailBody').append(`
-                                <tr class="invoice-row" data-id="${ls.id}">
-                                    <td>${ls.id}</td>
-                                    <td>Trống</td>
-                                    <td>${ls.sanPhamChiTiet.sanPham.tensp}</td>
-                                    <td>${ls.sanPhamChiTiet.kichThuoc.ten}</td>
-                                    <td>${ls.sanPhamChiTiet.mauSac.ten}</td>
-                                    <td>${ls.dongia}</td>
-                                    <td>${ls.soluong}</td>
-                                    <td>${ls.tongtien}</td>
-                                </tr>
-                            `);
+                            <tr>
+                                <td>${ls.id}</td>
+                                <td>Trống</td>
+                                <td>${sanPhamTen}</td>
+                                <td>${kichThuocTen}</td>
+                                <td>${mauSacTen}</td>
+                                <td>${ls.dongia || ''}</td>
+                                <td>${ls.soluong || ''}</td>
+                                <td>${ls.tongtien || ''}</td>
+                            </tr>
+                        `);
                         });
                     } else {
-                        // Nếu không có chi tiết, hiển thị thông báo
-                        $('#invoiceDetailModalLabel').text("Không có chi tiết hóa đơn.");
                         $('#invoiceDetailBody').append(`
                         <tr>
-                            <td colspan="3" class="text-center">Không có chi tiết hóa đơn.</td>
+                            <td colspan="8" class="text-center">Không có chi tiết hóa đơn.</td>
                         </tr>
-                        `);
+                    `);
                     }
                 },
-                error: function() {
-                    // Xử lý lỗi nếu cần
+                error: function(xhr, status, error) {
+                    console.log("Lỗi khi gọi Ajax:", xhr.responseText || error);
                     alert('Không thể tải dữ liệu chi tiết hóa đơn.');
                 }
             });
         });
-        // Thêm sự kiện click cho các dòng trong bảng
+
         $(document).on('click', '.invoice-row', function() {
-            var hoadonctid = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
-            window.location.href = '/panda/hoadonct/update/' + hoadonctid; // Chuyển hướng đến URL update
+            var hoadonctid = $(this).data('id');
+            window.location.href = '/panda/hoadonct/update/' + hoadonctid;
         });
     });
+
 </script>
 <style>
     * {

@@ -8,28 +8,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img th:src="@{/Image/panda_logo.png}" width="50px"; height="50px"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/Image/panda_logo.png}" width="50px" height="50px">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/panda/trangchu}">Trang Chủ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Giới Thiệu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Liên Hệ</a>
-                </li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/panda/trangchu}">Trang Chủ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Giới Thiệu</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Liên Hệ</a></li>
             </ul>
             <!-- Form Search -->
             <form class="d-flex mx-auto" style="width: 400px;">
@@ -37,15 +33,9 @@
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-user"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-sign-in-alt"></i></a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="#" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-sign-in-alt"></i></a></li>
             </ul>
         </div>
     </div>
@@ -55,36 +45,36 @@
 <div class="container mt-5">
     <!-- Địa chỉ nhận hàng -->
     <div class="address-section border p-3 mb-4">
-        <h5 style="color:#FE5621"><i class="fas fa-map-marker-alt"  style="color:#FE5621"></i> Địa Chỉ Nhận Hàng</h5>
+        <h5 style="color:#FE5621"><i class="fas fa-map-marker-alt" style="color:#FE5621"></i> Địa Chỉ Nhận Hàng</h5>
         <div class="d-flex justify-content-between align-items-center">
-            <p>Hi hi hi (+84) 866134962, Số 213, Đường Đồng Chương, Xã Côn Đảo, Huyện Côn Đảo, Bà Rịa - Vũng Tàu</p>
+            <p th:if="${khachHang != null}" th:text="${khachHang.tenkhachhang} + ' (' + ${khachHang.sdt} + '), ' + ${khachHang.diachi}">
+                Thông tin khách hàng
+            </p>
+            <p th:if="${khachHang == null}">Thông tin khách hàng không có sẵn.</p>
             <a href="#" class="btn btn-link">Thay Đổi</a>
         </div>
     </div>
-</div>
+
     <!-- Sản phẩm -->
-    <div class="container product-section border p-3 mb-4 ">
+    <div class="container product-section border p-3 mb-4">
         <h5>Sản phẩm</h5>
-        <div class="d-flex justify-content-between align-items-center border-bottom py-3">
+        <div th:each="item : ${cartItems}" class="d-flex justify-content-between align-items-center border-bottom py-3">
             <div class="d-flex align-items-center">
-                <img src="product-image.jpg" alt="Sản phẩm" class="product-img me-3">
+                <img th:src="@{${item.sanPhamChiTiet.anhSanPhamChiTiet}}" alt="Sản phẩm" class="product-img me-3">
                 <div>
-                    <p class="product-name mb-1">BỘ ÁO ĐÁ BÓNG BAYER LEVERKUSEN màu đỏ</p>
-                    <p class="product-details text-muted">Loại: Trắng, Kích thước: L</p>
+                    <p class="product-name mb-1" th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</p>
+                    <p class="product-details text-muted"
+                       th:text="'Loại: ' + ${item.sanPhamChiTiet.mauSac.ten} + ', Kích thước: ' + ${item.sanPhamChiTiet.kichThuoc.ten}">
+                        Thông tin sản phẩm
+                    </p>
                 </div>
             </div>
             <div class="d-flex align-items-center">
-                <!-- Giá sản phẩm -->
-                <p class="product-price mb-0 me-4">₫124.000</p>
-
-                <!-- Số lượng sản phẩm (dạng text) -->
-                <p class="quantity-text mb-0 me-4">1</p>
-
-                <!-- Tổng tiền -->
-                <p class="product-price mb-0">₫124.000</p>
+                <p class="product-price mb-0 me-4" th:text="${item.sanPhamChiTiet.dongia} + ' VND'">Giá</p>
+                <p class="quantity-text mb-0 me-4" th:text="${item.soluong}">Số lượng</p>
+                <p class="product-price mb-0" th:text="${item.sanPhamChiTiet.dongia * item.soluong} + ' VND'">Tổng tiền</p>
             </div>
         </div>
-
         <!-- Ghi chú -->
         <div class="mt-3">
             <label for="note" class="form-label">Ghi chú:</label>
@@ -92,151 +82,142 @@
         </div>
     </div>
 
-
     <!-- Thanh toán và hình thức thanh toán -->
-<div class="container">
-    <div class="row">
-        <!-- Hình thức thanh toán (bên trái) -->
-        <div class="col-md-6">
-            <div class="payment-section border p-3 mb-4">
-                <h5><i class="fas fa-credit-card"></i> Hình thức thanh toán</h5>
-                <div class="d-flex align-items-center">
-                    <label><input type="radio" name="payment-method" checked> <i class="fas fa-money-bill-wave"></i> Thanh toán khi nhận hàng (COD)</label>
-                </div>
-                <div class="d-flex align-items-center">
-                    <label><input type="radio" name="payment-method"> <i class="fas fa-university"></i> Chuyển khoản ngân hàng</label>
+    <div class="container">
+        <div class="row">
+            <!-- Hình thức thanh toán -->
+            <div class="col-md-6">
+                <div class="payment-section border p-3 mb-4">
+                    <h5><i class="fas fa-credit-card"></i> Hình thức thanh toán</h5>
+                    <div class="d-flex align-items-center">
+                        <label>
+                            <input type="radio" name="paymentMethod" value="COD" checked>
+                            <i class="fas fa-money-bill-wave"></i> Thanh toán khi nhận hàng (COD)
+                        </label>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <label>
+                            <input type="radio" name="paymentMethod" value="BankTransfer" id="bankTransfer">
+                            <i class="fas fa-university"></i> Chuyển khoản ngân hàng
+                        </label>
+                    </div>
+                    <div id="qrCodeSection" style="display: none; margin-top: 10px;">
+                        <h6>Mã QR để thanh toán:</h6>
+                        <img id="qrCodeImage" src="#" alt="QR Code" />
+                    </div>
+                    <button id="checkPaymentStatus" class="btn btn-success mt-3" style="display: none;">Xác nhận đã thanh toán</button>
                 </div>
             </div>
-        </div>
-
-        <!-- Tổng thanh toán (bên phải) -->
-
-        <div class="col-md-6">
-            <div class="summary-section border p-3 mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <p><i class="fas fa-shopping-cart"></i> Tổng tiền hàng:</p>
-                    <p>₫124.000</p>
+            <!-- Tổng thanh toán -->
+            <div class="col-md-6">
+                <div class="summary-section border p-3 mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p><i class="fas fa-shopping-cart"></i> Tổng tiền hàng:</p>
+                        <p id="totalAmountText" th:text="${totalAmount} + ' VND'">₫124.000</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p><i class="fas fa-shield-alt"></i> Bảo hiểm đơn hàng:</p>
+                        <p class="insurance-price">₫500</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="total-price mb-0">Tổng thanh toán:</h5>
+                        <h5 class="total-price mb-0" id="finalTotal" th:text="${totalAmount + 500} + ' VND'">₫124.500</h5>
+                    </div>
+                    <form id="paymentForm" th:action="@{/panda/giohang/thanhtoan/hoadon}" method="post">
+                        <input type="hidden" name="totalAmount" th:value="${totalAmount}">
+                        <input type="hidden" name="note" id="noteInput" th:value="${note}">
+                        <input type="hidden" name="paymentMethod" id="paymentMethodInput" th:value="${paymentMethod}">
+                        <button type="submit" class="btn btn-primary w-100 mt-3"><i class="fas fa-check"></i> Đặt hàng</button>
+                    </form>
                 </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <p><i class="fas fa-shipping-fast"></i> Phí vận chuyển:</p>
-                    <p>₫32.800</p>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <p><i class="fas fa-calculator"></i> Tổng thanh toán:</p>
-                    <p class="total-price">₫156.700</p>
-                </div>
-                <button class="btn btn-primary w-100 mt-3"><i class="fas fa-check"></i> Đặt hàng</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bankTransferRadio = document.getElementById('bankTransfer');
+        const codRadio = document.querySelector('input[name="paymentMethod"][value="COD"]');
+        const qrCodeSection = document.getElementById('qrCodeSection');
+        const qrCodeImage = document.getElementById('qrCodeImage');
+        const checkPaymentStatusButton = document.getElementById('checkPaymentStatus');
+        const finalTotalElement = document.getElementById('finalTotal');
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-4">
-        <p>&copy; 2024 Bán Áo. Tất cả quyền được bảo lưu.</p>
-        <ul class="list-inline">
-            <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a></li>
-            <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-instagram"></i></a></li>
-            <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-twitter"></i></a></li>
-        </ul>
-    </footer>
+        bankTransferRadio.addEventListener('change', function() {
+            if (bankTransferRadio.checked) {
+                const totalAmount = finalTotalElement.textContent.replace(/[^0-9.-]+/g, '');
+                const qrCodeUrl = `https://api.vietqr.io/image/970423-0363714380-qPaEb5R.jpg?amount=${totalAmount}`;
+                qrCodeImage.src = qrCodeUrl;
+                qrCodeSection.style.display = 'block';
+                checkPaymentStatusButton.style.display = 'block';
+            }
+        });
 
-    <!-- Bootstrap JS and FontAwesome -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-        }
+        codRadio.addEventListener('change', function() {
+            if (codRadio.checked) {
+                qrCodeSection.style.display = 'none';
+                checkPaymentStatusButton.style.display = 'none';
+            }
+        });
 
-        .container {
-            flex: 1;
-        }
+        checkPaymentStatusButton.addEventListener('click', function() {
+            fetch('/api/check-payment-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    orderId: 'ORDER_ID_HERE' // Thay đổi thành orderId thực tế của bạn
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'SUCCESS') {
+                        alert('Thanh toán thành công! Đơn hàng của bạn đã được hoàn tất.');
+                        window.location.href = '/panda/giohang/hoanthanh';
+                    } else {
+                        alert('Thanh toán chưa thành công. Vui lòng thử lại.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
 
-        /* Navbar Styles */
-        .navbar {
-            background: #FE5621;
-        }
 
-        .nav-link {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff !important;
-        }
 
-        .nav-link:hover {
-            color: #FFC048 !important; /* Hover màu vàng nhạt */
-        }
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Giới thiệu</h5>
+                <ul>
+                    <li><a href="#">Về chúng tôi</a></li>
+                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Liên hệ</h5>
+                <ul>
+                    <li>Email: support@pandashop.com</li>
+                    <li>Hotline: 1900 1234</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Kết nối với chúng tôi</h5>
+                <ul class="d-flex">
+                    <li><a href="#"><i class="fab fa-facebook fa-2x"></i></a></li>
+                    <li class="ms-3"><a href="#"><i class="fab fa-instagram fa-2x"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
 
-        .navbar-toggler {
-            border-color: rgb(119, 30, 30);
-        }
-
-        .navbar-toggler-icon {
-            background-color: white;
-        }
-
-        /* Footer Styles */
-        footer {
-            background-color: #f1f1f1;
-            margin-top: auto;
-            padding: 1.5rem 0;
-        }
-
-        footer h5 {
-            font-weight: bold;
-        }
-
-        footer ul {
-            padding-left: 0;
-        }
-
-        li {
-            list-style: none;
-            margin: 5px 0;
-        }
-
-        /* Checkout Page Styles */
-        .address-section, .product-section, .payment-section, .summary-section {
-            background-color: #fff;
-            border-radius: 5px;
-        }
-
-        .address-section h5, .product-section h5, .payment-section h5 {
-            font-weight: bold;
-        }
-
-        .product-img {
-            width: 80px;
-            height: auto;
-        }
-
-        .product-details {
-            font-size: 0.9rem;
-        }
-
-        .quantity-input {
-            width: 50px;
-            text-align: center;
-        }
-
-        .product-price, .insurance-price {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #ff424e;
-        }
-
-        .total-price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ff424e;
-        }
-    </style>
-
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

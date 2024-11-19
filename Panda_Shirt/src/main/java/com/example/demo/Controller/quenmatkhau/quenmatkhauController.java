@@ -7,7 +7,8 @@ import com.example.demo.service.QuenmatkhauService;
 
     import jakarta.mail.MessagingException;
     import jakarta.servlet.http.HttpSession;
-    import org.springframework.beans.factory.annotation.Autowired;
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.*;
@@ -89,7 +90,8 @@ public class quenmatkhauController {
 
         if (nhanVien != null) {
             if (matkhaumoi.equals(matkhauXacNhan)) {
-                nhanVien.setMatkhau(matkhaumoi);
+                String hashedPassword = BCrypt.hashpw(matkhauXacNhan, BCrypt.gensalt());
+                nhanVien.setMatkhau(hashedPassword);
                 quenmatkhauService.themnhanvien(nhanVien);
 
                 model.addAttribute("successMessage", "Đổi mật khẩu thành công!");

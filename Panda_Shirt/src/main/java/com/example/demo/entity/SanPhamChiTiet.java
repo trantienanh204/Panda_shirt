@@ -1,12 +1,16 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -15,16 +19,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "SAN_PHAM_CHI_TIET")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class SanPhamChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
-    private int soluongsanpham;
+    private Integer soluongsanpham;
 
     @Column(name = "DON_GIA")
-    private Double dongia;
+    private double dongia;
 
     @Column(name = "MO_TA")
     private String mota;
@@ -40,7 +45,6 @@ public class SanPhamChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_SAN_PHAM", referencedColumnName = "id")
-    @JsonIgnore // Ngăn không cho chuyển đổi đối tượng này thành JSON
     private SanPham sanPham;
 
     @ManyToOne
@@ -50,6 +54,14 @@ public class SanPhamChiTiet {
     @ManyToOne
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
+
+    public SanPhamChiTiet(Integer id) {
+        this.id = id;
+    }
+
+
+    @Column(name = "ANH_SAN_PHAM_CHI_TIET")
+    private byte[] anhSanPhamChiTiet;
 
 
     @Override
@@ -62,7 +74,7 @@ public class SanPhamChiTiet {
                 ", ngaytao=" + ngaytao +
                 ", ngaysua=" + ngaysua +
                 ", trangthai=" + trangthai +
-                ", sanPham=" + (sanPham != null ? sanPham.getId() : "null") +  // Hoặc lấy thuộc tính khác của SanPham
+//                ", sanPham=" + (sanPham != null ? sanPham.getId() : "null") +  // Hoặc lấy thuộc tính khác của SanPham
                 ", kichThuoc=" + (kichThuoc != null ? kichThuoc.getId() : "null") +
                 ", mauSac=" + (mauSac != null ? mauSac.getId() : "null") +
                 '}';

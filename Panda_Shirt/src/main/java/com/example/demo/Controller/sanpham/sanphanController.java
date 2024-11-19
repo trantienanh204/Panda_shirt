@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -56,9 +57,6 @@ public class sanphanController {
         }
         return sanPhamPage;
     }
-
-
-
 
     @GetMapping("/Listsanpham")
     public List<Map<String, Object>> Listsanpham() {
@@ -228,8 +226,6 @@ public class sanphanController {
         }
     }
 
-
-
     @PostMapping()
         public Object uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
             try {
@@ -260,7 +256,6 @@ public class sanphanController {
             }
             return "redirect:/baove/form";
         }
-
 
     @PostMapping("/addSP")
     public ResponseEntity<SanPham> addProduct(@RequestBody @Valid laytamDTO laytamDTO) {
@@ -387,7 +382,7 @@ public class sanphanController {
     }
 
     @PostMapping("/addTCSP")
-    public ResponseEntity<?> addSanPham(@RequestBody sanPhamDTO sanPhamDTO) {
+    public ResponseEntity<?> addSanPham(@RequestBody SanPhamDTO sanPhamDTO) {
         try {
             System.out.println("Dữ liệu từ sanPhamDTO: " + sanPhamDTO);
             sanPhamService.saveSanPham(sanPhamDTO);

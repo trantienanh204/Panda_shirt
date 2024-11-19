@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface sanPhamRepository extends JpaRepository<SanPham,Integer> {
 
@@ -17,6 +19,9 @@ public interface sanPhamRepository extends JpaRepository<SanPham,Integer> {
                 "(?2 IS NULL OR sp.trangthai = ?2)")
         Page<SanPham> findByTenspAndTrangthai(String tensp, Integer trangthai, Pageable pageable);
 
+
+        @Query("SELECT s FROM SanPham s WHERE s.sanPhamChiTietList IS NOT EMPTY")
+        List<SanPham> findSanPhamWithDetails();
 
 
 }

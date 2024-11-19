@@ -1,68 +1,79 @@
 package com.example.demo.Controller.login;
 
-
+import com.example.demo.DTO.KhachHangDTO;
+import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.NhanVien;
-import com.example.demo.respository.nhanvienRepository;
+import com.example.demo.entity.TaiKhoan;
+import com.example.demo.respository.NhanVienRespository;
+import com.example.demo.respository.TaiKhoanRepo;
+import com.example.demo.service.TaiKhoanService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/panda")
 public class LoginController {
+    @Autowired
+    private TaiKhoanService taiKhoanService;
 
     @Autowired
-    nhanvienRepository nhanVienRepository ;
+    private PasswordEncoder passwordEncoder;
 
-    NhanVien nv = new NhanVien();
     @Autowired
-    LoginService loginService;
-
-
-    @GetMapping("/account")
-    public String login(@RequestParam("username") String username ,
-                        @RequestParam("password") String password ,
-                        Model model, HttpSession session
-    ){
-
-        Optional<NhanVien> user = loginService.findUer(username,password);
-        String regex = "^[a-zA-Z0-9@._]*$";
-        if(!username.matches(regex) || !password.matches(regex)){
-            model.addAttribute("saitk","Tài khoản hoặc mật khẩu sai định dạng");
-            System.out.printf("sai định dạng");
-            return "Login";
-        }
-        if(user.isPresent()){
-            List<NhanVien> tknv = loginService.loginNV(username,password);
-            List<NhanVien> tkql = loginService.loginAdmin(username,password);
-            if(!tknv.isEmpty()){
-                session.setAttribute("usernv",tknv);
-                session.removeAttribute("userql");
-                System.out.printf("--tk : "+tknv.get(0).getChucvu());
-                return "forward:/panda/nhanvien/banhang";
-            }else if(!tkql.isEmpty()){
-                session.setAttribute("userql",tkql);
-                session.removeAttribute("usernv");
-                System.out.printf("--tk : "+tkql.get(0).getChucvu());
-                return "forward:/panda/vaitro";
-            }
-            return "Login";
-        }
-        model.addAttribute("saitk","Sai thông tin đăng nhập");
-        System.out.printf("loi");
-        return "Login";
-    }
+    private TaiKhoanRepo taiKhoanRepo;
 
     @GetMapping("/login")
-    public String account(){
-        return "Login";
+    public String showLoginPage() {
+        return "Login";  // Hiển thị trang đăng nhập
     }
 
+    @PostMapping("/login")
+    public String login(@Valid @ModelAttribute TaiKhoanDTO taiKhoanDTO, Model model, HttpSession session) {
+        String tenDangNhap = taiKhoanDTO.getTenDangNhap();
+        String matKhau = taiKhoanDTO.getMatKhau();
+
+        // Tìm tài khoản trong cơ sở dữ liệu
+        TaiKhoanDTO foundTaiKhoan = taiKhoanService.findByTenDangNhap(tenDangNhap);
+
+        if (foundTaiKhoan == null) {
+            model.addAttribute("error", "Tên đăng nhập không tồn tại.");
+            return "Login"; // Hiển thị lỗi nếu không tìm thấy tài khoản
+        }
+
+        // Kiểm tra mật khẩu
+        if (!passwordEncoder.matches(matKhau, foundTaiKhoan.getMatKhau())) {
+            model.addAttribute("error", "Mật khẩu không chính xác.");
+            return "Login"; // Hiển thị lỗi nếu mật khẩu không đúng
+        }
+
+        // Lấy thông tin khách hàng từ tài khoản
+        KhachHangDTO khachHangDTO = foundTaiKhoan.getKhachHangDTO();
+        if (khachHangDTO == null) {
+            model.addAttribute("error", "Không tìm thấy thông tin khách hàng.");
+            return "Login"; // Hiển thị lỗi nếu không tìm thấy thông tin khách hàng
+        }
+
+        // Lưu thông tin người dùng vào session
+        session.setAttribute("loggedInUser", khachHangDTO);
+
+        // Kiểm tra nếu có mục tiêu chuyển hướng sau khi đăng nhập
+        String roomId = (String) session.getAttribute("roomId");
+        if (roomId != null) {
+            return "redirect:/showRoomDetailPhong?roomId=" + roomId; // Chuyển hướng đến chi tiết phòng nếu có
+        }
+
+        return "redirect:/"; // Trở về trang chính nếu không có mục tiêu chuyển hướng
+    }
 }
+
+
+

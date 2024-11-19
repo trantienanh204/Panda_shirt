@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -14,10 +15,10 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg ">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <img th:src="@{/Image/panda_logo.png}" width="50px"; height="50px">
+            <img th:src="@{/Image/panda_logo.png}" width="50px" height="50px">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -41,7 +42,7 @@
             </form>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/panda/giohang}">><i class="fas fa-shopping-cart"></i></a>
+                    <a class="nav-link" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-user"></i></a>
@@ -54,17 +55,19 @@
     </div>
 </nav>
 
-<!-- Main Section - Cart -->
 <div class="container mt-3" style="padding-bottom: 80px;">
     <h2 class="mb-4">Giỏ hàng</h2>
-    <div class="row">
-        <div class="col-12">
+    <div th:if="${#lists.isEmpty(cartItems)}">
+        <p>Giỏ hàng của bạn đang trống.</p>
+    </div>
+    <div th:if="${!#lists.isEmpty(cartItems)}">
+        <form id="cartForm">
             <table class="table">
                 <thead>
                 <tr>
                     <th>Chọn</th>
                     <th>Ảnh</th>
-                    <th>Tên sp</th>
+                    <th>Tên sản phẩm</th>
                     <th>Màu sắc</th>
                     <th>Kích thước</th>
                     <th>Giá</th>
@@ -73,59 +76,35 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr th:each="item : ${cartItems}">
                     <td>
-                        <input type="checkbox" class="form-check-input" id="product1">
+                        <input type="checkbox" class="form-check-input product-checkbox" th:id="'product' + ${item.id}" th:data-price="${item.sanPhamChiTiet.dongia * item.soluong}">
                     </td>
                     <td>
-                        <img src="1.png" alt="Product Image" class="img-fluid" style="max-width: 100px;">
+                        <img th:src="@{${item.sanPhamChiTiet.anhSanPhamChiTiet}}" alt="Product Image" class="img-fluid" style="max-width: 100px;">
                     </td>
-                    <td><p>Áo sơ mi</p></td>
+                    <td th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</td>
+                    <td th:text="${item.sanPhamChiTiet.mauSac.ten}">Màu sắc</td>
+                    <td th:text="${item.sanPhamChiTiet.kichThuoc.ten}">Kích thước</td>
+                    <td th:text="${item.sanPhamChiTiet.dongia}">Giá</td>
                     <td>
-                        <select class="form-select" style="width: 120px;">
-                            <option value="red">Đỏ</option>
-                            <option value="blue">Xanh</option>
-                            <option value="green">Xanh lá</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-select" style="width: 100px;">
-                            <option value="s">S</option>
-                            <option value="m">M</option>
-                            <option value="l">L</option>
-                            <option value="xl">XL</option>
-                        </select>
-                    </td>
-                    <td>250.000</td>
-                    <td>
-                        <input type="number" class="form-control" value="1" style="width: 60px;">
+                        <input type="number" class="form-control quantity-input" th:value="${item.soluong}" style="width: 60px;">
                     </td>
                     <td>
-                        <button class="btn btn-danger">Xóa</button>
+                        <button type="button" class="btn btn-danger delete-button">Xóa</button>
                     </td>
                 </tr>
                 </tbody>
-
             </table>
-        </div>
+            <div class="text-right">
+                <p>Tổng tiền: <span id="totalPrice">0</span> VND</p>
+                <button type="button" class="btn btn-primary" id="buyButton" style="display: none;">Thanh Toán</button>
+            </div>
+        </form>
     </div>
-
-    <a th:href="@{/panda/thanhtoan}" class="btn btn-success btn-lg mt-3" id="buyButton" style="display: none;"><i class="fas fa-bolt"></i>
-        Mua ngay
-    </a>
 </div>
 
-<script>
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    const buyButton = document.getElementById('buyButton');
 
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-            buyButton.style.display = anyChecked ? 'block' : 'none';
-        });
-    });
-</script>
 
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-4" style="position: relative;">
@@ -213,5 +192,128 @@
 <!-- Bootstrap JS and FontAwesome -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const buyButton = document.getElementById('buyButton');
+        const totalPriceElement = document.getElementById('totalPrice');
+
+        function updateTotalPrice() {
+            let totalPrice = 0;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalPrice += parseFloat(checkbox.getAttribute('data-price'));
+                }
+            });
+            totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN');
+        }
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+                buyButton.style.display = anyChecked ? 'block' : 'none';
+                updateTotalPrice();
+            });
+        });
+
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const quantity = this.value;
+                const sanPhamChiTietId = this.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', '');
+
+                console.log(`Sending updateQuantity request for product ID ${sanPhamChiTietId} to quantity ${quantity}`);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/panda/giohang/updateQuantity',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        sanPhamChiTietId: sanPhamChiTietId,
+                        quantity: quantity
+                    }),
+                    success: function(response) {
+                        console.log("Update success:", response);
+                        updateTotalPrice();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Có lỗi xảy ra:', error);
+                        alert('Có lỗi khi cập nhật số lượng!');
+                    }
+                });
+            });
+        });
+
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const sanPhamChiTietId = row.querySelector('input[type="checkbox"]').id.replace('product', '');
+
+                console.log(`Sending delete request for product ID ${sanPhamChiTietId}`);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/panda/giohang/delete',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        sanPhamChiTietId: sanPhamChiTietId
+                    }),
+                    success: function(response) {
+                        console.log("Delete success:", response);
+                        row.remove();
+                        updateTotalPrice();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Có lỗi xảy ra:', error);
+                        alert('Có lỗi khi xóa sản phẩm!');
+                    }
+                });
+            });
+        });
+
+        buyButton.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const selectedItems = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedItems.push(checkbox.id.replace('product', ''));
+                }
+            });
+
+            console.log("Selected Items:", selectedItems);
+
+            if (selectedItems.length === 0) {
+                alert("Vui lòng chọn ít nhất một sản phẩm.");
+                return;
+            }
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/panda/giohang/thanhtoan';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selectedItems';
+            input.value = JSON.stringify(selectedItems);
+            form.appendChild(input);
+
+            const totalAmountInput = document.createElement('input');
+            totalAmountInput.type = 'hidden';
+            totalAmountInput.name = 'totalAmount';
+            totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
+            form.appendChild(totalAmountInput);
+
+            console.log("Form Data:", form);
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+    });
+</script>
+
 </body>
+
 </html>
