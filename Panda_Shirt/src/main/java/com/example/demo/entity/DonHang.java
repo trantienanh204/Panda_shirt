@@ -55,5 +55,7 @@ public class DonHang {
     @Column(name = "Mota")
     private String lydohuy;
 
+    @Column(name = "TRANG_THAI_OFFLINE")
+    private boolean trangthaioffline;
 
 }
