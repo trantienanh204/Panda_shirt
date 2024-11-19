@@ -4,15 +4,12 @@ import com.example.demo.Controller.login.UserUtils;
 import com.example.demo.entity.*;
 import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.respository.nhanVien.DonHangRepository;
-import com.example.demo.service.GioHangService;
-import com.example.demo.service.HoaDonService;
-import com.example.demo.service.SanPhamService;
+import com.example.demo.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.example.demo.service.TaiKhoanService;
 import com.example.demo.DTO.TaiKhoanDTO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -46,6 +44,7 @@ public class GioHangController {
     private HoaDonService hoaDonService;
     @Autowired
     private DonHangRepository donHangRepository;
+
 
     @PostMapping("/add")
     public ResponseEntity<String> addToCart(@AuthenticationPrincipal UserDetails userDetails,
@@ -90,7 +89,6 @@ public class GioHangController {
     }
 
     @GetMapping("/findSanPhamChiTietId")
-    @ResponseBody
     public ResponseEntity<Integer> findSanPhamChiTietId(@RequestParam Integer sizeId, @RequestParam Integer colorId) {
         try {
             int sanPhamChiTietId = sanPhamService.findIdBySizeAndColorId(sizeId, colorId);
@@ -99,19 +97,39 @@ public class GioHangController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+
     @PostMapping("/updateQuantity")
     @ResponseBody
-    public ResponseEntity<String> updateQuantity(@RequestParam int sanPhamChiTietId,
-                                                 @RequestParam int quantity,
-                                                 @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<String> updateQuantity(@RequestBody Map<String, Object> payload
+//            ,
+//                                                 @AuthenticationPrincipal UserDetails userDetails
+    ) {
+//        if (userDetails == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+//        }
+
         try {
+            int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
+            int quantity = (int) payload.get("quantity");
+
             System.out.println("Received updateQuantity request for: " + sanPhamChiTietId + " quantity: " + quantity);
-            String tenDangNhap = userDetails.getUsername();
+
+            String tenDangNhap = "taikhoan2";
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
             }
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+
+            // Kiểm tra sản phẩm chi tiết trong giỏ hàng
+            List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
+            boolean productFound = cartItems.stream().anyMatch(item -> item.getSanPhamChiTiet().getId() == sanPhamChiTietId);
+
+            if (!productFound) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in the cart.");
+            }
+
             gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
             return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật.");
         } catch (RuntimeException e) {
@@ -123,16 +141,32 @@ public class GioHangController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public ResponseEntity<String> deleteFromCart(@RequestParam int sanPhamChiTietId,
+    public ResponseEntity<String> deleteFromCart(@RequestBody Map<String, Object> payload,
                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+        }
+
         try {
+            int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
+
             System.out.println("Received delete request for product: " + sanPhamChiTietId);
+
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
             }
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+
+            // Kiểm tra sản phẩm chi tiết trong giỏ hàng
+            List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
+            boolean productFound = cartItems.stream().anyMatch(item -> item.getSanPhamChiTiet().getId() == sanPhamChiTietId);
+
+            if (!productFound) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in the cart.");
+            }
+
             gioHangService.deleteFromCart(khachHangId, sanPhamChiTietId);
             return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
         } catch (RuntimeException e) {
@@ -141,6 +175,8 @@ public class GioHangController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
         }
     }
+
+
 
 
     @GetMapping("/thanhtoan")
@@ -314,6 +350,10 @@ public class GioHangController {
         model.addAttribute("message", "Đơn hàng của bạn đã được đặt thành công!");
         return "khachhang/ThanhToanThanhCong"; // Tên trang thông báo thanh toán thành công
     }
+
+
+
+
 
 }
 

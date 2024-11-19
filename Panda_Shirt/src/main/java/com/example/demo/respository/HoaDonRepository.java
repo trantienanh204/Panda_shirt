@@ -30,7 +30,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT MAX(h.mahoadon) FROM HoaDon h")
     String findMaxMaHoaDon();
 
-    @Query("SELECT h FROM HoaDon h WHERE h.khachHang IS NULL OR h.nhanVien IS NULL")
+    @Query("SELECT h FROM HoaDon h WHERE h.khachHang IS NULL")
     List<HoaDon> findHoaDonsWithNullId();
 
     // doanh thu theo ngày
