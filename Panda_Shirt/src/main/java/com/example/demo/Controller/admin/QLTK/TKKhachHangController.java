@@ -165,6 +165,8 @@ public class TKKhachHangController {
             System.out.println("tên " +tenDangNhap.getTenDangNhap());
             System.out.println("tên " +tentk);
             ctvt.setVaiTro(vt);
+            khachHang.setTinhtrang(true);
+            khachHang.setDelete(true);
             ctvt.setTaiKhoan(tenDangNhap);
             chiTietVaiTroRepo.save(ctvt);
 

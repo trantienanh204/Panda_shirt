@@ -141,7 +141,7 @@
             <th>Kích cỡ</th>
             <th>Đơn giá</th>
             <th>Số lượng</th>
-            <th>Thành tiền</th>
+            <th>Tổng tiền</th>
         </tr>
         </thead>
         <tbody>
@@ -152,15 +152,15 @@
             <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
             <td th:text="${hdct.sanPhamChiTiet.dongia}"></td>
             <td th:text="${hdct.soluong}"></td>
-            <td th:text="${hdct.thanhtien}"></td>
+            <td th:text="${hdct.tongtien}"></td>
         </tr>
         </tbody>
     </table>
 
     <div class="total">
-        <p th:text="'Tổng cộng: ' + ${hoadonct[0].hoaDon.thanhtien}"></p>
-        <p>Thuế (0%): 0đ</p>
-        <strong>TỔNG TIỀN: </strong>
+        <p th:text="'Tổng cộng: ' + ${hoadonct[0].hoaDon.tongtien}"></p>
+<!--        <p>Thuế (0%): 0đ</p>-->
+<!--        <strong>TỔNG TIỀN: </strong>-->
     </div>
 
     <div class="footer">
