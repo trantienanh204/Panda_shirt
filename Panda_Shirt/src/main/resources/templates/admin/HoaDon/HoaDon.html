@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body th:fragment="hoadon">
+<h2>Hóa Đơn</h2>
 <form th:action="@{/panda/hoadon}" method="get">
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
@@ -74,9 +75,9 @@
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
             </td>
             <td>
-                <a class="btn " th:href="@{/panda/hoadon/update(id=${hd.id})}" >
-                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 20px"></i>
-                </a>
+<!--                <a class="btn " th:href="@{/panda/hoadon/update(id=${hd.id})}" >-->
+<!--                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 20px"></i>-->
+<!--                </a>-->
                 <a class="btn " href="#" data-toggle="modal" data-target="#invoiceDetailModal"
                    th:data-invoice-id="${hd.id}">
                     <i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>
