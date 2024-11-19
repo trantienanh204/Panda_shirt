@@ -139,30 +139,31 @@
                         let productDetailHtml = '';
                         data.sanPhamChiTietList.forEach(function(chiTiet, index) {
                             productDetailHtml += `
-                                <tr data-id="${chiTiet.id}">
-                                    <td><input type="checkbox" class="select-row"></td>                                    <td>${data.danhMuc.tendanhmuc}</td>
-                                    <td>${data.nhaSanXuat.tennsx}</td>
-                                    <td>${data.thuongHieu.tenthuonghieu}</td>
-                                    <td>${data.coAo.ten}</td>
-                                    <td>${data.chatLieu.tenChatLieu}</td>
-                                    <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" disabled></td>
-                                    <td><input type="number" class="form-control dongia-edit" value="${chiTiet.dongia}" disabled></td>
-                                    <td>${data.ngayTao}</td>
-                                    <td>${data.trangthai === 1 ? 'Đang bán' : 'Ngừng bán'}</td>
-                                    <td>
-                                        <input type="hidden" class="kich-thuoc-id" value="${chiTiet.kichThuoc.id}">
-                                        ${chiTiet.kichThuoc.ten}
-                                    </td>
-                                    <td>
-                                        <input type="hidden" class="mau-sac-id" value="${chiTiet.mauSac.id}">
-                                        ${chiTiet.mauSac.ten}
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm">Sửa</button>
-                                        <button class="btn btn-danger btn-sm">Xóa</button>
-                                    </td>
-                                </tr>
-                            `;
+                            <tr data-id="${chiTiet.id}">
+                                <td><input type="checkbox" class="select-row"></td>
+                                <td>${data.danhMuc ? data.danhMuc.tendanhmuc : 'Không có danh mục'}</td>
+                                <td>${data.nhaSanXuat ? data.nhaSanXuat.tennsx : 'Không có nhà sản xuất'}</td>
+                                <td>${data.thuongHieu ? data.thuongHieu.tenthuonghieu : 'Không có thương hiệu'}</td>
+                                <td>${data.coAo ? data.coAo.ten : 'Không có cổ áo'}</td>
+                                <td>${data.chatLieu ? data.chatLieu.tenChatLieu : 'Không có chất liệu'}</td>
+                                <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" disabled></td>
+                                <td><input type="number" class="form-control dongia-edit" value="${chiTiet.dongia}" disabled></td>
+                                <td>${data.ngayTao}</td>
+                                <td>${data.trangthai === 1 ? 'Đang bán' : 'Ngừng bán'}</td>
+                                <td>
+                                    <input type="hidden" class="kich-thuoc-id" value="${chiTiet.kichThuoc.id}">
+                                    ${chiTiet.kichThuoc.ten}
+                                </td>
+                                <td>
+                                    <input type="hidden" class="mau-sac-id" value="${chiTiet.mauSac.id}">
+                                    ${chiTiet.mauSac.ten}
+                                </td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm">Sửa</button>
+                                    <button class="btn btn-danger btn-sm">Xóa</button>
+                                </td>
+                            </tr>
+                        `;
                         });
                         $('#sanPhamDetails').html(productDetailHtml);
                     } else {
@@ -262,6 +263,7 @@
             }
         });
     });
+
 
 
 </script>

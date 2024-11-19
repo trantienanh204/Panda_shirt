@@ -53,6 +53,9 @@ public class Voucher {
     @Column(name = "DIEU_KIEN_KHUYEN_MAI")
     private String dieuKien;
 
+    @Column(name = "LOAI_KHACH_HANG")
+    private boolean loaikhachhang;
+
     //    @NotNull(message = "Ngay bắt đầu không trống")
     @Column(name = "NGAY_BAT_DAU")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
