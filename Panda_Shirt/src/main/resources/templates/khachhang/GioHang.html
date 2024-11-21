@@ -104,8 +104,6 @@
     </div>
 </div>
 
-
-
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-4" style="position: relative;">
     <p>&copy; 2024 Bán Áo. Tất cả quyền được bảo lưu.</p>
@@ -199,6 +197,11 @@
         const buyButton = document.getElementById('buyButton');
         const totalPriceElement = document.getElementById('totalPrice');
 
+        if (!buyButton) {
+            console.error("Element with id 'buyButton' not found in DOM");
+            return;
+        }
+
         function updateTotalPrice() {
             let totalPrice = 0;
             checkboxes.forEach(checkbox => {
@@ -209,109 +212,110 @@
             totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN');
         }
 
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-                buyButton.style.display = anyChecked ? 'block' : 'none';
-                updateTotalPrice();
-            });
-        });
+        function handleQuantityChange(event) {
+            const quantity = parseInt(event.target.value, 10); // Chuyển đổi sang Integer
+            const sanPhamChiTietId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10); // Chuyển đổi sang Integer
 
-        const quantityInputs = document.querySelectorAll('.quantity-input');
-        quantityInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                const quantity = this.value;
-                const sanPhamChiTietId = this.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', '');
-
-                console.log(`Sending updateQuantity request for product ID ${sanPhamChiTietId} to quantity ${quantity}`);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/panda/giohang/updateQuantity',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        sanPhamChiTietId: sanPhamChiTietId,
-                        quantity: quantity
-                    }),
-                    success: function(response) {
-                        console.log("Update success:", response);
-                        updateTotalPrice();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Có lỗi xảy ra:', error);
-                        alert('Có lỗi khi cập nhật số lượng!');
-                    }
-                });
-            });
-        });
-
-        const deleteButtons = document.querySelectorAll('.delete-button');
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                const sanPhamChiTietId = row.querySelector('input[type="checkbox"]').id.replace('product', '');
-
-                console.log(`Sending delete request for product ID ${sanPhamChiTietId}`);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/panda/giohang/delete',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        sanPhamChiTietId: sanPhamChiTietId
-                    }),
-                    success: function(response) {
-                        console.log("Delete success:", response);
-                        row.remove();
-                        updateTotalPrice();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Có lỗi xảy ra:', error);
-                        alert('Có lỗi khi xóa sản phẩm!');
-                    }
-                });
-            });
-        });
-
-        buyButton.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            const selectedItems = [];
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    selectedItems.push(checkbox.id.replace('product', ''));
+            $.ajax({
+                type: 'POST',
+                url: '/panda/giohang/updateQuantity',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    sanPhamChiTietId: sanPhamChiTietId,
+                    quantity: quantity
+                }),
+                success: function(response) {
+                    updateTotalPrice();
+                    const checkbox = document.getElementById('product' + sanPhamChiTietId);
+                    checkbox.setAttribute('data-price', response.newPrice * quantity);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    alert('Có lỗi khi cập nhật số lượng!');
                 }
             });
+        }
 
-            console.log("Selected Items:", selectedItems);
+        function handleDeleteClick(event) {
+            const row = event.target.closest('tr');
+            const sanPhamChiTietId = parseInt(row.querySelector('input[type="checkbox"]').id.replace('product', ''), 10); // Chuyển đổi sang Integer
 
-            if (selectedItems.length === 0) {
-                alert("Vui lòng chọn ít nhất một sản phẩm.");
-                return;
-            }
+            $.ajax({
+                type: 'POST',
+                url: '/panda/giohang/delete',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    sanPhamChiTietId: sanPhamChiTietId
+                }),
+                success: function(response) {
+                    row.remove();
+                    updateTotalPrice();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    alert('Có lỗi khi xóa sản phẩm!');
+                }
+            });
+        }
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/panda/giohang/thanhtoan';
+        function addEventListeners() {
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            quantityInputs.forEach(input => {
+                input.addEventListener('change', handleQuantityChange);
+            });
 
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'selectedItems';
-            input.value = JSON.stringify(selectedItems);
-            form.appendChild(input);
+            const deleteButtons = document.querySelectorAll('.delete-button');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', handleDeleteClick);
+            });
 
-            const totalAmountInput = document.createElement('input');
-            totalAmountInput.type = 'hidden';
-            totalAmountInput.name = 'totalAmount';
-            totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
-            form.appendChild(totalAmountInput);
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+                    buyButton.style.display = anyChecked ? 'block' : 'none';
+                    updateTotalPrice();
+                });
+            });
 
-            console.log("Form Data:", form);
+            buyButton.addEventListener('click', function(event) {
+                event.preventDefault();
 
-            document.body.appendChild(form);
-            form.submit();
-        });
+                const selectedItems = [];
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedItems.push(parseInt(checkbox.id.replace('product', ''), 10)); // Chuyển đổi sang Integer
+                    }
+                });
+
+                if (selectedItems.length === 0) {
+                    alert("Vui lòng chọn ít nhất một sản phẩm.");
+                    return;
+                }
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/panda/giohang/thanhtoan';
+
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selectedItems';
+                input.value = JSON.stringify(selectedItems);
+                form.appendChild(input);
+
+                const totalAmountInput = document.createElement('input');
+                totalAmountInput.type = 'hidden';
+                totalAmountInput.name = 'totalAmount';
+                totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
+                form.appendChild(totalAmountInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            });
+        }
+
+        addEventListeners();
     });
+
 </script>
 
 </body>

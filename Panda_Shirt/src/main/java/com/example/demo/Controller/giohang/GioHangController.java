@@ -102,12 +102,12 @@ public class GioHangController {
     @PostMapping("/updateQuantity")
     @ResponseBody
     public ResponseEntity<String> updateQuantity(@RequestBody Map<String, Object> payload
-//            ,
-//                                                 @AuthenticationPrincipal UserDetails userDetails
+            ,
+                                                @AuthenticationPrincipal UserDetails userDetails
     ) {
-//        if (userDetails == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
-//        }
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+        }
 
         try {
             int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
@@ -115,7 +115,7 @@ public class GioHangController {
 
             System.out.println("Received updateQuantity request for: " + sanPhamChiTietId + " quantity: " + quantity);
 
-            String tenDangNhap = "taikhoan2";
+            String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
@@ -221,10 +221,13 @@ public class GioHangController {
 
 
     @PostMapping("/thanhtoan")
-    public String xuLyThanhToan(@RequestParam double totalAmount,
+    public String xuLyThanhToan(@RequestParam("totalAmount") String totalAmountStr,
                                 @RequestParam("selectedItems") String selectedItemsJson,
                                 Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
+            // Chuyển đổi totalAmount từ chuỗi sang BigDecimal
+            BigDecimal totalAmount = new BigDecimal(totalAmountStr);
+
             // Log dữ liệu nhận được
             System.out.println("Total Amount: " + totalAmount);
             System.out.println("Selected Items JSON: " + selectedItemsJson);
@@ -261,11 +264,12 @@ public class GioHangController {
             model.addAttribute("totalAmount", totalAmount);
             return "khachhang/ThanhToan";
 
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             model.addAttribute("message", "Có lỗi xảy ra khi xử lý dữ liệu giỏ hàng.");
             return "khachhang/GioHang";
         }
     }
+
 
     @PostMapping("/thanhtoan/hoadon")
     public String xuLyHoaDon(@RequestParam double totalAmount,
@@ -340,6 +344,7 @@ public class GioHangController {
         donHang.setSdt(khachHang.getSdt());
         donHang.setTrangThai("Chờ duyệt");
         donHang.setGhiChu(note);
+        donHang.setTrangthaioffline(false);
         donHang.setLydohuy("");
 
         donHangRepository.save(donHang);

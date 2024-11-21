@@ -40,7 +40,7 @@ import java.util.Optional;
             if (existingCartItem.isPresent()) {
                 GioHang cartItem = existingCartItem.get();
                 cartItem.setSoluong(cartItem.getSoluong() + quantity);
-                cartItem.setTongtien(gia.multiply(BigDecimal.valueOf(cartItem.getSoluong())).doubleValue());
+                cartItem.setTongtien(gia.multiply(BigDecimal.valueOf(cartItem.getSoluong())));
 
                 return gioHangRepository.save(cartItem);
             } else {
@@ -48,7 +48,7 @@ import java.util.Optional;
                 newCartItem.setKhachHang(khachHang);
                 newCartItem.setSanPhamChiTiet(sanPhamChiTiet);
                 newCartItem.setSoluong(quantity);
-                newCartItem.setTongtien(gia.multiply(BigDecimal.valueOf(newCartItem.getSoluong())).doubleValue());
+                newCartItem.setTongtien(gia.multiply(BigDecimal.valueOf(newCartItem.getSoluong())));
                 return gioHangRepository.save(newCartItem);
             }
         }

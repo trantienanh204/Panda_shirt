@@ -70,17 +70,11 @@
                 </div>
             </div>
             <div class="d-flex align-items-center">
-                <p class="product-price mb-0 me-4" th:text="${item.sanPhamChiTiet.dongia} + ' VND'">Giá</p>
-                <p class="quantity-text mb-0 me-4" th:text="${item.soluong}">Số lượng</p>
-                <p class="product-price mb-0" th:text="${item.sanPhamChiTiet.dongia * item.soluong} + ' VND'">Tổng tiền</p>
+                <p class="product-price mb-0 me-4" th:text="${item.sanPhamChiTiet.dongia * item.soluong} + ' VND'">Tổng tiền</p>
             </div>
         </div>
-        <!-- Ghi chú -->
-        <div class="mt-3">
-            <label for="note" class="form-label">Ghi chú:</label>
-            <textarea id="note" class="form-control" rows="3" placeholder="Ghi chú cho đơn hàng..."></textarea>
-        </div>
     </div>
+
 
     <!-- Thanh toán và hình thức thanh toán -->
     <div class="container">
@@ -101,19 +95,15 @@
                             <i class="fas fa-university"></i> Chuyển khoản ngân hàng
                         </label>
                     </div>
-                    <div id="qrCodeSection" style="display: none; margin-top: 10px;">
-                        <h6>Mã QR để thanh toán:</h6>
-                        <img id="qrCodeImage" src="#" alt="QR Code" />
-                    </div>
-                    <button id="checkPaymentStatus" class="btn btn-success mt-3" style="display: none;">Xác nhận đã thanh toán</button>
                 </div>
             </div>
+
             <!-- Tổng thanh toán -->
             <div class="col-md-6">
                 <div class="summary-section border p-3 mb-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <p><i class="fas fa-shopping-cart"></i> Tổng tiền hàng:</p>
-                        <p id="totalAmountText" th:text="${totalAmount} + ' VND'">₫124.000</p>
+                        <p id="totalAmountText">₫140.000</p>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <p><i class="fas fa-shield-alt"></i> Bảo hiểm đơn hàng:</p>
@@ -121,70 +111,174 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="total-price mb-0">Tổng thanh toán:</h5>
-                        <h5 class="total-price mb-0" id="finalTotal" th:text="${totalAmount + 500} + ' VND'">₫124.500</h5>
+                        <h5 class="total-price mb-0" id="finalTotal">₫140.500</h5>
                     </div>
-                    <form id="paymentForm" th:action="@{/panda/giohang/thanhtoan/hoadon}" method="post">
-                        <input type="hidden" name="totalAmount" th:value="${totalAmount}">
-                        <input type="hidden" name="note" id="noteInput" th:value="${note}">
-                        <input type="hidden" name="paymentMethod" id="paymentMethodInput" th:value="${paymentMethod}">
+                    <form id="paymentForm" action="/api/submitOrder" method="post">
+                        <input type="hidden" name="totalAmount" id="totalAmountInput">
+                        <input type="hidden" name="orderInfo" id="orderInfoInput" value="mo ta don hang">
+                        <input type="hidden" name="paymentMethod" id="paymentMethodInput">
+                        <input type="hidden" name="note" id="noteInput" value="Ghi chú">
                         <button type="submit" class="btn btn-primary w-100 mt-3"><i class="fas fa-check"></i> Đặt hàng</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+
 </div>
 
 <!-- JavaScript -->
+<!--<script>-->
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--        const bankTransferRadio = document.getElementById('bankTransfer');-->
+<!--        const codRadio = document.querySelector('input[name="paymentMethod"][value="COD"]');-->
+<!--        const qrCodeSection = document.getElementById('qrCodeSection');-->
+<!--        const qrCodeImage = document.getElementById('qrCodeImage');-->
+<!--        const checkPaymentStatusButton = document.getElementById('checkPaymentStatus');-->
+<!--        const finalTotalElement = document.getElementById('finalTotal');-->
+
+<!--        bankTransferRadio.addEventListener('change', function() {-->
+<!--            if (bankTransferRadio.checked) {-->
+<!--                const totalAmount = finalTotalElement.textContent.replace(/[^0-9.-]+/g, '');-->
+<!--                const qrCodeUrl = `https://api.vietqr.io/image/970423-0363714380-qPaEb5R.jpg?amount=${totalAmount}`;-->
+<!--                qrCodeImage.src = qrCodeUrl;-->
+<!--                qrCodeSection.style.display = 'block';-->
+<!--                checkPaymentStatusButton.style.display = 'block';-->
+<!--            }-->
+<!--        });-->
+
+<!--        codRadio.addEventListener('change', function() {-->
+<!--            if (codRadio.checked) {-->
+<!--                qrCodeSection.style.display = 'none';-->
+<!--                checkPaymentStatusButton.style.display = 'none';-->
+<!--            }-->
+<!--        });-->
+
+<!--        checkPaymentStatusButton.addEventListener('click', function() {-->
+<!--            fetch('/api/check-payment-status', {-->
+<!--                method: 'POST',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                },-->
+<!--                body: JSON.stringify({-->
+<!--                    orderId: 'ORDER_ID_HERE' // Thay đổi thành orderId thực tế của bạn-->
+<!--                }),-->
+<!--            })-->
+<!--                .then(response => response.json())-->
+<!--                .then(data => {-->
+<!--                    if (data.status === 'SUCCESS') {-->
+<!--                        alert('Thanh toán thành công! Đơn hàng của bạn đã được hoàn tất.');-->
+<!--                        window.location.href = '/panda/giohang/hoanthanh';-->
+<!--                    } else {-->
+<!--                        alert('Thanh toán chưa thành công. Vui lòng thử lại.');-->
+<!--                    }-->
+<!--                })-->
+<!--                .catch(error => console.error('Error:', error));-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<!--lần 2-->
+<!--<script>-->
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--        const bankTransferRadio = document.getElementById('bankTransfer');-->
+<!--        const codRadio = document.querySelector('input[name="paymentMethod"][value="COD"]');-->
+<!--        const paymentForm = document.getElementById('paymentForm');-->
+<!--        const totalAmountInput = document.getElementById('totalAmountInput');-->
+<!--        const orderInfoInput = document.getElementById('orderInfoInput');-->
+<!--        const paymentMethodInput = document.getElementById('paymentMethodInput');-->
+<!--        const noteInput = document.getElementById('noteInput');-->
+<!--        const finalTotalElement = document.getElementById('finalTotal');-->
+
+<!--        bankTransferRadio.addEventListener('change', function() {-->
+<!--            if (bankTransferRadio.checked) {-->
+<!--                paymentMethodInput.value = 'BankTransfer';-->
+<!--                paymentForm.action = "/submitOrder"; // Cập nhật action để gửi yêu cầu POST-->
+<!--            }-->
+<!--        });-->
+
+<!--        codRadio.addEventListener('change', function() {-->
+<!--            if (codRadio.checked) {-->
+<!--                paymentMethodInput.value = 'COD';-->
+<!--                paymentForm.action = "/processInvoice"; // Cập nhật action để gửi yêu cầu POST-->
+<!--            }-->
+<!--        });-->
+
+<!--        paymentForm.addEventListener('submit', function(event) {-->
+<!--            const totalAmount = parseFloat(finalTotalElement.textContent.replace(/[^\d.]/g, '')) * 100; // Lấy giá trị số từ tổng tiền và nhân với 100 để chuyển đổi thành đơn vị đồng-->
+<!--            totalAmountInput.value = totalAmount.toFixed(0); // Đảm bảo không có phần thập phân-->
+<!--            orderInfoInput.value = document.getElementById('orderInfoInput').value;-->
+<!--            noteInput.value = document.getElementById('noteInput').value;-->
+
+<!--            // Ensure form method is POST-->
+<!--            paymentForm.method = "POST";-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const bankTransferRadio = document.getElementById('bankTransfer');
         const codRadio = document.querySelector('input[name="paymentMethod"][value="COD"]');
-        const qrCodeSection = document.getElementById('qrCodeSection');
-        const qrCodeImage = document.getElementById('qrCodeImage');
-        const checkPaymentStatusButton = document.getElementById('checkPaymentStatus');
+        const paymentForm = document.getElementById('paymentForm');
+        const totalAmountInput = document.getElementById('totalAmountInput');
         const finalTotalElement = document.getElementById('finalTotal');
+        const totalProductPriceElement = document.getElementById('totalAmountText');
+        const paymentMethodInput = document.getElementById('paymentMethodInput');
+        const insurancePriceElement = document.querySelector('.insurance-price');
 
-        bankTransferRadio.addEventListener('change', function() {
-            if (bankTransferRadio.checked) {
-                const totalAmount = finalTotalElement.textContent.replace(/[^0-9.-]+/g, '');
-                const qrCodeUrl = `https://api.vietqr.io/image/970423-0363714380-qPaEb5R.jpg?amount=${totalAmount}`;
-                qrCodeImage.src = qrCodeUrl;
-                qrCodeSection.style.display = 'block';
-                checkPaymentStatusButton.style.display = 'block';
+        function updateTotalAmount() {
+            let totalProductAmount = 0;
+
+            // Select all product total price elements
+            const productPriceElements = document.querySelectorAll('.product-price');
+
+            productPriceElements.forEach(function(element) {
+                const priceText = element.textContent.replace(/[^\d]/g, '');
+                const price = parseFloat(priceText);
+                totalProductAmount += price;
+            });
+
+            // Display Tổng tiền hàng
+            totalProductPriceElement.textContent = '₫' + totalProductAmount.toLocaleString();
+
+            // Calculate Tổng thanh toán
+            const insurancePriceText = insurancePriceElement.textContent.replace(/[^\d]/g, '');
+            const insurancePrice = parseFloat(insurancePriceText);
+            const finalTotal = totalProductAmount + insurancePrice;
+
+            // Display Tổng thanh toán
+            finalTotalElement.textContent = '₫' + finalTotal.toLocaleString();
+        }
+
+        // Initially update the total amount
+        updateTotalAmount();
+
+        paymentForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Ensure the total amount is updated before submission
+            updateTotalAmount();
+
+            // Set the total amount input value
+            const finalTotalText = finalTotalElement.textContent.replace(/[^\d]/g, '');
+            const finalTotalAmount = parseFloat(finalTotalText);
+            totalAmountInput.value = finalTotalAmount;
+
+            // Set the payment method
+            if (bankTransferRadio && bankTransferRadio.checked) {
+                paymentMethodInput.value = 'BankTransfer';
+            } else if (codRadio && codRadio.checked) {
+                paymentMethodInput.value = 'COD';
             }
-        });
 
-        codRadio.addEventListener('change', function() {
-            if (codRadio.checked) {
-                qrCodeSection.style.display = 'none';
-                checkPaymentStatusButton.style.display = 'none';
-            }
-        });
-
-        checkPaymentStatusButton.addEventListener('click', function() {
-            fetch('/api/check-payment-status', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    orderId: 'ORDER_ID_HERE' // Thay đổi thành orderId thực tế của bạn
-                }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'SUCCESS') {
-                        alert('Thanh toán thành công! Đơn hàng của bạn đã được hoàn tất.');
-                        window.location.href = '/panda/giohang/hoanthanh';
-                    } else {
-                        alert('Thanh toán chưa thành công. Vui lòng thử lại.');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            // Submit the form
+            paymentForm.submit();
         });
     });
 </script>
+
+
 
 
 
