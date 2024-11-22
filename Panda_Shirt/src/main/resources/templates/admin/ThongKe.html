@@ -16,6 +16,13 @@
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body th:fragment="ThongKe">
+<!-- Thông báo -->
+<div class="custom-alert success" id="statusMessage" th:text="${successMessage}" th:if="${successMessage != null}">
+    <i class="fa-solid fa-circle-check"></i>
+</div>
+<div style="color: red" class="custom-alert success" id="statusMessage" th:text="${errolMessage}" th:if="${errolMessage != null}">
+    <i class="fa-solid fa-circle-check"></i>
+</div>
 <!-- MAIN -->
 <section id="content">
     <main>
@@ -23,9 +30,9 @@
             <div class="left">
                 <h1>Thống Kê</h1>
             </div>
-            <a href="#" class="btn-download">
+            <a href="/panda/excel" class="btn-download">
                 <i style="margin-right: 5px" class='bx bxs-cloud-download'></i>
-                <span class="text"> Download PDF</span>
+                <span class="text"> export file exel</span>
             </a>
         </div>
 
@@ -288,6 +295,25 @@
     #content main .box-info li .text p {
         font-size: 14px;
         color: var(--dark-grey);
+    }
+    .custom-alert {
+        position: fixed;
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        background-color: #4CAF50; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt thông báo là có thể nhìn thấy */
     }
 </style>
 <script th:inline="javascript">
@@ -630,6 +656,16 @@
             }
         });
     }
+    // show message
+    window.onload = function () {
+        var statusMessage = document.querySelector('.custom-alert');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            setTimeout(function () {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
 </script>
 </body>
 </html>

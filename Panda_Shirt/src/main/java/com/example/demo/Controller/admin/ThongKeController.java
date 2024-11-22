@@ -1,18 +1,23 @@
 package com.example.demo.Controller.admin;
 
+import com.example.demo.services.ExportExcelService;
 import com.example.demo.services.ThongKeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -26,6 +31,8 @@ public class ThongKeController {
     ThongKeService thongKeService;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ExportExcelService exportExcelService;
 
     @GetMapping("/thongke")
     public String thongke(Model model) {
@@ -57,7 +64,7 @@ public class ThongKeController {
         }
         // In ra log để kiểm tra dữ liệu
         System.out.println("Dữ liệu sản phẩm: " + productData.size());
-       // doanh thu theo tháng
+        // doanh thu theo tháng
         // Chuyển đổi monthlyRevenue sang JSON
         String jsonMonthlyRevenue = null;
         try {
@@ -74,25 +81,25 @@ public class ThongKeController {
         model.addAttribute("role", role);
         return "/admin/ThongKe";
     }
-   // tk theo ngay
-   @GetMapping("/thongkeDoanhThu")
-   public ResponseEntity<?> thongKeTheoNgay(@RequestParam("startDate") String startDate,
-                                            @RequestParam("endDate") String endDate) {
-       // Chuyển đổi ngày từ String sang LocalDate
-       LocalDate start, end;
-       try {
-           start = LocalDate.parse(startDate);
-           end = LocalDate.parse(endDate);
-       } catch (DateTimeParseException e) {
-           return ResponseEntity.badRequest().body("Invalid date format");
-       }
+    // tk theo ngay
+    @GetMapping("/thongkeDoanhThu")
+    public ResponseEntity<?> thongKeTheoNgay(@RequestParam("startDate") String startDate,
+                                             @RequestParam("endDate") String endDate) {
+        // Chuyển đổi ngày từ String sang LocalDate
+        LocalDate start, end;
+        try {
+            start = LocalDate.parse(startDate);
+            end = LocalDate.parse(endDate);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body("Invalid date format");
+        }
 
-       // Thống kê doanh thu theo ngày
-       Map<LocalDate, BigDecimal> dailyRevenue = thongKeService.thongKeDoanhThuTheoNgay(start, end);
+        // Thống kê doanh thu theo ngày
+        Map<LocalDate, BigDecimal> dailyRevenue = thongKeService.thongKeDoanhThuTheoNgay(start, end);
 
-       // Trả lại dữ liệu dạng JSON
-       return ResponseEntity.ok(dailyRevenue);
-   }
+        // Trả lại dữ liệu dạng JSON
+        return ResponseEntity.ok(dailyRevenue);
+    }
     @GetMapping("/thongkeDoanhThuTheoThang")
     public ResponseEntity<List<Map<String, Object>>> getDailyRevenue(@RequestParam("month") String month) {
         try {
@@ -121,5 +128,34 @@ public class ThongKeController {
         }
     }
 
+    @GetMapping("/excel")
+    public ResponseEntity<?> exportDataToExcel() {
+        try {
+            BigDecimal totalRevenue = thongKeService.calculateTotalRevenue();
+            Map<Integer, BigDecimal> monthlyRevenue = thongKeService.calculateMonthlyRevenue();
+            Map<LocalDate, BigDecimal> dailyRevenue = thongKeService.thongKeDoanhThuTheoNgay(
+                    LocalDate.now().minusDays(30), LocalDate.now());
+
+            // Tạo tệp Excel
+            String filePath = "H:/THONG KE/thongke.xlsx";
+            exportExcelService.exportDataToExcel(totalRevenue, monthlyRevenue, dailyRevenue, filePath);
+
+            // Đọc tệp từ hệ thống tệp và tạo đối tượng Resource
+            File file = new File(filePath);
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+            // Trả về ResponseEntity với tệp Excel cho người dùng tải về
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(file.length())
+                    .body(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu gặp sự cố khi xuất tệp
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi xảy ra khi xuất dữ liệu ra Excel.");
+        }
+    }
 
 }

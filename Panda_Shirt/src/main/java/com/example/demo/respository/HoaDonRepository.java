@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+
 @Repository
 
 public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
@@ -33,18 +34,35 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT h FROM HoaDon h WHERE h.khachHang IS NULL")
     List<HoaDon> findHoaDonsWithNullId();
 
-    // doanh thu theo ngày
-    @Query("SELECT COALESCE(SUM(hd.tongtien), 0) FROM HoaDon hd WHERE hd.trangthai = 1 AND hd.ngaymua = :date")
+
+    // Doanh thu theo ngày
+    @Query("SELECT COALESCE(SUM(hd.tongtien), 0) " +
+            "FROM HoaDon hd " +
+            "WHERE hd.trangthai = 1 AND hd.ngaymua = :date")
+
     BigDecimal getRevenueByDate(@Param("date") LocalDate date);
-    // doanh thu theo ngày
-    @Query("SELECT hd.ngaymua, COALESCE(SUM(hd.soluong * hd.dongia), 0) FROM HoaDon hd WHERE hd.trangthai = 1 AND hd.ngaymua BETWEEN :startDate AND :endDate GROUP BY hd.ngaymua ORDER BY hd.ngaymua")
+
+    // Doanh thu theo từng ngày trong khoảng thời gian
+    @Query("SELECT hd.ngaymua, COALESCE(SUM(hd.thanhtien), 0) " +
+            "FROM HoaDon hd " +
+            "WHERE hd.trangthai = 1 AND hd.ngaymua BETWEEN :startDate AND :endDate " +
+            "GROUP BY hd.ngaymua " +
+            "ORDER BY hd.ngaymua")
     List<Object[]> getDailyRevenue(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
-    // doanh thu theo năm
-    @Query("SELECT COALESCE(SUM(hd.soluong * hd.dongia), 0) " +
+
+    // Doanh thu theo tháng
+    @Query("SELECT COALESCE(SUM(hd.thanhtien), 0) " +
             "FROM HoaDon hd " +
             "WHERE hd.trangthai = 1 AND YEAR(hd.ngaymua) = :year AND MONTH(hd.ngaymua) = :month")
     BigDecimal getRevenueByMonth(@Param("year") int year, @Param("month") int month);
 
+    // Doanh thu theo năm
+    @Query("SELECT MONTH(hd.ngaymua), COALESCE(SUM(hd.thanhtien), 0) " +
+            "FROM HoaDon hd " +
+            "WHERE hd.trangthai = 1 AND YEAR(hd.ngaymua) = :year " +
+            "GROUP BY MONTH(hd.ngaymua) " +
+            "ORDER BY MONTH(hd.ngaymua)")
+    List<Object[]> getMonthlyRevenueByYear(@Param("year") int year);
 
 
 }

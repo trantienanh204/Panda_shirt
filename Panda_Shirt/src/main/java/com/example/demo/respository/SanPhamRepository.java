@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface sanPhamRepository extends JpaRepository<SanPham,Integer> {
+public interface SanPhamRepository extends JpaRepository<SanPham,Integer> {
 
 
         @Query("SELECT sp FROM SanPham sp WHERE " +
