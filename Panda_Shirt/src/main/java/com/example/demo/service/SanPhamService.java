@@ -77,7 +77,9 @@ public class SanPhamService {
     public List<KichThuoc> getallkichco() {
         return kichThuocRepository.findAll();
     }
-
+    public void saveSanPhamChiTiet(SanPhamChiTiet sanPhamChiTiet) {
+        sanPhamChiTietRepository.save(sanPhamChiTiet);
+    }
 
     private List<SanPhamChiTiet> temporarySanPhamChiTietList = new ArrayList<>();
 

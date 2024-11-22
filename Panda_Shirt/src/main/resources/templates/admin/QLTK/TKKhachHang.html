@@ -66,25 +66,21 @@
             <th>Mã khách hàng</th>
             <th>Tên khách hàng</th>
             <th>Giới tính</th>
-
 <!--            <th>Số điện thoại</th>-->
 <!--            <th>Địa chỉ</th>-->
 <!--            <th>Email</th>-->
             <th>Ngày tạo</th>
             <th>Ngày sửa</th>
             <th>Trạng thái</th>
-
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-
         <tr th:if="${list.empty}">
-            <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
+            <td colspan="10" style="text-align: center; color: #ff0000;">Không có dữ liệu</td>
         </tr>
         <tr  th:each="tkkhachhang,i : ${list}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
-
             <td>
                 <img th:if="${tkkhachhang.image != null}"
                      th:src="@{'/panda/image/'+ ${tkkhachhang.id}}"
@@ -98,7 +94,6 @@
             <td th:text="${tkkhachhang.makhachhang}"></td>
             <td th:text="${tkkhachhang.tenkhachhang}"></td>
             <td th:text="${tkkhachhang.gioitinh == 1 ? 'Nam' : 'Nữ'}"></td>
-
             <td th:text="${tkkhachhang.ngaytao != null? #temporals.format(tkkhachhang.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:text="${tkkhachhang.ngaysua != null? #temporals.format(tkkhachhang.ngaysua, 'dd/MM/yyyy'): 'chưa có'}"></td>
             <td th:if="${tkkhachhang.trangthai} == 1">

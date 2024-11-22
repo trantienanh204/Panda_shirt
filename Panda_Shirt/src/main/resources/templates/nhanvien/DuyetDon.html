@@ -6,8 +6,13 @@
 </head>
 <body th:fragment="duyetdon">
 <h2>Duyệt Đơn</h2>
-<form th:action="${trangThai == 'Chờ duyệt' ? '/panda/nhanvien/duyetdon/hienthi' : (trangThai == 'Đã duyệt' ? '/panda/nhanvien/duyetdon/hienthi/daduyet' : '/panda/nhanvien/duyetdon/hienthi/dahuy')}"
+<form th:action="${trangThai == 'Chờ duyệt' ? '/panda/nhanvien/duyetdon/hienthi'
+: (trangThai == 'Đã duyệt' ? '/panda/nhanvien/duyetdon/hienthi/daduyet'
+: (trangThai == 'Đang giao' ? '/panda/nhanvien/duyetdon/hienthi/danggiao'
+: (trangThai == 'Hoàn thành' ? '/panda/nhanvien/duyetdon/hienthi/hoanthanh'
+: '/panda/nhanvien/duyetdon/hienthi/dahuy')))}"
       method="get">
+
     <div class="filter-container">
         <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
         <hr>
@@ -30,7 +35,11 @@
                 <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
             </button>
             <a class="btn btn-dark"
-               th:href="${trangThai == 'Chờ duyệt' ? '/panda/nhanvien/duyetdon/hienthi' : (trangThai == 'Đã duyệt' ? '/panda/nhanvien/duyetdon/hienthi/daduyet' : '/panda/nhanvien/duyetdon/hienthi/dahuy')}">
+               th:href="${trangThai == 'Chờ duyệt' ? '/panda/nhanvien/duyetdon/hienthi'
+                : (trangThai == 'Đã duyệt' ? '/panda/nhanvien/duyetdon/hienthi/daduyet'
+                : (trangThai == 'Đang giao' ? '/panda/nhanvien/duyetdon/hienthi/danggiao'
+                : (trangThai == 'Hoàn thành' ? '/panda/nhanvien/duyetdon/hienthi/hoanthanh'
+                : '/panda/nhanvien/duyetdon/hienthi/dahuy')))}">
                 <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
             </a>
         </div>
@@ -39,13 +48,19 @@
 
 <div class="history-btn-container">
     <a th:href="@{/panda/nhanvien/duyetdon/hienthi}">
-        <button type="submit" class="btn btn-warning">Chờ duyệt</button>
+        <button class="btn status-orange">Chờ duyệt</button>
     </a>
     <a th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet}">
-        <button class="btn btn-success">Đã duyệt</button>
+        <button class="btn status-green">Đã duyệt</button>
+    </a>
+    <a th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao}">
+        <button class="btn status-blue">Đang giao</button>
+    </a>
+    <a th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh}">
+        <button class="btn status-aqua">Hoàn thành</button>
     </a>
     <a th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy}">
-        <button class="btn btn-danger">Đã hủy</button>
+        <button class="btn status-red">Đã hủy</button>
     </a>
 </div>
 
@@ -84,6 +99,16 @@
                       th:text="${dd.trangThai}">
                 </span>
             </td>
+            <td th:if="${dd.trangThai == 'Đang giao'}">
+                <span class="status-label status-blue"
+                      th:text="${dd.trangThai}">
+                </span>
+            </td>
+            <td th:if="${dd.trangThai == 'Hoàn thành'}">
+                <span class="status-label status-aqua"
+                      th:text="${dd.trangThai}">
+                </span>
+            </td>
             <td th:if="${dd.trangThai == 'Đã hủy'}">
                 <span class="status-label status-red"
                       th:text="${dd.trangThai}">
@@ -91,14 +116,31 @@
             </td>
 
             <td class="btn-actions" style="gap: 10px">
-                <a th:unless="${dd.trangThai}=='Đã duyệt' or ${dd.trangThai}=='Đã hủy'"
+                <!--                <a th:unless="${dd.trangThai}=='Đã hủy' or ${dd.trangThai}=='Đang giao'"-->
+                <!--                   th:href="@{/panda/nhanvien/duyetdon/update/{id} (id=${dd.id})}">-->
+                <!--                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>-->
+                <!--                </a> -->
+                <a th:if="${dd.trangThai}=='Chờ duyệt'"
                    th:href="@{/panda/nhanvien/duyetdon/update/{id} (id=${dd.id})}">
                     <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
                 </a>
-                <a th:if="${dd.trangThai}=='Đã duyệt' or ${dd.trangThai}=='Đã hủy'"
+                <a th:if="${dd.trangThai}=='Đã duyệt'"
+                   th:href="@{/panda/nhanvien/duyetdon/update2/{id} (id=${dd.id})}">
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
+                </a>
+                <a th:if="${dd.trangThai}=='Đang giao'"
+                   th:href="@{/panda/nhanvien/duyetdon/update3/{id} (id=${dd.id})}">
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
+                </a>
+                <a th:if="${dd.trangThai}=='Hoàn thành'"
                    th:href="@{/panda/nhanvien/duyetdon/detail/{id} (id=${dd.id})}">
                     <i class="fa fa-eye" style="color: #000000;font-size: 25px"></i>
                 </a>
+                <a th:if="${dd.trangThai}=='Đã hủy'"
+                   th:href="@{/panda/nhanvien/duyetdon/detail/{id} (id=${dd.id})}">
+                    <i class="fa fa-eye" style="color: #000000;font-size: 25px"></i>
+                </a>
+
             </td>
         </tr>
         </tbody>
@@ -116,6 +158,18 @@
                 <a class="page-link"
                    th:if="${trangThai == 'Đã duyệt'}"
                    th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="page-link"
+                   th:if="${trangThai == 'Đang giao'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="page-link"
+                   th:if="${trangThai == 'Hoàn thành'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -142,6 +196,18 @@
                 <a class="page-link"
                    th:if="${trangThai == 'Đã duyệt'}"
                    th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                <a class="page-link"
+                   th:if="${trangThai == 'Đang giao'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                <a class="page-link"
+                   th:if="${trangThai == 'Hoàn thành'}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
@@ -241,15 +307,29 @@
     }
 
     .status-green {
-        background-color: #4CAF50;
+        background-color: #ff9800;
+        color: white;
+
     }
 
     .status-orange {
-        background-color: #ff9800;
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .status-blue {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .status-aqua {
+        background-color:  #4CAF50;
+        color: white;
     }
 
     .status-red {
         background-color: #dc3545;
+        color: white;
     }
 
     .btn-actions {

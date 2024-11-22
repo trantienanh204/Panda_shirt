@@ -126,7 +126,7 @@
                         <input type="number" class="form-control" th:field="*{mucGiam}" placeholder="Mức giảm...">
                         <div th:if="${errormg}" th:text="${errormg}" style="color: red;"></div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label class="form-label"><b style="color: red">*</b> Loại</label>
                         <div>
                             <input type="radio" th:field="*{loai}" th:value="true" checked>
@@ -135,6 +135,15 @@
                             VND
                         </div>
                         <div th:if="${errorloai}" th:text="${errorloai}" style="color: red;"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label"><b style="color: red">*</b> Dành cho</label>
+                        <div>
+                            <input type="radio" th:field="*{loaikhachhang}" th:value="true" checked>
+                             Cộng đồng
+                            <input type="radio" th:field="*{loaikhachhang}" th:value="false">
+                             Cá nhân
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">

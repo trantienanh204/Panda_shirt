@@ -250,7 +250,6 @@
             <th>#</th>
             <th>Mã sản phẩm</th>
             <th>Tên sản phẩm</th>
-            <th>Số lượng</th>
             <th>Ngày tạo</th>
             <th>Trạng thái</th>
             <th>Thao tác</th>
@@ -308,8 +307,6 @@
                                 '<td>' + ((currentPage * pageSize) + index + 1) + '</td>' +
                                 '<td>' + sp.masp + '</td>' +
                                 '<td>' + sp.tensp + '</td>' +
-
-                                '<td>' + sp.soluongsp + '</td>' +
                                 '<td>' + ngayTaoFormatted + '</td>' +
                                 '<td class="' + statusClass + '">' + statusText + '</td>' +
                                 '<td><a href="/panda/sanpham/spct?id=' + sp.id + '">' +

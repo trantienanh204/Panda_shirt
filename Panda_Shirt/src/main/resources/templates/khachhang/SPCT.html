@@ -113,13 +113,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active" style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Giới Thiệu</a>
+                    <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Liên Hệ</a>
+                    <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
@@ -129,13 +129,13 @@
             </form>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
+                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-user"></i></a>
+                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/taikhoan}"><i class="fas fa-user"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-sign-in-alt"></i></a>
+                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/logout}"><i class="fas fa-sign-in-alt"></i></a>
                 </li>
             </ul>
         </div>
@@ -152,19 +152,21 @@
 
         <!-- Product Details -->
         <div class="col-md-6 product-details">
-            <h1 th:text="${sanPham.tensp}">Tên sản phẩm</h1>
+            <h1 th:text="${sanPham.tensp}"></h1>
             <p>Giá từ: <span id="minPrice" th:text="${minPrice}"></span> đến <span id="maxPrice" th:text="${maxPrice}"></span></p>
-
+            <h1 th:text="${soluongsanpham}"></h1>
             <div>
-                <p>Giá tiền: <span id="productPrice"></span></p>
+                <p>Giá tiền: <span style="color: red" id="productPrice"></span></p>
             </div>
             <!-- Màu sắc -->
+            <lable>Màu sắc</lable>
             <select id="colorSelect" class="form-select" aria-label="Chọn màu sắc">
                 <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.ten}">
                 </option>
             </select>
 
             <!-- Kích thước -->
+            <lable>Kích thước</lable>
             <select id="sizeSelect" class="form-select" aria-label="Chọn kích thước">
                 <option th:each="item : ${sizesAndColors}"
                         class="size-option" th:data-color="${item['color'].id}"
@@ -174,11 +176,9 @@
                 </option>
             </select>
 
-
-
             <!-- Quantity Option -->
             <div class="mb-3">
-                <label for="quantityInput" class="form-label"><strong>Số lượng:</strong></label>
+                <label for="quantityInput" class="form-label">Số lượng:</label>
                 <div class="input-group">
                     <button type="button" class="btn btn-outline-secondary" id="decrementBtn">-</button>
                     <input type="number" class="form-control" id="quantityInput" value="1" min="1" max="10">

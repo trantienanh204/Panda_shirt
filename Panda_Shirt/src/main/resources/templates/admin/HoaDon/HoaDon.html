@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body th:fragment="hoadon">
+<h2>Hóa Đơn</h2>
 <form th:action="@{/panda/hoadon}" method="get">
 <div class="filter-container">
     <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
@@ -50,7 +51,6 @@
             <th>Mã hóa đơn </th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
-<!--            <th>Số lượng</th>-->
             <th>Tổng tiền</th>
             <th>Ngày mua</th>
             <th>Trạng thái</th>
@@ -58,23 +58,14 @@
         </tr>
         </thead>
         <tbody>
-<!--<<<<<<< HEAD-->
-<!--&lt;!&ndash;        <tr th:each="hd,i : ${lshd} " th:if="${hd.nhanVien != null || hd.khachHang != null}">&ndash;&gt;-->
-<!--        <tr th:each="hd,i : ${lshd} " style="width: 10px">-->
-<!--            <td  th:text="${i.count}"></td>-->
-<!--            <td th:text="${hd.mahoadon != null ? hd.mahoadon : '(Trống)'}"></td>-->
-<!--            <td th:text="${hd.nhanVien != null ? hd.nhanVien.tennhanvien : '(Trống)'}"></td>-->
-<!--            <td th:text="${hd.khachHang != null ? hd.khachHang.tenkhachhang : '(Trống)'}"></td>-->
-<!--=======-->
         <tr th:if="${lshd.empty}">
             <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
         </tr>
         <tr th:each="hd,i : ${lshd} ">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${hd.mahoadon}"></td>
-            <td th:text="${hd.nhanVien.tennhanvien}"></td>
+            <td th:text="${hd.nhanVien.tennhanvien != null ? hd.nhanVien.tennhanvien : 'Không có nhân viên'}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-
 <!--            <td th:text="${hd.soluong}"></td>-->
             <td th:text="${hd.thanhtien != null ? hd.thanhtien :'(Trống)'}"></td>
 <!--            <td th:text="${hd.tongtien != null ? #numbers.formatDecimal(hd.tongtien, 0, 'COMMA') : '(Trống)'}"></td>-->

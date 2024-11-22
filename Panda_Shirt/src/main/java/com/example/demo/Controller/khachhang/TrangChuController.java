@@ -69,7 +69,10 @@ public class TrangChuController {
         model.addAttribute("cartItems", cartItems);
 
         return "/khachhang/GioHang";
-
+    }
+    @GetMapping("/taikhoan")
+    public String taikhoan(){
+        return "/khachhang/TaiKhoan";
     }
     @GetMapping("/thanhtoan")
     public String thanhtoan(){

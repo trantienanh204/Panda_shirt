@@ -29,6 +29,7 @@ public class HoaDonService {
         }
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
+
         return hoaDonRepository.findByMaAndTenAndTrangthaiHD(mahd, tennv, tenkh, trangThai, pageable);
     }
 
