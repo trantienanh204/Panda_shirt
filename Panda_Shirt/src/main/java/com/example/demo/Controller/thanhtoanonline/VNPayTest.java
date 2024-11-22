@@ -12,7 +12,7 @@ public class VNPayTest {
     private static String vnpHashSecret = "QTSXO9PQEVDJCIRCWJVTDEKW4DLPIB17";
     private static String vnpPayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     private static String vnp_TmnCode = "0AR5ALJG";
-    private static String vnp_ReturnUrl = "http://localhost:8080/vnpay-payment";
+    private static String vnp_ReturnUrl = "http://localhost:8080/api/vnpay-payment";
 
     public static void main(String[] args) {
         System.out.println(createOrder(1405000, "Mô tả đơn hàng", vnp_ReturnUrl));

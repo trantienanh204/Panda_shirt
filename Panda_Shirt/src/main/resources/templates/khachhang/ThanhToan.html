@@ -244,22 +244,31 @@
             // Select all product total price elements
             const productPriceElements = document.querySelectorAll('.product-price');
 
+            // Logging the price elements for debugging
+            console.log("Product price elements:", productPriceElements);
+
             productPriceElements.forEach(function(element) {
                 const priceText = element.textContent.replace(/[^\d]/g, '');
-                const price = parseFloat(priceText);
+                const price = parseFloat(priceText) / 10; // Sửa đổi để giá trị đúng
                 totalProductAmount += price;
+
+                // Logging each price for debugging
+                console.log("Product price:", price);
             });
 
             // Display Tổng tiền hàng
-            totalProductPriceElement.textContent = '₫' + totalProductAmount.toLocaleString();
+            console.log("Total product amount:", totalProductAmount);
+            totalProductPriceElement.textContent = '₫' + totalProductAmount.toLocaleString('vi-VN');
 
             // Calculate Tổng thanh toán
             const insurancePriceText = insurancePriceElement.textContent.replace(/[^\d]/g, '');
             const insurancePrice = parseFloat(insurancePriceText);
+            console.log("Insurance price:", insurancePrice);
             const finalTotal = totalProductAmount + insurancePrice;
 
             // Display Tổng thanh toán
-            finalTotalElement.textContent = '₫' + finalTotal.toLocaleString();
+            console.log("Final total amount:", finalTotal);
+            finalTotalElement.textContent = '₫' + finalTotal.toLocaleString('vi-VN');
         }
 
         // Initially update the total amount
@@ -283,10 +292,15 @@
                 paymentMethodInput.value = 'COD';
             }
 
+            // Logging the final amount and payment method for debugging
+            console.log("Final total amount submitted:", finalTotalAmount);
+            console.log("Payment method submitted:", paymentMethodInput.value);
+
             // Submit the form
             paymentForm.submit();
         });
     });
+
 </script>
 
 

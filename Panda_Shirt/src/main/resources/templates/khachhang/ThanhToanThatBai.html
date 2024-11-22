@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Thanh toán thất bại</title>
 </head>
 <body>
 <h1>Thanh toán thất bại</h1>
-<p>Đã xảy ra lỗi trong quá trình thanh toán. Vui lòng thử lại.</p>
+<p th:text="${message}"></p>
 </body>
 </html>

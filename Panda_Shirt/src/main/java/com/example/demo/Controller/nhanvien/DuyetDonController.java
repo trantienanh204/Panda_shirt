@@ -33,7 +33,7 @@ public class DuyetDonController {
     @GetMapping("/hienthi")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
-                          @RequestParam(value = "tennv", required = false) String tennv,
+//                          @RequestParam(value = "tennv", required = false) String tennv,
                           @RequestParam(value = "tenkh", required = false) String tenkh,
                           @RequestParam(value = "trangThai", required = false, defaultValue = "Chờ duyệt") String trangThai,
                           Model model) {
@@ -42,12 +42,14 @@ public class DuyetDonController {
         if (page < 0) {
             page = 0;
         }
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd
+//                , tennv
+                , tenkh, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-        model.addAttribute("tennv", tennv);
+//        model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
@@ -67,12 +69,14 @@ public class DuyetDonController {
             page = 0;
         }
 
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd
+//                , tennv
+                , tenkh, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-        model.addAttribute("tennv", tennv);
+//        model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
@@ -91,12 +95,14 @@ public class DuyetDonController {
             page = 0;
         }
 
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd
+//                , tennv
+                , tenkh, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-        model.addAttribute("tennv", tennv);
+//        model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
@@ -115,12 +121,14 @@ public class DuyetDonController {
             page = 0;
         }
 
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd
+//                , tennv
+                , tenkh, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-        model.addAttribute("tennv", tennv);
+//        model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
@@ -139,12 +147,14 @@ public class DuyetDonController {
         if (page < 0) {
             page = 0;
         }
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd
+//                , tennv
+                , tenkh, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-        model.addAttribute("tennv", tennv);
+//        model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
@@ -156,7 +166,6 @@ public class DuyetDonController {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         model.addAttribute("DonHang", new Voucher());
-
         DonHang donHang = donHangRepository.getReferenceById(id);
         model.addAttribute("DonHang", donHang);
         HoaDonCT hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());

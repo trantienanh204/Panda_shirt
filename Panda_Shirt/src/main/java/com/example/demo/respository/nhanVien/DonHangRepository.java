@@ -14,9 +14,12 @@ import java.util.List;
 public interface DonHangRepository extends JpaRepository<DonHang, Integer> {
     @Query("SELECT dh FROM DonHang dh WHERE " +
             "(?1 IS NULL OR dh.hoaDon.mahoadon LIKE %?1%) AND " +
-            "(?2 IS NULL OR dh.nhanVien.tennhanvien LIKE %?2%) AND " +
-            "(?3 IS NULL OR dh.khachHang.tenkhachhang LIKE %?3%) AND " +
-            "(?4 IS NULL OR dh.trangThai LIKE %?4%)")
-    Page<DonHang> findByMaAndTenAndDH(String mahd, String tennv, String tenkh, String trangThai, Pageable pageable);
+//            "(?2 IS NULL OR dh.nhanVien.tennhanvien LIKE %?2%) AND " +
+            "(?2 IS NULL OR dh.khachHang.tenkhachhang LIKE %?2%) AND " +
+            "(?3 IS NULL OR dh.trangThai LIKE %?3%)")
+    Page<DonHang> findByMaAndTenAndDH(String mahd,
+//                                      String tennv,
+                                      String tenkh
+            , String trangThai, Pageable pageable);
 
 }

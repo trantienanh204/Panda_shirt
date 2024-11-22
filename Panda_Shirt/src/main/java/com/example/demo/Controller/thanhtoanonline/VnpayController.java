@@ -3,6 +3,8 @@ package com.example.demo.Controller.thanhtoanonline;
 import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
+import com.example.demo.respository.HoaDonCTRepository;
+import com.example.demo.respository.HoaDonRepository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.GioHangService;
 import com.example.demo.service.HoaDonService;
@@ -14,9 +16,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.util.UriUtils;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,28 +39,26 @@ public class VnpayController {
     private HoaDonService hoaDonService;
     @Autowired
     private DonHangRepository donHangRepository;
-
-
+    @Autowired
+    private HoaDonRepository hoaDonRepository;
+    @Autowired
+    private HoaDonCTRepository hoaDonCTRepository;
 
     @PostMapping("/submitOrder")
     public String submitOrder(@RequestParam("totalAmount") double totalAmount,
                               @RequestParam("orderInfo") String orderInfo,
                               @RequestParam("paymentMethod") String paymentMethod,
                               HttpServletRequest request, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        // Kiểm tra phương thức thanh toán
         if ("BankTransfer".equals(paymentMethod)) {
-            // Tạo URL thanh toán với VNPAY
-            String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-            String returnUrl = baseUrl + "/vnpay-payment";
-            String vnpayUrl = vnPayService.createOrder(totalAmount, orderInfo, returnUrl);
+            String vnp_ReturnUrl = "http://localhost:8080/api/vnpay-payment";
+            String vnpayUrl = vnPayService.createOrder((int) totalAmount, orderInfo); // Chuyển đổi totalAmount sang int
 
-            // Lưu thông tin đơn hàng vào session (hoặc database) để kiểm tra sau khi thanh toán
             request.getSession().setAttribute("orderInfo", orderInfo);
             request.getSession().setAttribute("totalAmount", totalAmount);
 
             return "redirect:" + vnpayUrl;
         } else {
-            return "redirect:/api/processInvoice?totalAmount=" + totalAmount + "&paymentMethod=" + paymentMethod + "&note=" + orderInfo;
+            return "redirect:/api/processInvoice?totalAmount=" + totalAmount + "&paymentMethod=" + paymentMethod + "&note=" + UriUtils.encodePath(orderInfo, StandardCharsets.UTF_8);
         }
     }
 
@@ -108,12 +109,11 @@ public class VnpayController {
 
         // Lấy thông tin đơn hàng từ session (hoặc database)
         String orderInfo = (String) request.getSession().getAttribute("orderInfo");
-        double totalAmount = (double) request.getSession().getAttribute("totalAmount");
+        Double totalAmount = (Double) request.getSession().getAttribute("totalAmount"); // Chuyển đổi sang Double
 
         return processInvoice(totalAmount, "BankTransfer", orderInfo, userDetails, model);
     }
 
-    // Helper method to map KhachHangDTO to KhachHang entity
     private KhachHang mapToKhachHang(KhachHangDTO dto) {
         KhachHang khachHang = new KhachHang();
         khachHang.setId(dto.getId());
@@ -124,10 +124,19 @@ public class VnpayController {
         return khachHang;
     }
 
-    // Helper method to create HoaDon
     private HoaDon createHoaDon(KhachHang khachHang, List<GioHang> cartItems, double totalAmount, String note, String paymentMethod) {
         HoaDon hoaDon = new HoaDon();
-        hoaDon.setMahoadon(UUID.randomUUID().toString());
+        String hd = hoaDonRepository.findMaxMaHoaDon();
+        int demhd;
+        if (hd == null) {
+            // Nếu chưa có hóa đơn nào thì bắt đầu từ 1
+            demhd = 1;
+        } else {
+            // Cắt chuỗi để lấy phần số sau 'HD' và chuyển đổi sang số nguyên
+            demhd = Integer.parseInt(hd.substring(2)) + 1;
+        }
+        String mahd = String.format("HD%03d", demhd);
+        hoaDon.setMahoadon(mahd);
         hoaDon.setKhachHang(khachHang);
         hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
         hoaDon.setNgaytao(LocalDate.now());
@@ -140,7 +149,17 @@ public class VnpayController {
         List<HoaDonCT> chiTietList = new ArrayList<>();
         for (GioHang item : cartItems) {
             HoaDonCT chiTiet = new HoaDonCT();
-            chiTiet.setMahoadonct(UUID.randomUUID().toString());
+            String hdct = hoaDonCTRepository.findMaxhoadonct();
+            int demhdct;
+            if (hd == null) {
+
+                demhdct = 1;
+            } else {
+                // Cắt chuỗi để lấy phần số sau 'HD' và chuyển đổi sang số nguyên
+                demhdct = Integer.parseInt(hd.substring(2)) + 1;
+            }
+            String mahdct = String.format("HDCT%03d", demhdct);
+            chiTiet.setMahoadonct(mahdct);
             chiTiet.setSanPhamChiTiet(item.getSanPhamChiTiet());
             chiTiet.setSoluong(item.getSoluong());
             chiTiet.setDongia(BigDecimal.valueOf(item.getSanPhamChiTiet().getDongia()));
@@ -154,7 +173,6 @@ public class VnpayController {
         return hoaDon;
     }
 
-    // Helper method to create DonHang
     private DonHang createDonHang(KhachHang khachHang, HoaDon hoaDon, double totalAmount, String note) {
         DonHang donHang = new DonHang();
         donHang.setHoaDon(hoaDon);

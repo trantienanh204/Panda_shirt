@@ -21,10 +21,10 @@
                 <label>Mã hóa đơn</label>
                 <input type="text" name="mahd" th:value="${mahd}" placeholder="Mã hóa đơn">
             </div>
-            <div class="filter-input">
-                <label>Tên nhân viên</label>
-                <input type="text" name="tennv" th:value="${tennv}" placeholder="Tên nhân viên ">
-            </div>
+<!--            <div class="filter-input">-->
+<!--                <label>Tên nhân viên</label>-->
+<!--                <input type="text" name="tennv" th:value="${tennv}" placeholder="Tên nhân viên ">-->
+<!--            </div>-->
             <div class="filter-input">
                 <label>Tên khách hàng</label>
                 <input type="text" name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng ">
@@ -70,7 +70,7 @@
         <tr>
             <th>#</th>
             <th>Mã Hóa Đơn</th>
-            <th>Tên nhân viên</th>
+<!--            <th>Tên nhân viên</th>-->
             <th>Tên Khách hàng</th>
             <th>Ngày đặt</th>
             <th>Thành tiền</th>
@@ -85,7 +85,7 @@
         <tr th:each="dd,i: ${listcd}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${dd.hoaDon.mahoadon}"></td>
-            <td th:text="${dd.nhanVien.tennhanvien}"></td>
+<!--            <td th:text="${dd.nhanVien.tennhanvien}"></td>-->
             <td th:text="${dd.khachHang.tenkhachhang}"></td>
             <td th:text="${dd.ngaytao != null ? #temporals.format(dd.hoaDon.ngaymua, 'dd/MM/yyyy') : ''}"></td>
             <td th:text="${dd.tongtien}"></td>
@@ -151,19 +151,20 @@
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
                    th:if="${trangThai == 'Chờ duyệt'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd}
+                   ,tenkh=${tenkh})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đã duyệt'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tenkh=${tenkh})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đang giao'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tenkh=${tenkh})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -175,7 +176,7 @@
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đã hủy'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tenkh=${tenkh})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -189,31 +190,31 @@
             <li class="page-item" th:classappend="${listcd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:if="${trangThai == 'Chờ duyệt'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage + 1},mahd=${mahd},tenkh=${tenkh})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đã duyệt'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage + 1},mahd=${mahd},tenkh=${tenkh})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đang giao'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage + 1},mahd=${mahd},tenkh=${tenkh})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Hoàn thành'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh(page=${currentPage + 1},mahd=${mahd},tenkh=${tenkh})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đã hủy'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage + 1},mahd=${mahd},tenkh=${tenkh})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>

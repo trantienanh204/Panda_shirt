@@ -16,13 +16,17 @@ public class DonHangService {
     DonHangRepository donHangRepository;
     private final int size = 5;
 
-    public Page<DonHang> hienThiDH(int page, String mahd, String tennv, String tenkh, String trangThai) {
+    public Page<DonHang> hienThiDH(int page, String mahd
+//                                   ,String tennv
+            , String tenkh, String trangThai) {
         if (page < 0) {
             throw new IllegalArgumentException("Chỉ số trang không được nhỏ hơn số không");
         }
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
-        return donHangRepository.findByMaAndTenAndDH(mahd, tennv, tenkh, trangThai, pageable);
+        return donHangRepository.findByMaAndTenAndDH(mahd
+//                ,tennv
+                , tenkh, trangThai, pageable);
     }
 
     public DonHang findID(Integer id) {

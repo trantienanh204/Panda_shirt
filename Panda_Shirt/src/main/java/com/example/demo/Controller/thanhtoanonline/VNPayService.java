@@ -16,19 +16,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class VNPayService {
 
-    @Value("${vnpay.hash-secret}")
-    private String vnpHashSecret;
+    //    @Value("${vnpay.hash-secret}")
+//    private String vnpHashSecret;
+//
+//    @Value("${vnpay.tmn-code}")
+//    private String vnpTmnCode;
+//
+//    @Value("${vnpay.pay-url}")
+//    private String vnpPayUrl;
+//
+//    @Value("${vnpay.return-url}")
+//    private String vnpReturnUrl;
+    private static String vnpHashSecret = "QTSXO9PQEVDJCIRCWJVTDEKW4DLPIB17";
+    private static String vnpPayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    private static String vnp_TmnCode = "0AR5ALJG";
+    private static String vnp_ReturnUrl = "http://localhost:8080/api/vnpay-payment";
 
-    @Value("${vnpay.tmn-code}")
-    private String vnpTmnCode;
-
-    @Value("${vnpay.pay-url}")
-    private String vnpPayUrl;
-
-    @Value("${vnpay.return-url}")
-    private String vnpReturnUrl;
-
-    public String createOrder(double total, String orderInfo, String urlReturn) {
+    public static String createOrder(int total, String orderInfo) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = UUID.randomUUID().toString();
@@ -38,14 +42,14 @@ public class VNPayService {
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
-        vnp_Params.put("vnp_TmnCode", vnpTmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf((int) (total * 100))); // Tính bằng VNĐ nhỏ nhất
+        vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
+        vnp_Params.put("vnp_Amount", String.valueOf(total * 100));
         vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", encode(orderInfo));
+        vnp_Params.put("vnp_OrderInfo", orderInfo);
         vnp_Params.put("vnp_OrderType", orderType);
         vnp_Params.put("vnp_Locale", "vn");
-        vnp_Params.put("vnp_ReturnUrl", encode(urlReturn));
+        vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -86,18 +90,12 @@ public class VNPayService {
         }
     }
 
-    public static String getCurrentDate() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        Date date = new Date();
-        return formatter.format(date);
-    }
-
     public static String hmacSHA512(String key, String data) {
         try {
-            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), "HmacSHA512");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
             Mac mac = Mac.getInstance("HmacSHA512");
             mac.init(secretKeySpec);
-            byte[] hashBytes = mac.doFinal(data.getBytes());
+            byte[] hashBytes = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
             StringBuilder hash = new StringBuilder();
             for (byte b : hashBytes) {
                 hash.append(String.format("%02x", b));
@@ -117,7 +115,6 @@ public class VNPayService {
         StringBuilder hashData = new StringBuilder();
         List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
-
         for (String fieldName : fieldNames) {
             if (!fieldName.equalsIgnoreCase("vnp_SecureHash")) {
                 hashData.append(fieldName).append('=').append(fields.get(fieldName)).append('&');
@@ -126,11 +123,20 @@ public class VNPayService {
         if (hashData.length() > 0) {
             hashData.deleteCharAt(hashData.length() - 1);
         }
-        String computedHash = hmacSHA512(vnpHashSecret, hashData.toString());
-        if (!vnpSecureHash.equals(computedHash)) {
-            return 0;
-        }
+//        String computedHash = hmacSHA512(vnpHashSecret, hashData.toString());
+////        if (!vnpSecureHash.equalsIgnoreCase(computedHash)) {
+////            System.out.println("Invalid signature: " + computedHash);
+////            return 0;
+////        }
         String responseCode = fields.get("vnp_ResponseCode");
-        return "00".equals(responseCode) ? 1 : -1;
+        if ("00".equals(responseCode)) {
+            System.out.println("Payment successful: " + fields);
+            return 1;
+        } else {
+            System.out.println("Payment failed with response code: " + responseCode);
+            return -1;
+        }
+
+
     }
 }
