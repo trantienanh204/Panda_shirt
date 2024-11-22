@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import java.math.BigDecimal;
@@ -38,12 +39,11 @@ public class VnpayController {
     @Autowired
     private HoaDonService hoaDonService;
     @Autowired
-    private DonHangRepository donHangRepository;
-    @Autowired
     private HoaDonRepository hoaDonRepository;
     @Autowired
+    private DonHangRepository donHangRepository;
+    @Autowired
     private HoaDonCTRepository hoaDonCTRepository;
-
     @PostMapping("/submitOrder")
     public String submitOrder(@RequestParam("totalAmount") double totalAmount,
                               @RequestParam("orderInfo") String orderInfo,
@@ -51,10 +51,11 @@ public class VnpayController {
                               HttpServletRequest request, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         if ("BankTransfer".equals(paymentMethod)) {
             String vnp_ReturnUrl = "http://localhost:8080/api/vnpay-payment";
-            String vnpayUrl = vnPayService.createOrder((int) totalAmount, orderInfo); // Chuyển đổi totalAmount sang int
+            String vnpayUrl = vnPayService.createOrder((int) totalAmount, orderInfo);
 
             request.getSession().setAttribute("orderInfo", orderInfo);
             request.getSession().setAttribute("totalAmount", totalAmount);
+            request.getSession().setAttribute("paymentMethod", paymentMethod);
 
             return "redirect:" + vnpayUrl;
         } else {
@@ -66,7 +67,9 @@ public class VnpayController {
     public String processInvoice(@RequestParam double totalAmount,
                                  @RequestParam String paymentMethod,
                                  @RequestParam String note,
-                                 @AuthenticationPrincipal UserDetails userDetails, Model model) {
+                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
         String username = userDetails.getUsername();
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
 
@@ -85,7 +88,7 @@ public class VnpayController {
 
         // Tạo hóa đơn và đơn hàng
         HoaDon hoaDon = createHoaDon(khachHang, cartItems, totalAmount, note, paymentMethod);
-        DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note);
+        DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod);
 
         // Lưu dữ liệu vào cơ sở dữ liệu
         hoaDonService.save(hoaDon);
@@ -94,25 +97,37 @@ public class VnpayController {
         // Xóa giỏ hàng
         gioHangService.clearCart(khachHangId);
 
-        model.addAttribute("message", "Đơn hàng của bạn đã được đặt thành công!");
-        return "khachhang/ThanhToanThanhCong";
+        // Thêm thông báo vào RedirectAttributes
+        redirectAttributes.addFlashAttribute("successMessage", "Đơn hàng của bạn đã được đặt thành công!");
+
+        // Chuyển hướng tới trang chủ với thông báo thành công
+        return "redirect:/panda/trangchu";
     }
 
     @GetMapping("/vnpay-payment")
-    public String handleVnPayReturn(HttpServletRequest request, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String handleVnPayReturn(HttpServletRequest request, Model model, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         int paymentStatus = vnPayService.orderReturn(request);
 
         if (paymentStatus != 1) {
-            model.addAttribute("message", "Thanh toán không thành công. Vui lòng thử lại.");
-            return "khachhang/ThanhToanThatBai";
+            redirectAttributes.addFlashAttribute("errorMessage", "Thanh toán không thành công. Vui lòng thử lại.");
+            return "redirect:/panda/thatbai";
         }
 
         // Lấy thông tin đơn hàng từ session (hoặc database)
         String orderInfo = (String) request.getSession().getAttribute("orderInfo");
         Double totalAmount = (Double) request.getSession().getAttribute("totalAmount"); // Chuyển đổi sang Double
+        String paymentMethod = (String) request.getSession().getAttribute("paymentMethod"); // Lấy phương thức thanh toán từ session
 
-        return processInvoice(totalAmount, "BankTransfer", orderInfo, userDetails, model);
+        // Kiểm tra các giá trị
+        if (orderInfo == null || totalAmount == null || paymentMethod == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra. Vui lòng thử lại.");
+            return "redirect:/panda/thatbai";
+        }
+
+        // Thực hiện xử lý hóa đơn
+        return processInvoice(totalAmount, paymentMethod, orderInfo, userDetails, model, redirectAttributes);
     }
+
 
     private KhachHang mapToKhachHang(KhachHangDTO dto) {
         KhachHang khachHang = new KhachHang();
@@ -129,13 +144,16 @@ public class VnpayController {
         String hd = hoaDonRepository.findMaxMaHoaDon();
         int demhd;
         if (hd == null) {
-            // Nếu chưa có hóa đơn nào thì bắt đầu từ 1
-            demhd = 1;
+            demhd = 1; // Nếu chưa có hóa đơn nào thì bắt đầu từ 1
         } else {
-            // Cắt chuỗi để lấy phần số sau 'HD' và chuyển đổi sang số nguyên
-            demhd = Integer.parseInt(hd.substring(2)) + 1;
+            try {
+                demhd = Integer.parseInt(hd.substring(2)) + 1;
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Lỗi định dạng số từ mã hóa đơn: " + hd, e);
+            }
         }
         String mahd = String.format("HD%03d", demhd);
+
         hoaDon.setMahoadon(mahd);
         hoaDon.setKhachHang(khachHang);
         hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
@@ -151,12 +169,14 @@ public class VnpayController {
             HoaDonCT chiTiet = new HoaDonCT();
             String hdct = hoaDonCTRepository.findMaxhoadonct();
             int demhdct;
-            if (hd == null) {
-
-                demhdct = 1;
+            if (hdct == null) {
+                demhdct = 1; // Nếu chưa có hóa đơn chi tiết nào thì bắt đầu từ 1
             } else {
-                // Cắt chuỗi để lấy phần số sau 'HD' và chuyển đổi sang số nguyên
-                demhdct = Integer.parseInt(hd.substring(2)) + 1;
+                try {
+                    demhdct = Integer.parseInt(hdct.substring(4)) + 1; // Phải cắt chuỗi đúng cách
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Lỗi định dạng số từ mã hóa đơn chi tiết: " + hdct, e);
+                }
             }
             String mahdct = String.format("HDCT%03d", demhdct);
             chiTiet.setMahoadonct(mahdct);
@@ -173,7 +193,7 @@ public class VnpayController {
         return hoaDon;
     }
 
-    private DonHang createDonHang(KhachHang khachHang, HoaDon hoaDon, double totalAmount, String note) {
+    private DonHang createDonHang(KhachHang khachHang, HoaDon hoaDon, double totalAmount, String note, String paymentMethod) {
         DonHang donHang = new DonHang();
         donHang.setHoaDon(hoaDon);
         donHang.setKhachHang(khachHang);
@@ -184,6 +204,14 @@ public class VnpayController {
         donHang.setTrangThai("Chờ duyệt");
         donHang.setGhiChu(note);
         donHang.setLydohuy("");
+
+        // Đặt giá trị trangthaioffline dựa trên phương thức thanh toán
+        if ("BankTransfer".equals(paymentMethod)) {
+            donHang.setTrangthaioffline(true);
+        } else {
+            donHang.setTrangthaioffline(false);
+        }
+
         return donHang;
     }
 }

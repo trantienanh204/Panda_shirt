@@ -159,14 +159,14 @@
                 <p>Giá tiền: <span style="color: red" id="productPrice"></span></p>
             </div>
             <!-- Màu sắc -->
-            <lable>Màu sắc</lable>
+            <label>Màu sắc</label>
             <select id="colorSelect" class="form-select" aria-label="Chọn màu sắc">
                 <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.ten}">
                 </option>
             </select>
 
             <!-- Kích thước -->
-            <lable>Kích thước</lable>
+            <label>Kích thước</label>
             <select id="sizeSelect" class="form-select" aria-label="Chọn kích thước">
                 <option th:each="item : ${sizesAndColors}"
                         class="size-option" th:data-color="${item['color'].id}"
@@ -175,6 +175,9 @@
                         th:data-price="${item['sanPhamChiTiet'].dongia}">
                 </option>
             </select>
+
+            <!-- Input hidden để lưu productId -->
+            <input type="hidden" id="productId" th:value="${sanPham.id}">
 
             <!-- Quantity Option -->
             <div class="mb-3">
@@ -187,9 +190,13 @@
             </div>
 
             <!-- Buttons -->
-            <div class="my-4"> <button id="addToCartBtn" class="btn btn-primary btn-lg me-3"><i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng</button>
+            <div class="my-4">
+                <button id="addToCartBtn" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+                </button>
                 <a th:href="@{/panda/thanhtoan}" class="btn btn-success btn-lg">
-                    <i class="fas fa-bolt"></i> Mua ngay</a>
+                    <i class="fas fa-bolt"></i> Mua ngay
+                </a>
             </div>
 
             <!-- Extra Information -->
@@ -202,6 +209,7 @@
                 </ul>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -309,6 +317,8 @@
 </script>
 <script>
     $(document).ready(function() {
+        const productId = $('#productId').val(); // Lấy ID sản phẩm từ một phần tử ẩn hoặc phần tử khác trong trang
+
         $('#addToCartBtn').click(function() {
             const selectedSizeId = $('#sizeSelect').val();
             const selectedColorId = $('#colorSelect').val();
@@ -317,15 +327,17 @@
             // Thêm log để kiểm tra giá trị
             console.log("Selected SizeId: " + selectedSizeId);
             console.log("Selected ColorId: " + selectedColorId);
+            console.log("ProductId: " + productId);
             console.log("Quantity: " + quantity);
 
-            // AJAX request để lấy sanPhamChiTietId từ sizeId và colorId
+            // AJAX request để lấy sanPhamChiTietId từ sizeId, colorId và productId
             $.ajax({
                 type: 'GET',
                 url: '/panda/giohang/findSanPhamChiTietId',
                 data: {
                     sizeId: selectedSizeId,
-                    colorId: selectedColorId
+                    colorId: selectedColorId,
+                    productId: productId
                 },
                 success: function(sanPhamChiTietId) {
                     console.log("SanPhamChiTietId: " + sanPhamChiTietId);
@@ -353,6 +365,7 @@
             });
         });
     });
+
 </script>
 
 

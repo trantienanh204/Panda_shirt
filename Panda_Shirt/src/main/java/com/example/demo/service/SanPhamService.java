@@ -407,13 +407,13 @@ public class SanPhamService {
 
 
 
-        public int findIdBySizeAndColorId(Integer sizeId, Integer colorId) {
-            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findBySizeIdAndColorId(sizeId, colorId);
-            if (sanPhamChiTiet != null) {
-                return sanPhamChiTiet.getId();
-            } else {
-                throw new RuntimeException("Không tìm thấy sản phẩm chi tiết với kích thước và màu sắc đã chọn.");
-            }
-
-        }
+//        public int findIdBySizeAndColorId(Integer sizeId, Integer colorId,Integer productId) {
+//            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findBySizeIdColorIdAndProductId(sizeId, colorId,productId);
+//            if (sanPhamChiTiet != null) {
+//                return sanPhamChiTiet.getId();
+//            } else {
+//                throw new RuntimeException("Không tìm thấy sản phẩm chi tiết với kích thước và màu sắc đã chọn.");
+//            }
+//
+//        }
 }

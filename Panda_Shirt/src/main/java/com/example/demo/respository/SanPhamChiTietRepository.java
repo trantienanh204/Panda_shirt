@@ -50,13 +50,8 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
     """)
     List<SanPhamChiTiet> findByTenSanPham(String keyword);
 
-
-
-
-
-
-        @Query("SELECT sp FROM SanPhamChiTiet sp WHERE sp.kichThuoc.id = :sizeId AND sp.mauSac.id = :colorId")
-        SanPhamChiTiet findBySizeIdAndColorId(@Param("sizeId") Integer sizeId, @Param("colorId") Integer colorId);
+    @Query("SELECT sp FROM SanPhamChiTiet sp WHERE sp.kichThuoc.id = :sizeId AND sp.mauSac.id = :colorId AND sp.sanPham.id = :productId")
+    SanPhamChiTiet findBySizeIdColorIdAndProductId(@Param("sizeId") Integer sizeId, @Param("colorId") Integer colorId, @Param("productId") Integer productId);
 
 
 

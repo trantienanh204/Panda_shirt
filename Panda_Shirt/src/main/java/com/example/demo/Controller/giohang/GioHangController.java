@@ -3,6 +3,7 @@ package com.example.demo.Controller.giohang;
 import com.example.demo.Controller.login.UserUtils;
 import com.example.demo.entity.*;
 import com.example.demo.DTO.KhachHangDTO;
+import com.example.demo.respository.SanPhamChiTietRepository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +45,8 @@ public class GioHangController {
     private HoaDonService hoaDonService;
     @Autowired
     private DonHangRepository donHangRepository;
-
+    @Autowired
+    SanPhamChiTietRepository sanPhamChiTietRepository ;
 
     @PostMapping("/add")
     public ResponseEntity<String> addToCart(@AuthenticationPrincipal UserDetails userDetails,
@@ -89,14 +91,14 @@ public class GioHangController {
     }
 
     @GetMapping("/findSanPhamChiTietId")
-    public ResponseEntity<Integer> findSanPhamChiTietId(@RequestParam Integer sizeId, @RequestParam Integer colorId) {
-        try {
-            int sanPhamChiTietId = sanPhamService.findIdBySizeAndColorId(sizeId, colorId);
-            return ResponseEntity.ok(sanPhamChiTietId);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    @ResponseBody
+    public Integer findSanPhamChiTietId(@RequestParam("sizeId") Integer sizeId,
+                                        @RequestParam("colorId") Integer colorId,
+                                        @RequestParam("productId") Integer productId) {
+        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findBySizeIdColorIdAndProductId(sizeId, colorId, productId);
+        return sanPhamChiTiet != null ? sanPhamChiTiet.getId() : null;
     }
+
 
 
     @PostMapping("/updateQuantity")

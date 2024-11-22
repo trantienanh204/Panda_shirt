@@ -149,6 +149,8 @@
         <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-twitter"></i></a></li>
     </ul>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<div th:if="${successMessage}"> <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script> document.addEventListener('DOMContentLoaded', function() { Swal.fire({ icon: 'success', title: 'Thành công', text: [[${successMessage}]], showConfirmButton: false, timer: 3000 }); }); </script> </div> <!-- Hiển thị thông báo thất bại nếu có --> <div th:if="${errorMessage}"> <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script> document.addEventListener('DOMContentLoaded', function() { Swal.fire({ icon: 'error', title: 'Thất bại', text: [[${errorMessage}]], showConfirmButton: false, timer: 3000 }); }); </script> </div>
 
 <style>
     /* Font and Background for Navbar */
