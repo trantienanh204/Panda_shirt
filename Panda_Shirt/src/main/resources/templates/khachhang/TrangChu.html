@@ -16,20 +16,20 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
-        <img th:src="@{/Image/panda_logo.png}" width="50px"; height="50px">
+        <img th:src="@{/Image/panda_logo.png}" width="70px"; height="70px">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active"style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Giới Thiệu</a>
+                    <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Liên Hệ</a>
+                    <a class="nav-link"style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
@@ -39,35 +39,104 @@
             </form>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
+                    <a class="nav-link" th:href="@{/panda/giohang}">
+                        <i class="fas fa-shopping-cart" style="font-size: 25px"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-user"></i></a>
+                    <a class="nav-link" th:href="@{/panda/taikhoan}">
+                        <i class="fas fa-user" style="font-size: 25px"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-sign-in-alt"></i></a>
+                    <a class="nav-link" th:href="@{/panda/logout}">
+                        <i class="fas fa-sign-in-alt" style="font-size: 25px"></i></a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-
+<!--ảnh banner-->
+<div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="3000">
+            <img th:src="@{/Image/Banner2.png}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" data-bs-interval="3000">
+            <img th:src="@{/Image/Banner1.jpg}" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<!--bộ lọc -->
+<div class="container my-4">
+    <h3><i class="fas fa-filter"></i> BỘ LỌC</h3>
+    <div class="row">
+        <!-- Dropdown Thương hiệu -->
+        <div class="col-md-3">
+            <select class="form-select" aria-label="Thương hiệu">
+                <option selected>Thương hiệu</option>
+                <option value="brand1">Brand 1</option>
+                <option value="brand2">Brand 2</option>
+                <option value="brand3">Brand 3</option>
+            </select>
+        </div>
+        <!-- Dropdown Lọc giá -->
+        <div class="col-md-3">
+            <select class="form-select" aria-label="Lọc giá">
+                <option selected>Lọc giá</option>
+                <option value="low">Dưới 100.000đ</option>
+                <option value="medium">100.000đ - 500.000đ</option>
+                <option value="high">Trên 500.000đ</option>
+            </select>
+        </div>
+        <!-- Dropdown Màu sắc -->
+        <div class="col-md-3">
+            <select class="form-select" aria-label="Màu sắc">
+                <option selected>Màu sắc</option>
+                <option value="red">Đỏ</option>
+                <option value="blue">Xanh dương</option>
+                <option value="black">Đen</option>
+            </select>
+        </div>
+        <!-- Dropdown Kích thước -->
+        <div class="col-md-3">
+            <select class="form-select" aria-label="Kích thước">
+                <option selected>Kích thước</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+            </select>
+        </div>
+    </div>
+</div>
 <!-- Main Section -->
 <div class="container my-5">
-    <h2 class="text-center mb-5">Sản Phẩm Nổi Bật<i class="fa-solid fa-fire" style="color: #ff1900;"></i></h2>
+    <!--    <h2 class="text-center mb-5">Sản Phẩm Nổi Bật<i class="fa-solid fa-fire" style="color: #ff1900;"></i></h2>-->
     <div class="row">
-        <div class="col-sm-6 col-md-4 col-lg-3 mt-4" th:each="sp, i : ${sanpham}">
-            <div class="card shadow-sm">
-                <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" alt="Áo Sơ Mi">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${sp.tensp}">Áo Sơ Mi</h5>
-                    <!-- Hiển thị giá thấp nhất -->
-                    <p class="card-text" style="color: red" th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')}">250.000$</p>
-                    <a th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}" class="btn btn-primary">Xem Thêm</a>
-                </div>
-            </div>
-        </div>
 
+        <div class="col-sm-6 col-md-4 col-lg-3 mt-4" th:each="sp, i : ${sanpham}">
+            <a style="text-decoration: none;" th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}">
+                <div class="card">
+                    <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" width="300px" height="300px">
+                    <div class="card-hover-buttons">
+                        <button class="btn btn-success">Mua ngay</button>
+                        <button class="btn btn-primary">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </a>
+            <h5 class="card-title" style="color: #00040a ;padding-top: 20px;font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+             text-align: center;" th:text="${sp.tensp}">Hihi</h5>
+            <!-- Hiển thị giá thấp nhất -->
+            <p class="card-text" style="color: red; padding-top: 10px; text-align: center;"
+               th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')} + '₫'"></p>
+        </div>
     </div>
 </div>
 
@@ -87,10 +156,45 @@
         font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card-hover-buttons {
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        display: flex;
+        gap: 10px;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .card:hover .card-hover-buttons {
+        opacity: 1;
+    }
+
+    .card-hover-buttons .btn {
+        width: 120px;
+        height: 45px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .card-hover-buttons .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .card-hover-buttons .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
     .navbar {
         background: #FE5621;
     }
-
     .nav-link {
         font-size: 1rem;
         font-weight: bold;

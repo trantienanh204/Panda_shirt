@@ -122,14 +122,14 @@
                         </div>
                         <div th:if="${errorloai}" th:text="${errorloai}" style="color: red;"></div>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label"><b style="color: red">*</b> Ngày tạo</label>
-                        <input type="date" th:field="*{ngaytao}" class="form-control"   readonly>
-
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label"><b style="color: red">*</b> Ngày sửa</label>
-                        <input type="date" th:field="*{ngaysua}" class="form-control"   readonly>
+                    <div class="col-md-3">
+                        <label class="form-label"><b style="color: red">*</b> Dành cho</label>
+                        <div>
+                            <input type="radio" th:field="*{loaikhachhang}" th:value="true" checked>
+                            Cộng đồng
+                            <input type="radio" th:field="*{loaikhachhang}" th:value="false">
+                            Cá nhân
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -139,6 +139,16 @@
                                   placeholder="Mô tả..."></textarea>
                         <div th:if="${errormt}" th:text="${errormt}" style="color: red;"></div>
 
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-2">
+                        <label class="form-label"><b style="color: red">*</b> Ngày tạo</label>
+                        <input type="date" th:field="*{ngaytao}" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label"><b style="color: red">*</b> Ngày sửa</label>
+                        <input type="date" th:field="*{ngaysua}" class="form-control" readonly>
                     </div>
                 </div>
                 <div class="modal-footer">

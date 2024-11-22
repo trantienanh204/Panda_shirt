@@ -69,12 +69,12 @@ public class HoaDon {
     private String GhiChu;
 
     @ManyToOne
-    @JoinColumn(name = "ID_NHAN_VIEN", referencedColumnName = "id")
+    @JoinColumn(name = "ID_NHAN_VIEN", referencedColumnName = "id", nullable = true)
     @JsonBackReference
     private NhanVien nhanVien;
 
     @ManyToOne
-    @JoinColumn(name = "ID_KHACH_HANG", referencedColumnName = "id")
+    @JoinColumn(name = "ID_KHACH_HANG", referencedColumnName = "id", nullable = false)
     @JsonBackReference
     private KhachHang khachHang;
 

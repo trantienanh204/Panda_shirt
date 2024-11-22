@@ -141,7 +141,7 @@ public class CoAoController {
             coAoRepository.save(coAo);
         }
         redirectAttributes.addFlashAttribute("UpdateStatusMessage", "Cập nhật thành công !");
-        return "redirect:/panda/coao//hienthi";
+        return "redirect:/panda/coao/hienthi";
     }
     @GetMapping("/change")
     public String changeStatus(@RequestParam("id") int id, Model model, RedirectAttributes redirectAttributes) {

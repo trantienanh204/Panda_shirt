@@ -78,7 +78,7 @@ public class Voucher {
 
 
     @Column(name = "TRANG_THAI")
-    private String trangThai;
+    private int trangThai;
 
     public String getFormattedMucGiam() {
         try {

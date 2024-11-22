@@ -65,6 +65,7 @@ public class HoaDonCotroller {
         model.addAttribute("lshd",listHD.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("tennv", tennv);
+        System.out.println("Tên nhân viên: " + tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listHD.getSize());

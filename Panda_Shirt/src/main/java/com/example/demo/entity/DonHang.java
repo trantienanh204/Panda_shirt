@@ -56,6 +56,6 @@ public class DonHang {
     private String lydohuy;
 
     @Column(name = "TRANG_THAI_OFFLINE")
-    private boolean trangthaioffline;
+    private Boolean trangthaioffline;
 
 }
