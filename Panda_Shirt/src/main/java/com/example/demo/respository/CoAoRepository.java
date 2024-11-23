@@ -19,7 +19,8 @@ public interface CoAoRepository extends JpaRepository<CoAo,Integer> {
 
     @Query("SELECT ca FROM CoAo ca WHERE " +
             "(?1 IS NULL OR ca.ten LIKE %?1%) AND " +
-            "(?2 IS NULL OR ca.trangThai = ?2)")
+            "(?2 IS NULL OR ca.trangThai = ?2)"+
+            "ORDER BY ca.ngayTao DESC")
     Page<CoAo> findByTenAndTrangthaiCA(String tenca, Integer trangThai, Pageable pageable);
 
 }

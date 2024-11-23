@@ -23,7 +23,8 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             "(?1 IS NULL OR hd.mahoadon LIKE %?1%) AND " +
             "(?2 IS NULL OR hd.nhanVien.tennhanvien LIKE %?2%) AND " +
             "(?3 IS NULL OR hd.khachHang.tenkhachhang LIKE %?3%) AND " +
-            "(?4 IS NULL OR hd.trangthai = ?4)")
+            "(?4 IS NULL OR hd.trangthai = ?4)"+
+            "ORDER BY hd.ngaytao DESC")
     Page<HoaDon> findByMaAndTenAndTrangthaiHD(String mahd, String tennv, String tenkh, Integer trangThai, Pageable pageable);
 
       HoaDon findTopByOrderByIdDesc();

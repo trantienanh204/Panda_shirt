@@ -19,7 +19,8 @@ public interface ChatLieuRespository extends JpaRepository<ChatLieu,Integer> {
 
     @Query("SELECT cl FROM ChatLieu cl WHERE " +
             "(?1 IS NULL OR cl.tenChatLieu LIKE %?1%) AND " +
-            "(?2 IS NULL OR cl.trangThai = ?2)")
+            "(?2 IS NULL OR cl.trangThai = ?2)"+
+            "ORDER BY cl.ngayTao DESC")
     Page<ChatLieu> findByTenAndTrangthaiCL(String tencl, Integer trangThai, Pageable pageable);
 
 }

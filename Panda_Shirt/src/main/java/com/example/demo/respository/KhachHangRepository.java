@@ -28,7 +28,8 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
     @Query("SELECT kh FROM KhachHang kh WHERE " +
             "(?1 IS NULL OR kh.makhachhang LIKE %?1%) AND " +
             "(?2 IS NULL OR kh.tenkhachhang LIKE %?2%) AND " +
-            "(?3 IS NULL OR kh.trangthai = ?3)")
+            "(?3 IS NULL OR kh.trangthai = ?3)"+
+            "ORDER BY kh.ngaytao DESC")
     Page<KhachHang> findByMaAndTenAndTrangthaiKH(String makh, String tenkh, Integer trangThai, Pageable pageable);
 
     @Query(value = "select * from KHACH_HANG where trang_thai = 1", nativeQuery = true)

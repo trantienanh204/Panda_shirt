@@ -20,7 +20,8 @@ public interface NhanVienRespository extends JpaRepository<NhanVien,Integer> {
     @Query("SELECT nv FROM NhanVien nv WHERE " +
             "(?1 IS NULL OR nv.manhanvien LIKE %?1%) AND " +
             "(?2 IS NULL OR nv.tennhanvien LIKE %?2%) AND " +
-            "(?3 IS NULL OR nv.trangthai = ?3)")
+            "(?3 IS NULL OR nv.trangthai = ?3)"+
+            "ORDER BY nv.ngaytao DESC")
     Page<NhanVien> findByMaAndTenAndTrangthaiNV(String manv, String tennv, Integer trangThai, Pageable pageable);
 
 

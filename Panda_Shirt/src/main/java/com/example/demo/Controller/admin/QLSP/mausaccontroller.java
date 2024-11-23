@@ -84,6 +84,10 @@ public class mausaccontroller {
             model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
             return "admin/QLSP/ADD/AddMS";
         }
+        if (!Character.isLetter(mauSac.getTen().charAt(0))) {
+            model.addAttribute("errorten", "Ký tự đầu tiên phải là chữ cái");
+            return "admin/QLSP/ADD/AddMS";
+        }
         if (mauSacRepsitory.existsMauSacByTen(mauSac.getTen())) {
             model.addAttribute("errorten", "Tên màu đã tồn tại");
             return "admin/QLSP/ADD/AddMS";
@@ -169,6 +173,10 @@ public class mausaccontroller {
         }
         if (mauSac.getTen() == null || mauSac.getTen().length() < 2 || mauSac.getTen().length() > 14) {
             model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
+            return "admin/QLSP/UPDATE/UpdateMS";
+        }
+        if (!Character.isLetter(mauSac.getTen().charAt(0))) {
+            model.addAttribute("errorten", "Ký tự đầu tiên phải là chữ cái");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
         if(findten != null){

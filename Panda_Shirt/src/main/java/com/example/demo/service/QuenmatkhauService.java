@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.TaiKhoan;
+import com.example.demo.respository.TaiKhoanRepo;
 import com.example.demo.respository.nhanvienRepository;
 import com.example.demo.entity.NhanVien;
 import jakarta.mail.MessagingException;
@@ -18,6 +20,8 @@ import java.util.*;
 public class QuenmatkhauService {
 @Autowired
     nhanvienRepository nhanvienRepository;
+    @Autowired
+    TaiKhoanRepo taiKhoanRepo;
 
      JavaMailSender mailSender;
 
@@ -72,9 +76,9 @@ public class QuenmatkhauService {
         return macapchaList.containsKey(taikhoan) && macapchaList.get(taikhoan).equals(capchaCheck);
     }
 
-    public NhanVien timkiemnhanvien(String taikhoan) {
-        return nhanvienRepository.findByTentaikhoan(taikhoan)
-                .orElseThrow(() -> new UsernameNotFoundException(taikhoan + " not found!"));
+    public TaiKhoan timkiemnhanvien(String taikhoan) {
+        return taiKhoanRepo.findByTenDangNhap(taikhoan);
+
     }
 
 
@@ -179,8 +183,8 @@ public class QuenmatkhauService {
           //  return "email gửi thất bại rồi bro: " + e.getMessage();
         }
     }
-    public void themnhanvien(NhanVien nhanVien){
-        nhanvienRepository.save(nhanVien);
+    public void themnhanvien(TaiKhoan taiKhoan){
+        taiKhoanRepo.save(taiKhoan);
     }
     public void updateCaptchaForEmail(String email, String OTP) {
         macapchaList.put(email, OTP);
