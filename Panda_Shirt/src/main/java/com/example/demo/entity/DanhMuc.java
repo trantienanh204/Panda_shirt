@@ -40,4 +40,6 @@ public class DanhMuc {
     @Column(name = "TRANG_THAI")
     private int trangthai;
 
+    @OneToMany(mappedBy = "danhMuc") private List<SanPham> sanPhams;
+
 }

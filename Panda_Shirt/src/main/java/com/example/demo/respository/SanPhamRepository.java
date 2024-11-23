@@ -1,6 +1,7 @@
 
 package com.example.demo.respository;
 
+import com.example.demo.entity.DanhMuc;
 import com.example.demo.entity.SanPham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,20 @@ public interface SanPhamRepository extends JpaRepository<SanPham,Integer> {
 
         @Query("SELECT s FROM SanPham s WHERE s.sanPhamChiTietList IS NOT EMPTY")
         List<SanPham> findSanPhamWithDetails();
+
+
+        List<SanPham> findByDanhMuc(DanhMuc danhMuc);
+
+
+        List<SanPham> findAllByOrderByNgaytaoDesc();
+
+
+
+
+
+
+
+
 
 
 }

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class SanPhamService {
     @Autowired
-    sanPhamRepository sanPhamRepository;
+    SanPhamRepository sanPhamRepository;
     @Autowired
     ChatLieuRespository chatLieuRespository;
     @Autowired
@@ -387,7 +387,8 @@ public class SanPhamService {
     }
 
 
-
+    public List<SanPham> findByDanhMuc(DanhMuc danhMuc) { return sanPhamRepository.findByDanhMuc(danhMuc); }
+//    public List<SanPham> findAllByOrderByGiaAsc() { return sanPhamRepository.findAllByOrderByNgaytaoDesc(); } public List<SanPham> findAllByOrderByNgayTaoDesc() { return sanPhamRepository.findAllByOrderByNgayTaoDesc(); }
     public SanPham Listtimkiemsp(Integer id) {
         return  sanPhamRepository.findById(id).orElse(null);
     }

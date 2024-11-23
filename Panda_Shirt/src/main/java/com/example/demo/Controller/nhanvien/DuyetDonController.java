@@ -1,23 +1,29 @@
 package com.example.demo.Controller.nhanvien;
 
+import com.example.demo.DTO.KhachHangDTO;
+import com.example.demo.DTO.NhanVienDTO;
+import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.HoaDonCTRepository;
+import com.example.demo.respository.NhanVienRespository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
-import com.example.demo.service.DonHangService;
-import com.example.demo.service.HDCTService;
-import com.example.demo.service.HoaDonService;
-import com.example.demo.service.SanPhamService;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/panda/nhanvien/duyetdon")
 public class DuyetDonController {
+    @Autowired
+    NhanVienRespository nhanVienRespository;
     @Autowired
     DonHangRepository donHangRepository;
     @Autowired
@@ -30,6 +36,8 @@ public class DuyetDonController {
     SanPhamService sanPhamService;
     @Autowired
     HoaDonService hoaDonService;
+    @Autowired
+    private TaiKhoanService taiKhoanService;
     @GetMapping("/hienthi")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
@@ -203,13 +211,33 @@ public class DuyetDonController {
         return "/nhanvien/Update/DuyetDonUpdate3";
     }
 
-    @GetMapping("/dongy/{id}")
-    public String dongy(@PathVariable("id") Integer id) {
-        DonHang donHang = donHangRepository.getReferenceById(id);
-        donHang.setTrangThai("Đã duyệt");
-        donHangRepository.save(donHang);
+        @GetMapping("/dongy/{id}")
+        public String dongy(@PathVariable("id") Integer id, @AuthenticationPrincipal UserDetails userDetails) {
+            DonHang donHang = donHangRepository.getReferenceById(id);
+
+            donHang.setTrangThai("Đã duyệt");
+            String username = userDetails.getUsername();
+            TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
+            if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
+                return "redirect:/panda/login";
+            }
+            NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
+            donHang.setNhanVien(nhanVien);
+            donHangRepository.save(donHang);
+
             return "redirect:/panda/nhanvien/duyetdon/hienthi";
-    }
+        }
+
+        private NhanVien mapToNhanvien(NhanVienDTO dto) {
+            NhanVien nhanVien = new NhanVien();
+            nhanVien.setId(dto.getId());
+            nhanVien.setManhanvien(dto.getManhanvien());
+            nhanVien.setTennhanvien(dto.getTennhanvien());
+            return nhanVien;
+        }
+
+
+
     @GetMapping("/xacnhan/{id}")
     public String xacnhan(@PathVariable("id") Integer id) {
         DonHang donHang = donHangRepository.getReferenceById(id);
@@ -218,10 +246,21 @@ public class DuyetDonController {
             return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
   @GetMapping("/dagiao/{id}")
-    public String dagiao(@PathVariable("id") Integer id) {
+    public String dagiao(@PathVariable("id") Integer id,@AuthenticationPrincipal UserDetails userDetails) {
         DonHang donHang = donHangRepository.getReferenceById(id);
+      HoaDon hoaDon = hoaDonService.findById(donHang.getHoaDon().getId());
+      String username = userDetails.getUsername();
+      TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
+      if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
+          return "redirect:/panda/login";
+      }
+      NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
         donHang.setTrangThai("Hoàn thành");
-        donHangRepository.save(donHang);
+      donHang.setNhanVien(nhanVien);
+      hoaDon.setNhanVien(nhanVien);
+      donHangRepository.save(donHang);
+      hoaDonService.save(hoaDon);
+
             return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
 

@@ -74,7 +74,7 @@ public class VnpayController {
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
 
         if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-            return "redirect:/login";
+            return "/panda/login";
         }
 
         KhachHang khachHang = mapToKhachHang(taiKhoanDto.getKhachHangDTO());

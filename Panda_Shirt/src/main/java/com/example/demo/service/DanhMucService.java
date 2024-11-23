@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DanhMucService {
     @Autowired
@@ -23,5 +25,8 @@ public class DanhMucService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
         return danhMucRepository.findByTenAndTrangthaiDM(tendm, trangthai, pageable);
+    }
+    public List<DanhMuc> danhMuclist (){
+        return danhMucRepository.findAll();
     }
 }

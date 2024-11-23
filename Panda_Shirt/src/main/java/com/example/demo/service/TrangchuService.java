@@ -3,7 +3,8 @@ package com.example.demo.service;
 import com.example.demo.entity.SanPham;
 import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.respository.SanPhamChiTietRepository;
-import com.example.demo.respository.sanPhamRepository;
+import com.example.demo.respository.SanPhamRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class TrangchuService {
     @Autowired
     SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
-    sanPhamRepository sanPhamRepository;
+    SanPhamRepository sanPhamRepository;
     public List<SanPhamChiTiet> test(){
         return sanPhamChiTietRepository.findAll();
     }
