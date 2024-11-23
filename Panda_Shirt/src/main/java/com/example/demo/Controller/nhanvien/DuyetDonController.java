@@ -9,10 +9,12 @@ import com.example.demo.service.HoaDonService;
 import com.example.demo.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -35,6 +37,8 @@ public class DuyetDonController {
                           @RequestParam(value = "mahd", required = false) String mahd,
                           @RequestParam(value = "tennv", required = false) String tennv,
                           @RequestParam(value = "tenkh", required = false) String tenkh,
+                          @RequestParam(value = "Date", required = false)
+                              @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate Date,
                           @RequestParam(value = "trangThai", required = false, defaultValue = "Chờ duyệt") String trangThai,
                           Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
@@ -42,13 +46,14 @@ public class DuyetDonController {
         if (page < 0) {
             page = 0;
         }
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh,Date, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
+        model.addAttribute("Date", Date);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";
@@ -59,6 +64,8 @@ public class DuyetDonController {
                            @RequestParam(value = "mahd", required = false) String mahd,
                            @RequestParam(value = "tennv", required = false) String tennv,
                            @RequestParam(value = "tenkh", required = false) String tenkh,
+                           @RequestParam(value = "Date", required = false)
+                               @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate Date,
                            @RequestParam(value = "trangThai", required = false, defaultValue = "Đã duyệt") String trangThai,
                            Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
@@ -67,14 +74,15 @@ public class DuyetDonController {
             page = 0;
         }
 
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh,Date, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
-        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("tenkh", tenkh);
+        model.addAttribute("Date", Date);
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";
     }
@@ -83,6 +91,8 @@ public class DuyetDonController {
                            @RequestParam(value = "mahd", required = false) String mahd,
                            @RequestParam(value = "tennv", required = false) String tennv,
                            @RequestParam(value = "tenkh", required = false) String tenkh,
+                           @RequestParam(value = "Date", required = false)
+                               @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate Date,
                            @RequestParam(value = "trangThai", required = false, defaultValue = "Đang giao") String trangThai,
                            Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
@@ -91,13 +101,14 @@ public class DuyetDonController {
             page = 0;
         }
 
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh,Date, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
+        model.addAttribute("Date", Date);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";
@@ -107,6 +118,8 @@ public class DuyetDonController {
                            @RequestParam(value = "mahd", required = false) String mahd,
                            @RequestParam(value = "tennv", required = false) String tennv,
                            @RequestParam(value = "tenkh", required = false) String tenkh,
+                           @RequestParam(value = "Date", required = false)
+                               @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate Date,
                            @RequestParam(value = "trangThai", required = false, defaultValue = "Hoàn thành") String trangThai,
                            Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
@@ -115,13 +128,14 @@ public class DuyetDonController {
             page = 0;
         }
 
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh,Date, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
+        model.addAttribute("Date", Date);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";
@@ -132,6 +146,8 @@ public class DuyetDonController {
                            @RequestParam(value = "mahd", required = false) String mahd,
                            @RequestParam(value = "tennv", required = false) String tennv,
                            @RequestParam(value = "tenkh", required = false) String tenkh,
+                           @RequestParam(value = "Date", required = false)
+                               @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate Date,
                            @RequestParam(value = "trangThai", required = false, defaultValue = "Đã hủy") String trangThai,
                            Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
@@ -139,13 +155,14 @@ public class DuyetDonController {
         if (page < 0) {
             page = 0;
         }
-        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh, trangThai);
+        Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tennv, tenkh,Date, trangThai);
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
+        model.addAttribute("Date", Date);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";

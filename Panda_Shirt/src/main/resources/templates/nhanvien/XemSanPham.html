@@ -148,13 +148,13 @@
                             <td th:text="${ct.dongia}"></td>
                             <td th:text="${ct.ngaytao != null? #temporals.format(ct.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
                             <td th:if="${ct.trangthai} == true">
-                            <span class="status-label status-green"
-                                  th:text="${ct.trangthai == true ? 'Đang bán':'Ngừng bán'}">
+                            <span class="status-label status-red"
+                                  th:text="${ct.trangthai == false ? 'Đang bán':'Ngừng bán'}">
                             </span>
                             </td>
                             <td th:if="${ct.trangthai} == false">
-                            <span class="status-label status-red"
-                                  th:text="${ct.trangthai == true ? 'Đang bán':'Ngừng bán'}">
+                            <span class="status-label status-green"
+                                  th:text="${ct.trangthai == false ? 'Đang bán':'Ngừng bán'}">
                             </span>
                             </td>
                             <td th:text="${ct.mota}"></td>

@@ -16,7 +16,8 @@ public interface sanPhamRepository extends JpaRepository<SanPham,Integer> {
 
         @Query("SELECT sp FROM SanPham sp WHERE " +
                 "(?1 IS NULL OR sp.tensp LIKE %?1%) AND " +
-                "(?2 IS NULL OR sp.trangthai = ?2)")
+                "(?2 IS NULL OR sp.trangthai = ?2)"+
+                "ORDER BY sp.ngaytao DESC")
         Page<SanPham> findByTenspAndTrangthai(String tensp, Integer trangthai, Pageable pageable);
 
 

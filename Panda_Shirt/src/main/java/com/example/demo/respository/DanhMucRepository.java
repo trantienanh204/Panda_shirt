@@ -18,7 +18,8 @@ public interface DanhMucRepository extends JpaRepository<DanhMuc,Integer> {
 
     @Query("SELECT dm FROM DanhMuc dm WHERE " +
             "(?1 IS NULL OR dm.tendanhmuc LIKE %?1%) AND " +
-            "(?2 IS NULL OR dm.trangthai = ?2)")
+            "(?2 IS NULL OR dm.trangthai = ?2)"+
+            "ORDER BY dm.ngaytao DESC")
     Page<DanhMuc> findByTenAndTrangthaiDM(String tendm, Integer trangthai, Pageable pageable);
 
 }

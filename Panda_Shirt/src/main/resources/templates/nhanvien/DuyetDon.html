@@ -29,6 +29,13 @@
                 <label>Tên khách hàng</label>
                 <input type="text" name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng ">
             </div>
+
+                <div class="filter-input">
+                    <label class="form-label">Ngày đặt</label>
+                    <input type="date" class="form-control" name="Date"
+                           th:value="${Date}" placeholder="Chọn ngày bắt đầu">
+                </div>
+
         </div>
         <div class="filter-buttons">
             <button type="submit" class="btn btn-dark">
@@ -151,31 +158,31 @@
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
                    th:if="${trangThai == 'Chờ duyệt'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đã duyệt'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đang giao'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Hoàn thành'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đã hủy'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -189,31 +196,31 @@
             <li class="page-item" th:classappend="${listcd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:if="${trangThai == 'Chờ duyệt'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đã duyệt'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/daduyet(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đang giao'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/danggiao(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Hoàn thành'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/hoanthanh(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
                 <a class="page-link"
                    th:if="${trangThai == 'Đã hủy'}"
-                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh})}"
+                   th:href="@{/panda/nhanvien/duyetdon/hienthi/dahuy(page=${currentPage + 1},mahd=${mahd},tennv=${tennv},tenkh=${tenkh},Date=${Date})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
@@ -323,7 +330,7 @@
     }
 
     .status-aqua {
-        background-color:  #4CAF50;
+        background-color: #4CAF50;
         color: white;
     }
 

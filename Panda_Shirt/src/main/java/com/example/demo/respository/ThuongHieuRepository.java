@@ -22,7 +22,8 @@ public interface ThuongHieuRepository extends JpaRepository<ThuongHieu,Integer> 
 
     @Query("SELECT th FROM ThuongHieu th WHERE " +
             "(?1 IS NULL OR th.tenthuonghieu LIKE %?1%) AND " +
-            "(?2 IS NULL OR th.trangthai = ?2)")
+            "(?2 IS NULL OR th.trangthai = ?2)"+
+            "ORDER BY th.ngaytao DESC")
     Page<ThuongHieu> findByTenAndTrangthaiTH(String tenth, Integer trangthai, Pageable pageable);
 
 }
