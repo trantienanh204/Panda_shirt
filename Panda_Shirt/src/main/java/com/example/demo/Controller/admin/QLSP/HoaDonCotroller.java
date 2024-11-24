@@ -60,6 +60,7 @@ public class HoaDonCotroller {
             page = 0;
         }
         Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, tennv , tenkh, trangThai);
+//        Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, tennv , tenkh, trangThai);
         model.addAttribute("totalPage", listHD.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("lshd",listHD.getContent());
@@ -70,6 +71,8 @@ public class HoaDonCotroller {
         model.addAttribute("pageSize", listHD.getSize());
         return "admin/HoaDon/HoaDon";
     }
+
+
 
     @GetMapping("update")
     public String formupdate(@RequestParam("id") int id,Model model){
@@ -103,28 +106,22 @@ public class HoaDonCotroller {
     public String filePdf(@RequestParam("id") int id, Model model) {
         List<HoaDonCT> lshdct  = hoaDonCTRepository.findhoadonct(id);
         model.addAttribute("hoadonct",lshdct);
-//        model.addAttribute("lshd",hoaDonRepository.findAll();
 
-        String directoryPath = "D:\\HocTap\\HoaDon"; // Đường dẫn lưu PDF
+        String directoryPath = "D:\\HocTap\\HoaDon";
         File directory = new File(directoryPath);
         if (!directory.exists()) {
-            directory.mkdirs(); // Tạo thư mục nếu không tồn tại
+            directory.mkdirs();
         }
-        String customFileName = "hoadon_" + System.currentTimeMillis() + ".pdf"; // Tên file tùy chỉnh
-        String filePath = directoryPath + "\\" + customFileName; // Đường dẫn đầy đủ đến file PDF
+        String customFileName = "hoadon_" + System.currentTimeMillis() + ".pdf";
+        String filePath = directoryPath + "\\" + customFileName;
 
-//        String filePath = directoryPath + "\\hoadon.pdf"; // Đường dẫn đầy đủ đến file PDF
-
-        // Lấy dữ liệu hóa đơn từ SQL
         List<HoaDon> hd = hoaDonRepository.findAll();
         model.addAttribute("hd", hd);
 
-        // Render HTML từ Thymeleaf template
         Context context = new Context();
         context.setVariables(model.asMap());
         String htmlContent = templateEngine.process("pdf", context);
 
-        // Chuyển HTML thành PDF
         try (FileOutputStream fos = new FileOutputStream(new File(filePath))) {
             HtmlConverter.convertToPdf(htmlContent, fos);
             return "pdf";
@@ -137,7 +134,7 @@ public class HoaDonCotroller {
     public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
         List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
         model.addAttribute("hoaDonCTs", hoaDonCT);
-        return "/nhanvien/DuyetDon :: chiTiet"; // Trả về fragment HTML
+        return "/nhanvien/DuyetDon :: chiTiet";
     }
 
 }

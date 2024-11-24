@@ -24,7 +24,8 @@ import java.util.Set;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa","/panda/banhangoffline"};
+    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa",
+            "/panda/banhangoffline"};
     private final String[] QUANLY_ENDPOINTS= {};
     private final String[] NHANVIEN_ENDPOINTS= {};
         @Bean
@@ -57,7 +58,6 @@ public class SecurityConfig {
 
             return http.build();
         }
-
 
         @Bean
         public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
@@ -128,7 +128,6 @@ public class SecurityConfig {
 
         @Bean
         public PasswordEncoder passwordEncoder() {
-            //dùng để mã hóa mật khẩu
             return new BCryptPasswordEncoder();
         }
 }

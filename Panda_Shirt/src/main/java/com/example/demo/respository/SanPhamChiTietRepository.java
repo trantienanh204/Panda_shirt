@@ -49,5 +49,11 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
         WHERE LOWER(sp.sanPham.tensp) LIKE LOWER(CONCAT('%', :keyword, '%'))
     """)
     List<SanPhamChiTiet> findByTenSanPham(String keyword);
+
+
+    @Query("SELECT spct FROM SanPhamChiTiet spct " +
+            "WHERE LOWER(spct.sanPham.tensp) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(spct.sanPham.masp) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<SanPhamChiTiet> timtenspvama(@Param("keyword") String keyword);
 }
 

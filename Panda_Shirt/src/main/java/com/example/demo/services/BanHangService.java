@@ -24,9 +24,8 @@ public class BanHangService {
     // Phương thức tìm kiếm sản phẩm
     public List<SanPhamChiTiet> findByTenSanPham(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return List.of(); // Trả về danh sách rỗng nếu không có từ khóa
+            return List.of();
         }
-        // Truy vấn tìm kiếm sản phẩm theo tên hoặc mã sản phẩm
         String queryString = "SELECT sp FROM SanPhamChiTiet sp WHERE " +
                 "LOWER(sp.sanPham.tensp) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
                 "OR LOWER(sp.sanPham.masp) LIKE LOWER(CONCAT('%', :keyword, '%'))";
@@ -51,4 +50,6 @@ public class BanHangService {
     public BigDecimal getTongTienByHoaDonId(Integer idHoaDon) {
         return hoaDonCTRepository.TongTienByHoaDonId(idHoaDon);
     }
+
+
 }
