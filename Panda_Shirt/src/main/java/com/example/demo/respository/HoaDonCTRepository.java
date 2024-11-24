@@ -57,6 +57,7 @@ public interface HoaDonCTRepository extends JpaRepository<HoaDonCT,Integer> {
             "FROM HoaDonCT hdct " +
             "WHERE hdct.hoaDon.trangthai = 1 AND EXTRACT(YEAR FROM hdct.ngaytao) = :year")
     BigDecimal getRevenueByYear(@Param("year") int year);
+
 }
 
 

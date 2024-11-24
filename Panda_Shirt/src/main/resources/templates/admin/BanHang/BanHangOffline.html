@@ -3,30 +3,38 @@
 <head>
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hóa đơn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/CSS/style.css}"/>
     <style>
+        /*.modal-dialog {*/
+        /*    max-width: 80%;*/
+        /*    width: 80%;*/
+        /*}*/
         .total-price {
             color: red;
             font-size: 24px;
             font-weight: bold;
         }
+
         .product-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
+
         .invoice-btn-group {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .invoice-btn-group input {
-            flex: 1;                    /* Cho phép ô input chiếm không gian còn lại */
-            max-width: 200px;           /* Đặt chiều rộng tối đa cho ô input (tùy chọn) */
+            flex: 1;
+            max-width: 200px;
         }
 
         .invoice-btn-group button {
@@ -37,6 +45,7 @@
             position: relative;
             display: inline-block;
         }
+
         #productList {
             max-height: 200px;
             overflow-y: auto;
@@ -46,14 +55,30 @@
             background-color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .list-group-item:hover {
             background-color: #f1f1f1;
             cursor: pointer;
         }
+
         .active {
-            background-color: blue; /* Màu nền cho tab đang hoạt động */
-            color: red; /* Màu văn bản cho tab đang hoạt động */
+            background-color: blue;
+            color: red;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px;
+        }
+
+        th, td {
+            text-align: center; /* Căn giữa ngang */
+            vertical-align: middle; /* Căn giữa dọc */
+            border: 1px solid #000; /* Đường viền bảng */
+            padding: 10px; /* Khoảng cách trong ô */
+        }
+
     </style>
 </head>
 <body th:fragment="banhangoff">
@@ -72,22 +97,134 @@
             </li>
         </ul>
         <div class="invoice-btn-group">
-            <button id="createInvoiceBtn" class="btn btn-primary">Tạo hóa đơn</button>
+            <button id="createInvoiceBtn" class="btn btn-dark">Tạo hóa đơn</button>
         </div>
     </div>
     <!-- Phần tiêu đề danh sách sản phẩm và các nút -->
     <div class="product-header" style="position: relative;">
-    <h3>Danh sách sản phẩm</h3>
-        <div class="invoice-btn-group" >
-            <input type="text" class="input-container" id="searchInput" placeholder="Tìm sản phẩm..."
-                   style="border-radius: 10px;padding-bottom: 10px; margin-right: 15px">
-            <button id="addProductBtn" class="btn btn-secondary"><i class="fa-solid fa-plus"></i> </button>
+        <h3>Danh sách sản phẩm</h3>
+        <div class="invoice-btn-group">
+            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#chonsanpham"
+               id="chonsp-button" class="btn btn-secondary">
+                <i class="fa-solid fa-plus"></i> Chọn sản phẩm</a>
+
             <button id="qrCodeBtn" class="btn btn-secondary">QR Code</button>
             <ul id="productList" class="list-group" style="position: relative; z-index: 1050;">
-
             </ul>
         </div>
     </div>
+    <br>
+
+
+    <div class="modal fade" id="chonsanpham" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content" style="padding: 15px; font-family: Arial, sans-serif;">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel2" style="font-size: 18px;">
+                        <i class="fa-solid fa-list" style="color: #000000;"></i>
+                        Danh sách sản phẩm
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-4"><h4>Danh mục :</h4>
+                            <select class="form-select" aria-label="Default select example">
+                                <option value="3">Three</option>
+                            </select>
+                        </div>
+                        <div class="col-4"><h4>Thương hiệu :</h4>
+                            <select class="form-select" aria-label="Default select example">
+                                <option value="3">Three</option>
+                            </select>
+                        </div>
+                        <div class="col-4"><h4>Chât liệu :</h4>
+                            <select class="form-select" aria-label="Default select example">
+                                <option value="3">Three</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="search-container"
+                         style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <input type="text" id="searchsanpham" onkeyup="updateProductList()" placeholder="Tìm kiếm sản phẩm" class="search-box"
+                               style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 80%;">
+                        <button class="btn btn-primary" onclick="searchInModal()"
+                                style="padding: 8px 15px; border: none; background-color: #2d9cdb; color: white; border-radius: 5px; cursor: pointer;">
+                            <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                        </button>
+                    </div>
+                    <div class="product-list"
+                         style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                        <div class="product-header"
+                             style="display: flex; gap: 10px; padding: 10px; font-weight: bold; background-color: #f2f2f2; border-bottom: 2px solid #ddd;">
+                            <div class="header-item" style="flex: 1; text-align: center;">Hình ảnh</div>
+                            <div class="header-item" style="flex: 2; text-align: left; margin-left: 30px">Sản phẩm
+                            </div>
+                            <div class="header-item" style="flex: 1; text-align: center;">Số lượng</div>
+                            <div class="header-item" style="flex: 1; text-align: center;">Đơn giá</div>
+                            <div class="header-item" style="flex: 1; text-align: center;">Hành động</div>
+                        </div>
+                        <form th:action="@{/panda/banhangoffline/taohdct}" th:method="POST">
+                            <div id="product-list-container">
+                                <div th:each="spct, i: ${lsspct}" class="product-row"
+                                     style="display: flex; gap: 10px; border-bottom: 1px solid #ddd; padding: 10px;">
+                                    <input type="hidden" th:name="idspct" th:value="${spct.id}">
+                                    <input type="hidden" th:name="dongia" th:value="${spct.dongia}">
+                                    <div class="product-price"
+                                         style="display: flex; align-items: center; justify-content: center;">
+                                        <h4 th:text="${i.index + 1}" style="font-size: 16px; font-weight: bold;"></h4>
+                                    </div>
+                                    <div class="product-image" style="flex: 1; text-align: center;">
+                                        <img th:src="@{/Image/panda_logo.png}" alt="Sản phẩm"
+                                             style="max-width: 120px; height: auto;">
+                                    </div>
+                                    <div class="product-details" style="flex: 2; text-align: left; font-size: 14px;">
+                                        <h4 th:text="${spct.sanPham.tensp + ' [ ' +spct.mauSac.ten + ' - ' +spct.kichThuoc.ten + ' ]'}"
+                                            style="font-size: 17px; font-weight: bold;"></h4>
+                                        <p style="margin: 0;font-size: 15px">Màu : <span
+                                                th:text="${spct.mauSac.ten}"></span> -
+                                            Kích cỡ: <span th:text="${spct.kichThuoc.ten}"></span></p>
+                                        <p style="margin: 0;font-size: 15px">Chất liệu : <span
+                                                th:text="${spct.sanPham.chatLieu.tenChatLieu}"></span></p>
+                                        <span style="
+                                    display: inline-block;
+                                    background-color: #d4fcd4;
+                                    color: #008000;
+                                    border: 1px solid #c2e5c2;
+                                    padding: 5px 10px;
+                                    border-radius: 15px;
+                                    font-size: 14px;
+                                    font-weight: bold;
+                                    text-align: center;">
+                                    Đang kinh doanh
+                                </span>
+                                    </div>
+                                    <div class="product-price"
+                                         style="flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; color: red; font-size: 16px;">
+                                    <span th:text="${spct.soluongsanpham}"
+                                          style="font-weight: bold; color: black"></span>
+                                    </div>
+                                    <div class="product-price"
+                                         style="flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; font-size: 16px;">
+                                        <span th:text="${spct.dongia}" style="font-weight: bold;"></span>
+                                    </div>
+                                    <div class="product-action"
+                                         style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                                        <button class="btn-dark"
+                                                style="background-color: #FE5621; color: white; padding: 5px 15px; border: none; cursor: pointer; border-radius: 5px;">
+                                            Chọn
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Phần giỏ hàng -->
     <div id="productTable" class="table-responsive">
@@ -119,8 +256,8 @@
                     <span class="error-message" style="color: red; display: none;"></span>
                 <td class="tong-tien" th:text="${hdct.tongtien}"></td>
                 <td>
-                    <button class="btn btn-danger remove-btn" th:data-id="${hdct.id}">
-                    <i class="fa-solid fa-trash"></i></button>
+                    <button class="btn btn-secondary remove-btn" th:data-id="${hdct.id}">
+                        <i class="fa-solid fa-trash"></i></button>
                 </td>
             </tr>
             </tbody>
@@ -128,92 +265,36 @@
     </div>
     <div id="emptyCartMessage" class="row mb-4">
         <div class="col-md-12 text-center">
-            <img src="https://img.pikbest.com/png-images/shopping-cart-icon---vector-template---transparent-background_1794341.png!sw800" alt="Không có sản phẩm" class="img-fluid" style="max-height: 300px;">
+            <img src="https://img.pikbest.com/png-images/shopping-cart-icon---vector-template---transparent-background_1794341.png!sw800"
+                 alt="Không có sản phẩm" class="img-fluid" style="max-height: 300px;">
             <p>Không có sản phẩm nào trong giỏ</p>
         </div>
     </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).on('click', '.remove-btn', function() {
-        const idHoaDonCT = $(this).data('id');
-        console.log("HOADONID: ", idHoaDonCT);
-        if (confirm('Bạn có chắc muốn xóa?')) {
-            $.ajax({
-                url: '/panda/banhangoffline/delete',  // URL tới controller để xử lý xóa
-                method: 'POST',
-                data: { idHoaDonCT: idHoaDonCT },
-                success: function(response) {
-                    $(`button[data-id="${idHoaDonCT}"]`).closest('tr').remove();
-                    alert('Xóa thành công');
-                },
-                error: function(error) {
-                    console.log("Lỗi khi xóa:", error);
-                    alert('Có lỗi xảy ra khi xóa.');
-                }
-            });
-        }
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        // Hàm kiểm tra giỏ hàng
-        function checkCart() {
-            const tableBody = $('#productTable tbody');
-            const productTable = $('#productTable');
-            const emptyCartMessage = $('#emptyCartMessage');
-
-            if (tableBody.children().length === 0) {
-                // Nếu giỏ hàng rỗng
-                productTable.hide(); // Ẩn bảng giỏ hàng
-                emptyCartMessage.show(); // Hiện thông báo giỏ hàng trống
-            } else {
-                // Nếu giỏ hàng có sản phẩm
-                productTable.show(); // Hiện bảng giỏ hàng
-                emptyCartMessage.hide(); // Ẩn thông báo giỏ hàng trống
-            }
-        }
-
-        $('#searchInput').on('input', function () {
-            const keyword = $(this).val().trim();
-            if (keyword.length >= 1) {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).on('click', '.remove-btn', function () {
+            const idHoaDonCT = $(this).data('id');
+            console.log("HOADONID: ", idHoaDonCT);
+            if (confirm('Bạn có chắc muốn xóa?')) {
                 $.ajax({
-                    url: `/panda/banhangoffline/find`,
-                    method: 'GET',
-                    data: { keyword: keyword },
-                    success: function (data) {
-                        $('#productList').empty();
-                        if (data.length >= 1 ) {
-                            data.forEach(function (item) {
-                                const parts = item.split(' - '); // Phân tách chuỗi
-                                const product = {
-                                    id: parts[0],
-                                    tensp: parts[1],
-                                    mausac : parts[2],
-                                    kichthuoc : parts[3],
-                                    dongia : parts[4],
-                                    // Các thuộc tính khác nếu cần
-                                };
-                                $('#productList').append(
-                                    `<li class="list-group-item product-item" data-product='${JSON.stringify(product)}'>
-                                ${product.id} -   ${product.tensp} - ${product.mausac} - ${product.kichthuoc}</li>`
-                                );
-                            });
-                        } else {
-                            $('#productList').append(
-                                `<li class="list-group-item">Không tìm thấy sản phẩm</li>`
-                            );
-                        }
+                    url: '/panda/banhangoffline/delete',
+                    method: 'POST',
+                    data: {idHoaDonCT: idHoaDonCT},
+                    success: function (response) {
+                        $(`button[data-id="${idHoaDonCT}"]`).closest('tr').remove();
+                        alert('Xóa thành công');
                     },
-                    error: function () {
-                        alert('Lỗi tìm sản phẩm!');
+                    error: function (error) {
+                        console.log("Lỗi khi xóa:", error);
+                        alert('Có lỗi xảy ra khi xóa.');
                     }
                 });
-            } else {
-                $('#productList').empty();
             }
         });
+    </script>
 
+<<<<<<< HEAD
         $(document).on('click', '.product-item', function () {
             event.preventDefault();
             const product = $(this).data('product'); // Lấy sản phẩm từ data attribute
@@ -384,6 +465,14 @@
             <div id="customerForm" style="display: none;">
                 <h5>Khách hàng</h5>
                 <form>
+=======
+    <div style="text-align: center;margin-bottom: 15px"><h4>Thông tin thanh toán</h4></div>
+    <form th:action="@{/panda/banhangoffline/thanhtoan}" th:method="post">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="customerForm" style="display: none;">
+                    <h5>Khách hàng</h5>
+>>>>>>> thai
                     <div class="mb-3">
                         <input type="text" class="form-control" placeholder="Tên khách hàng">
                     </div>
@@ -391,25 +480,35 @@
                         <input type="text" class="form-control" placeholder="Số điện thoại">
                     </div>
                     <div class="mb-3">
-                        <input type="email" class="form-control" placeholder="Email">
-                    </div>
-                    <div class="mb-3 d-flex justify-content-between">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="province" class="form-label">Tỉnh/Thành phố:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="district" class="form-label">Quận/Huyện:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="ward" class="form-label">Xã/Phường:</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select class="form-select" id="province" name="province">
+                                    <option value="">Chọn</option>
 
-                        <select class="form-select me-2" id="province" name="province" onchange="loadDistricts()">
-                            <option value=""> Tỉnh/Thành phố</option>
-                        </select>
-
-                        <br>
-
-                        <select class="form-select me-2" id="district" name="district">
-                            <option value=""> Quận/Huyện</option>
-                        </select>
-
-                        <br>
-                        <!-- Dropdown chọn xã/phường -->
-                        <select class="form-select" id="ward" name="ward">
-                            <option value=""> Xã/Phường</option>
-                        </select>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="district" name="district">
+                                    <option value="">Chọn</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="ward" name="ward">
+                                    <option value="">Chọn</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <input type="text" class="form-control" placeholder="Địa chỉ cụ thể">
@@ -417,31 +516,27 @@
                     <div class="mb-3">
                         <textarea class="form-control" placeholder="Ghi chú" rows="3"></textarea>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <h5>Thông tin thanh toán</h5>
-            <form th:action="@{/panda/banhangoffline/thanhtoan}" th:method="post">
-                <div class="d-flex justify-content-between mb-3">
-                    <label>Khách thanh toán</label>
-                    <span>0 VND</span>
+                    <input type="text" id="selectedProvince" name="tinhthanhpho" hidden>
+                    <input type="text" id="selectedDistrict" name="quanhuyen" hidden>
+                    <input type="text" id="selectedWard" name="xaphuong" hidden>
                 </div>
+            </div>
+            <div class="col-md-6">
                 <div class="d-flex justify-content-between mb-3">
                     <label>Hóa đơn :</label>
                     <input type="hidden" th:name="idhoadon" th:value="${idhoadon}">
-                    <span th:text="${idhoadon}" th:name="idhoadon"></span>
+                    <span th:text="${mahd}" th:name="idhoadon"></span>
                 </div>
 
                 <div class="justify-content-between mb-3">
                     <label>Mã giảm giá</label> <br>
                     <input type="text" id="mavoucher-input" class="form-control w-50 me-2"
-                           placeholder="Nhập mã" th:value="${mavocher}"><br>
+                           placeholder="Nhập mã" th:value="${mavocher}">
+                    <br>
+                    <input type="hidden" id="idvoucher-input" th:value="${idvoucher}" th:name="idvoucher">
 
-                    <input type="text" id="idvoucher-input" class="form-control w-50 me-2"
-                           placeholder="id" th:value="${idvoucher}" th:name="idvoucher" ><br>
-                    <a data-bs-toggle="modal" data-bs-target="#voucherModal" class="btn btn-success">
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#voucherModal"
+                       id="voucher-button" class="btn btn-success">
                         Chọn mã
                     </a>
                 </div>
@@ -455,63 +550,33 @@
                 <div class="d-flex justify-content-between mb-3">
                     <label>Tiền hàng</label>
                     <input type="hidden" th:name="tongtien" th:value="${tongtien}">
-
-                    <span id="tongTien" th:text="${tongTien}" ></span>
+                    <span id="tongTien" th:text="${tongTien}"></span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <label>Phí vận chuyển</label>
-                    <span>0 VND</span>
+                    <span id="ship">0</span>
+                    <input type="hidden" id="phiship" th:name="phiship" th:value="0">
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <label>Giảm giá</label>
-                    <span id="mucgiam" th:text="${mucgiam}"></span>
+                    <span id="mucgiam" th:text="${mucgiam != null ? mucgiam : '0' }"></span>
                 </div>
 
-                <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex justify-content-center mb-3">
                     <input type="hidden" id="thanhTien" th:name="thanhtien" th:value="${thanhTien}">
-                    <span class="total-price" id="thanhtien" th:text="${'Tổng tiền : '
-                    + (thanhtien != null ? thanhtien : tongTien)}"></span>
+                    <span class="total-price fw-4" id="thanhtien" th:text="${'Tổng tiền : '
+                + (thanhtien != null ? thanhtien : '0') + ' VNĐ'}"
+                          style="font-size: 25px;text-align: center;font-weight: bold;"></span>
                 </div>
-                <button class="btn btn-danger w-100">Xác nhận đặt hàng</button>
-            </form>
+                <button class="btn w-100" style="background-color: #FE5621 ;color: white">Xác nhận đặt hàng</button>
+
+
+            </div>
         </div>
-    </div>
+    </form>
+
 </div>
-<script>
-    // Chọn mã
-    function chonVoucher(element) {
-        // Lấy giá trị từ thuộc tính data-id của phần tử đã nhấp
-        var voucherId = $(element).data('id');
-        console.log("Voucher ID: ", voucherId);
 
-        $.ajax({
-            url: "/panda/banhangoffline/selectvc",
-            type: "GET",
-            data: { id: voucherId },
-            success: function(response) {
-                $("#mavoucher-input").val(response.mavocher);
-                $("#idvoucher-input").val(response.idvoucher);
-                $("#mucgiam").text(response.mucgiam);
-                $("#mucgiam").text(response.loai);
-                $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
-                $("#thanhTien").val(response.thanhTien);
-                $('#voucherModal').modal('hide');
-            },
-            error: function(xhr, status, error) {
-                console.error("Lỗi khi gọi AJAX:", error);
-            }
-        });
-    }
-    $('#voucherModal').on('shown.bs.modal', function () {
-        $(this).find('input, button, a').first().focus();
-    });
-
-    // Khi modal bị đóng, trả focus lại nút đã mở modal
-    $('#voucherModal').on('hidden.bs.modal', function () {
-        $('#openModalButton').focus();  // Giả sử nút này mở modal
-    })
-
-</script>
 <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable  modal-lg">
         <div class="modal-content">
@@ -526,28 +591,35 @@
                 <div class="search-container">
                     <input type="text" id="modalSearchInput" placeholder="Tìm kiếm mã voucher" class="search-box"
                            style="border-radius: 10px;padding-bottom: 10px; margin-right: 15px">
-                    <button class="btn btn-primary" onclick="searchInModal()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                    <button class="btn btn-primary" onclick="searchInModal()"><i
+                            class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                    </button>
                 </div>
+                <br>
                 <table class="table" style="text-align: center;">
                     <thead>
                     <tr>
                         <th>Mã vocher</th>
                         <th>Tên vocher</th>
                         <th>Số lượng</th>
+                        <th>Điêu kiện</th>
                         <th>Mức giảm</th>
                         <th>Loại voucher</th>
                         <th>Hành động</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="vc,i: ${lsvoucher}" >
-                        <td th:text="${vc.ma}"></td>
-                        <td th:text="${vc.ten}"></td>
-                        <td th:text="${vc.soLuong}"></td>
-                        <td th:text="${vc.formattedMucGiam}"></td>
-                        <td th:text="${vc.loai == true ? '%':'VND'}"></td>
-                        <td style="font-size: 22px">
-                            <a href="javascript:void(0);" th:data-id="${vc.id}" onclick="chonVoucher(this)">
+                    <tr th:each="vc,i: ${lsvoucher}">
+                        <td th:data-id="${vc.ma}" th:text="${vc.ma}"></td>
+                        <td th:data-id="${vc.ma}" onclick="chonVoucher(this)" th:text="${vc.ten}"></td>
+                        <td th:data-id="${vc.ma}" onclick="chonVoucher(this)" th:text="${vc.soLuong}"></td>
+                        <td th:data-id="${vc.ma}" onclick="chonVoucher(this)"
+                            th:text="${vc.getFormattedDieukien}"></td>
+                        <td th:data-id="${vc.ma}" onclick="chonVoucher(this)" th:text="${vc.formattedMucGiam}"></td>
+                        <td th:data-id="${vc.ma}" onclick="chonVoucher(this)"
+                            th:text="${vc.loai == true ? '%':'VND'}"></td>
+                        <td style="font-size: 25px">
+                            <a href="javascript:void(0);" th:data-id="${vc.ma}" onclick="chonVoucher(this)">
                                 <i class="fa-solid fa-circle-check"></i>
                             </a>
                         </td>
@@ -558,18 +630,28 @@
         </div>
     </div>
 </div>
+<div class="custom-alert success" id="statusMessage"  th:if="${loi != null}">
+    <i class="fa-solid fa-triangle-exclamation"></i></i> <span th:text="${loi}"></span>
+</div>
 <script>
+    window.onload = function() {
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
     // Tạo hóa đơn mới
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('createInvoiceBtn').addEventListener('click', function () {
             var invoiceTabs = document.getElementById('invoiceTabs');
             var tabs = invoiceTabs.getElementsByTagName('li');
-            // Kiểm tra số lượng tab hiện có
             if (tabs.length >= 3) {
                 alert('Bạn không thể tạo thêm hóa đơn. Tối đa là 3 hóa đơn.');
-                return; // Không gửi yêu cầu nếu đã có 3 tab
+                return;
             }
-            // Gửi yêu cầu đến server để tạo hóa đơn mới
             fetch('/panda/banhangoffline/taohd', {
                 method: 'POST'
             })
@@ -595,10 +677,11 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error creating invoice:', error);
+                    console.error('Lỗi tạo hd', error);
                 });
         });
     });
+
     // Hiển thị hoặc ẩn form khách hàng khi bật/tắt giao hàng
     document.getElementById('giaoHangToggle').addEventListener('change', function () {
         var customerForm = document.getElementById('customerForm');
@@ -609,7 +692,37 @@
         }
     });
 </script>
+<style>
+    .custom-alert {
+        position: fixed;
+        top: 40px;  /* Cách từ đỉnh */
+        right: 20px;  /* Cách từ bên phải */
+        background-color: #c82333;  /* Màu nền thông báo */
+        color: white;  /* Màu chữ */
+        padding: 15px;  /* Padding xung quanh */
+        border-radius: 5px;  /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
+        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0;  /* Ban đầu ẩn */
+        visibility: hidden;  /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1;  /* Hiển thị thông báo */
+        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+    }
+</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+        integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script th:src="@{/Javascrip/diachi.js}"></script>
+<script th:src="@{/Javascrip/muahang.js}"></script>
+<script th:src="@{/Javascrip/chonvoucher.js}"></script>
 </body>
 </html>

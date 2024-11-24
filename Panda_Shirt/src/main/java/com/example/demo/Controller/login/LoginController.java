@@ -29,7 +29,34 @@ public class LoginController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+
     private TaiKhoanRepo taiKhoanRepo;
+
+    TaiKhoanRepo taiKhoan ;
+
+    NhanVien nv = new NhanVien();
+
+    @GetMapping("/checkRoles")
+    public String checkRoles(Authentication authentication) {
+        encodeAllPasswords();
+        return "ok";
+    }
+
+    @GetMapping("/mahoa")
+    @Transactional
+    public void encodeAllPasswords() {
+        List<TaiKhoan> tkls = taiKhoan.findAll();
+        for (TaiKhoan tk : tkls) {
+            String plainPassword = tk.getMatKhau();
+            if (!passwordEncoder.matches(plainPassword, plainPassword)) {
+                String encodedPassword = passwordEncoder.encode(plainPassword);
+                tk.setMatKhau(encodedPassword);
+                taiKhoan.save(tk);
+            }
+        }
+    }
+
+
 
     @GetMapping("/login")
     public String showLoginPage() {
@@ -71,7 +98,13 @@ public class LoginController {
             return "redirect:/showRoomDetailPhong?roomId=" + roomId; // Chuyển hướng đến chi tiết phòng nếu có
         }
 
-        return "redirect:/"; // Trở về trang chính nếu không có mục tiêu chuyển hướng
+
+        // Chuyển hướng đến trang chi tiết phòng nếu roomId có
+//        if (roomId != null) {
+//            return "redirect:/showRoomDetailPhong?roomId=" + roomId;
+//        }
+        return "redirect:/";
+
     }
 }
 

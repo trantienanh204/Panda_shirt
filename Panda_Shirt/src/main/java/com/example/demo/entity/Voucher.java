@@ -90,5 +90,14 @@ public class Voucher {
         }
     }
 
+    public String getFormattedDieukien() {
+        try {
+            double dieukien = Double.parseDouble(this.dieuKien);
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            return formatter.format(dieukien);
+        } catch (NumberFormatException e) {
+            return "Không hợp lệ"; //
+        }
+    }
 
 }

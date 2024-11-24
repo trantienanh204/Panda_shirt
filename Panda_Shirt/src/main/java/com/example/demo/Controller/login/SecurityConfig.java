@@ -26,7 +26,12 @@ import java.util.Set;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/thongke","/panda/login","/Image/**","panda/mahoa","/panda/banhangoffline","/panda/giohang"};
+//=======
+//    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa",
+//            "/panda/banhangoffline"};
+//>>>>>>> thai
     private final String[] QUANLY_ENDPOINTS= {};
     private final String[] NHANVIEN_ENDPOINTS= {};
 
@@ -62,6 +67,7 @@ public class SecurityConfig {
         }
 
 
+
     // Thêm vào lớp xử lý đăng nhập hoặc lớp bảo mật
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
@@ -69,6 +75,8 @@ public class SecurityConfig {
             // Lấy vai trò của người dùng
             Set<String> roles = AuthorityUtils
                     .authorityListToSet(authentication.getAuthorities());
+                System.out.println("Các vai trò của người dùng: " + roles);
+
 
             // In log để kiểm tra vai trò hiện tại của người dùng
             System.out.println("Các vai trò của người dùng: " + roles);
@@ -137,7 +145,6 @@ public class SecurityConfig {
 
         @Bean
         public PasswordEncoder passwordEncoder() {
-            //dùng để mã hóa mật khẩu
             return new BCryptPasswordEncoder();
         }
 }

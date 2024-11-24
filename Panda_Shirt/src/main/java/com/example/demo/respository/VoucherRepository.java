@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
@@ -22,6 +23,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
 
     Voucher findByTenAndIdNot(String ten, Integer id);
 
+
 //@Query("SELECT vc FROM Voucher vc WHERE " +
 //        "(?1 IS NULL OR vc.ma LIKE CONCAT('%', ?1, '%')) AND " +
 //        "(?2 IS NULL OR vc.ten LIKE CONCAT('%', ?2, '%')) AND " +
@@ -30,6 +32,19 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
 //        "(?5 IS NULL OR vc.trangThai LIKE CONCAT('%', ?5, '%')) " +
 //        "ORDER BY vc.ngaytao DESC")
 //Page<Voucher> findByMaAndTenAndTrangthaiVC(String ma, String ten, LocalDate startDate, LocalDate endDate, String trangThai, Pageable pageable);
+
+    Optional<Voucher> findByMa(String ma);
+
+//    @Query(value = "SELECT * FROM Voucher vc WHERE " +
+//            "(?1 IS NULL OR vc.ma_khuyen_mai LIKE %?1%) AND " +
+//            "(?2 IS NULL OR vc.ten_khuyen_mai LIKE %?2%) AND " +
+//            "(?3 IS NULL OR vc.trang_thai LIKE %?3%) AND " +
+//            "(?4 IS NULL OR ?5 IS NULL OR " +
+//            "(vc.ngay_bat_dau >= ?4 AND vc.ngay_bat_dau <= ?5 AND vc.ngay_ket_thuc >= ?4 AND vc.ngay_ket_thuc <= ?5)) " +
+//            "ORDER BY vc.ngay_tao DESC",
+//            nativeQuery = true)
+//
+
 @Query("SELECT vc FROM Voucher vc WHERE " +
         "(?1 IS NULL OR vc.ma LIKE %?1%) AND " +
         "(?2 IS NULL OR vc.ten LIKE %?2%) AND " +

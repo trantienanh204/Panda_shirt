@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 @Entity
@@ -52,9 +53,19 @@ public class SanPhamChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_SAN_PHAM", referencedColumnName = "id")
-    @JsonBackReference
+
     private SanPham sanPham;
 
+
+//    @ManyToOne
+//    @JoinColumn(name = "ID_KICH_THUOC")
+//
+//    private KichThuoc kichThuoc;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "ID_MAU_SAC")
+//
+//    private MauSac mauSac;
 
 
     public SanPhamChiTiet(Integer id) {
@@ -65,6 +76,14 @@ public class SanPhamChiTiet {
     @Column(name = "ANH_SAN_PHAM_CHI_TIET")
     private byte[] anhSanPhamChiTiet;
 
+    public String FormatteddonGia() {
+        try {
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            return formatter.format(dongia);
+        } catch (NumberFormatException e) {
+            return "Không hợp lệ"; //
+        }
+    }
 
     @Override
     public String toString() {

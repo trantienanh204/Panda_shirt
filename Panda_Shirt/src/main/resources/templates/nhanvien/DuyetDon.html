@@ -86,11 +86,14 @@
         </tr>
         </thead>
         <tbody>
+
         <tr th:if="${listcd.empty}">
             <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
         </tr>
         <tr th:each="dd,i: ${listcd}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
+
+
             <td th:text="${dd.hoaDon.mahoadon}"></td>
 <!--            <td th:text="${dd.nhanVien.tennhanvien}"></td>-->
             <td th:text="${dd.khachHang.tenkhachhang}"></td>
