@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
@@ -21,6 +22,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
 
     Voucher findByTenAndIdNot(String ten, Integer id);
 
+    Optional<Voucher> findByMa(String ma);
 
 //    @Query(value = "SELECT * FROM Voucher vc WHERE " +
 //            "(?1 IS NULL OR vc.ma_khuyen_mai LIKE %?1%) AND " +

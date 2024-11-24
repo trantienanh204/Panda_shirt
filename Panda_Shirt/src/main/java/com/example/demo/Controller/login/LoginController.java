@@ -46,7 +46,6 @@ public class LoginController {
     public void encodeAllPasswords() {
         List<TaiKhoan> tkls = taiKhoan.findAll();
         for (TaiKhoan tk : tkls) {
-            // Kiểm tra nếu mật khẩu chưa được mã hóa
             String plainPassword = tk.getMatKhau();
             if (!passwordEncoder.matches(plainPassword, plainPassword)) {
                 String encodedPassword = passwordEncoder.encode(plainPassword);
@@ -55,22 +54,6 @@ public class LoginController {
             }
         }
     }
-
-//    @GetMapping("/account")
-//    public String login(@RequestParam("username") String username,
-//                        @RequestParam("password") String password,
-//                        Model model, HttpSession session) {
-//        System.out.println("dsafdsfd");
-//
-//        String regex = "^[a-zA-Z0-9@._]*$";
-//        if (!username.matches(regex) || !password.matches(regex)) {
-//            model.addAttribute("saitk", "Tài khoản hoặc mật khẩu sai định dạng");
-//            return "Login";
-//        }
-//
-//        model.addAttribute("error", "Sai tài khoản hoặc mật khẩu");
-//        return "login";  // Trả về lại trang đăng nhập nếu đăng nhập thất bại
-//    }
 
 
     @GetMapping("/login")
@@ -112,7 +95,7 @@ public class LoginController {
 //        if (roomId != null) {
 //            return "redirect:/showRoomDetailPhong?roomId=" + roomId;
 //        }
-        return "redirect:/"; // Trở về trang chính
+        return "redirect:/";
     }
 
 

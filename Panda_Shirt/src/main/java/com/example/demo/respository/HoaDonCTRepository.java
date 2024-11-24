@@ -25,4 +25,5 @@ public interface HoaDonCTRepository extends JpaRepository<HoaDonCT,Integer> {
 
         @Query("SELECT h FROM HoaDonCT h WHERE h.hoaDon.id = :hoaDonId" )
         List<HoaDonCT> findhdct(Integer hoaDonId);
+
 }

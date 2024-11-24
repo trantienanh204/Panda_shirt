@@ -41,80 +41,100 @@
 </div>
 </form>
 <!-- Danh sách bài viết -->
-<div class="table-container">
-    <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách hóa đơn</h3>
-    <table style="font-size: 13px">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Mã hóa đơn </th>
-            <th>Tên nhân viên</th>
-            <th>Tên khách hàng</th>
-<!--            <th>Số lượng</th>-->
-            <th>Tổng tiền</th>
-            <th>Ngày mua</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-<!--        <tr th:each="hd,i : ${lshd} " th:if="${hd.nhanVien != null || hd.khachHang != null}">-->
-        <tr th:each="hd,i : ${lshd} " style="width: 10px">
-            <td  th:text="${i.count}"></td>
-            <td th:text="${hd.mahoadon != null ? hd.mahoadon : '(Trống)'}"></td>
-            <td th:text="${hd.nhanVien != null ? hd.nhanVien.tennhanvien : '(Trống)'}"></td>
-            <td th:text="${hd.khachHang != null ? hd.khachHang.tenkhachhang : '(Trống)'}"></td>
-<!--            <td th:text="${hd.soluong}"></td>-->
-            <td th:text="${hd.thanhtien != null ? hd.thanhtien :'(Trống)'}"></td>
-<!--            <td th:text="${hd.tongtien != null ? #numbers.formatDecimal(hd.tongtien, 0, 'COMMA') : '(Trống)'}"></td>-->
-            <td th:text="${hd.ngaymua != null ? hd.ngaymua :'(Trống)'}"></td>
-            <td>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Tab 2</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="tab3-tab" data-bs-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Tab 3</a>
+    </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+        <div class="table-container">
+            <h3><i class="fa-solid fa-list" style="color: #000000;"></i> Danh sách hóa đơn</h3>
+            <table style="font-size: 13px">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Mã hóa đơn </th>
+                    <th>Tên nhân viên</th>
+                    <th>Tên khách hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Ngày mua</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--        <tr th:each="hd,i : ${lshd} " th:if="${hd.nhanVien != null || hd.khachHang != null}">-->
+                <tr th:each="hd,i : ${lshd} " style="width: 10px">
+                    <td  th:text="${i.count}"></td>
+                    <td th:text="${hd.mahoadon != null ? hd.mahoadon : '(Trống)'}"></td>
+                    <td th:text="${hd.nhanVien != null ? hd.nhanVien.tennhanvien : '(Trống)'}"></td>
+                    <td th:text="${hd.khachHang != null ? hd.khachHang.tenkhachhang : '(Trống)'}"></td>
+                    <td th:text="${hd.thanhtien != null ? hd.thanhtien :'(Trống)'}"></td>
+                    <td th:text="${hd.ngaymua != null ? hd.ngaymua :'(Trống)'}"></td>
+                    <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
-            </td>
-            <td>
-                <a class="btn " th:href="@{/panda/hoadon/update(id=${hd.id})}" >
-                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 20px"></i>
-                </a>
-                <a class="btn " href="#" data-toggle="modal" data-target="#invoiceDetailModal"
-                   th:data-invoice-id="${hd.id}">
-                    <i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>
-                </a>
-                <a class="btn " th:href="@{/panda/hoadon/xuatfile(id=${hd.id})}">
-                    <i class="fa-solid fa-inbox" style="color: #000000;font-size: 20px"></i>
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <!-- Nút Previous -->
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
-                   aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
+                    </td>
+                    <td>
+                        <a class="btn " th:href="@{/panda/hoadon/update(id=${hd.id})}" >
+                            <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 20px"></i>
+                        </a>
+                        <a class="btn " href="#" data-toggle="modal" data-target="#invoiceDetailModal"
+                           th:data-invoice-id="${hd.id}">
+                            <i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>
+                        </a>
+                        <a class="btn " th:href="@{/panda/hoadon/xuatfile(id=${hd.id})}">
+                            <i class="fa-solid fa-inbox" style="color: #000000;font-size: 20px"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <!-- Nút Previous -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
 
-            <!-- Hiển thị danh sách trang -->
-            <li class="page-item">
-                <a class="page-link"
-                   th:text="${currentPage +1 }" disabled></a>
-            </li>
+                    <!-- Hiển thị danh sách trang -->
+                    <li class="page-item">
+                        <a class="page-link"
+                           th:text="${currentPage +1 }" disabled></a>
+                    </li>
 
-            <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
-                   aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+                    <!-- Nút Next -->
+                    <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+        Nội dung của Tab 2
+    </div>
+    <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+        Nội dung của Tab 3
+    </div>
 </div>
+
 <!-- modal-->
 <div class="modal fade" id="invoiceDetailModal" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -333,6 +353,9 @@
         margin: 0 5px;
         cursor: pointer;
     }
+
+
 </style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
