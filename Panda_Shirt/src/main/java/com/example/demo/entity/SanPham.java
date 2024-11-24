@@ -20,8 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "SAN_PHAM")
-
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
 public class SanPham {
     @Id
@@ -51,27 +51,27 @@ public class SanPham {
 
     @ManyToOne
     @JoinColumn(name = "ID_DANH_MUC", referencedColumnName = "id")
-    @JsonBackReference
+
     private DanhMuc danhMuc;
 
     @ManyToOne
     @JoinColumn(name = "ID_NHA_SAN_XUAT", referencedColumnName = "id")
-    @JsonBackReference
+
     private NhaSanXuat nhaSanXuat;
 
     @ManyToOne
     @JoinColumn(name = "ID_THUONG_HIEU", referencedColumnName = "id")
-    @JsonBackReference
+
     private ThuongHieu thuongHieu;
 
     @ManyToOne
     @JoinColumn(name = "ID_CO_AO", referencedColumnName = "id")
-    @JsonBackReference
+
     private CoAo coAo;
 
     @OneToOne
     @JoinColumn(name = "ID_CHAT_LIEU", referencedColumnName = "id")
-    @JsonBackReference
+
     private ChatLieu chatLieu;
 
     @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -32,70 +32,87 @@ public class EmailController {
         Boolean Loai = emailService.layvoucher(Integer.parseInt(voucherId)).isLoai();
         LocalDate NBD = emailService.layvoucher(Integer.parseInt(voucherId)).getNgaybatdau();
         LocalDate NKT = emailService.layvoucher(Integer.parseInt(voucherId)).getNgayketthuc();
+
         String body = "<!DOCTYPE html>\n" +
                 "<html lang=\"vi\">\n" +
                 "<head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
                 "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <title>Thông báo mã CAPTCHA</title>\n" +
-                "    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\"/>"+
+                "    <title>Thông báo mã Voucher từ Panda-Shirt</title>\n" +
+                "    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\"/>\n" +
                 "    <style>\n" +
                 "        body {\n" +
-                "            font-family: Arial, sans-serif;\n" +
-                "            background-color: #f4f4f4;\n" +
+                "            font-family: 'Arial', sans-serif;\n" +
+                "            background-color: #f0f0f0;\n" +
                 "            margin: 0;\n" +
                 "            padding: 0;\n" +
+                "            text-align: center;\n" +  // Căn giữa toàn bộ nội dung trong body
                 "        }\n" +
                 "        .email-container {\n" +
                 "            background-color: #ffffff;\n" +
-                "            max-width: 600px;\n" +
+                "            max-width: 650px;\n" +
                 "            margin: 0 auto;\n" +
-                "            padding: 20px;\n" +
-                "            border-radius: 8px;\n" +
-                "            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n" +
+                "            padding: 30px;\n" +
+                "            border-radius: 10px;\n" +
+                "            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);\n" +
+                "            font-size: 16px;\n" +
+                "            color: #333;\n" +
+                "            text-align: left;\n" +  // Căn trái các nội dung bên trong email container
                 "        }\n" +
                 "        .header {\n" +
                 "            text-align: center;\n" +
                 "            background-color: #FF8C00;\n" +
                 "            color: white;\n" +
-                "            padding: 10px;\n" +
-                "            border-radius: 8px 8px 0 0;\n" +
+                "            padding: 30px 0;\n" +
+                "            border-radius: 10px 10px 0 0;\n" +
+                "            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n" +
                 "        }\n" +
                 "        .header h1 {\n" +
                 "            margin: 0;\n" +
-                "            font-size: 24px;\n" +
+                "            font-size: 28px;\n" +
+                "            font-weight: bold;\n" +
                 "        }\n" +
                 "        .content {\n" +
-                "            padding: 20px;\n" +
-                "            text-align: center;\n" +
+                "            padding: 25px;\n" +
+                "            text-align: center;\n" +  // Căn giữa nội dung trong phần content
                 "        }\n" +
                 "        .content h2 {\n" +
                 "            color: #333;\n" +
                 "            margin-bottom: 20px;\n" +
+                "            font-size: 22px;\n" +
                 "        }\n" +
-                "        .captcha-code {\n" +
+                "        .voucher-code {\n" +
                 "            display: inline-block;\n" +
                 "            background-color: #f7f7f7;\n" +
-                "            font-size: 24px;\n" +
-                "            letter-spacing: 2px;\n" +
+                "            font-size: 32px;\n" +
+                "            letter-spacing: 3px;\n" +
                 "            color: #007bff;\n" +
-                "            padding: 10px 20px;\n" +
-                "            border: 2px dashed #007bff;\n" +
-                "            border-radius: 8px;\n" +
-                "            margin-bottom: 20px;\n" +
+                "            padding: 20px 40px;\n" +
+                "            border: 2px solid #007bff;\n" +
+                "            border-radius: 12px;\n" +
+                "            margin-bottom: 30px;\n" +
+                "            font-weight: bold;\n" +
+                "            transition: all 0.3s ease;\n" +
                 "        }\n" +
-                "        .content p {\n" +
+                "        .voucher-code:hover {\n" +
+                "            background-color: #007bff;\n" +
+                "            color: white;\n" +
+                "            cursor: pointer;\n" +
+                "            transform: translateY(-5px);\n" +
+                "        }\n" +
+                "        .noidung {\n" +
+                "            font-size: 16px;\n" +
+                "            margin-bottom: 15px;\n" +
                 "            color: #555;\n" +
-                "            margin-bottom: 20px;\n" +
-                "        }\n" +
-                "        .noidung{\n" +
-                "            font-size: 20px;\n" +
                 "        }\n" +
                 "        .footer {\n" +
                 "            text-align: center;\n" +
-                "            font-size: 12px;\n" +
-                "            color: #aaa;\n" +
-                "            margin-top: 20px;\n" +
+                "            font-size: 14px;\n" +
+                "            color: #888;\n" +
+                "            margin-top: 40px;\n" +
+                "        }\n" +
+                "        .footer p {\n" +
+                "            margin: 0;\n" +
                 "        }\n" +
                 "    </style>\n" +
                 "</head>\n" +
@@ -105,33 +122,33 @@ public class EmailController {
                 "        <h1>Ưu đãi từ Panda-Shirt</h1>\n" +
                 "    </div>\n" +
                 "    <div class=\"content\">\n" +
-                "        <h2>Dưới đây là mã giảm giá đặc biệt dành cho bạn</h2>\n" +
-                "        <div class=\"captcha-code\">\n" +
+                "        <h2>Voucher đặc biệt dành cho bạn</h2>\n" +
+                "        <div class=\"voucher-code\">\n" +
                 MaVC +
                 "        </div>\n" +
-                "<div class=\"noidung\">\n" +
-                "        <b>Mức giảm: </b>\n" + MG + "" +  (Loai ? " %" : " VND")  +
-                "</div>"+
-                "<div class=\"noidung\">\n" +
-                "        <b>Điều kiện áp dụng: </b>\n" + Dk +""+
-                "</div>"+
-                "<div class=\"noidung\">\n" +
-                "        <b>Mô tả voucher: </b>\n" + Mota +""+
-                "</div>"+
-                "<div class=\"noidung\">\n" +
-                "        <b>Từ ngày:</b>\n"  + NBD +
+                "        <div class=\"noidung\">\n" +
+                "            <b>Mức giảm: </b>" + MG + (Loai ? " %" : " VND") +
+                "        </div>\n" +
+                "        <div class=\"noidung\">\n" +
+                "            <b>Điều kiện áp dụng: </b> Tổng đơn hàng phải lớn hơn <b>" + Dk + "</b>VND mới có thể sử dụng mã giảm giá này.\n" +
+                "        </div>\n" +
+                "        <div class=\"noidung\">\n" +
+                "            <b>Mô tả voucher: </b>" + Mota + "\n" +
+                "        </div>\n" +
+                "        <div class=\"noidung\">\n" +
+                "            <b>Từ ngày:</b> " + NBD + "\n" +
+                "        </div>\n" +
+                "        <div class=\"noidung\">\n" +
+                "            <b>Đến ngày:</b> " + NKT + "\n" +
+                "        </div>\n" +
+                "        <p>Vui lòng nhập mã Voucher này để nhận ưu đãi. Chúc bạn mua sắm vui vẻ!</p>\n" +
                 "    </div>\n" +
-                "<div class=\"noidung\">\n" +
-                "        <b>Đến ngày:</b>\n"  + NKT +
-                "        <p>Vui lòng nhập mã Voucher này để nhận ưu đãi.</p>\n" +
-                "    </div>\n" +
-                "</div>"+
                 "    <div class=\"footer\">\n" +
                 "        <p>Nếu bạn không yêu cầu mã này, vui lòng bỏ qua email này.</p>\n" +
                 "    </div>\n" +
                 "</div>\n" +
                 "</body>\n" +
-                "</html>\n";
+                "</html>";
 
         // Gửi email cho từng khách hàng trong danh sách
         for (Customer customer : customers) {

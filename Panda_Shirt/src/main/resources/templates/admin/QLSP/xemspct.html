@@ -135,9 +135,26 @@
                 type: 'GET',
                 data: { id: id },
                 success: function(data) {
+                    console.log("Dữ liệu nhận được từ server:", data);
+
+                    // Kiểm tra chi tiết từng phần dữ liệu
+                    data.sanPhamChiTietList.forEach(function(chiTiet, index) {
+                        console.log("Chi tiết sản phẩm " + (index + 1) + ": ", chiTiet);
+                    });
+
                     if (data.sanPhamChiTietList && data.sanPhamChiTietList.length > 0) {
                         let productDetailHtml = '';
-                        data.sanPhamChiTietList.forEach(function(chiTiet, index) {
+                        data.sanPhamChiTietList.forEach(function(chiTiet) {
+                            let kichThuoc = chiTiet.kichThuoc && typeof chiTiet.kichThuoc === 'object' ? chiTiet.kichThuoc.ten : 'Không có kích thước';
+                            let kichThuocId = chiTiet.kichThuoc && typeof chiTiet.kichThuoc === 'object' ? chiTiet.kichThuoc.id : '';
+                            let mauSac = chiTiet.mauSac && typeof chiTiet.mauSac === 'object' ? chiTiet.mauSac.ten : 'Không có màu sắc';
+                            let mauSacId = chiTiet.mauSac && typeof chiTiet.mauSac === 'object' ? chiTiet.mauSac.id : '';
+
+                            // Kiểm tra và in ra giá trị của kichThuoc và mauSac
+                            console.log("ID Chi tiết sản phẩm:", chiTiet.id);
+                            console.log("Kích thước:", kichThuoc, "- ID:", kichThuocId);
+                            console.log("Màu sắc:", mauSac, "- ID:", mauSacId);
+
                             productDetailHtml += `
                             <tr data-id="${chiTiet.id}">
                                 <td><input type="checkbox" class="select-row"></td>
@@ -148,19 +165,15 @@
                                 <td>${data.chatLieu ? data.chatLieu.tenChatLieu : 'Không có chất liệu'}</td>
                                 <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" disabled></td>
                                 <td><input type="number" class="form-control dongia-edit" value="${chiTiet.dongia}" disabled></td>
-                                <td>${data.ngayTao}</td>
-                                <td>${data.trangthai === 1 ? 'Đang bán' : 'Ngừng bán'}</td>
+                                <td>${chiTiet.ngaytao ? chiTiet.ngaytao : 'Không có ngày tạo'}</td>
+                                <td>${chiTiet.trangthai == 1 ? 'Đang bán' : 'Ngừng bán'}</td>
                                 <td>
-                                    <input type="hidden" class="kich-thuoc-id" value="${chiTiet.kichThuoc.id}">
-                                    ${chiTiet.kichThuoc.ten}
+                                    <input type="hidden" class="kich-thuoc-id" value="${kichThuocId}">
+                                    ${kichThuoc}
                                 </td>
                                 <td>
-                                    <input type="hidden" class="mau-sac-id" value="${chiTiet.mauSac.id}">
-                                    ${chiTiet.mauSac.ten}
-                                </td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm">Sửa</button>
-                                    <button class="btn btn-danger btn-sm">Xóa</button>
+                                    <input type="hidden" class="mau-sac-id" value="${mauSacId}">
+                                    ${mauSac}
                                 </td>
                             </tr>
                         `;
@@ -263,9 +276,12 @@
             }
         });
     });
-
-
-
 </script>
+
+
+
+
+
+
 </body>
 </html>

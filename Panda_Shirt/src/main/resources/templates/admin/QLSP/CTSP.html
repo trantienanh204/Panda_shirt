@@ -15,34 +15,54 @@
         }
         .container {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             max-width: 900px;
             margin: auto;
         }
         h3 {
             color: #343a40;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 600;
         }
         .table th, .table td {
             vertical-align: middle;
             text-align: center;
+            padding: 15px;
         }
         .btn-green {
             background-color: #28a745;
             color: white;
             width: 100%;
-            border-radius: 25px;
-            transition: background-color 0.3s;
+            border-radius: 30px;
+            padding: 12px 0;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         .btn-green:hover {
             background-color: #218838;
+            transform: translateY(-2px); /* Tạo hiệu ứng nổi lên khi hover */
         }
         .btn-circle {
             border-radius: 50%;
+            padding: 10px;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-circle:hover {
+            background-color: #f0f0f0;
         }
         .form-select {
             border-radius: 25px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+        .form-select:focus {
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+            border-color: #28a745;
         }
         .btn-outline-secondary {
             border-radius: 25px;
@@ -52,7 +72,8 @@
             color: #495057;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 22px;
         }
         .table {
             margin-bottom: 30px;
@@ -60,12 +81,17 @@
         .table-bordered {
             border-color: #dee2e6;
         }
-
         /* Tùy chỉnh hiển thị của Select2 */
         .select2-results__option[data-color] {
             display: flex;
             align-items: center;
-            padding: 10px; /* Tăng khoảng cách giữa các lựa chọn */
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .select2-results__option[data-color]:hover {
+            background-color: #f0f0f0;
         }
 
         .select2-results__option[data-color]::before {
@@ -75,13 +101,13 @@
             height: 20px;
             margin-right: 10px;
             border-radius: 50%;
-            border: 2px solid #ccc; /* Thêm viền cho ô màu */
-            transition: transform 0.3s; /* Hiệu ứng khi hover */
+            border: 2px solid #ccc;
+            transition: transform 0.3s, border-color 0.3s;
         }
 
         .select2-results__option[data-color]:hover::before {
-            transform: scale(1.2); /* Tăng kích thước khi hover */
-            border-color: #333; /* Đổi màu viền khi hover */
+            transform: scale(1.2);
+            border-color: #333;
         }
 
         .select2-selection__choice {
@@ -92,7 +118,7 @@
             border-radius: 15px;
             padding: 5px 10px;
             margin: 3px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ cho lựa chọn */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .select2-selection__choice__remove {
@@ -120,16 +146,23 @@
             align-items: center;
             cursor: pointer;
             border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .product-image:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .product-image img {
             max-width: 100%;
             max-height: 100%;
+            border-radius: 8px;
         }
         .product-image-cell {
             cursor: pointer;
             text-align: center;
-            padding-left: 15px; /* Tạo khoảng cách giữa cột "Hành động" và "Ảnh sản phẩm" */
+            padding-left: 15px;
         }
 
         .product-image-cell span {
@@ -138,15 +171,19 @@
             background-color: #f0f0f0;
             border: 1px solid #ccc;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
+        .product-image-cell span:hover {
+            background-color: #e9ecef;
+        }
 
         .product-row {
             display: grid;
             grid-template-columns: 65% 30%; /* Bảng chiếm 65%, ảnh chiếm 30% */
             gap: 5%; /* Khoảng cách giữa bảng và ảnh */
-            align-items: start; /* Đảm bảo bảng và ảnh căn chỉnh từ đầu hàng */
-            margin-bottom: 20px; /* Khoảng cách giữa các hàng sản phẩm */
+            align-items: start;
+            margin-bottom: 20px;
         }
 
         .product-table {
@@ -158,9 +195,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f0f0; /* Màu nền cho phần chứa ảnh */
+            background-color: #f0f0f0;
             border: 1px solid #ccc;
-            height: 100%; /* Chiều cao của ảnh bằng chiều cao của bảng */
+            height: 100%;
         }
 
         .product-image-cell {
@@ -168,10 +205,13 @@
             cursor: pointer;
             background-color: #f9f9f9;
             border: 1px dashed #ccc;
+            border-radius: 5px;
         }
 
-
-
+        /* Thêm khoảng cách giữa các phần */
+        .mb-3 {
+            margin-bottom: 25px;
+        }
     </style>
 
 </head>
@@ -237,54 +277,17 @@
     </div>
 
     <!-- Table: Sản phẩm với màu sắc -->
-
     <h5>Sản phẩm chi tiết </h5>
     <div id="product-tables"></div>
-
-
 </div>
 
 <button class="btn btn-green">Thêm tất cả</button>
 
-<!-- Nội dung trang của bạn -->
+
 
 <script>
-    function layDuLieuSanPham() {
-        const productDetails = [];
 
-        $('#product-tables .product-row').each(function() {
-            const color = $(this).find('h3').text().trim(); // Lấy màu
-            const rows = $(this).find('tbody tr');
-
-            rows.each(function() {
-                const size = $(this).find('td:nth-child(3)').text().trim(); // Lấy kích thước
-                const price = $(this).find('input[type="number"]').eq(0).val().trim();
-                const quantity = $(this).find('input[type="number"]').eq(1).val().trim();
-                const images = [];
-
-                $(this).find('.product-image-cell img').each(function() {
-                    images.push($(this).attr('src')); // Thu thập nguồn ảnh
-                });
-
-                // Kiểm tra nếu size, color, price và quantity có giá trị
-                if (size && color && price && quantity) {
-                    productDetails.push({ // Thêm vào mảng productDetails
-                        mauSac: color,  // Sử dụng thuộc tính mauSac
-                        kichThuoc: size, // Sử dụng thuộc tính kichThuoc
-                        gia: parseFloat(price), // Sử dụng thuộc tính gia
-                        soLuong: parseInt(quantity, 10), // Sử dụng thuộc tính soLuong
-                        images: images // Thêm danh sách hình ảnh
-                    });
-                }
-            });
-        });
-
-        return productDetails; // Trả về mảng chi tiết sản phẩm
-    }
-
-
-
-    // Hàm tải ảnh lên
+    // Hàm upload hình ảnh
     function uploadImage(cell) {
         const input = document.createElement('input');
         input.type = 'file';
@@ -293,11 +296,10 @@
 
         input.onchange = function(event) {
             const files = event.target.files;
-            const imageUrls = []; // Mảng lưu URL của hình ảnh
+            const imageUrls = [];
 
             const loadImage = (index) => {
                 if (index >= files.length) {
-                    // Khi tất cả ảnh đã được load
                     displayImages(cell, imageUrls);
                     return;
                 }
@@ -306,39 +308,39 @@
                 const reader = new FileReader();
 
                 reader.onload = function(e) {
-                    // Tạo một Blob từ dữ liệu nhị phân và tạo URL
                     const blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
                     const url = URL.createObjectURL(blob);
-                    imageUrls.push(url); // Thêm URL vào mảng
-                    loadImage(index + 1); // Load ảnh tiếp theo
+                    imageUrls.push(url);
+                    loadImage(index + 1);
                 };
 
-                reader.readAsArrayBuffer(file); // Đọc file dưới dạng ArrayBuffer
+                reader.readAsArrayBuffer(file);
             };
 
-            loadImage(0); // Bắt đầu load ảnh từ vị trí đầu tiên
+            loadImage(0);
         };
 
         input.click();
     }
 
-
+    // Hàm hiển thị hình ảnh
     function displayImages(cell, imageUrls) {
-        // Xóa tất cả hình ảnh hiện có trước khi hiển thị mới
         cell.innerHTML = '';
-
         imageUrls.forEach(url => {
             const img = document.createElement('img');
-            img.src = url; // Đặt URL của hình ảnh
-            img.alt = 'Uploaded Image'; // Mô tả hình ảnh
-            img.style.maxWidth = '100px'; // Giới hạn kích thước hình ảnh
+            img.src = url;
+            img.alt = 'Uploaded Image';
+            img.style.maxWidth = '100px';
             img.style.maxHeight = '100px';
-            cell.appendChild(img); // Thêm hình ảnh vào ô
+            cell.appendChild(img);
         });
     }
 
-
-
+    // Gọi hàm uploadImage khi nhấn nút tải ảnh (cập nhật HTML của bạn để gọi hàm này)
+    $('.upload-image-button').on('click', function() {
+        const cell = $(this).closest('.product-image-cell')[0];
+        uploadImage(cell);
+    });
 
 
 
@@ -378,7 +380,6 @@
             });
         }
 
-        // Khởi tạo Select2 cho các select element
         $('.form-select').select2({
             allowClear: true,
             tags: true,
@@ -499,7 +500,7 @@
 
             const productData = {
                 masp: null,
-                tenSanPham: parseInt(productName, 10),
+                tenSanPham: productName,
                 danhMucId: parseInt(categoryId, 10),
                 thuongHieuId: parseInt(brandId, 10),
                 chatLieuId: parseInt(materialId, 10),
@@ -508,6 +509,7 @@
                 chiTietSanPham: []
             };
 
+            const imagePromises = [];
             $('#product-tables .product-row').each(function() {
                 const color = $(this).find('h3').text().trim();
                 const rows = $(this).find('tbody tr');
@@ -519,10 +521,11 @@
                     const images = [];
 
                     $(this).find('.product-image-cell img').each(function() {
-                        // Lấy đường dẫn ảnh và đọc nó dưới dạng byte
                         const src = $(this).attr('src');
-                        const byteArray = getImageBytes(src); // Hàm cần tạo
-                        images.push(byteArray);
+                        const promise = getImageBytes(src).then(byteArray => {
+                            images.push(byteArray);
+                        });
+                        imagePromises.push(promise);
                     });
 
                     if (size && color) {
@@ -531,37 +534,49 @@
                             kichThuoc: size,
                             gia: parseFloat(price),
                             soLuong: parseInt(quantity, 10),
-                            images: images // Đưa vào danh sách byte
+                            images: images
                         });
                     }
                 });
             });
 
-            console.log("Dữ liệu sản phẩm:", JSON.stringify(productData, null, 2));
+            Promise.all(imagePromises).then(() => {
+                console.log("Dữ liệu sản phẩm:", JSON.stringify(productData, null, 2));
 
-            $.ajax({
-                url: '/panda/addTCSP',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(productData),
-                success: function(response) {
-                    console.log("Phản hồi từ server:", response);
-                    Swal.fire('Thành công!', 'Sản phẩm đã được thêm thành công', 'success');
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    Swal.fire('Lỗi!', 'Không thể thêm sản phẩm. Lỗi: ' + errorThrown, 'error');
-                }
+                $.ajax({
+                    url: '/panda/addTCSP',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(productData),
+                    success: function(response) {
+                        console.log("Phản hồi từ server:", response);
+                        Swal.fire('Thành công!', 'Sản phẩm đã được thêm thành công', 'success');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire('Lỗi!', 'Không thể thêm sản phẩm. Lỗi: ' + errorThrown, 'error');
+                    }
+                });
+            }).catch(error => {
+                console.error("Lỗi khi xử lý ảnh:", error);
+                Swal.fire('Lỗi!', 'Có lỗi xảy ra khi xử lý ảnh. Vui lòng thử lại.', 'error');
             });
         }
+
+        // Gọi hàm getImagesAndSave khi nhấn nút "Thêm tất cả"
+        $('.btn-green').on('click', function() {
+            getImagesAndSave();
+        });
+
         function getImageBytes(src) {
             return new Promise((resolve, reject) => {
                 fetch(src)
                     .then(response => response.arrayBuffer())
                     .then(buffer => new Uint8Array(buffer))
-                    .then(byteArray => resolve(byteArray))
+                    .then(byteArray => resolve(Array.from(byteArray))) // Chuyển đổi Uint8Array thành mảng thường
                     .catch(error => reject(error));
             });
         }
+
 
 
         // Gọi hàm getImagesAndSave khi nhấn nút "Thêm tất cả"

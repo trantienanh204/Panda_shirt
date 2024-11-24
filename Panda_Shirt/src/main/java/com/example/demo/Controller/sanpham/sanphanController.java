@@ -408,7 +408,7 @@ public class sanphanController {
     @GetMapping("/sanpham/chitiet")
     @ResponseBody
     public SanPham getSanPhamChiTiet(@RequestParam("id") Integer id) {
-        return sanPhamService.Listtimkiemsp(id); // Phương thức trả về chi tiết sản phẩm theo ID
+        return sanPhamService.Listtimkiemsp(id);
     }
     @PostMapping("/sanpham/update")
     public ResponseEntity<String> updateSanPhamChiTiet(@RequestBody List<SanPhamChiTietDTO> updates) {
