@@ -161,29 +161,33 @@
 </div>
 <!-- Main Section -->
 <div class="container my-5">
-    <!--    <h2 class="text-center mb-5">Sản Phẩm Nổi Bật<i class="fa-solid fa-fire" style="color: #ff1900;"></i></h2>-->
-    <div class="row" th:each="sp, i : ${sanpham}">
-        <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
-            <a style="text-decoration: none;" th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}">
-                <div class="card">
-                    <div th:if="${sp.anhsp != null}">
-                        <img th:src="'data:image/png;base64,' + ${sp.anhsp}" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+    <div class="row">
+        <th:block th:each="sp, i : ${sanpham}">
+            <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
+                <a style="text-decoration: none;" th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}">
+                    <div class="card">
+                        <div th:if="${sp.anhsp != null}">
+                            <img th:src="'data:image/png;base64,' + ${sp.anhsp}" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                        </div>
+                        <div th:if="${sp.anhsp == null}">
+                            <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                        </div>
+                        <div class="card-hover-buttons">
+                            <button class="btn btn-success">Mua ngay</button>
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
                     </div>
-                    <div th:if="${sp.anhsp == null}">
-                        <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
-                    </div>
-                    <div class="card-hover-buttons">
-                        <button class="btn btn-success">Mua ngay</button>
-                        <button class="btn btn-primary">Thêm vào giỏ</button>
-                    </div>
-                </div>
-            </a>
-            <h5 class="card-title" style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;" th:text="${sp.tensp}">Hihi</h5>
-            <!-- Hiển thị giá thấp nhất -->
-            <p class="card-text" style="color: red; padding-top: 10px; text-align: center;" th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')} + '₫'"></p>
-        </div>
-    </div>
-
+                </a>
+                <h5 class="card-title" style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;" th:text="${sp.tensp}">Hihi</h5>
+                <!-- Hiển thị giá thấp nhất -->
+                <p class="card-text" style="color: red; padding-top: 10px; text-align: center;" th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')} + '₫'"></p>
+            </div>
+            <!-- Đóng và mở div.row sau mỗi 4 sản phẩm -->
+            <th:block th:if="${i.count % 4 == 3}">
+    </div><div class="row">
+    </th:block>
+    </th:block>
+</div>
 </div>
 
 <!-- Footer -->
