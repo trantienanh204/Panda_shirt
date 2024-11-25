@@ -71,6 +71,11 @@ public class TrangChuController {
                 model.addAttribute("anhspBase64", null);
             }
 
+            // Log số lượng sản phẩm chi tiết
+            for (SanPhamChiTiet chiTiet : sp.getSanPhamChiTietList()) {
+                System.out.println("Sản phẩm chi tiết ID: " + chiTiet.getId() + ", Số lượng: " + chiTiet.getSoluongsanpham());
+            }
+
             model.addAttribute("sanPham", sp);
 
             // Lấy giá trị min và max

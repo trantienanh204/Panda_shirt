@@ -157,6 +157,7 @@ public class VnpayController {
         hoaDon.setMahoadon(mahd);
         hoaDon.setKhachHang(khachHang);
         hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
+        hoaDon.setThanhtien(BigDecimal.valueOf(totalAmount));
         hoaDon.setNgaytao(LocalDate.now());
         hoaDon.setNgaymua(LocalDate.now());
         hoaDon.setTrangthai(1);
@@ -199,6 +200,7 @@ public class VnpayController {
         donHang.setKhachHang(khachHang);
         donHang.setNgaytao(LocalDate.now());
         donHang.setTongtien(BigDecimal.valueOf(totalAmount));
+
         donHang.setDiaChi(khachHang.getDiachi());
         donHang.setSdt(khachHang.getSdt());
         donHang.setTrangThai("Chờ duyệt");

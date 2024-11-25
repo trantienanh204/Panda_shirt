@@ -234,7 +234,7 @@ public class DuyetDonController {
         @GetMapping("/dongy/{id}")
         public String dongy(@PathVariable("id") Integer id, @AuthenticationPrincipal UserDetails userDetails) {
             DonHang donHang = donHangRepository.getReferenceById(id);
-
+            HoaDon hoaDon = hoaDonService.findById(donHang.getHoaDon().getId());
             donHang.setTrangThai("Đã duyệt");
             String username = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
@@ -243,8 +243,10 @@ public class DuyetDonController {
             }
             NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
             donHang.setNhanVien(nhanVien);
+            donHang.setNhanVien(nhanVien);
+            hoaDon.setNhanVien(nhanVien);
             donHangRepository.save(donHang);
-
+            hoaDonService.save(hoaDon);
             return "redirect:/panda/nhanvien/duyetdon/hienthi";
         }
 
@@ -276,10 +278,10 @@ public class DuyetDonController {
       }
       NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
         donHang.setTrangThai("Hoàn thành");
-      donHang.setNhanVien(nhanVien);
-      hoaDon.setNhanVien(nhanVien);
-      donHangRepository.save(donHang);
-      hoaDonService.save(hoaDon);
+//      donHang.setNhanVien(nhanVien);
+//      hoaDon.setNhanVien(nhanVien);
+//      donHangRepository.save(donHang);
+//      hoaDonService.save(hoaDon);
 
             return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
