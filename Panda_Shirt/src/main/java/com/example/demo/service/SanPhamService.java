@@ -431,6 +431,7 @@ public class SanPhamService {
                     newChiTiet.setSoluongsanpham(chiTietDTO.getSoLuong());
                     newChiTiet.setSanPham(sanPham);
                     newChiTiet.setNgaytao(LocalDate.now());
+                    newChiTiet.setTrangthai(true);
                     newChiTiet.setAnhSanPhamChiTiet(chiTietDTO.getImages());
                     existingChiTietList.add(newChiTiet); // Thêm vào danh sách hiện có
                 }
