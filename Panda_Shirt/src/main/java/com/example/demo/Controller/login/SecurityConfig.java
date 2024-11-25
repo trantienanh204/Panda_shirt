@@ -91,7 +91,7 @@ public class SecurityConfig {
                 response.sendRedirect("/panda/vaitro");
             } else if (roles.contains("ROLE_NHANVIEN")) {
                 System.out.println("Chuyển hướng đến /panda/nhanvien/banhang/hienthi");
-                response.sendRedirect("/panda/nhanvien/banhangoffline");
+                response.sendRedirect("/panda/banhangoffline");
             } else {
                 System.out.println("Chuyển hướng mặc định đến /panda/thongke");
                 response.sendRedirect("/panda/trangchu");
