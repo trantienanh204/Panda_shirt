@@ -81,7 +81,12 @@
                         <input type="checkbox" class="form-check-input product-checkbox" th:id="'product' + ${item.id}" th:data-price="${item.sanPhamChiTiet.dongia * item.soluong}">
                     </td>
                     <td>
-                        <img th:src="@{${item.sanPhamChiTiet.anhSanPhamChiTiet}}" alt="Product Image" class="img-fluid" style="max-width: 100px;">
+                        <div th:if="${item.anhspBase64 != null}">
+                            <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image" class="img-fluid" style="max-width: 100px;">
+                        </div>
+                        <div th:if="${item.anhspBase64 == null}">
+                            <img src="https://placehold.co/600x400?text=No+Image" class="img-fluid" style="max-width: 100px;" alt="Product Image">
+                        </div>
                     </td>
                     <td th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</td>
                     <td th:text="${item.sanPhamChiTiet.mauSac.ten}">Màu sắc</td>
@@ -101,6 +106,7 @@
                 <button type="button" class="btn btn-primary" id="buyButton" style="display: none;">Thanh Toán</button>
             </div>
         </form>
+
     </div>
 </div>
 

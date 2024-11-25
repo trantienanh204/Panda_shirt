@@ -180,7 +180,6 @@ public class GioHangController {
 
 
 
-
     @GetMapping("/thanhtoan")
     public String thanhToan(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String tenDangNhap = userDetails.getUsername();
@@ -220,8 +219,6 @@ public class GioHangController {
     }
 
 
-
-
     @PostMapping("/thanhtoan")
     public String xuLyThanhToan(@RequestParam("totalAmount") String totalAmountStr,
                                 @RequestParam("selectedItems") String selectedItemsJson,
@@ -229,10 +226,6 @@ public class GioHangController {
         try {
             // Chuyển đổi totalAmount từ chuỗi sang BigDecimal
             BigDecimal totalAmount = new BigDecimal(totalAmountStr);
-
-            // Log dữ liệu nhận được
-            System.out.println("Total Amount: " + totalAmount);
-            System.out.println("Selected Items JSON: " + selectedItemsJson);
 
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
@@ -244,25 +237,39 @@ public class GioHangController {
             ObjectMapper objectMapper = new ObjectMapper();
             List<Integer> selectedItems = Arrays.asList(objectMapper.readValue(selectedItemsJson, Integer[].class));
 
-            System.out.println("Selected Items: " + selectedItems); // Log danh sách sản phẩm đã chọn
-
             if (selectedItems.isEmpty()) {
                 model.addAttribute("message", "Không có sản phẩm nào được chọn.");
                 return "khachhang/GioHang";
             }
 
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
-            System.out.println("KhachHang ID: " + khachHangId); // Log ID khách hàng
-
             List<GioHang> cartItems = gioHangService.getCartItemsByIds(khachHangId, selectedItems);
-            System.out.println("Cart Items: " + cartItems); // Log danh sách sản phẩm trong giỏ hàng
 
             if (cartItems == null || cartItems.isEmpty()) {
                 model.addAttribute("message", "Không có sản phẩm nào được chọn.");
                 return "khachhang/GioHang";
             }
 
-            model.addAttribute("cartItems", cartItems);
+            // Chuyển đổi dữ liệu byte array thành chuỗi base64
+            List<Map<String, Object>> processedCartItems = new ArrayList<>();
+            for (GioHang item : cartItems) {
+                Map<String, Object> itemMap = new HashMap<>();
+                itemMap.put("id", item.getId());
+                itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
+                itemMap.put("soluong", item.getSoluong());
+
+                if (item.getSanPhamChiTiet().getAnhSanPhamChiTiet() != null) {
+                    String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getAnhSanPhamChiTiet());
+                    System.out.println("Base64 Image: " + base64Image); // Log dữ liệu base64 chi tiết
+                    itemMap.put("anhspBase64", base64Image);
+                } else {
+                    itemMap.put("anhspBase64", ""); // Cập nhật giá trị rỗng nếu không có ảnh
+                }
+
+                processedCartItems.add(itemMap);
+            }
+
+            model.addAttribute("cartItems", processedCartItems);
             model.addAttribute("totalAmount", totalAmount);
             return "khachhang/ThanhToan";
 
@@ -271,7 +278,6 @@ public class GioHangController {
             return "khachhang/GioHang";
         }
     }
-
 
     @PostMapping("/thanhtoan/hoadon")
     public String xuLyHoaDon(@RequestParam double totalAmount,
@@ -312,6 +318,7 @@ public class GioHangController {
         hoaDon.setMahoadon(maHoaDonCT);
         hoaDon.setKhachHang(khachHang);
         hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
+        hoaDon.setThanhtien(BigDecimal.valueOf(totalAmount));
         hoaDon.setNgaytao(LocalDate.now());
         hoaDon.setNgaymua(LocalDate.now());
         hoaDon.setTrangthai(1);

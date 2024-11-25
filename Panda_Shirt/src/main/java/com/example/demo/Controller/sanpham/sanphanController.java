@@ -14,7 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -226,30 +228,22 @@ public class sanphanController {
         }
     }
 
-    @PostMapping()
-        public Object uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-            try {
-                for (MultipartFile file : files) {
-                    hinhanhService.luuHinhAnh(file);
-                }
-                return new RedirectView("baove/form");
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Upload failed");
-            }
+    @GetMapping("sanpham/hinh-anh/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
+        Optional<SanPham> sanPhamOptional = Optional.ofNullable(sanPhamService.Listtimkiemsp(id));
+        if (sanPhamOptional.isPresent()) {
+            byte[] image = sanPhamOptional.get().getAnhsp();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);  // Đảm bảo ảnh là JPEG hoặc có thể là PNG
+            headers.setContentLength(image.length);
+            return new ResponseEntity<>(image, headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
 
-        @PostMapping("/tai-anh")
-        public String taiAnh(@RequestParam("id") Integer id, Model model) {
-            Optional<Anh_SP> hinhAnh = hinhanhService.findById(id);
-            if (hinhAnh.isPresent()) {
-                model.addAttribute("hinhAnh", hinhAnh.get());
-            } else {
-                model.addAttribute("hinhAnh", null);
-            }
-            return "index";
-        }
 
-        @GetMapping("xoa/{id}")
+    @GetMapping("xoa/{id}")
         public String xoa(@PathVariable Integer id) {
             if(id != null ){
                 hinhanhService.xoa(id);
@@ -394,6 +388,23 @@ public class sanphanController {
                     .body("Không thể thêm sản phẩm. Lỗi: " + e.getMessage());
         }
     }
+
+
+
+    @PutMapping("/{id}/update-image")
+    public ResponseEntity<?> updateImage(@PathVariable Integer id, @RequestParam("imagePath") MultipartFile imagePath) {
+        System.out.println("Received image data for product " + id + ": " + imagePath.getOriginalFilename());
+
+        // Gọi phương thức dịch vụ để lưu ảnh
+        SanPham updatedSanPham = sanPhamService.updateImage(id, imagePath);
+        if (updatedSanPham != null) {
+            return ResponseEntity.ok(updatedSanPham);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sản phẩm không tồn tại");
+        }
+    }
+
+
 
 
     @GetMapping("/temporarySanPhamChiTietList")

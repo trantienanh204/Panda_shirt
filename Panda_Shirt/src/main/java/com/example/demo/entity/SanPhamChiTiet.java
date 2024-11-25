@@ -53,7 +53,7 @@ public class SanPhamChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_SAN_PHAM", referencedColumnName = "id")
-
+    @JsonBackReference
     private SanPham sanPham;
 
 

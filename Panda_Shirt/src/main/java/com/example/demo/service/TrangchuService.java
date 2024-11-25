@@ -19,9 +19,8 @@ public class TrangchuService {
     public List<SanPhamChiTiet> test(){
         return sanPhamChiTietRepository.findAll();
     }
-    public List<SanPham> spfinall(){
-        return sanPhamRepository.findSanPhamWithDetails();
-    }
+    public List<SanPham> spfinall(){ List<SanPham> sanphamList = sanPhamRepository.findSanPhamWithDetails();
+    for(SanPham sp : sanphamList) { System.out.println("Dữ liệu ảnh base64: " + sp.getAnhsp()); } return sanphamList; }
 
     public List<SanPhamChiTiet> timkiemspct(Integer id){
         return sanPhamChiTietRepository.findBySanPhamId(id);

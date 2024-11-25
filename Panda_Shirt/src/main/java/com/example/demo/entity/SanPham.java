@@ -37,7 +37,7 @@ public class SanPham {
     private String tensp;
 
     @Column(name = "ANH_SAN_PHAM")
-    private String anhsp;
+    private byte[] anhsp;
 
     @Column(name = "NGAY_TAO")
     private LocalDate ngaytao;
@@ -71,7 +71,7 @@ public class SanPham {
     @JoinColumn(name = "ID_CHAT_LIEU", referencedColumnName = "id")
     private ChatLieu chatLieu;
 
-    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>();
 

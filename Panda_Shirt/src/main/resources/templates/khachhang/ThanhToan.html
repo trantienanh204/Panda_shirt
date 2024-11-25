@@ -8,28 +8,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+
 </head>
 <body>
-
-
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img th:src="@{/Image/panda_logo.png}" width="50" height="50" alt="Panda Logo">
-        </a>
+        <a class="navbar-brand" href="#"><img th:src="@{/Image/panda_logo.png}" width="50px"; height="50px"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
+                    <a class="nav-link" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
+                    <a class="nav-link" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
@@ -39,18 +36,19 @@
             </form>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
+                    <a class="nav-link" href="#" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/taikhoan}"><i class="fas fa-user"></i></a>
+                    <a class="nav-link" href="#"><i class="fas fa-user"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/logout}"><i class="fas fa-sign-in-alt"></i></a>
+                    <a class="nav-link" href="#"><i class="fas fa-sign-in-alt"></i></a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+
 
 <!-- Checkout Section -->
 <div class="container mt-5">
@@ -139,93 +137,36 @@
 
 </div>
 
-<!-- JavaScript -->
-<!--<script>-->
-<!--    document.addEventListener('DOMContentLoaded', function() {-->
-<!--        const bankTransferRadio = document.getElementById('bankTransfer');-->
-<!--        const codRadio = document.querySelector('input[name="paymentMethod"][value="COD"]');-->
-<!--        const qrCodeSection = document.getElementById('qrCodeSection');-->
-<!--        const qrCodeImage = document.getElementById('qrCodeImage');-->
-<!--        const checkPaymentStatusButton = document.getElementById('checkPaymentStatus');-->
-<!--        const finalTotalElement = document.getElementById('finalTotal');-->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Giới thiệu</h5>
+                <ul>
+                    <li><a href="#">Về chúng tôi</a></li>
+                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Liên hệ</h5>
+                <ul>
+                    <li>Email: support@pandashop.com</li>
+                    <li>Hotline: 1900 1234</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Kết nối với chúng tôi</h5>
+                <ul class="d-flex">
+                    <li><a href="#"><i class="fab fa-facebook fa-2x"></i></a></li>
+                    <li class="ms-3"><a href="#"><i class="fab fa-instagram fa-2x"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
 
-<!--        bankTransferRadio.addEventListener('change', function() {-->
-<!--            if (bankTransferRadio.checked) {-->
-<!--                const totalAmount = finalTotalElement.textContent.replace(/[^0-9.-]+/g, '');-->
-<!--                const qrCodeUrl = `https://api.vietqr.io/image/970423-0363714380-qPaEb5R.jpg?amount=${totalAmount}`;-->
-<!--                qrCodeImage.src = qrCodeUrl;-->
-<!--                qrCodeSection.style.display = 'block';-->
-<!--                checkPaymentStatusButton.style.display = 'block';-->
-<!--            }-->
-<!--        });-->
-
-<!--        codRadio.addEventListener('change', function() {-->
-<!--            if (codRadio.checked) {-->
-<!--                qrCodeSection.style.display = 'none';-->
-<!--                checkPaymentStatusButton.style.display = 'none';-->
-<!--            }-->
-<!--        });-->
-
-<!--        checkPaymentStatusButton.addEventListener('click', function() {-->
-<!--            fetch('/api/check-payment-status', {-->
-<!--                method: 'POST',-->
-<!--                headers: {-->
-<!--                    'Content-Type': 'application/json',-->
-<!--                },-->
-<!--                body: JSON.stringify({-->
-<!--                    orderId: 'ORDER_ID_HERE' // Thay đổi thành orderId thực tế của bạn-->
-<!--                }),-->
-<!--            })-->
-<!--                .then(response => response.json())-->
-<!--                .then(data => {-->
-<!--                    if (data.status === 'SUCCESS') {-->
-<!--                        alert('Thanh toán thành công! Đơn hàng của bạn đã được hoàn tất.');-->
-<!--                        window.location.href = '/panda/giohang/hoanthanh';-->
-<!--                    } else {-->
-<!--                        alert('Thanh toán chưa thành công. Vui lòng thử lại.');-->
-<!--                    }-->
-<!--                })-->
-<!--                .catch(error => console.error('Error:', error));-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-<!--lần 2-->
-<!--<script>-->
-<!--    document.addEventListener('DOMContentLoaded', function() {-->
-<!--        const bankTransferRadio = document.getElementById('bankTransfer');-->
-<!--        const codRadio = document.querySelector('input[name="paymentMethod"][value="COD"]');-->
-<!--        const paymentForm = document.getElementById('paymentForm');-->
-<!--        const totalAmountInput = document.getElementById('totalAmountInput');-->
-<!--        const orderInfoInput = document.getElementById('orderInfoInput');-->
-<!--        const paymentMethodInput = document.getElementById('paymentMethodInput');-->
-<!--        const noteInput = document.getElementById('noteInput');-->
-<!--        const finalTotalElement = document.getElementById('finalTotal');-->
-
-<!--        bankTransferRadio.addEventListener('change', function() {-->
-<!--            if (bankTransferRadio.checked) {-->
-<!--                paymentMethodInput.value = 'BankTransfer';-->
-<!--                paymentForm.action = "/submitOrder"; // Cập nhật action để gửi yêu cầu POST-->
-<!--            }-->
-<!--        });-->
-
-<!--        codRadio.addEventListener('change', function() {-->
-<!--            if (codRadio.checked) {-->
-<!--                paymentMethodInput.value = 'COD';-->
-<!--                paymentForm.action = "/processInvoice"; // Cập nhật action để gửi yêu cầu POST-->
-<!--            }-->
-<!--        });-->
-
-<!--        paymentForm.addEventListener('submit', function(event) {-->
-<!--            const totalAmount = parseFloat(finalTotalElement.textContent.replace(/[^\d.]/g, '')) * 100; // Lấy giá trị số từ tổng tiền và nhân với 100 để chuyển đổi thành đơn vị đồng-->
-<!--            totalAmountInput.value = totalAmount.toFixed(0); // Đảm bảo không có phần thập phân-->
-<!--            orderInfoInput.value = document.getElementById('orderInfoInput').value;-->
-<!--            noteInput.value = document.getElementById('noteInput').value;-->
-
-<!--            // Ensure form method is POST-->
-<!--            paymentForm.method = "POST";-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -306,37 +247,5 @@
 
 
 
-
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h5>Giới thiệu</h5>
-                <ul>
-                    <li><a href="#">Về chúng tôi</a></li>
-                    <li><a href="#">Điều khoản dịch vụ</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Liên hệ</h5>
-                <ul>
-                    <li>Email: support@pandashop.com</li>
-                    <li>Hotline: 1900 1234</li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Kết nối với chúng tôi</h5>
-                <ul class="d-flex">
-                    <li><a href="#"><i class="fab fa-facebook fa-2x"></i></a></li>
-                    <li class="ms-3"><a href="#"><i class="fab fa-instagram fa-2x"></i></a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

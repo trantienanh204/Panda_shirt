@@ -162,25 +162,28 @@
 <!-- Main Section -->
 <div class="container my-5">
     <!--    <h2 class="text-center mb-5">Sản Phẩm Nổi Bật<i class="fa-solid fa-fire" style="color: #ff1900;"></i></h2>-->
-    <div class="row">
-
-        <div class="col-sm-6 col-md-4 col-lg-3 mt-4" th:each="sp, i : ${sanpham}">
+    <div class="row" th:each="sp, i : ${sanpham}">
+        <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
             <a style="text-decoration: none;" th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}">
                 <div class="card">
-                    <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" width="300px" height="300px">
+                    <div th:if="${sp.anhsp != null}">
+                        <img th:src="'data:image/png;base64,' + ${sp.anhsp}" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                    </div>
+                    <div th:if="${sp.anhsp == null}">
+                        <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                    </div>
                     <div class="card-hover-buttons">
                         <button class="btn btn-success">Mua ngay</button>
                         <button class="btn btn-primary">Thêm vào giỏ</button>
                     </div>
                 </div>
             </a>
-            <h5 class="card-title" style="color: #00040a ;padding-top: 20px;font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-             text-align: center;" th:text="${sp.tensp}">Hihi</h5>
+            <h5 class="card-title" style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;" th:text="${sp.tensp}">Hihi</h5>
             <!-- Hiển thị giá thấp nhất -->
-            <p class="card-text" style="color: red; padding-top: 10px; text-align: center;"
-               th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')} + '₫'"></p>
+            <p class="card-text" style="color: red; padding-top: 10px; text-align: center;" th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')} + '₫'"></p>
         </div>
     </div>
+
 </div>
 
 <!-- Footer -->
@@ -284,6 +287,24 @@
         list-style: none;
         margin: 5px 0;
     }
+
+     .card-img-top {
+         object-fit: cover; /* Đảm bảo hình ảnh không bị méo mó */
+     }
+
+    .card-title, .card-text {
+        text-align: center;
+    }
+
+    .card-hover-buttons {
+        text-align: center;
+    }
+
+    .card-hover-buttons button {
+        margin: 5px;
+    }
+
+
 </style>
 <!-- Bootstrap JS and FontAwesome -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>

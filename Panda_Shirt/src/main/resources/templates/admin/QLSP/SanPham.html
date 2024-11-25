@@ -204,6 +204,51 @@
         display: inline-block;
     }
 
+     .table-container table {
+         width: 100%;
+         border-collapse: collapse;
+     }
+
+    .table-container th, .table-container td {
+        text-align: left;
+        padding: 8px;
+        vertical-align: middle; /* Đảm bảo các phần tử thẳng hàng theo chiều dọc */
+    }
+
+    .table-container th {
+        background-color: #f2f2f2;
+    }
+
+    .table-container tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-container th, .table-container td {
+        text-align: left;
+        padding: 12px 15px;
+        vertical-align: middle; /* Đảm bảo các phần tử thẳng hàng theo chiều dọc */
+    }
+
+    .table-container th {
+        background-color: #f2f2f2;
+    }
+
+    .table-container tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table-container td {
+        white-space: nowrap;  /* Giúp tránh tình trạng chữ bị tràn dòng */
+    }
+
+
+
+
 </style>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
@@ -252,9 +297,11 @@
             <th>Tên sản phẩm</th>
             <th>Ngày tạo</th>
             <th>Trạng thái</th>
+            <th>Ảnh sản phẩm</th>
             <th>Thao tác</th>
         </tr>
         </thead>
+
         <tbody id="sanPhamtable"></tbody>
     </table>
 
@@ -277,13 +324,11 @@
         var currentPage = 0;
         var pageSize = 5;
 
-
         function loadSanPham(page) {
             var tenSP = $('#filter-tensp').val();
             var trangThai = $('#filter-trangthai').val();
 
             $('#loading').removeClass('d-none').addClass('d-block');
-
 
             $.ajax({
                 type: 'GET',
@@ -302,25 +347,32 @@
                             let ngayTaoFormatted = new Date(sp.ngaytao).toLocaleDateString("vi-VN");
                             var statusClass = sp.trangthai === 1 ? 'status-active' : 'status-inactive';
                             var statusText = sp.trangthai === 1 ? "Đang bán" : "Ngừng bán";
+
+                            // Kiểm tra xem có ảnh sản phẩm hay không
+                            var productImage = sp.anhsp ?
+                                '<img src="data:image/png;base64,' + sp.anhsp + '" alt="Ảnh sản phẩm" style="width: 100px; height: auto;">' :
+                                '<span>Không có ảnh</span>';
+
                             $('#sanPhamtable').append(
                                 '<tr>' +
                                 '<td>' + ((currentPage * pageSize) + index + 1) + '</td>' +
                                 '<td>' + sp.masp + '</td>' +
                                 '<td>' + sp.tensp + '</td>' +
                                 '<td>' + ngayTaoFormatted + '</td>' +
-                                '<td class="' + statusClass + '">' + statusText + '</td>' +
+                                '<td class="' + statusClass + '" style="vertical-align: middle;">' + statusText + '</td>' +  <!-- Thêm style vertical-align: middle -->
+                                '<td>' + productImage + '</td>' +
                                 '<td><a href="/panda/sanpham/spct?id=' + sp.id + '">' +
-                                '<i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>' +
+                                '<i class="fa-solid fa-eye" style="color: #000000; font-size: 20px;"></i>' +
                                 '</a></td>' +
-
                                 '</tr>'
                             );
+
                         });
                         $('#pageInfo').text('Trang ' + (currentPage + 1) + ' / ' + response.totalPages);
                         $('#prev').prop('disabled', currentPage <= 0);
                         $('#next').prop('disabled', currentPage >= response.totalPages - 1);
                     } else {
-                        $('#sanPhamtable').html('<tr><td colspan="6">Không có sản phẩm nào.</td></tr>');
+                        $('#sanPhamtable').html('<tr><td colspan="7">Không có sản phẩm nào.</td></tr>');  // Cập nhật số cột là 7 thay vì 6
                     }
                     $('#loading').removeClass('d-block').addClass('d-none');
                 },
@@ -330,15 +382,12 @@
                     $('#loading').removeClass('d-block').addClass('d-none');
                 }
             });
-
         }
-
 
         $('#filter-button').click(function() {
             currentPage = 0;
             loadSanPham(currentPage);
         });
-
 
         loadSanPham(currentPage);
 
@@ -360,6 +409,7 @@
             }
         });
     });
+
 </script>
 </body>
 </html>

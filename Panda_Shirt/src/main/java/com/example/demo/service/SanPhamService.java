@@ -503,13 +503,38 @@ public void saveSanPham(SanPhamDTO sanPhamDTO) {
 
 
 
+    public SanPham updateImage(Integer id, MultipartFile imagePath) {
+        Optional<SanPham> optionalSanPham = sanPhamRepository.findById(id);
+        if (optionalSanPham.isPresent()) {
+            SanPham sanPham = optionalSanPham.get();
+            try {
+                // Lưu ảnh vào cơ sở dữ liệu dưới dạng byte[]
+                sanPham.setAnhsp(imagePath.getBytes());
+                return sanPhamRepository.save(sanPham);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+
 
 //        public int findIdBySizeAndColorId(Integer sizeId, Integer colorId,Integer productId) {
 //            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findBySizeIdColorIdAndProductId(sizeId, colorId,productId);
 //            if (sanPhamChiTiet != null) {
 //                return sanPhamChiTiet.getId();
 //            } else {
-//                throw new RuntimeException("Không tìm thấy sản phẩm chi tiết với kích thước và màu sắc đã chọn.");
+//                throw new RuntimeException("Không tìm thấy sản phẩm chi tiết với kích thước và màu sắ  public SanPham updateImage(Integer id, String imagePath) {
+//        Optional<SanPham> optionalSanPham = sanPhamRepository.findById(id);
+//        if (optionalSanPham.isPresent()) {
+//            SanPham sanPham = optionalSanPham.get();
+//            sanPham.setAnhsp(imagePath); // Lưu đường dẫn ảnh vào thuộc tính `anhsp`
+//            return sanPhamRepository.save(sanPham);
+//        }
+//        return null;
+//    }c đã chọn.");
 //            }
 //
 //        }

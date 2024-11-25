@@ -212,6 +212,7 @@
         .mb-3 {
             margin-bottom: 25px;
         }
+
     </style>
 
 </head>
@@ -253,6 +254,42 @@
         </div>
     </div>
 
+    <!-- Nút mở modal và vùng chứa ảnh -->
+    <div class="row">
+        <div class="col-sm-6">
+            <button class="btn btn-primary" id="openModal">Thêm ảnh</button>
+        </div>
+        <div class="col-sm-6">
+            <div id="selectedImageContainer" class="d-flex flex-wrap gap-2"></div>
+        </div>
+    </div>
+
+    <!-- Modal thêm ảnh -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Thêm ảnh sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-section">
+                        <label class="form-label">Tải lên hình ảnh:</label>
+                        <input type="file" id="imageUpload" accept="image/*" multiple class="form-control" />
+                    </div>
+                    <div class="preview-section mt-3">
+                        <label class="form-label">Danh sách ảnh đã tải lên:</label>
+                        <div id="imagePreview" class="d-flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="saveSelectedImage">Chọn ảnh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Thuộc tính -->
     <h5 class="mb-3">Màu sắc & kích cỡ</h5>
 
@@ -284,65 +321,7 @@
 <button class="btn btn-green">Thêm tất cả</button>
 
 
-
 <script>
-
-    // Hàm upload hình ảnh
-    function uploadImage(cell) {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.multiple = true;
-
-        input.onchange = function(event) {
-            const files = event.target.files;
-            const imageUrls = [];
-
-            const loadImage = (index) => {
-                if (index >= files.length) {
-                    displayImages(cell, imageUrls);
-                    return;
-                }
-
-                const file = files[index];
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    const blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
-                    const url = URL.createObjectURL(blob);
-                    imageUrls.push(url);
-                    loadImage(index + 1);
-                };
-
-                reader.readAsArrayBuffer(file);
-            };
-
-            loadImage(0);
-        };
-
-        input.click();
-    }
-
-    // Hàm hiển thị hình ảnh
-    function displayImages(cell, imageUrls) {
-        cell.innerHTML = '';
-        imageUrls.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url;
-            img.alt = 'Uploaded Image';
-            img.style.maxWidth = '100px';
-            img.style.maxHeight = '100px';
-            cell.appendChild(img);
-        });
-    }
-
-    // Gọi hàm uploadImage khi nhấn nút tải ảnh (cập nhật HTML của bạn để gọi hàm này)
-    $('.upload-image-button').on('click', function() {
-        const cell = $(this).closest('.product-image-cell')[0];
-        uploadImage(cell);
-    });
-
-
 
     function xoaHang(button) {
         const row = $(button).closest('tr');
@@ -455,12 +434,6 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class="image-container">
-                     <div class="product-image-cell" onclick="uploadImage(this)">
-                       <span>Click để thêm ảnh</span>
-                     <div class="image-preview"></div>
-                  </div>
-               </div>
             </div>
         `);
 
@@ -712,7 +685,148 @@
 
     });
 </script>
+<script>
+    $(document).ready(function () {
+        let selectedImage = null; // Ảnh được chọn
+        let selectedProductId = null; // ID sản phẩm được chọn
 
+        // Mở modal khi nhấn nút "Thêm ảnh" nhưng chỉ khi sản phẩm đã được chọn
+        $('#openModal').on('click', function () {
+            selectedProductId = $('#productName').val(); // Lấy giá trị đã chọn từ select2
+
+            if (selectedProductId) {
+                $('#imageModal').modal('show');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chọn sản phẩm',
+                    text: 'Vui lòng chọn một sản phẩm trước khi thêm ảnh.',
+                });
+            }
+        });
+
+        // Hiển thị preview ảnh khi tải lên
+        $('#imageUpload').on('change', function (event) {
+            const files = event.target.files;
+            const previewContainer = $('#imagePreview');
+            previewContainer.empty(); // Xóa ảnh cũ trong preview
+
+            Array.from(files).forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imgElement = $('<img>')
+                        .attr('src', e.target.result)
+                        .on('click', function () {
+                            $('#imagePreview img').removeClass('selected'); // Xóa class "selected" khỏi các ảnh khác
+                            $(this).addClass('selected'); // Đặt class "selected" cho ảnh được chọn
+                            selectedImage = e.target.result; // Lưu lại ảnh được chọn
+                        });
+
+                    previewContainer.append(imgElement);
+                };
+                reader.readAsDataURL(file); // Đọc file dưới dạng base64 URL
+            });
+        });
+
+        // Lưu ảnh đã chọn
+        $('#saveSelectedImage').on('click', function () {
+            // Lấy ID sản phẩm đã chọn từ select2
+            selectedProductId = $('#productName').val(); // Lấy giá trị đã chọn
+
+            if (selectedImage && selectedProductId) {
+                // Gửi ảnh lên server
+                saveImage(selectedProductId, selectedImage); // Gửi ID sản phẩm và ảnh
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Bạn đã chọn ảnh cho sản phẩm!',
+                });
+
+                // Đóng modal
+                $('#imageModal').modal('hide');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chưa chọn ảnh hoặc sản phẩm',
+                    text: 'Vui lòng chọn ít nhất một ảnh và sản phẩm để tiếp tục.',
+                });
+            }
+        });
+
+        // Hàm gửi ảnh lên server
+        function saveImage(productId, imageData) {
+            var formData = new FormData();
+            // Chuyển đổi base64 thành Blob nếu bạn muốn gửi dữ liệu ảnh trực tiếp từ base64
+            var byteString = atob(imageData.split(',')[1]); // Tách dữ liệu base64 từ chuỗi
+            var arrayBuffer = new ArrayBuffer(byteString.length);
+            var uintArray = new Uint8Array(arrayBuffer);
+
+            // Điền byteArray với dữ liệu base64
+            for (var i = 0; i < byteString.length; i++) {
+                uintArray[i] = byteString.charCodeAt(i);
+            }
+
+            // Tạo Blob từ ArrayBuffer
+            var blob = new Blob([arrayBuffer], { type: 'image/jpeg' });  // Chú ý 'image/jpeg' hoặc loại hình ảnh thích hợp
+
+            // Append blob vào FormData
+            formData.append("imagePath", blob, "product-image.jpg");
+
+            $.ajax({
+                url: `/panda/${productId}/update-image`, // Đường dẫn API backend của bạn
+                type: 'PUT',
+                data: formData,
+                processData: false, // Không tự động chuyển dữ liệu thành chuỗi
+                contentType: false, // Để tự động đặt Content-Type cho multipart/form-data
+                success: function (response) {
+                    // Cập nhật giao diện sau khi ảnh được lưu
+                    const productImageCell = $('<div class="product-image-cell">')
+                        .append($('<img>').attr('src', imageData).css({ maxWidth: '100px', maxHeight: '100px' }));
+                    $('#product-tables').append(productImageCell);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: 'Ảnh đã được lưu!',
+                    });
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: 'Có lỗi khi lưu ảnh.',
+                    });
+                }
+            });
+        }
+
+
+        // Cấu hình select2 cho #productName
+        $('#productName').select2({
+            placeholder: "Chọn tên sản phẩm",
+            allowClear: true
+        });
+
+        // Lắng nghe sự kiện thay đổi giá trị của select2
+        $('#productName').on('change', function () {
+            selectedProductId = $(this).val(); // Lấy ID sản phẩm đã chọn
+            console.log('Sản phẩm đã chọn:', selectedProductId);
+        });
+    });
+
+</script>
+
+<style>
+    #imagePreview img {
+        cursor: pointer;
+        margin: 5px;
+        border: 2px solid transparent;
+        border-radius: 5px;
+    }
+    #imagePreview img.selected {
+        border-color: #007bff; /* Màu viền xanh dương khi ảnh được chọn */
+    }
+</style>
 </body>
 </html>
 

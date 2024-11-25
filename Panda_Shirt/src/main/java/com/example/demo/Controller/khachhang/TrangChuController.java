@@ -13,9 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/panda/")
@@ -28,16 +27,51 @@ public class TrangChuController {
     private GioHangService gioHangService;
     @Autowired
     private TaiKhoanService taiKhoanService;
+
+
     @GetMapping("/trangchu")
     public String hienthi(Model model){
-        model.addAttribute("sanpham",trangchuService.spfinall());
+        List<SanPham> sanphamList = trangchuService.spfinall();
+        List<Map<String, Object>> processedSanPhamList = new ArrayList<>();
+
+        for (SanPham sp : sanphamList) {
+            Map<String, Object> spMap = new HashMap<>();
+            spMap.put("id", sp.getId());
+            spMap.put("masp", sp.getMasp());
+            spMap.put("tensp", sp.getTensp());
+            spMap.put("minPrice", sp.getMinPrice());
+
+            if (sp.getAnhsp() != null) {
+                // Chuyển đổi dữ liệu byte array thành chuỗi base64
+                String base64Image = Base64.getEncoder().encodeToString(sp.getAnhsp());
+                spMap.put("anhsp", base64Image);
+            } else {
+                spMap.put("anhsp", null);
+            }
+
+            processedSanPhamList.add(spMap);
+        }
+
+        model.addAttribute("sanpham", processedSanPhamList);
         return "/khachhang/TrangChu";
     }
+
+
     @GetMapping("/sanphamchitiet/{id}")
     public String sanphamchitiet(Model model, @PathVariable("id") Integer id) {
         Optional<SanPham> sanPham = sanPhamService.findSanPhamById(id);
         if (sanPham.isPresent()) {
-            model.addAttribute("sanPham", sanPham.get());
+            SanPham sp = sanPham.get();
+
+            // Chuyển đổi dữ liệu byte array thành chuỗi base64 nếu không null
+            if (sp.getAnhsp() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(sp.getAnhsp());
+                model.addAttribute("anhspBase64", base64Image); // Truyền dữ liệu base64 vào model
+            } else {
+                model.addAttribute("anhspBase64", null);
+            }
+
+            model.addAttribute("sanPham", sp);
 
             // Lấy giá trị min và max
             Double[] minMaxPrice = sanPhamService.getMinMaxPrice(id);
@@ -58,18 +92,39 @@ public class TrangChuController {
 
 
     @GetMapping("/giohang")
-    public String giohang(
-            Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String tenDangNhap = userDetails.getUsername();
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
         if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-            return "redirect:/panda/login"; }
+            return "redirect:/panda/login";
+        }
         int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
         List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
-        model.addAttribute("cartItems", cartItems);
 
+        // Chuyển đổi dữ liệu byte array thành chuỗi base64
+        List<Map<String, Object>> processedCartItems = cartItems.stream().map(item -> {
+            Map<String, Object> itemMap = new HashMap<>();
+            itemMap.put("id", item.getId());
+            itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
+            itemMap.put("soluong", item.getSoluong());
+
+            if (item.getSanPhamChiTiet().getAnhSanPhamChiTiet() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getSanPham().getAnhsp());
+                itemMap.put("anhspBase64", base64Image);
+            } else {
+                itemMap.put("anhspBase64", null);
+            }
+
+            return itemMap;
+        }).collect(Collectors.toList());
+
+        model.addAttribute("cartItems", processedCartItems);
         return "/khachhang/GioHang";
     }
+
+
+
+
     @GetMapping("/taikhoan")
     public String taikhoan(){
         return "/khachhang/TaiKhoan";

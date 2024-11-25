@@ -1,104 +1,17 @@
 <!DOCTYPE html>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panda-Shirt</title>
+    <title>Panda-Shirt Thanh Toán</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Font and Background for Navbar */
-        body {
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 
-        .navbar {
-            background: #FE5621;
-        }
-
-        .nav-link {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff !important;
-        }
-
-        .nav-link:hover {
-            color: #FFC048 !important; /* Hover màu vàng nhạt */
-        }
-
-        .navbar-toggler {
-            border-color: rgb(119, 30, 30);
-        }
-
-        .navbar-toggler-icon {
-            background-color: white;
-        }
-
-        .form-control {
-            border-radius: 30px;
-        }
-
-        /* Footer styles */
-        footer {
-            background-color: #f1f1f1;
-        }
-
-        footer h5 {
-            font-weight: bold;
-        }
-
-        footer ul {
-            padding-left: 0;
-        }
-
-        li {
-            list-style: none;
-            margin: 5px 0;
-        }
-
-        /* Product Detail Page */
-        .product-details h2 {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .product-details h4 {
-            font-size: 1.5rem;
-        }
-
-        .product-details .btn-primary {
-            background-color: #FE5621;
-            border: none;
-        }
-
-        .product-details .btn-primary:hover {
-            background-color: #FFC048;
-        }
-
-        .product-details .btn-success {
-            background-color: #28a745;
-            border: none;
-        }
-
-        .product-details .btn-success:hover {
-            background-color: #218838;
-        }
-
-        /* Image hover effect */
-        .card {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-        }
-    </style>
 </head>
+
 <body>
 
 <!-- Navbar -->
@@ -147,22 +60,26 @@
     <div class="row">
         <div class="col-md-6">
             <!-- Product Image -->
-            <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="img-fluid main-image" alt="Áo Thun Chi Tiết" style="border-radius: 10px;">
+            <div th:if="${anhspBase64 != null}">
+                <img th:src="'data:image/png;base64,' + ${anhspBase64}" class="img-fluid main-image" alt="Áo Thun Chi Tiết" style="border-radius: 10px;">
+            </div>
+            <div th:if="${anhspBase64 == null}">
+                <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="img-fluid main-image" alt="Áo Thun Chi Tiết" style="border-radius: 10px;">
+            </div>
         </div>
 
         <!-- Product Details -->
         <div class="col-md-6 product-details">
             <h1 th:text="${sanPham.tensp}"></h1>
             <p>Giá từ: <span id="minPrice" th:text="${minPrice}"></span> đến <span id="maxPrice" th:text="${maxPrice}"></span></p>
-            <h1 th:text="${soluongsanpham}"></h1>
+            <h1 th:text="${sanPham.soluongsp}"></h1>
             <div>
                 <p>Giá tiền: <span style="color: red" id="productPrice"></span></p>
             </div>
             <!-- Màu sắc -->
             <label>Màu sắc</label>
             <select id="colorSelect" class="form-select" aria-label="Chọn màu sắc">
-                <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.ten}">
-                </option>
+                <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.ten}"></option>
             </select>
 
             <!-- Kích thước -->
@@ -172,8 +89,7 @@
                         class="size-option" th:data-color="${item['color'].id}"
                         th:value="${item['size'].id}"
                         th:text="${item['size'].ten} + ' - ' + ${item['color'].ten}"
-                        th:data-price="${item['sanPhamChiTiet'].dongia}">
-                </option>
+                        th:data-price="${item['sanPhamChiTiet'].dongia}"></option>
             </select>
 
             <!-- Input hidden để lưu productId -->
@@ -209,22 +125,116 @@
                 </ul>
             </div>
         </div>
-
     </div>
+
 </div>
 
 <!-- Footer -->
+
 <footer class="bg-dark text-white text-center py-4">
-    <p>&copy; 2024 Bán Áo. All rights reserved.</p>
+    <p>&copy; 2024 Bán Áo. Tất cả quyền được bảo lưu.</p>
     <ul class="list-inline">
         <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a></li>
         <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-instagram"></i></a></li>
         <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-twitter"></i></a></li>
     </ul>
 </footer>
+
 <!-- Bootstrap JS and FontAwesome -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        flex: 1;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+        background: #FE5621;
+    }
+
+    .nav-link {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff !important;
+    }
+
+    .nav-link:hover {
+        color: #FFC048 !important; /* Hover màu vàng nhạt */
+    }
+
+    .navbar-toggler {
+        border-color: rgb(119, 30, 30);
+    }
+
+    .navbar-toggler-icon {
+        background-color: white;
+    }
+
+    /* Footer Styles */
+    footer {
+        background-color: #f1f1f1;
+        margin-top: auto;
+        padding: 1.5rem 0;
+    }
+
+    footer h5 {
+        font-weight: bold;
+    }
+
+    footer ul {
+        padding-left: 0;
+    }
+
+    li {
+        list-style: none;
+        margin: 5px 0;
+    }
+
+    /* Checkout Page Styles */
+    .address-section, .product-section, .payment-section, .summary-section {
+        background-color: #fff;
+        border-radius: 5px;
+    }
+
+    .address-section h5, .product-section h5, .payment-section h5 {
+        font-weight: bold;
+    }
+
+    .product-img {
+        width: 80px;
+        height: auto;
+    }
+
+    .product-details {
+        font-size: 0.9rem;
+    }
+
+    .quantity-input {
+        width: 50px;
+        text-align: center;
+    }
+
+    .product-price, .insurance-price {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #ff424e;
+    }
+
+    .total-price {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #ff424e;
+    }
+</style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const colorSelect = document.getElementById('colorSelect');
