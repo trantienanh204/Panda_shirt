@@ -16,13 +16,6 @@
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body th:fragment="ThongKe">
-<!-- Thông báo -->
-<div class="custom-alert success" id="statusMessage" th:text="${successMessage}" th:if="${successMessage != null}">
-    <i class="fa-solid fa-circle-check"></i>
-</div>
-<div style="color: red" class="custom-alert success" id="statusMessage" th:text="${errolMessage}" th:if="${errolMessage != null}">
-    <i class="fa-solid fa-circle-check"></i>
-</div>
 <!-- MAIN -->
 <section id="content">
     <main>
