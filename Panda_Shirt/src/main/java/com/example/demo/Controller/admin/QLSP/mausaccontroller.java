@@ -5,6 +5,7 @@ import com.example.demo.entity.MauSac;
 import com.example.demo.entity.SanPham;
 import com.example.demo.respository.MauSacRepsitory;
 import com.example.demo.service.MauSacService;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -146,12 +147,12 @@ public class mausaccontroller {
         String regex = "^[\\p{L}0-9\\s]+$";
 
         Pattern pattern = Pattern.compile(regex);
-
         Matcher tenmsMatcher = pattern.matcher(tenms);
 
         MauSac findma = mauSacRepsitory.findByMaAndIdNot(ma,mauSac.getId());
         MauSac findten = mauSacRepsitory.findByTenAndIdNot(tenms,mauSac.getId());
 
+        // Kiểm tra sự thay đổi
         if(mauSac.getMa().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
             return "admin/QLSP/UPDATE/UpdateMS";

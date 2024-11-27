@@ -111,19 +111,19 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label"><b style="color: red">*</b> Số lượng</label>
-                        <input type="number" class="form-control" th:field="*{soLuong}" placeholder="Số lượng...">
+                        <input type="text" class="form-control" th:field="*{soLuong}" placeholder="Số lượng...">
                         <div th:if="${errorsl}" th:text="${errorsl}" style="color: red;"></div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label"><b style="color: red">*</b> Điều kiện áp dụng mã</label>
-                        <input type="number" class="form-control"  th:field="*{dieuKien}" placeholder="Điều kiện...">
+                        <input type="text" class="form-control"  th:field="*{dieuKien}" placeholder="Điều kiện...">
                         <div th:if="${errordk}" th:text="${errordk}" style="color: red;"></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label"><b style="color: red">*</b> Mức giảm</label>
-                        <input type="number" class="form-control" th:field="*{mucGiam}" placeholder="Mức giảm...">
+                        <input type="text" class="form-control" th:field="*{mucGiam}" placeholder="Mức giảm...">
                         <div th:if="${errormg}" th:text="${errormg}" style="color: red;"></div>
                     </div>
                     <div class="col-md-3">

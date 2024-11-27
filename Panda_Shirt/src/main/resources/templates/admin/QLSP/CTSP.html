@@ -218,6 +218,7 @@
 </head>
 <body th:fragment="ctsp">
 <div class="container">
+
     <a th:href="@{/panda/sanpham}"><i class="fa-solid fa-arrow-right fa-flip-horizontal" style="color: #000000;"></i></a>
     <h3 class="text-center mb-4">Thêm chi tiết sản phẩm</h3>
 
@@ -253,43 +254,6 @@
             <select class="form-select" id="collarName" data-placeholder="Chọn cổ áo"></select>
         </div>
     </div>
-
-    <!-- Nút mở modal và vùng chứa ảnh -->
-    <div class="row">
-        <div class="col-sm-6">
-            <button class="btn btn-primary" id="openModal">Thêm ảnh</button>
-        </div>
-        <div class="col-sm-6">
-            <div id="selectedImageContainer" class="d-flex flex-wrap gap-2"></div>
-        </div>
-    </div>
-
-    <!-- Modal thêm ảnh -->
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Thêm ảnh sản phẩm</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="upload-section">
-                        <label class="form-label">Tải lên hình ảnh:</label>
-                        <input type="file" id="imageUpload" accept="image/*" multiple class="form-control" />
-                    </div>
-                    <div class="preview-section mt-3">
-                        <label class="form-label">Danh sách ảnh đã tải lên:</label>
-                        <div id="imagePreview" class="d-flex flex-wrap gap-2"></div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" id="saveSelectedImage">Chọn ảnh</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Thuộc tính -->
     <h5 class="mb-3">Màu sắc & kích cỡ</h5>
 
@@ -298,9 +262,9 @@
         <div class="col-sm-8">
             <select class="form-select" id="size" data-placeholder="Chọn size" multiple ></select>
         </div>
-        <div class="col-sm-1">
-            <button class="btn btn-outline-secondary btn-circle">+</button>
-        </div>
+<!--        <div class="col-sm-1">-->
+<!--            <button class="btn btn-outline-secondary btn-circle">+</button>-->
+<!--        </div>-->
     </div>
 
     <div class="mb-3 row">
@@ -313,13 +277,47 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-sm-6">
+            <button class="btn btn-primary" id="openModal">Thêm ảnh</button>
+        </div>
+        <div class="col-sm-6">
+            <div id="selectedImageContainer" class="d-flex flex-wrap gap-2"></div>
+        </div>
+    </div>
     <!-- Table: Sản phẩm với màu sắc -->
-    <h5>Sản phẩm chi tiết </h5>
+    <h5 style="margin-top: 10px">Sản phẩm chi tiết </h5>
     <div id="product-tables"></div>
+    <!-- Nút mở modal và vùng chứa ảnh -->
+    <!--    thêm -->
+
 </div>
-
-<button class="btn btn-green">Thêm tất cả</button>
-
+<button class="btn btn-success">Thêm tất cả</button>
+<!-- Modal thêm ảnh -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Thêm ảnh sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-section">
+                    <label class="form-label">Tải lên hình ảnh:</label>
+                    <input type="file" id="imageUpload" accept="image/*" multiple class="form-control" />
+                </div>
+                <div class="preview-section mt-3">
+                    <label class="form-label">Danh sách ảnh đã tải lên:</label>
+                    <div id="imagePreview" class="d-flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="saveSelectedImage">Chọn ảnh</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 
@@ -447,7 +445,7 @@
                     <td>${index++}</td>
                     <td>${productName}</td>
                     <td>${size}</td>
-                    <td><input type="number" value="100" class="form-control" /></td>
+                    <td><input type="number" value="100000" class="form-control" /></td>
                     <td><input type="number" value="100" class="form-control" /></td>
                     <td><button class="btn btn-danger" onclick="xoaHang(this)">Xóa</button></td>
                 </tr>
@@ -536,7 +534,7 @@
         }
 
         // Gọi hàm getImagesAndSave khi nhấn nút "Thêm tất cả"
-        $('.btn-green').on('click', function() {
+        $('.btn-success').on('click', function() {
             getImagesAndSave();
         });
 
@@ -807,9 +805,13 @@
         margin: 5px;
         border: 2px solid transparent;
         border-radius: 5px;
+        height: 200px;
+        width: 200px;
     }
     #imagePreview img.selected {
         border-color: #007bff; /* Màu viền xanh dương khi ảnh được chọn */
+        height: 200px;
+        width: 200px;
     }
 </style>
 </body>

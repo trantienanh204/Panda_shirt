@@ -45,7 +45,7 @@
             <th>#</th>
             <th>Mã sản phẩm</th>
             <th>Tên sản phẩm</th>
-            <th>Số lượng</th>
+<!--            <th>Số lượng</th>-->
             <th>Ngày tạo</th>
             <th>Trạng thái</th>
             <th>Ảnh sản phẩm</th>
@@ -64,6 +64,7 @@
             <td th:text="${sp.ngaytao != null ? #temporals.format(sp.ngaytao, 'dd/MM/yyyy') : 'chưa có'}"></td>
             <td th:if="${sp.trangthai == 1}">
                 <span class="status-label status-green" th:text="${sp.trangthai == 0 ? 'Ngừng bán':'Đang bán'}"></span>
+
             </td>
             <td th:if="${sp.trangthai == 0}">
                 <span class="status-label status-red" th:text="${sp.trangthai == 0 ? 'Ngừng bán':'Đang bán'}"></span>
@@ -145,13 +146,13 @@
                             <td th:text="${ct.dongia}"></td>
                             <td th:text="${ct.ngaytao != null? #temporals.format(ct.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
                             <td th:if="${ct.trangthai} == true">
-                            <span class="status-label status-red"
-                                  th:text="${ct.trangthai == false ? 'Đang bán':'Ngừng bán'}">
+                            <span class="status-label status-green"
+                                  th:text="${ct.trangthai == true ? 'Đang bán':'Ngừng bán'}">
                             </span>
                             </td>
                             <td th:if="${ct.trangthai} == false">
-                            <span class="status-label status-green"
-                                  th:text="${ct.trangthai == false ? 'Đang bán':'Ngừng bán'}">
+                            <span class="status-label status-red"
+                                  th:text="${ct.trangthai == true ? 'Đang bán':'Ngừng bán'}">
                             </span>
                             </td>
                             <td th:text="${ct.mota}"></td>

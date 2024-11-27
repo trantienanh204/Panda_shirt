@@ -42,7 +42,7 @@
                 <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
             </button>
             <a class="btn btn-dark" th:href="@{/panda/tkkhachhang}">
-                <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
+                <i class="fa-solid fa-rotate-right" style="color: #ffffff;padding-top: 10px"></i> Làm mới
             </a>
         </div>
     </div>
@@ -118,10 +118,10 @@
                 </button>
                 <a style="margin-left: 10px" th:href="@{/panda/tkkhachhang/change(id=${tkkhachhang.id})}">
                     <i th:if="${tkkhachhang.trangthai == 1}">
-                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;"></i>
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a; font-size: 25px"></i>
                     </i>
                     <i th:if="${tkkhachhang.trangthai == 0}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a;"></i>
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a; font-size: 25px"></i>
                     </i>
                 </a>
             </td>
