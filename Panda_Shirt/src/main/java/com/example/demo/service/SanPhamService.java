@@ -47,35 +47,36 @@ public class SanPhamService {
     private final int size = 5;
 
     public Page<SanPham> hienThiSanPhamTheoDieuKien(int page, String tensp, Integer trangthai) {
-        Sort sort = Sort.by(Sort.Direction.ASC,"id");
+        Sort sort = Sort.by(Sort.Direction.DESC,"id");
 
         Pageable pageable = PageRequest.of(page, size,sort);
         return sanPhamRepository.findByTenspAndTrangthai(tensp, trangthai, pageable);
     }
 
     public List<SanPham> getallsp() {
-        return sanPhamRepository.findAll();
+        return sanPhamRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
+
     public List<NhaSanXuat> getallNXS() {
-        return nsxRepository.findAll();
+        return nsxRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<DanhMuc> getallDanhmuc() {
-        return danhMucRepository.findAll();
+        return danhMucRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<ChatLieu> getallCL() {
-        return chatLieuRespository.findAll();
+        return chatLieuRespository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<ThuongHieu> getallthuonghieu() {
-        return thuongHieuRepository.findAll();
+        return thuongHieuRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<CoAo> getallcoao() {
-        return coAoRepository.findAll();
+        return coAoRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<MauSac> getallmausac() {
-        return mauSacRepsitory.findAll();
+        return mauSacRepsitory.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<KichThuoc> getallkichco() {
-        return kichThuocRepository.findAll();
+        return kichThuocRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public void saveSanPhamChiTiet(SanPhamChiTiet sanPhamChiTiet) {
         sanPhamChiTietRepository.save(sanPhamChiTiet);

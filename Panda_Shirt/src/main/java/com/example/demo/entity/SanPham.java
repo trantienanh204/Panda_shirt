@@ -87,6 +87,17 @@ public class SanPham {
     }
 
 
+        private transient String base64Image;
+
+        public String getBase64Image() {
+            return base64Image;
+        }
+
+        public void setBase64Image(String base64Image) {
+            this.base64Image = base64Image;
+        }
+
+
 
     public void addSanPhamChiTiet(SanPhamChiTiet chiTiet) {
         if (!this.sanPhamChiTietList.contains(chiTiet)) {

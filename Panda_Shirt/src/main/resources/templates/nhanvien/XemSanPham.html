@@ -48,66 +48,63 @@
             <th>Số lượng</th>
             <th>Ngày tạo</th>
             <th>Trạng thái</th>
+            <th>Ảnh sản phẩm</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
         <tr th:if="${listsp.empty}">
-            <td colspan="7" style="text-align: center; color: red;">Không có dữ liệu</td>
+            <td colspan="8" style="text-align: center; color: red;">Không có dữ liệu</td>
         </tr>
-        <tr th:each="sp,i: ${listsp}">
+        <tr th:each="sp, i: ${listsp}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${sp.masp}"></td>
             <td th:text="${sp.tensp}"></td>
             <td th:text="${sp.soluongsp}"></td>
-            <td th:text="${sp.ngaytao != null? #temporals.format(sp.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
-            <td th:if="${sp.trangthai} == 1">
-                <span class="status-label status-green"
-                      th:text="${sp.trangthai == 0 ? 'Ngừng bán':'Đang bán'}">
-                </span>
+            <td th:text="${sp.ngaytao != null ? #temporals.format(sp.ngaytao, 'dd/MM/yyyy') : 'chưa có'}"></td>
+            <td th:if="${sp.trangthai == 1}">
+                <span class="status-label status-green" th:text="${sp.trangthai == 0 ? 'Ngừng bán':'Đang bán'}"></span>
             </td>
-            <td th:if="${sp.trangthai} == 0">
-                <span class="status-label status-red"
-                      th:text="${sp.trangthai == 0 ? 'Ngừng bán':'Đang bán'}">
-                </span>
+            <td th:if="${sp.trangthai == 0}">
+                <span class="status-label status-red" th:text="${sp.trangthai == 0 ? 'Ngừng bán':'Đang bán'}"></span>
             </td>
-            <td th:href="@{/panda/nhanvien/xemsanpham/chitiet(id=${sp.id})}"
-                data-toggle="modal" data-target="#xemchitiet"
-                th:data-id="${sp.id}">
-                <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
+            <td th:if="${sp.base64Image != null}">
+                <img th:src="'data:image/png;base64,' + ${sp.base64Image}" class="img-fluid" style="width: 100px; height: 100px;" alt="Ảnh sản phẩm">
+            </td>
+            <td th:if="${sp.base64Image == null}">
+                <img src="https://placehold.co/100x100?text=Không+có+ảnh" class="img-fluid" alt="Ảnh sản phẩm">
+            </td>
+            <td>
+                <a th:href="@{/panda/nhanvien/xemsanpham/chitiet(id=${sp.id})}" data-toggle="modal" data-target="#xemchitiet" th:data-id="${sp.id}">
+                    <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
-    <!--    phân trang -->
+    <!-- Phân trang -->
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <!-- Nút Previous -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/panda/nhanvien/xemsanpham/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, tensp=${tensp}, trangthai=${trangthai})}"
-                   aria-label="Previous">
+                <a class="page-link" th:href="@{/panda/nhanvien/xemsanpham/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, tensp=${tensp}, trangthai=${trangthai})}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-
             <!-- Hiển thị danh sách trang -->
             <li class="page-item">
-                <a class="page-link"
-                   th:text="${currentPage +1 }" disabled></a>
+                <a class="page-link" th:text="${currentPage + 1}" disabled></a>
             </li>
-
             <!-- Nút Next -->
             <li class="page-item" th:classappend="${listsp.size() < pageSize} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/panda/nhanvien/xemsanpham/hienthi(page=${currentPage + 1}, tensp=${tensp}, trangthai=${trangthai})}"
-                   aria-label="Next">
+                <a class="page-link" th:href="@{/panda/nhanvien/xemsanpham/hienthi(page=${currentPage + 1}, tensp=${tensp}, trangthai=${trangthai})}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
     </nav>
 </div>
+
 <!-- modal-->
 <div class="modal fade" id="xemchitiet" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel"
      aria-hidden="true">

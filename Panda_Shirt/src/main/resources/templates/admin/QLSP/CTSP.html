@@ -767,6 +767,7 @@
                 contentType: false, // Để tự động đặt Content-Type cho multipart/form-data
                 success: function (response) {
                     // Cập nhật giao diện sau khi ảnh được lưu
+                    $('#product-tables').find('.product-image-cell').remove(); // Xóa ảnh cũ
                     const productImageCell = $('<div class="product-image-cell">')
                         .append($('<img>').attr('src', imageData).css({ maxWidth: '100px', maxHeight: '100px' }));
                     $('#product-tables').append(productImageCell);
