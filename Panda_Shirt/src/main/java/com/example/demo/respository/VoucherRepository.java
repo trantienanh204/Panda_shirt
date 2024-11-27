@@ -54,8 +54,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
         "ORDER BY vc.ngaytao DESC")
 Page<Voucher> findByMaAndTenAndTrangthaiVC(String ma, String ten,LocalDate startDate, LocalDate endDate, Integer trangThai, Pageable pageable);
 
-    @Query(value = "SELECT * FROM voucher WHERE Loai_khach_hang = 0 " +
-            "and TRANG_THAI = 0 or trang_thai = 1 " +
+    @Query(value = "SELECT * FROM voucher where TRANG_THAI = 0 or trang_thai = 1 " +
             "ORDER BY NGAY_TAO DESC", nativeQuery = true)
     List<Voucher> chonVC();
 }

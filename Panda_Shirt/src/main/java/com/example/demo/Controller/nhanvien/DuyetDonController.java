@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/panda/nhanvien/duyetdon")
@@ -189,6 +190,7 @@ public class DuyetDonController {
         return "/nhanvien/DuyetDon";
     }
 
+
     @GetMapping("/update/{id}")
     public String detailDH(@PathVariable Integer id, Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
@@ -196,9 +198,13 @@ public class DuyetDonController {
         model.addAttribute("DonHang", new Voucher());
         DonHang donHang = donHangRepository.getReferenceById(id);
         model.addAttribute("DonHang", donHang);
-        HoaDonCT hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
+
+        List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
         model.addAttribute("listhdct", hoaDonCT);
-        SanPhamChiTiet sanPhamChiTiet = sanPhamService.Listtimkiemspct(hoaDonCT.getSanPhamChiTiet().getId());
+
+        List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
+                .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
+                .collect(Collectors.toList());
         model.addAttribute("listsp", sanPhamChiTiet);
         return "/nhanvien/Update/DuyetDonUpdate";
     }
@@ -210,9 +216,11 @@ public class DuyetDonController {
 
         DonHang donHang = donHangRepository.getReferenceById(id);
         model.addAttribute("DonHang", donHang);
-        HoaDonCT hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
+        List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
         model.addAttribute("listhdct", hoaDonCT);
-        SanPhamChiTiet sanPhamChiTiet = sanPhamService.Listtimkiemspct(hoaDonCT.getSanPhamChiTiet().getId());
+        List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
+                .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
+                .collect(Collectors.toList());
         model.addAttribute("listsp", sanPhamChiTiet);
         return "/nhanvien/Update/DuyetDonUpdate2";
     }
@@ -224,9 +232,11 @@ public class DuyetDonController {
 
         DonHang donHang = donHangRepository.getReferenceById(id);
         model.addAttribute("DonHang", donHang);
-        HoaDonCT hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
+        List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
         model.addAttribute("listhdct", hoaDonCT);
-        SanPhamChiTiet sanPhamChiTiet = sanPhamService.Listtimkiemspct(hoaDonCT.getSanPhamChiTiet().getId());
+        List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
+                .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
+                .collect(Collectors.toList());
         model.addAttribute("listsp", sanPhamChiTiet);
         return "/nhanvien/Update/DuyetDonUpdate3";
     }
@@ -269,41 +279,52 @@ public class DuyetDonController {
     }
   @GetMapping("/dagiao/{id}")
     public String dagiao(@PathVariable("id") Integer id,@AuthenticationPrincipal UserDetails userDetails) {
-        DonHang donHang = donHangRepository.getReferenceById(id);
-      HoaDon hoaDon = hoaDonService.findById(donHang.getHoaDon().getId());
-      String username = userDetails.getUsername();
-      TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
-      if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
-          return "redirect:/panda/login";
-      }
+          DonHang donHang = donHangRepository.getReferenceById(id);
+          HoaDon hoaDon = hoaDonService.findById(donHang.getHoaDon().getId());
+          String username = userDetails.getUsername();
+          TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
+          if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
+              return "redirect:/panda/login";
+          }
       NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
         donHang.setTrangThai("Hoàn thành");
 //      donHang.setNhanVien(nhanVien);
 //      hoaDon.setNhanVien(nhanVien);
-//      donHangRepository.save(donHang);
+      donHangRepository.save(donHang);
 //      hoaDonService.save(hoaDon);
 
             return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
 
     @PostMapping("/tuchoi")
-    public String tuchoi(@RequestParam("lydohuy") String lydohuy, @RequestParam("id") Integer id) {
+    public String tuchoi(@RequestParam("lydohuy") String lydohuy,
+                         @RequestParam("id") Integer id) {
+        // Lấy thông tin đơn hàng
         DonHang donHang = donHangRepository.getReferenceById(id);
-        HoaDonCT hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
-        SanPhamChiTiet sanPhamChiTiet = sanPhamService.Listtimkiemspct(hoaDonCT.getSanPhamChiTiet().getId());
-        // Cập nhật số lượng có sẵn trong kho
-        int soLuongChiTiet = sanPhamChiTiet.getSoluongsanpham(); // Số lượng sản phẩm chi tiết
-        int soLuongDat = hoaDonCT.getSoluong(); // Số lượng đã đặt
 
-        // Cộng số lượng đã đặt vào số lượng có sẵn trong kho
-        sanPhamChiTiet.setSoluongsanpham(soLuongChiTiet + soLuongDat);
+        // Lấy danh sách chi tiết hóa đơn
+        List<HoaDonCT> hoaDonCTList = hdctService.findID(donHang.getHoaDon().getId());
 
-        // Lưu lại thông tin cập nhật
-        sanPhamService.saveSanPhamChiTiet(sanPhamChiTiet);
+        // Lặp qua danh sách hóa đơn chi tiết để cập nhật số lượng sản phẩm trong kho
+        for (HoaDonCT hoaDonCT : hoaDonCTList) {
+            // Lấy sản phẩm chi tiết từ mỗi hóa đơn chi tiết
+            SanPhamChiTiet sanPhamChiTiet = sanPhamService.Listtimkiemspct(hoaDonCT.getSanPhamChiTiet().getId());
+            if (sanPhamChiTiet != null) {
+                // Cập nhật số lượng trong kho
+                int soLuongKho = sanPhamChiTiet.getSoluongsanpham();
+                int soLuongDat = hoaDonCT.getSoluong();
+                sanPhamChiTiet.setSoluongsanpham(soLuongKho + soLuongDat);
+
+                // Lưu lại thông tin cập nhật vào database
+                sanPhamService.saveSanPhamChiTiet(sanPhamChiTiet);
+            }
+        }
+
         // Cập nhật trạng thái đơn hàng thành "Đã hủy"
         donHang.setLydohuy(lydohuy);
         donHang.setTrangThai("Đã hủy");
         donHangRepository.save(donHang);
+
         return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
     @GetMapping("/detail/{id}")
@@ -314,9 +335,11 @@ public class DuyetDonController {
 
         DonHang donHang = donHangRepository.getReferenceById(id);
         model.addAttribute("DonHang", donHang);
-        HoaDonCT hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
+        List<HoaDonCT>  hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
         model.addAttribute("listhdct", hoaDonCT);
-        SanPhamChiTiet sanPhamChiTiet = sanPhamService.Listtimkiemspct(hoaDonCT.getSanPhamChiTiet().getId());
+        List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
+                .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
+                .collect(Collectors.toList());
         model.addAttribute("listsp", sanPhamChiTiet);
         return "/nhanvien/Update/DuyetDonDetal";
     }

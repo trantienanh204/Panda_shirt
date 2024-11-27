@@ -91,6 +91,7 @@ public class GiamGiaController {
         Matcher mavcMatcher = patternma.matcher(voucher.getMa());
         Matcher tenvcMatcher = pattern.matcher(voucher.getTen());
         Matcher motavcMatcher = pattern.matcher(voucher.getMota());
+//        String soLuongStr = voucher.getSoLuong().trim();
 
         // mã voucher
         if (voucher.getMa().isEmpty()) {

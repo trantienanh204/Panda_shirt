@@ -340,6 +340,7 @@ public class BanHangOffline {
     ){
         String currentUrl = request.getRequestURL().toString();
 
+        System.out.println(idhoadon);
             HoaDon hd = hoaDonRepository.findById(idhoadon).orElse(null);
             if(hd == null){
                 redirectAttributes.addFlashAttribute("loi","Hóa đơn");
@@ -348,7 +349,7 @@ public class BanHangOffline {
             if(nv == null){
                 redirectAttributes.addFlashAttribute("loi","Nhân viên");
             }
-            KhachHang kh = khachHangRepository.findById(6).orElse(null);
+            KhachHang kh = khachHangRepository.findById(1).orElse(null);
             if(kh == null){
                 redirectAttributes.addFlashAttribute("loi","Khách hàng");
             }

@@ -230,8 +230,6 @@ public class SanPhamService {
         return exists;
     }
 
-
-
     public void addsanpham(SanPham sanPham) {
         sanPhamRepository.save(sanPham);
     }

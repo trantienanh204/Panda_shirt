@@ -69,7 +69,7 @@ public class HoaDon {
     private String GhiChu;
 
     @ManyToOne
-    @JoinColumn(name = "ID_NHAN_VIEN", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "ID_NHAN_VIEN", referencedColumnName = "id")
     @JsonBackReference
     private NhanVien nhanVien;
 

@@ -97,19 +97,19 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label"><b style="color: red">*</b> Số lượng</label>
-                        <input type="number" th:field="*{soLuong}" class="form-control" placeholder="Số lượng...">
+                        <input type="text" th:field="*{soLuong}" class="form-control" placeholder="Số lượng...">
                         <div th:if="${errorsl}" th:text="${errorsl}" style="color: red;"></div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label"><b style="color: red">*</b> Điều kiện áp dụng mã</label>
-                        <input type="number" th:field="*{dieuKien}" class="form-control" placeholder="Điều kiện...">
+                        <input type="text" th:field="*{dieuKien}" class="form-control" placeholder="Điều kiện...">
                         <div th:if="${errordk}" th:text="${errordk}" style="color: red;"></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label"><b style="color: red">*</b> Mức giảm</label>
-                        <input type="number" th:field="*{mucGiam}" class="form-control" placeholder="Mức giảm...">
+                        <input type="text" th:field="*{mucGiam}" class="form-control" placeholder="Mức giảm...">
                         <div th:if="${errormg}" th:text="${errormg}" style="color: red;"></div>
                     </div>
                     <div class="col-md-2">
@@ -138,7 +138,7 @@
                         <textarea th:field="*{mota}" class="form-control" id="moTa" rows="2"
                                   placeholder="Mô tả..."></textarea>
                         <div th:if="${errormt}" th:text="${errormt}" style="color: red;"></div>
-
+                        <div th:if="${noChanges}" th:text="${noChanges}" style="color: red;"></div>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -158,7 +158,6 @@
         </div>
     </div>
 </div>
-
 <script>
     function generateRandomCode() {
         // Tạo một chuỗi ký tự để làm mã
@@ -174,6 +173,47 @@
     }
 
 </script>
+
+<script>
+    // Sau khi trang load xong
+    window.onload = function () {
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+// Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function () {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
+<style>
+    .action-icons i {
+        font-size: 18px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    .custom-alert {
+        position: fixed;
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        background-color: #4CAF50; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt thông báo là có thể nhìn thấy */
+    }
+</style>
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

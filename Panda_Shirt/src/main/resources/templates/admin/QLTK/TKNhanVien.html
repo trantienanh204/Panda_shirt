@@ -33,7 +33,7 @@
             <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
         </button>
         <a class="btn btn-dark" th:href="@{/panda/tknhanvien}">
-            <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
+            <i class="fa-solid fa-rotate-right" style="color: #ffffff;padding-top: 10px"></i> Làm mới
         </a>
     </div>
 </div>
@@ -104,15 +104,15 @@
             </td>
             <td>
                 <a style="margin-right: 10px" th:href="@{/panda/tknhanvien/update(id=${taikhoannv.id})}">
-                    <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
                 </a>
                 <a th:href="@{/panda/tknhanvien/change(id=${taikhoannv.id})}">
                     <i th:if="${taikhoannv.trangthai == 1}">
-                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a; font-size: 25px">
                         </i>
                     </i>
                     <i th:if="${taikhoannv.trangthai == 0}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a; font-size: 25px">
                         </i>
                     </i>
                 </a>

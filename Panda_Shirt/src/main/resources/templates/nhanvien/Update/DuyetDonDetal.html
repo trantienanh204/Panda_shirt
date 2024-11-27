@@ -61,6 +61,13 @@
                                    style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
                         </div>
                     </div>
+                    <div class="row mb-3" style="padding-right: 625px">
+                        <label class="col-sm-4 col-form-label">Nhân viên:</label>
+                        <div class="col-sm-7">
+                            <input type="text" th:field="*{hoaDon.nhanVien.tennhanvien}" class="form-control" readonly
+                                   style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
@@ -74,7 +81,7 @@
                         <div class="col-md-3">
                             <label class="form-label">Số điện thoại</label>
                             <div class="input-group">
-                                <input type="text" th:field="*{hoaDon.sdt}" class="form-control" readonly
+                                <input type="text" th:field="*{hoaDon.khachHang.sdt}" class="form-control" readonly
                                        style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
                             </div>
                         </div>
@@ -103,57 +110,37 @@
                         </div>
                         <div class="col-md-9">
                             <label class="form-label">Địa chỉ</label>
-                            <input type="text" th:field="*{diaChi}" class="form-control" readonly
+                            <input type="text" th:field="*{hoaDon.khachHang.diachi}" class="form-control" readonly
                                    style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Tên sản phẩm</label>
-                            <div class="input-group">
-                                <table>
-                                    <tr th:each="dd,i: ${listsp}">
-                                        <td th:text="${dd.sanPham.tensp}"></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Màu sắc</label>
-                            <table>
-                                <tr th:each="dd,i: ${listsp}">
-                                    <td th:text="${dd.kichThuoc.ten}"></td>
+                        <div class="col-md-9">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Màu sắc</th>
+                                    <th>Kích thước</th>
+                                    <th>Đơn giá</th>
+                                    <th>Số lượng</th>
                                 </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Kích thước</label>
-                            <table>
-                                <tr th:each="dd,i: ${listsp}">
-                                    <td th:text="${dd.mauSac.ten}"></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Đơn giá</label>
-                            <table>
-                                <tr th:each="dd,i: ${listsp}">
+                                </thead>
+                                <tbody>
+                                <tr th:each="dd,i: ${listhdct}">
+                                    <td th:text="${dd.sanPhamChiTiet.sanPham.tensp}"></td>
+                                    <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>
+                                    <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>
+                                    <td th:text="${dd.soluong}"></td>
                                     <td th:text="${dd.dongia}"></td>
                                 </tr>
+                                </tbody>
                             </table>
                         </div>
-                        <div class="col-md-1">
-                            <label class="form-label">Số lượng</label>
-                            <table>
-                                <tr th:each="dd,i: ${listhdct}">
-                                    <td th:text="${dd.soluong}"></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Tổng tiền</label>
+                        <div class="col-md-3">
+                            <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
                             <input type="text" th:field="*{tongtien}" class="form-control" readonly
-                                   style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                                   style="background-color: white; color: black;">
                         </div>
                     </div>
                 </div>

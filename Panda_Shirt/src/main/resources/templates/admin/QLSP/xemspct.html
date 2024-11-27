@@ -21,45 +21,30 @@
 </head>
 <body th:fragment="xemspct">
 <div class="container">
-    <h2 class="mt-4 text-center">Danh Sách Sản Phẩm</h2>
+    <a th:href="@{/panda/sanpham}">
+        <i class="fa-solid fa-arrow-right fa-flip-horizontal" style="color: #000000;"></i>
+    </a>
+    <h2 class="mt-4 text-center">Danh Sách Sản Phẩm Chi Tiết</h2>
 
-    <div class="filter-container mb-3">
-        <div class="row">
-            <div class="col-md-4">
-                <label for="filter-tensp">Tên sản phẩm</label>
-                <input type="text" id="filter-tensp" class="form-control" placeholder="Nhập tên sản phẩm" aria-label="Tên sản phẩm">
-            </div>
-            <div class="col-md-4">
-                <label for="filter-trangthai">Trạng thái</label>
-                <select id="filter-trangthai" class="form-select">
-                    <option value="">Tất cả</option>
-                    <option value="1">Đang bán</option>
-                    <option value="0">Ngừng bán</option>
-                </select>
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-                <button id="filter-button" class="btn btn-primary w-100"><i class="fa fa-search"></i> Tìm kiếm</button>
-            </div>
-        </div>
-    </div>
+
     <div class="table-container">
-        <h3><i class="fa-solid fa-list" style="color: #000;"></i> Danh sách sản phẩm chi tiết</h3>
+        <h3><i class="fa-solid fa-list" style="color: #000;"></i></h3>
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
             <tr>
                 <th style="width: 1%;"><input type="checkbox" id="select-all"></th>
                 <th style="width: 10%;">Danh mục</th>
                 <th style="width: 7%;">NSX</th>
-                <th style="width: 10%;">Thương hiệu</th>
+                <th style="width: 6%;">Thương hiệu</th>
                 <th style="width: 7%;">Cổ áo</th>
                 <th style="width: 8%;">Chất liệu</th>
                 <th style="width: 8%;">Số lượng</th>
-                <th style="width: 8%;">Đơn giá</th>
+                <th style="width: 10%;">Đơn giá</th>
                 <th style="width: 8%;">Ngày tạo</th>
                 <th style="width: 8%;">Trạng thái</th>
-                <th style="width: 9%;">Kích thước</th>
+                <th style="width: 5%;">Kích thước</th>
                 <th style="width: 7%;">Màu sắc</th>
-                <th style="width: 15%;">Thao tác</th>
+<!--                <th style="width: 15%;">Thao tác</th>-->
             </tr>
             </thead>
             <tbody id="sanPhamDetails">
