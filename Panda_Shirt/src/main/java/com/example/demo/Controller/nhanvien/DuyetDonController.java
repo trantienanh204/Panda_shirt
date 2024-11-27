@@ -319,7 +319,7 @@ public class DuyetDonController {
                 sanPhamService.saveSanPhamChiTiet(sanPhamChiTiet);
             }
         }
-
+        donHang.getHoaDon().setTrangthai(0);
         // Cập nhật trạng thái đơn hàng thành "Đã hủy"
         donHang.setLydohuy(lydohuy);
         donHang.setTrangThai("Đã hủy");
