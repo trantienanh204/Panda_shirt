@@ -41,4 +41,10 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
     Optional<KhachHang> findByTentaikhoan(String name);
 
 
+        @Query("SELECT kh FROM KhachHang kh WHERE kh.tentaikhoan = :tenTaiKhoan")
+        Optional<KhachHang> findByTenTaiKhoan(@Param("tenTaiKhoan") String tenTaiKhoan);
+
+
+
+
 }

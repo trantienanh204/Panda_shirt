@@ -58,7 +58,11 @@ public class KhachHangService {
         return khachHangRepository.findById(id).get();
     }
 
-//    public String getTenTinhByKhachHangId(Integer id) {
-//        return khachHangRepository.findTenTinhByKhachHangId(id);
-//    }
+
+
+        public KhachHang findByTenTaiKhoan(String tenTaiKhoan) {
+            return khachHangRepository.findByTenTaiKhoan(tenTaiKhoan).orElse(null);
+        }
+
+
 }

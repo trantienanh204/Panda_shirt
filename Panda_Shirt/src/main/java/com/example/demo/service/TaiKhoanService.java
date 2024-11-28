@@ -123,7 +123,8 @@ public class TaiKhoanService {
                 khachHang.getTenkhachhang(),
                 khachHang.getTaiKhoan().getTenDangNhap(),
                 khachHang.getTaiKhoan().getMatKhau(),
-                khachHang.isDelete()
+                khachHang.isDelete(),
+                khachHang.getDiachi()
         );
     }
 

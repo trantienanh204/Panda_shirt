@@ -92,18 +92,13 @@ public class VnpayController {
         // Tạo hóa đơn và đơn hàng
         HoaDon hoaDon = createHoaDon(khachHang, cartItems, totalAmount, note, paymentMethod);
         DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod);
-
-        // Lưu dữ liệu vào cơ sở dữ liệu
+        
         hoaDonService.save(hoaDon);
         donHangRepository.save(donHang);
 
-        // Xóa giỏ hàng
         gioHangService.clearCart(khachHangId);
 
-        // Thêm thông báo vào RedirectAttributes
         redirectAttributes.addFlashAttribute("successMessage", "Đơn hàng của bạn đã được đặt thành công!");
-
-        // Chuyển hướng tới trang chủ với thông báo thành công
         return "redirect:/panda/trangchu";
     }
 

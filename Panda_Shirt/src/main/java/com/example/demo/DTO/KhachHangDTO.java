@@ -28,12 +28,13 @@ public class KhachHangDTO {
     private String sdt;
     private String diachi;
 
-    public KhachHangDTO(Integer id, String makhachhang, String tenkhachhang, String tenDangNhap, String matKhau, Boolean delete) {
+    public KhachHangDTO(Integer id, String makhachhang, String tenkhachhang, String tenDangNhap, String matKhau, Boolean delete,String diachi) {
         this.id = id;
         this.makhachhang = makhachhang;
         this.tenkhachhang= tenkhachhang;
         this.tenDangNhap = tenDangNhap;
         this.matKhau = matKhau;
         this.delete = delete;
+        this.diachi = diachi;
     }
 }
