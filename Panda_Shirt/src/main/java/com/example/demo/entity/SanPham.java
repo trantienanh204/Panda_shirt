@@ -29,6 +29,9 @@ public class SanPham {
     @Column(name = "MA_SAN_PHAM", unique = true)
     private String masp;
 
+    @Column(name = "HINH_ANH")
+    private String hinhanh;
+
     @Column(name = "TEN_SAN_PHAM")
     private String tensp;
 

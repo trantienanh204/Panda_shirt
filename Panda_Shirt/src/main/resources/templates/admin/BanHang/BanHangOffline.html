@@ -176,8 +176,10 @@
                                         <h4 th:text="${i.index + 1}" style="font-size: 16px; font-weight: bold;"></h4>
                                     </div>
                                     <div class="product-image" style="flex: 1; text-align: center;">
-                                        <img th:src="@{/Image/panda_logo.png}" alt="Sản phẩm"
-                                             style="max-width: 120px; height: auto;">
+<!--                                        <img th:src="@{/Image/anh.png}" alt="Sản phẩm"-->
+<!--                                             style="max-width: 120px; height: auto;">-->
+                                        <img th:src="@{/Image/{anhsp}(anhsp=${spct.sanPham.hinhanh})}"  width="110px" height="110px"
+                                             alt="ảnh sản phẩm">
                                     </div>
                                     <div class="product-details" style="flex: 2; text-align: left; font-size: 14px;">
                                         <h4 th:text="${spct.sanPham.tensp + ' [ ' +spct.mauSac.ten + ' - ' +spct.kichThuoc.ten + ' ]'}"
