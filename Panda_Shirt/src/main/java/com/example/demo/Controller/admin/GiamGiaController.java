@@ -235,7 +235,6 @@ public class GiamGiaController {
             model.addAttribute("errormg", "Mức giảm chỉ chứa số");
             return "admin/QLSP/ADD/AddVC";
         }
-
         if (voucher.getMota().isEmpty()) {
             model.addAttribute("errormt", "Không được để trống");
             return "admin/QLSP/ADD/AddVC";
