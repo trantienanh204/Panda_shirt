@@ -137,27 +137,28 @@
 </div>
 
 <footer>
-    <div class="container">
+    <div class="container mt-3">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 " style="margin-top: 10px">
                 <h5>Giới thiệu</h5>
                 <ul>
-                    <li><a href="#">Về chúng tôi</a></li>
-                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                    <li><a style="text-decoration:none;color: black" >Về chúng tôi</a></li>
+                    <li><a style="text-decoration:none;color: black" >Điều khoản dịch vụ</a></li>
                 </ul>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 " style="margin-top: 10px">
                 <h5>Liên hệ</h5>
                 <ul>
                     <li>Email: support@pandashop.com</li>
                     <li>Hotline: 1900 1234</li>
                 </ul>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 " style="margin-top: 10px">
                 <h5>Kết nối với chúng tôi</h5>
                 <ul class="d-flex">
-                    <li><a href="#"><i class="fab fa-facebook fa-2x"></i></a></li>
-                    <li class="ms-3"><a href="#"><i class="fab fa-instagram fa-2x"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white "><i style="color: black" class="fab fa-facebook-f"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white"><i style="color: black" class="fab fa-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white"><i style="color: black" class="fab fa-twitter"></i></a></li>
                 </ul>
             </div>
         </div>
@@ -243,7 +244,118 @@
 
 </script>
 
+<style>
+    /* Font and Background for Navbar */
+    body {
+        font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card-hover-buttons {
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        display: flex;
+        gap: 10px;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .card:hover .card-hover-buttons {
+        opacity: 1;
+    }
+
+    .card-hover-buttons .btn {
+        width: 120px;
+        height: 45px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .card-hover-buttons .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .card-hover-buttons .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .navbar {
+        background: #FE5621;
+    }
+    .nav-link {
+        font-size: 1rem;
+        font-weight: bold;
+        color: rgb(255, 255, 255) !important;
+    }
+
+    .nav-link:hover {
+        color: #FFC048 !important; /* hover màu vàng nhạt */
+    }
+
+    .navbar-toggler {
+        border-color: rgb(119, 30, 30);
+    }
+
+    .navbar-toggler-icon {
+        background-color: white;
+    }
+
+    .form-control {
+        border-radius: 30px;
+    }
+
+    .card {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    footer {
+        background-color: #d4d3d3;
+    }
+
+    footer h5 {
+        font-weight: bold;
+    }
+
+    footer ul {
+        list-style-type: none;
+
+        padding-left: 0;
+    }
+
+    li {
+        list-style: none;
+        margin: 5px 0;
+    }
+
+    .card-img-top {
+        object-fit: cover; /* Đảm bảo hình ảnh không bị méo mó */
+    }
+
+    .card-title, .card-text {
+        text-align: center;
+    }
+
+    .card-hover-buttons {
+        text-align: center;
+    }
+
+    .card-hover-buttons button {
+        margin: 5px;
+    }
+
+
+</style>
 
 
 </body>

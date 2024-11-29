@@ -92,7 +92,7 @@ public class VnpayController {
         // Tạo hóa đơn và đơn hàng
         HoaDon hoaDon = createHoaDon(khachHang, cartItems, totalAmount, note, paymentMethod);
         DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod);
-        
+
         hoaDonService.save(hoaDon);
         donHangRepository.save(donHang);
 

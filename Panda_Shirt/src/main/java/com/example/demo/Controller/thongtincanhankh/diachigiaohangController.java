@@ -43,18 +43,10 @@ public class diachigiaohangController {
     public ResponseEntity<Map<String, String>> saveAddress(@RequestBody DiaChiDTO diaChiDTO, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
-
-        // Tìm khách hàng hiện có trong cơ sở dữ liệu
         KhachHang khachHang = khachHangRepository.findById(taiKhoanDto.getKhachHangDTO().getId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
-
-        // Cập nhật trường địa chỉ mà không làm mất thông tin cũ
         khachHang.setDiachi(diaChiDTO.getFullAddress());
-
-        // Lưu thông tin khách hàng vào database
         khachHangRepository.save(khachHang);
-
-        // Trả về đối tượng JSON hợp lệ
         Map<String, String> response = new HashMap<>();
         response.put("message", "Địa chỉ đã được lưu thành công");
         return ResponseEntity.ok(response);
