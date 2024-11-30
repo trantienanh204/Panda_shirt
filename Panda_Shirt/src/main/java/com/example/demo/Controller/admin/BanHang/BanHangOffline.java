@@ -291,7 +291,7 @@ public class BanHangOffline {
 
     @GetMapping("/chonkh")
     public ResponseEntity<Map<String, String>> chonkh(@RequestParam(value = "id", defaultValue = "0") Integer id,
-                                                           Model model) {
+                                                      Model model) {
         Map<String, String> response = new HashMap<>();
         KhachHang kh = khachHangRepository.findById(id).orElse(null);
 
@@ -391,24 +391,24 @@ public class BanHangOffline {
         if (nv == null) {
             redirectAttributes.addFlashAttribute("loi", "Nhân viên");
         }
-
         KhachHang kh = khachHangRepository.findBySdt(sdt);
-        if (kh == null) {
-            kh = new KhachHang();
-            String ma = khachHangRepository.findMaxMakh();
-            int demhd;
-            if (ma == null) {
-                demhd = 1;
+        if(!sdt.isBlank() && !tenkh.isBlank() && !tinh.isBlank() && !huyen.isBlank() ) {
+            if (kh == null) {
+                kh = new KhachHang();
+                String ma = khachHangRepository.findMaxMakh();
+                int demhd;
+                if (ma == null) {
+                    demhd = 1;
+                } else {
+                    demhd = Integer.parseInt(ma.substring(2)) + 1;
+                }
+                String makh = String.format("KH%03d", demhd);
+                kh.setTenkhachhang(tenkh);
+                kh.setMakhachhang(makh);
+                kh.setTrangthai(1);
+                kh.setSdt(sdt);
+                kh.setDiachi(diachi);
             } else {
-                demhd = Integer.parseInt(ma.substring(2)) + 1;
-            }
-            String makh = String.format("KH%03d", demhd);
-            kh.setTenkhachhang(tenkh);
-            kh.setMakhachhang(makh);
-            kh.setTrangthai(1);
-            kh.setSdt(sdt);
-            kh.setDiachi(diachi);
-        }else{
 //            kh.setMakhachhang(kh.getMakhachhang());
 //            kh.setTentaikhoan(kh.getTentaikhoan());
 //            kh.setGioitinh(kh.getGioitinh());
@@ -418,13 +418,17 @@ public class BanHangOffline {
 //            kh.setMatkhau(kh.getMatkhau());
 //            kh.setTinhtrang(kh.getTinhtrang());
 //            kh.setTrangthai(kh.getTrangthai());
-            kh.setNgaysua(LocalDate.now());
-            kh.setTenkhachhang(tenkh);
-            kh.setSdt(sdt);
-            kh.setDiachi(diachi);
-        }
-        khachHangRepository.save(kh);
+                kh.setNgaysua(LocalDate.now());
+                kh.setTenkhachhang(tenkh);
+                kh.setSdt(sdt);
+                kh.setDiachi(diachi);
+            }
+            khachHangRepository.save(kh);
 
+        }else{
+            KhachHang kh1 = khachHangRepository.findById(1).get();
+            hd.setKhachHang(kh1);
+        }
         Voucher vc = null;
         if (idvoucher != null && idvoucher > 0) {
             vc = voucherRepository.findById(idvoucher).orElse(null);
@@ -460,7 +464,7 @@ public class BanHangOffline {
         }
 
         hd.setNhanVien(nv);
-        hd.setKhachHang(kh);
+
         hd.setVoucher(vc);
         hd.setThanhtien(thanhtien);
         hd.setTongtien(tongtien);
