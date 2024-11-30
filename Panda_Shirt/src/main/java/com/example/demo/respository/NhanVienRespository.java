@@ -17,6 +17,7 @@ public interface NhanVienRespository extends JpaRepository<NhanVien,Integer> {
     boolean existsNhanVienByManhanvien(String manhanvien);
 
 
+
     @Query("SELECT nv FROM NhanVien nv WHERE " +
             "(?1 IS NULL OR nv.manhanvien LIKE %?1%) AND " +
             "(?2 IS NULL OR nv.tennhanvien LIKE %?2%) AND " +
@@ -33,5 +34,9 @@ public interface NhanVienRespository extends JpaRepository<NhanVien,Integer> {
 
 
 
+
+
+    boolean existsByTentaikhoan(String tentaikhoan);
+    boolean existsByTentaikhoanAndId(String tentaikhoan,Integer id);
 
 }

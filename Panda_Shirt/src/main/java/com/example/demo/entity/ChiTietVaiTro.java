@@ -28,4 +28,6 @@ public class ChiTietVaiTro {
         this.vaiTro = vaiTro;
         this.taiKhoan = taiKhoan;
     }
+
 }
+

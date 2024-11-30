@@ -24,7 +24,7 @@ public class KhachHang {
     @NotBlank(message = "Mã khách hàng không được để trống")
     @Column(name = "MA_KHACH_HANG")
     private String makhachhang;
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Địa chỉ email không hợp lệ")
+    //@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Địa chỉ email không hợp lệ")
     @NotBlank(message = "Email không được bỏ trống ")
     @Column(name = "TEN_TAI_KHOAN")
     private String tentaikhoan;
@@ -71,7 +71,6 @@ public class KhachHang {
     @ManyToOne
     @JoinColumn(name = "ID_XA_PHUONG")
     private XaPhuong xaPhuong;
-
 
     @Column(name = "DELETEAT")
     private boolean delete;

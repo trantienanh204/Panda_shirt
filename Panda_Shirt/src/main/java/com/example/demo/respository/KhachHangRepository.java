@@ -25,6 +25,7 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
     boolean existsKhachHangBySdt(String sdt);
 
 
+
     @Query("SELECT kh FROM KhachHang kh WHERE " +
             "(?1 IS NULL OR kh.makhachhang LIKE %?1%) AND " +
             "(?2 IS NULL OR kh.tenkhachhang LIKE %?2%) AND " +
@@ -45,6 +46,7 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
         Optional<KhachHang> findByTenTaiKhoan(@Param("tenTaiKhoan") String tenTaiKhoan);
 
 
-
+    boolean existsByTentaikhoan(String tentaikhoan);
+    boolean existsBySdt(String sdt);
 
 }

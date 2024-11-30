@@ -81,11 +81,18 @@ public class TKKhachHangController {
                        RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-
+        // check lỗi
+        boolean hasErrors = false;
+        if (khachHangRepository.existsByTentaikhoan(khachHang.getTentaikhoan())) {
+            model.addAttribute("emailExist","Email này đã được đăng ký");
+            hasErrors = true;
+        }
         if (result.hasErrors()) {
             return "admin/QLTK/ADD/AddTKKhachHang";
         }
-
+        if (hasErrors) {
+            return "admin/QLTK/ADD/AddTKKhachHang";
+        }
         // Kiểm tra mã và số điện thoại đã tồn tại
         boolean maExists = khachHangRepository.existsKhachHangByMakhachhang(khachHang.getMakhachhang());
         boolean sdtExists = khachHangRepository.existsKhachHangBySdt(khachHang.getSdt());
@@ -138,7 +145,7 @@ public class TKKhachHangController {
                     "<h2>Chào mừng bạn mở tài khoản tại web bán áo phông Panda Shirt!</h2>" +
                     "<p>Mật khẩu của bạn đã được tạo thành công. Vui lòng ghi nhớ nó!</p>" +
                     "<div class='password'>" + plainPassword + "</div>" + // Gửi mật khẩu chưa băm
-                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='https://your-shop-url.com' style='color: #007bff;'>đây</a>.</p>" +
+                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='http://localhost:8080/panda/login' style='color: #007bff;'>đây</a>.</p>" +
                     "<div class='footer'>Nếu bạn có bất kỳ câu hỏi nào, hãy liên hệ với bộ phận hỗ trợ của chúng tôi.</div>" +
                     "</div>" +
                     "</body>" +

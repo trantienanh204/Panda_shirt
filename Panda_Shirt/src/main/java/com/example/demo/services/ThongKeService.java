@@ -134,8 +134,7 @@ public class ThongKeService {
         return revenueList;
     }
 
-    // Doanh thu theo từng tháng trong năm
-// Doanh thu theo từng tháng trong năm
+   // Doanh thu theo từng tháng trong năm
     public List<Map<String, Object>> getRevenueByYear(int year) {
         List<Map<String, Object>> revenueList = new ArrayList<>();
 
