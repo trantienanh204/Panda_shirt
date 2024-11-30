@@ -87,6 +87,7 @@ public class SanPham {
     }
 
 
+
         private transient String base64Image;
 
         public String getBase64Image() {

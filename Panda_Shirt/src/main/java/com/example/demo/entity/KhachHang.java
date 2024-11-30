@@ -20,16 +20,22 @@ public class KhachHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
-    @Size(min = 4 , max = 8, message = "Mã từ 4 - 8 ký tự")
-    @NotBlank(message = "Mã khách hàng không được để trống")
+//    @Size(min = 4 , max = 8, message = "Mã từ 4 - 8 ký tự")
+//    @NotBlank(message = "Mã khách hàng không được để trố
+
     @Column(name = "MA_KHACH_HANG")
     private String makhachhang;
-    //@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Địa chỉ email không hợp lệ")
-    @NotBlank(message = "Email không được bỏ trống ")
+//    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Địa chỉ email không hợp lệ")
+//    @NotBlank(message = "Email không được bỏ trống ")
     @Column(name = "TEN_TAI_KHOAN")
     private String tentaikhoan;
+
+
     @Column(name = "MAT_KHAU")
     private String matkhau;
+
+
+
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 số")
     @Column(name = "SO_DIEN_THOAI")
@@ -71,7 +77,6 @@ public class KhachHang {
     @ManyToOne
     @JoinColumn(name = "ID_XA_PHUONG")
     private XaPhuong xaPhuong;
-
     @Column(name = "DELETEAT")
     private boolean delete;
     @Column(name = "TINH_TRANG")

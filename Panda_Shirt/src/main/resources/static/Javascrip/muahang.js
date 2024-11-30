@@ -211,6 +211,10 @@ function setActiveTab(tab) {
 
     xhr.setRequestHeader(csrfHeader, csrfToken);
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> thai
 const initialProductList = document.getElementById('product-list-container').innerHTML;
 function updateProductList() {
     let keyword = document.getElementById("searchsanpham").value;
@@ -233,6 +237,7 @@ function updateProductList() {
             console.error('Error fetching product list:', error);
         });
 }
+<<<<<<< HEAD
 // function updateProductListUI(products) {
 //     const productListContainer = document.getElementById('product-list-container'); // Div chứa danh sách sản phẩm
 //
@@ -278,6 +283,8 @@ function updateProductList() {
 //     // Gán nội dung vào div chứa danh sách sản phẩm
 //     productListContainer.innerHTML = productHTML;
 // }
+=======
+>>>>>>> thai
 
 function updateProductListUI(products) {
     const productListContainer = document.getElementById('product-list-container');
@@ -368,4 +375,65 @@ $(document).on('click', '.product-action button', function (event) {
     } else {
         console.error('ID sản phẩm không được xác định');
     }
+<<<<<<< HEAD
 });
+=======
+});
+
+const initialProductListkh = document.getElementById('khachhang-list-container').innerHTML;
+function findkhachhang() {
+    let keyword = document.getElementById("searchkhachhang").value;
+
+    if (!keyword) {
+        keyword = '';
+    }
+
+    if (keyword.trim() === '') {
+        document.getElementById('khachhang-list-container').innerHTML = initialProductListkh;
+        return;
+    }
+    fetch(`http://localhost:8080/panda/banhangoffline/searchkh?keyword=${encodeURIComponent(keyword)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Dữ liệu trả về từ API:", data);
+            lishkhachhang(data);
+        })
+        .catch(error => {
+            console.error('Error fetching product list:', error);
+        });
+}
+
+function lishkhachhang(lskh) {
+    const khachhanglist = document.getElementById('khachhang-list-container');
+    if (lskh.length === 0) {
+        khachhanglist.innerHTML = '<p>Không có khách hàng phù hợp </p>';
+        return;
+    }
+
+    let khachhangHTML = "";
+    lskh.forEach((item, index) => {
+        const parts = item.split(' - ');
+        const kh = {
+            id: parts[0],
+            makhachhang: parts[1],
+            tenkhachhang: parts[2],
+            sdt: parts[3],
+        };
+        khachhangHTML += `    
+              <div class="customer-row" style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #ddd;">
+                <div style="flex: 1; text-align: center;">${index + 1}</div>
+                <div style="flex: 3; text-align: center;">${kh.makhachhang}</div>
+                <div style="flex: 3; text-align: left;">${kh.tenkhachhang}</div>
+                <div style="flex: 3; text-align: left;">${kh.sdt}</div>
+                <div style="flex: 2; text-align: center;">
+                    <a class="btn btn-dark" href="javascript:void(0);" data-id="${kh.id}" onclick="chonkh(this)">
+                        Chọn
+                    </a>
+                </div>
+            </div>
+        `;
+
+    });
+    khachhanglist.innerHTML = khachhangHTML;
+}
+>>>>>>> thai

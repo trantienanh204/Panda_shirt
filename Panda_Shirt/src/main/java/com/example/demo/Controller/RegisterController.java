@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+
 import com.example.demo.entity.ChiTietVaiTro;
 import com.example.demo.entity.KhachHang;
 import com.example.demo.service.EmailService;
@@ -13,10 +14,12 @@ import com.example.demo.respository.VaiTroRepository;
 import jakarta.validation.Valid;
 import org.mindrot.jbcrypt.BCrypt;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,10 +27,17 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.UUID;
 
+
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+
 @Controller
 @RequestMapping("/panda")
 public class RegisterController {
     @Autowired
+
     EmailService emailService;
     @Autowired
     KhachHangRepository khachHangRepository;
@@ -40,11 +50,13 @@ public class RegisterController {
     @Autowired
     ChiTietVaiTroRepository chiTietVaiTroRepository;
 
+
     @GetMapping("/register")
     public String register(Model model) {
         model.addAttribute("khachHang",new KhachHang());
         return "Register"; // Trả về tên view
     }
+
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute KhachHang khachHang, BindingResult result ,Model model, RedirectAttributes redirectAttributes,
@@ -147,3 +159,4 @@ public class RegisterController {
         return "redirect:/panda/login"; // Quay lại trang đăng nhập sau khi đăng ký
     }
 }
+

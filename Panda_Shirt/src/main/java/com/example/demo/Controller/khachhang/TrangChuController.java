@@ -1,5 +1,6 @@
 package com.example.demo.Controller.khachhang;
 
+
 import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
@@ -8,6 +9,15 @@ import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import com.example.demo.DTO.TaiKhoanDTO;
+import com.example.demo.entity.*;
+import com.example.demo.service.GioHangService;
+import com.example.demo.service.SanPhamService;
+import com.example.demo.service.TaiKhoanService;
+import com.example.demo.service.TrangchuService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -21,17 +31,23 @@ import java.util.stream.Collectors;
 @RequestMapping("/panda/")
 public class TrangChuController {
     @Autowired
+
     private TrangchuService trangchuService;
     @Autowired
     private SanPhamService sanPhamService;
+
     @Autowired
     private GioHangService gioHangService;
     @Autowired
     private TaiKhoanService taiKhoanService;
+
     @Autowired
     DonHangService donHangService;
     @Autowired
     private KhachHangRepository khachHangRepository;
+
+
+
 
     @GetMapping("/trangchu")
     public String hienthi(Model model){
@@ -160,6 +176,7 @@ public class TrangChuController {
         model.addAttribute("dahuy", dahuy);
         return "/khachhang/TaiKhoan";
     }
+
 
 
 

@@ -6,7 +6,9 @@ import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.respository.SanPhamChiTietRepository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.*;
+
 import com.example.demo.services.KhachHangService;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -222,6 +224,7 @@ public class GioHangController {
     }
 
 
+
 //    @PostMapping("/thanhtoan")
 //    public String xuLyThanhToan(@RequestParam("totalAmount") String totalAmountStr,
 //                                @RequestParam("selectedItems") String selectedItemsJson,
@@ -281,6 +284,7 @@ public class GioHangController {
 //            return "khachhang/GioHang";
 //        }
 //    }
+
 
     @PostMapping("/thanhtoan/hoadon")
     public String xuLyHoaDon(@RequestParam double totalAmount,
@@ -372,6 +376,7 @@ public class GioHangController {
 
 
 
+
     @PostMapping("/thanhtoan")
     public String xuLyThanhToan(@RequestParam("totalAmount") String totalAmountStr,
                                 @RequestParam("selectedItems") String selectedItemsJson,
@@ -434,7 +439,6 @@ public class GioHangController {
             return "khachhang/GioHang";
         }
     }
-
 
 
 

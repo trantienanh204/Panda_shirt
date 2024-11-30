@@ -6,6 +6,9 @@ import com.example.demo.respository.*;
 import com.example.demo.services.BanHangService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Sort;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -42,19 +45,23 @@ public class BanHangOffline {
     KhachHangRepository khachHangRepository;
 
 
-    private Integer idhd ;
+
+    private Integer idhd;
+
     @GetMapping()
-    public String hienthi(Model model){
+    public String hienthi(Model model) {
+
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         List<HoaDon> hoaDon = hoaDonRepository.findHoaDonsWithNullId();
         List<Voucher> voucher = voucherRepository.findAll();
         List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findAll();
         List<Voucher> validVouchers = new ArrayList<>();
+        List<KhachHang> listkh = khachHangRepository.findAll(Sort.by(Sort.Order.desc("id")));
         for (Voucher v : voucher) {
             try {
                 int soLuong = Integer.parseInt(v.getSoLuong());
-                if (soLuong > 0 ) {
+                if (soLuong > 0) {
                     validVouchers.add(v);
                 }
             } catch (NumberFormatException e) {
@@ -63,10 +70,14 @@ public class BanHangOffline {
         }
 
         model.addAttribute("hoaDons", hoaDon);
-        model.addAttribute("lsvoucher",validVouchers);
-        model.addAttribute("lsspct",spct);
+
+        model.addAttribute("lsvoucher", validVouchers);
+        model.addAttribute("lsspct", spct);
+        model.addAttribute("listkh", listkh);
         return "admin/BanHang/BanHangOffline";
     }
+
+
     @GetMapping("/timkiem")
     @ResponseBody
     public List<String> getSuggestions() {
@@ -110,8 +121,28 @@ public class BanHangOffline {
         return ResponseEntity.ok(results);
     }
 
+    @GetMapping("/searchkh")
+    public ResponseEntity<List<String>> searchkhachhang(@RequestParam("keyword") String keyword) {
+        List<String> results = new ArrayList<>();
+        try {
+            results = banHangService.findBysdt(keyword).stream()
+                    .filter(kh -> kh.getTenkhachhang() != null && kh.getMakhachhang() != null && kh.getSdt() != null)
+                    .map(sp -> String.format("%s - %s - %s - %s ",
+                            sp.getId(),
+                            sp.getMakhachhang(),
+                            sp.getTenkhachhang(),
+                            sp.getSdt()
+                    ))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(results);
+    }
+
     @GetMapping("/muahang/{id}")
-    public String muahang(@PathVariable("id") int idhoadon,Model model){
+    public String muahang(@PathVariable("id") int idhoadon, Model model) {
+
         this.idhd = idhoadon;
         List<HoaDon> hoaDons = hoaDonRepository.findAll();
         // Đánh dấu hóa đơn được chọn là active
@@ -169,7 +200,9 @@ public class BanHangOffline {
         return ResponseEntity.ok(hoaDons);
     }
 
-    private static final HashMap<String,Integer> demstt = new HashMap<>();
+
+    private static final HashMap<String, Integer> demstt = new HashMap<>();
+
     @PostMapping("/taohd")
     public ResponseEntity<Map<String, String>> taohoadon(Model model) {
         String hd = hoaDonRepository.findMaxMaHoaDon();
@@ -184,7 +217,8 @@ public class BanHangOffline {
         // Tạo mã hóa đơn
         HoaDon newhd = new HoaDon();
         newhd.setMahoadon(mahd);
-        newhd.setActive(true);
+
+        newhd.setActive(false);
         newhd.setNgaytao(LocalDate.now());
         hoaDonRepository.save(newhd);
         Map<String, String> response = new HashMap<>();
@@ -194,17 +228,16 @@ public class BanHangOffline {
         return ResponseEntity.ok(response);
     }
 
-     BigDecimal tongtien(int id){
-            this.idhd = id ;
-            return hoaDonCTRepository.TongTienByHoaDonId(idhd);
-     }
-
-
+    BigDecimal tongtien(int id) {
+        this.idhd = id;
+        return hoaDonCTRepository.TongTienByHoaDonId(idhd);
+    }
 
     @PostMapping("/taohdct")
     public ResponseEntity<String> createHoaDonCT(@RequestBody HoaDonCTDTO dto,
                                                  Model model) {
-            HoaDonCT hoaDonCT = new HoaDonCT();
+        HoaDonCT hoaDonCT = new HoaDonCT();
+
 //            if (idhd == null) {
 //                List<HoaDon> hoaDons = hoaDonRepository.findHoaDonsDesc();
 //                if (hoaDons.size() >= 3) {
@@ -214,74 +247,90 @@ public class BanHangOffline {
 //            }else{
 //                hoaDonCT.setHoaDon(new HoaDon(idhd));
 //            }
-            hoaDonCT.setHoaDon(new HoaDon(idhd));
-            hoaDonCT.setSanPhamChiTiet(new SanPhamChiTiet(dto.getIdSanPhamCT()));
-            hoaDonCT.setDongia(dto.getDonGia());
-            hoaDonCT.setSoluong(dto.getSoLuong());
-            HoaDonCT existingHoaDonCT = hoaDonCTRepository.findByHoaDonIdAndSanPhamId(idhd, dto.getIdSanPhamCT());
-            if (existingHoaDonCT != null) {
-                existingHoaDonCT.setSoluong(existingHoaDonCT.getSoluong() + 1);
-                existingHoaDonCT.setId(existingHoaDonCT.getId());
-                BigDecimal totalPrice = existingHoaDonCT.getDongia().multiply(BigDecimal.valueOf(existingHoaDonCT.getSoluong()));
-                existingHoaDonCT.setTongtien(totalPrice);
-                System.out.println("id hdct : " + existingHoaDonCT.getId());
-                hoaDonCTRepository.save(existingHoaDonCT);
-                return ResponseEntity.ok("Thành công !");
-            }
-            // Nếu không tồn tại, tạo mới
-            BigDecimal donGia = dto.getDonGia();
-            int soLuong = dto.getSoLuong();
-            BigDecimal thanhTien = donGia.multiply(BigDecimal.valueOf(soLuong));
-            hoaDonCT.setTongtien(thanhTien);
-            hoaDonCT.setNgaytao(LocalDate.now());
-            System.out.println("add");
-            hoaDonCTRepository.save(hoaDonCT);
+
+        hoaDonCT.setHoaDon(new HoaDon(idhd));
+        hoaDonCT.setSanPhamChiTiet(new SanPhamChiTiet(dto.getIdSanPhamCT()));
+        hoaDonCT.setDongia(dto.getDonGia());
+        hoaDonCT.setSoluong(dto.getSoLuong());
+        HoaDonCT existingHoaDonCT = hoaDonCTRepository.findByHoaDonIdAndSanPhamId(idhd, dto.getIdSanPhamCT());
+        if (existingHoaDonCT != null) {
+            existingHoaDonCT.setSoluong(existingHoaDonCT.getSoluong() + 1);
+            existingHoaDonCT.setId(existingHoaDonCT.getId());
+            BigDecimal totalPrice = existingHoaDonCT.getDongia().multiply(BigDecimal.valueOf(existingHoaDonCT.getSoluong()));
+            existingHoaDonCT.setTongtien(totalPrice);
+            System.out.println("id hdct : " + existingHoaDonCT.getId());
+            hoaDonCTRepository.save(existingHoaDonCT);
             return ResponseEntity.ok("Thành công !");
+        }
+        // Nếu không tồn tại, tạo mới
+        BigDecimal donGia = dto.getDonGia();
+        int soLuong = dto.getSoLuong();
+        BigDecimal thanhTien = donGia.multiply(BigDecimal.valueOf(soLuong));
+        hoaDonCT.setTongtien(thanhTien);
+        hoaDonCT.setNgaytao(LocalDate.now());
+        System.out.println("add");
+        hoaDonCTRepository.save(hoaDonCT);
+        return ResponseEntity.ok("Thành công !");
+
     }
 
 
     @PostMapping("/update")
-    public ResponseEntity<String> updateProduct(@RequestBody HoaDonCTDTO dto,Model model,RedirectAttributes redirectAttributes) {
-            HoaDonCT hoaDonCT = hoaDonCTRepository.findById(dto.getIdHoadon())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn chi tiết"));
-            System.out.println("idspct = "  +dto.getIdSanPhamCT());
-            Optional<SanPhamChiTiet> spctOptional = sanPhamChiTietRepository.findById(dto.getIdSanPhamCT());
-            if (spctOptional.isEmpty()) {
-                return ResponseEntity.badRequest().body("Không tìm thấy sản phẩm chi tiết.");
-            }
-            SanPhamChiTiet spct = spctOptional.get();
 
-            if (dto.getSoLuong() > spct.getSoluongsanpham()) {
-                model.addAttribute("loi","Số lượng nhập vượt quá số lượng tồn kho");
-                return ResponseEntity.badRequest().body("Số lượng nhập vượt quá số lượng tồn kho");
-            }
+    public ResponseEntity<String> updateProduct(@RequestBody HoaDonCTDTO dto, Model model, RedirectAttributes redirectAttributes) {
+        HoaDonCT hoaDonCT = hoaDonCTRepository.findById(dto.getIdHoadon())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn chi tiết"));
+        System.out.println("idspct = " + dto.getIdSanPhamCT());
+        Optional<SanPhamChiTiet> spctOptional = sanPhamChiTietRepository.findById(dto.getIdSanPhamCT());
+        if (spctOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy sản phẩm chi tiết.");
+        }
+        SanPhamChiTiet spct = spctOptional.get();
 
-            hoaDonCT.setSoluong(dto.getSoLuong());
-            hoaDonCT.setTongtien(dto.getThanhTien());
-            hoaDonCT.setTrangthai(1);
-            BigDecimal tongTien = tongtien(idhd);
-            model.addAttribute("tongTien", tongTien);
-            hoaDonCTRepository.save(hoaDonCT);
-            return ResponseEntity.ok("Cập nhật thành công");
+        if (dto.getSoLuong() > spct.getSoluongsanpham()) {
+            model.addAttribute("loi", "Số lượng nhập vượt quá số lượng tồn kho");
+            return ResponseEntity.badRequest().body("Số lượng nhập vượt quá số lượng tồn kho");
+        }
+
+        hoaDonCT.setSoluong(dto.getSoLuong());
+        hoaDonCT.setTongtien(dto.getThanhTien());
+        hoaDonCT.setTrangthai(1);
+        BigDecimal tongTien = tongtien(idhd);
+        model.addAttribute("tongTien", tongTien);
+        hoaDonCTRepository.save(hoaDonCT);
+        return ResponseEntity.ok("Cập nhật thành công");
+    }
+
+    @GetMapping("/chonkh")
+    public ResponseEntity<Map<String, String>> chonkh(@RequestParam(value = "id", defaultValue = "0") Integer id,
+                                                      Model model) {
+        Map<String, String> response = new HashMap<>();
+        KhachHang kh = khachHangRepository.findById(id).orElse(null);
+
+        response.put("tenkh", kh.getTenkhachhang());
+        response.put("sdt", kh.getSdt());
+        response.put("diachi", kh.getDiachi());
+        return ResponseEntity.ok(response);
+
     }
 
     @GetMapping("/selectvc")
-    public ResponseEntity<Map<String, String>> chonVoucher(@RequestParam(value = "id",defaultValue = "0") String id,
-                                                           @RequestParam(value = "phiship", required = false) BigDecimal phiship,
+    public ResponseEntity<Map<String, String>> chonVoucher(@RequestParam(value = "id", defaultValue = "0") String id,
                                                            Model model) {
         System.out.println("Voucher ID nhận từ client: " + id);
-        System.out.println("phí ship : " + phiship);
         Map<String, String> response = new HashMap<>();
         DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
         BigDecimal tt = tongtien(idhd);
-        BigDecimal thanhtien ;
+        BigDecimal thanhtien;
+
         String loai = "0";
 
         Optional<Voucher> checkvoucher = voucherRepository.findByMa(id);
         if (checkvoucher.isPresent()) {
             Voucher voucher = checkvoucher.get();
             System.out.println("Voucher ID nhận từ client: " + id);
-            System.out.println("phí ship : " + phiship);
+
+
 
             int mucgiam = Integer.parseInt(voucher.getMucGiam());
             int giamin = Integer.parseInt(voucher.getDieuKien());
@@ -292,17 +341,20 @@ public class BanHangOffline {
             if (voucher.isLoai()) {
                 BigDecimal mucGiamBD = new BigDecimal(mucgiam);
                 BigDecimal sophantram = tt.divide(new BigDecimal(100), RoundingMode.HALF_UP).multiply(mucGiamBD);
-                thanhtien = tt.subtract(sophantram).add(phiship);
+
+                thanhtien = tt.subtract(sophantram);
                 loai = voucher.getMucGiam() + " % ";
             } else {
-                thanhtien = tt.subtract(new BigDecimal(mucgiam)).add(phiship);
+                thanhtien = tt.subtract(new BigDecimal(mucgiam));
+
                 BigDecimal giamgia = new BigDecimal(voucher.getMucGiam());
                 String formattedgiamgia = decimalFormat.format(giamgia);
                 loai = formattedgiamgia + " VND ";
             }
         } else {
             System.out.println("Voucher không tồn tại.");
-            thanhtien = tt.add(phiship);
+
+            thanhtien = tt;
             loai = "0";
         }
         String formattedThanhtien = decimalFormat.format(thanhtien);
@@ -335,66 +387,110 @@ public class BanHangOffline {
             @RequestParam(value = "idvoucher", required = false) Integer idvoucher,
             @RequestParam("thanhtien") BigDecimal thanhtien,
             @RequestParam("tongtien") BigDecimal tongtien,
+
+            @RequestParam("sdt") String sdt,
+            @RequestParam("tinh") String tinh,
+            @RequestParam("huyen") String huyen,
+            @RequestParam("xa") String xa,
+            @RequestParam("diachicuthe") String diachicuthe,
+            @RequestParam("ghichu") String ghichu,
+            @RequestParam("tenkh") String tenkh,
             RedirectAttributes redirectAttributes,
             Model model
-    ){
+    ) {
         String currentUrl = request.getRequestURL().toString();
+        String diachi = diachicuthe +" - " + tinh + " - " + huyen +" - " + xa ;
+        HoaDon hd = hoaDonRepository.finid(idhoadon);
+        System.out.println("hd : " + hd.getMahoadon());
+        if (hd == null) {
+            redirectAttributes.addFlashAttribute("loi", "Hóa đơn");
+            return "redirect:/panda/banhangoffline/" +idhoadon;
+        }
+        NhanVien nv = nhanVienRespository.findById(1).orElse(null);
+        if (nv == null) {
+            redirectAttributes.addFlashAttribute("loi", "Nhân viên");
+        }
+        KhachHang kh = khachHangRepository.findBySdt(sdt);
+        if(!sdt.isBlank() && !tenkh.isBlank() && !tinh.isBlank() && !huyen.isBlank() ) {
+            if (kh == null) {
+                kh = new KhachHang();
+                String ma = khachHangRepository.findMaxMakh();
+                int demhd;
+                if (ma == null) {
+                    demhd = 1;
+                } else {
+                    demhd = Integer.parseInt(ma.substring(2)) + 1;
+                }
+                String makh = String.format("KH%03d", demhd);
+                kh.setTenkhachhang(tenkh);
+                kh.setMakhachhang(makh);
+                kh.setTrangthai(1);
+                kh.setSdt(sdt);
+                kh.setDiachi(diachi);
+            } else {
+//            kh.setMakhachhang(kh.getMakhachhang());
+//            kh.setTentaikhoan(kh.getTentaikhoan());
+//            kh.setGioitinh(kh.getGioitinh());
+//            kh.setTaiKhoan(kh.getTaiKhoan());
+//            kh.setImage(kh.getImage());
+//            kh.setDelete(kh.isDelete());
+//            kh.setMatkhau(kh.getMatkhau());
+//            kh.setTinhtrang(kh.getTinhtrang());
+//            kh.setTrangthai(kh.getTrangthai());
+                kh.setNgaysua(LocalDate.now());
+                kh.setTenkhachhang(tenkh);
+                kh.setSdt(sdt);
+                kh.setDiachi(diachi);
+            }
+            khachHangRepository.save(kh);
 
-        System.out.println(idhoadon);
-            HoaDon hd = hoaDonRepository.findById(idhoadon).orElse(null);
-            if(hd == null){
-                redirectAttributes.addFlashAttribute("loi","Hóa đơn");
-            }
-            NhanVien nv = nhanVienRespository.findById(1).orElse(null);
-            if(nv == null){
-                redirectAttributes.addFlashAttribute("loi","Nhân viên");
-            }
-            KhachHang kh = khachHangRepository.findById(1).orElse(null);
-            if(kh == null){
-                redirectAttributes.addFlashAttribute("loi","Khách hàng");
-            }
-            Voucher vc = null;
-            if (idvoucher != null && idvoucher > 0) {
+        }else{
+            KhachHang kh1 = khachHangRepository.findById(1).get();
+            hd.setKhachHang(kh1);
+        }
+        Voucher vc = null;
+        if (idvoucher != null && idvoucher > 0) {
             vc = voucherRepository.findById(idvoucher).orElse(null);
-                if (vc == null || Integer.parseInt(vc.getSoLuong()) <= 0) {
-                    redirectAttributes.addFlashAttribute("loi", "Voucher không hợp lệ hoặc đã hết số lượng");
-                    return "redirect:/panda/banhangoffline";
-                }
-
-                boolean checkmavoucher = hoaDonRepository.checkmavoucher(vc, kh);
-                if (checkmavoucher) {
-                    redirectAttributes.addFlashAttribute("loi", "Voucher đã được sử dụng cho khách hàng này");
-                    System.out.println("đã dùng ");
-                    return "redirect:/panda/banhangoffline/muahang/" +idhd;
-                }
-
-                if (vc != null && Integer.parseInt(vc.getSoLuong()) > 0) {
-                    int currentQuantity = Integer.parseInt(vc.getSoLuong());
-                    currentQuantity -= 1;
-                    vc.setSoLuong(String.valueOf(currentQuantity));
-                    voucherRepository.save(vc);
-                }
+            if (vc == null || Integer.parseInt(vc.getSoLuong()) <= 0) {
+                redirectAttributes.addFlashAttribute("loi", "Voucher không hợp lệ hoặc đã hết số lượng");
+                return "redirect:/panda/banhangoffline";
             }
 
-            List<HoaDonCT> lshdct = hoaDonCTRepository.findhdct(idhoadon);
-            for (HoaDonCT hdct : lshdct) {
-                SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
-                if (spct != null) {
-                    int soLuongTon = spct.getSoluongsanpham();
-                    int soLuongBan = hdct.getSoluong();
-                    spct.setSoluongsanpham(soLuongTon - soLuongBan);
-                    sanPhamChiTietRepository.save(spct);
-                }
+            boolean checkmavoucher = hoaDonRepository.checkmavoucher(vc, kh);
+            if (checkmavoucher) {
+                redirectAttributes.addFlashAttribute("loi", "Voucher đã được sử dụng cho khách hàng này");
+                System.out.println("đã dùng ");
+                return "redirect:/panda/banhangoffline/muahang/" + idhd;
             }
 
-            hd.setNhanVien(nv);
-            hd.setKhachHang(kh);
-            hd.setVoucher(vc);
-            hd.setThanhtien(thanhtien);
-            hd.setTongtien(tongtien);
-            hd.setTrangthai(1);
-            hd.setNgaymua(LocalDate.now());
-            hoaDonRepository.save(hd);
+            if (vc != null && Integer.parseInt(vc.getSoLuong()) > 0) {
+                int currentQuantity = Integer.parseInt(vc.getSoLuong());
+                currentQuantity -= 1;
+                vc.setSoLuong(String.valueOf(currentQuantity));
+                voucherRepository.save(vc);
+            }
+        }
+
+        List<HoaDonCT> lshdct = hoaDonCTRepository.findhdct(idhoadon);
+        for (HoaDonCT hdct : lshdct) {
+            SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
+            if (spct != null) {
+                int soLuongTon = spct.getSoluongsanpham();
+                int soLuongBan = hdct.getSoluong();
+                spct.setSoluongsanpham(soLuongTon - soLuongBan);
+                sanPhamChiTietRepository.save(spct);
+            }
+        }
+
+        hd.setNhanVien(nv);
+
+        hd.setVoucher(vc);
+        hd.setThanhtien(thanhtien);
+        hd.setTongtien(tongtien);
+        hd.setTrangthai(1);
+        hd.setNgaymua(LocalDate.now());
+        hoaDonRepository.save(hd);
         return "redirect:/panda/banhangoffline";
     }
 }
+

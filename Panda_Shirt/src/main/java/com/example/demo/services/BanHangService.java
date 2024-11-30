@@ -3,6 +3,7 @@ package com.example.demo.services;
 import com.example.demo.DTO.HoaDonCTDTO;
 import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.HoaDonCT;
+import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.respository.HoaDonCTRepository;
 import jakarta.persistence.EntityManager;
@@ -21,6 +22,7 @@ public class BanHangService {
     HoaDonCTRepository hoaDonCTRepository;
     @PersistenceContext
     private EntityManager entityManager;
+
     // Phương thức tìm kiếm sản phẩm
     public List<SanPhamChiTiet> findByTenSanPham(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
@@ -30,6 +32,19 @@ public class BanHangService {
                 "LOWER(sp.sanPham.tensp) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
                 "OR LOWER(sp.sanPham.masp) LIKE LOWER(CONCAT('%', :keyword, '%'))";
         TypedQuery<SanPhamChiTiet> query = entityManager.createQuery(queryString, SanPhamChiTiet.class);
+        query.setParameter("keyword", keyword.trim());
+
+        return query.getResultList();
+    }
+
+    public List<KhachHang> findBysdt(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return List.of();
+        }
+        String queryString = "SELECT kh FROM KhachHang kh WHERE " +
+                "LOWER(kh.makhachhang) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                "OR LOWER(kh.sdt) LIKE LOWER(CONCAT('%', :keyword, '%'))";
+        TypedQuery<KhachHang> query = entityManager.createQuery(queryString, KhachHang.class);
         query.setParameter("keyword", keyword.trim());
 
         return query.getResultList();

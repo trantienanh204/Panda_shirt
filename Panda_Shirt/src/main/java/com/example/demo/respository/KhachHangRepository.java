@@ -41,12 +41,18 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
 
     Optional<KhachHang> findByTentaikhoan(String name);
 
-
         @Query("SELECT kh FROM KhachHang kh WHERE kh.tentaikhoan = :tenTaiKhoan")
         Optional<KhachHang> findByTenTaiKhoan(@Param("tenTaiKhoan") String tenTaiKhoan);
 
-
     boolean existsByTentaikhoan(String tentaikhoan);
     boolean existsBySdt(String sdt);
+
+
+    KhachHang findBySdt(String sdt);
+
+    @Query("SELECT MAX(kh.makhachhang) FROM KhachHang kh")
+    String findMaxMakh();
+
+
 
 }

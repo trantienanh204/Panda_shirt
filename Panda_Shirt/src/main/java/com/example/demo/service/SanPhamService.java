@@ -47,13 +47,16 @@ public class SanPhamService {
     private final int size = 5;
 
     public Page<SanPham> hienThiSanPhamTheoDieuKien(int page, String tensp, Integer trangthai) {
+
         Sort sort = Sort.by(Sort.Direction.DESC,"id");
+
 
         Pageable pageable = PageRequest.of(page, size,sort);
         return sanPhamRepository.findByTenspAndTrangthai(tensp, trangthai, pageable);
     }
 
     public List<SanPham> getallsp() {
+
         return sanPhamRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
@@ -77,6 +80,7 @@ public class SanPhamService {
     }
     public List<KichThuoc> getallkichco() {
         return kichThuocRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+
     }
     public void saveSanPhamChiTiet(SanPhamChiTiet sanPhamChiTiet) {
         sanPhamChiTietRepository.save(sanPhamChiTiet);

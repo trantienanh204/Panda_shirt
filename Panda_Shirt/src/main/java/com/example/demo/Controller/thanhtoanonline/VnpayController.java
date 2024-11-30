@@ -93,12 +93,14 @@ public class VnpayController {
         HoaDon hoaDon = createHoaDon(khachHang, cartItems, totalAmount, note, paymentMethod);
         DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod);
 
+
         hoaDonService.save(hoaDon);
         donHangRepository.save(donHang);
 
         gioHangService.clearCart(khachHangId);
 
         redirectAttributes.addFlashAttribute("successMessage", "Đơn hàng của bạn đã được đặt thành công!");
+
         return "redirect:/panda/trangchu";
     }
 

@@ -32,11 +32,8 @@ public interface NhanVienRespository extends JpaRepository<NhanVien,Integer> {
 //    @Query("SELECT nv FROM NhanVien nv LEFT JOIN FETCH nv.userRoles WHERE nv.tentaikhoan = :taiKhoan")
 //    NhanVien findByTenTaiKhoanWithRoles(@Param("taiKhoan") String taiKhoan);
 
-
-
-
-
     boolean existsByTentaikhoan(String tentaikhoan);
     boolean existsByTentaikhoanAndId(String tentaikhoan,Integer id);
+
 
 }

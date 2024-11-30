@@ -79,7 +79,11 @@
 
                     <div class="form-group">
                         <label for="tennhanvien"> Họ Tên:</label>
+<<<<<<< HEAD
                         <input type="text" class="form-control" id="tennhanvien" th:field="*{tennhanvien}">
+=======
+                        <input type="text" class="form-control" id="tennhanvien" th:field="*{tennhanvien}" required>
+>>>>>>> thai
                         <div th:if="${#fields.hasErrors('tennhanvien')}" class="text-danger">
                             <span th:errors="*{tennhanvien}"></span>
                         </div>
@@ -100,9 +104,12 @@
                         <div th:if="${#fields.hasErrors('tentaikhoan')}" class="text-danger">
                             <span th:errors="*{tentaikhoan}"></span>
                         </div>
+<<<<<<< HEAD
                         <div th:if="${emailExist!= null}">
                             <div style="color: red" th:each="error : ${emailExist}" th:text="${error}"></div>
                         </div>
+=======
+>>>>>>> thai
                     </div>
 
                         <input type="hidden" class="form-control" id="matkhau" th:field="*{matkhau}" required>

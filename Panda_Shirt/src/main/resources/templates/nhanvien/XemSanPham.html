@@ -79,11 +79,12 @@
                 <a th:href="@{/panda/nhanvien/xemsanpham/chitiet(id=${sp.id})}" data-toggle="modal" data-target="#xemchitiet" th:data-id="${sp.id}">
                     <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
                 </a>
+
             </td>
         </tr>
         </tbody>
     </table>
-    <!-- Phân trang -->
+    <!--    phân trang -->
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <!-- Nút Previous -->
@@ -99,6 +100,7 @@
             <!-- Nút Next -->
             <li class="page-item" th:classappend="${listsp.size() < pageSize} ? 'disabled'">
                 <a class="page-link" th:href="@{/panda/nhanvien/xemsanpham/hienthi(page=${currentPage + 1}, tensp=${tensp}, trangthai=${trangthai})}" aria-label="Next">
+
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

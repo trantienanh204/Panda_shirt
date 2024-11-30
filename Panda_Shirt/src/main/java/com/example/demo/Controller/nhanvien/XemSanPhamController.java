@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 import java.util.Base64;
+
 import java.util.List;
 
 @Controller
@@ -31,12 +33,15 @@ public class XemSanPhamController {
                             @RequestParam(value = "tensp", required = false) String tensp,
                             @RequestParam(value = "trangThai", required = false) Integer trangThai,
                             Model model) {
+
         String role = "nhanvien"; // Hoặc lấy giá trị role từ session hoặc service
+
         model.addAttribute("role", role);
 
         if (page < 0) {
             page = 0;
         }
+
         Page<SanPham> listSP = sanPhamService.hienThiSanPhamTheoDieuKien(page, tensp, trangThai);
 
         // Chuyển đổi ảnh sang chuỗi Base64
@@ -47,6 +52,7 @@ public class XemSanPhamController {
             }
         });
 
+
         model.addAttribute("totalPage", listSP.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listsp", listSP.getContent());
@@ -54,8 +60,10 @@ public class XemSanPhamController {
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listSP.getSize());
 
+
         return "/nhanvien/XemSanPham";
     }
+
 
 
     @GetMapping("/chitiet")

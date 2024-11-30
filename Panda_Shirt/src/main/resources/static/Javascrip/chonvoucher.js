@@ -14,13 +14,20 @@ $(document).on('input', '#mavoucher-input', function() {
 
 function nhapvoucher(voucherId) {
     console.log("Voucher ID: ", voucherId);
+<<<<<<< HEAD
     var phishipValue = $("#phiship").val();
+=======
+>>>>>>> thai
     $.ajax({
         url: "/panda/banhangoffline/selectvc",
         type: "GET",
         data: {
+<<<<<<< HEAD
             id: voucherId,
             phiship: phishipValue
+=======
+            id: voucherId
+>>>>>>> thai
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
@@ -43,14 +50,21 @@ function nhapvoucher(voucherId) {
 
 function chonVoucher(element) {
     var voucherId = $(element).data('id');
+<<<<<<< HEAD
     var phishipValue = $("#phiship").val();
+=======
+>>>>>>> thai
     console.log("Voucher ID: ", voucherId);
     $.ajax({
         url: "/panda/banhangoffline/selectvc",
         type: "GET",
         data: {
+<<<<<<< HEAD
             id: voucherId,
             phiship: phishipValue
+=======
+            id: voucherId
+>>>>>>> thai
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
@@ -70,6 +84,34 @@ function chonVoucher(element) {
         }
     });
 }
+<<<<<<< HEAD
+=======
+
+function chonkh(element) {
+    var idkh = $(element).data('id');
+    console.log("kh ID: ", idkh);
+    $.ajax({
+        url: "/panda/banhangoffline/chonkh",
+        type: "GET",
+        data: {
+            id: idkh
+        },
+        success: function(response) {
+            $("#tenkh-input").val(response.tenkh);
+            $("#sdt-input").val(response.sdt);
+            $("#diachi-input").val(response.diachi);
+            $('#chonkhachhangModal').modal('hide');
+        },
+        error: function(xhr, status, error) {
+            console.error("Lỗi khi gọi AJAX:", error);
+            const errorResponse = JSON.parse(xhr.responseText);
+            if (errorResponse.error) {
+                alert(errorResponse.error);
+            }
+        }
+    });
+}
+>>>>>>> thai
 // $(document).ready(function() {
 //     var initialVoucherId = $("#mavoucher-input").val();
 //
@@ -122,6 +164,7 @@ function chonVoucher(element) {
 //         initialVoucherId = voucherId;
 //     });
 // });
+<<<<<<< HEAD
 $(document).ready(function() {
     $("#province").change(function() {
         var voucherId = $("#mavoucher-input").val();
@@ -155,3 +198,36 @@ $('#voucherModal').on('shown.bs.modal', function () {
 $('#voucherModal').on('hidden.bs.modal', function () {
     $('#openModalButton').focus();
 })
+=======
+// $(document).ready(function() {
+//     $("#province").change(function() {
+//         var voucherId = $("#mavoucher-input").val();
+//         $.ajax({
+//             url: "/panda/banhangoffline/selectvc",
+//             type: "GET",
+//             data: {
+//                 id: voucherId
+//             },
+//             success: function(response) {
+//                 $("#mavoucher-input").val(response.mavocher);
+//                 $("#idvoucher-input").val(response.idvoucher);
+//                 $("#mucgiam").text(response.mucgiam);
+//                 $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
+//                 $("#thanhTien").val(response.thanhTien);
+//                 $('#voucherModal').modal('hide');
+//             },
+//             error: function(xhr, status, error) {
+//                 console.error("Lỗi khi gọi API:", error);
+//             }
+//         });
+//     });
+// });
+//
+// $('#voucherModal').on('shown.bs.modal', function () {
+//     $(this).find('input, button, a').first().focus();
+// });
+//
+// $('#voucherModal').on('hidden.bs.modal', function () {
+//     $('#openModalButton').focus();
+// })
+>>>>>>> thai
