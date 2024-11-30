@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
     boolean existsKhachHangByMakhachhang(String makhachhang);
     boolean existsKhachHangBySdt(String sdt);
+    boolean existsByTentaikhoan(String tentaikhoan);
+    boolean existsBySdt(String sdt);
 }

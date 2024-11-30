@@ -58,15 +58,24 @@ public class TKNhanVienController {
                                RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-
+        // check lỗi
+        boolean hasErrors = false;
         // Kiểm tra lỗi trong BindingResult
         if (result.hasErrors()) {
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
-
+        // check mail tồn tại;
+        if (nhanVienRespository.existsByTentaikhoan(nhanVien.getTentaikhoan())) {
+            model.addAttribute("emailExist","Email đã được đăng ký");
+            hasErrors = true;
+        }
         // Kiểm tra mã nhân viên đã tồn tại
         if (nhanVienService.existsNhanVienByManhanvien(nhanVien.getManhanvien())) {
             model.addAttribute("errorma", "Mã đã tồn tại");
+            return "admin/QLTK/ADD/AddTKNhanVien";
+        }
+        // trả về trang nếu lỗi
+        if (hasErrors) {
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
 
@@ -114,7 +123,7 @@ public class TKNhanVienController {
                     "<h2>Chào mừng bạn gia nhập shop Panda Shirt!</h2>" +
                     "<p>Mật khẩu của bạn đã được tạo thành công. Vui lòng ghi nhớ nó!</p>" +
                     "<div class='password'>" + plainPassword + "</div>" +
-                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='https://your-shop-url.com' style='color: #007bff;'>đây</a>.</p>" +
+                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='http://localhost:8080/panda/login' style='color: #007bff;'>đây</a>.</p>" +
                     "<div class='footer'>Nếu bạn có bất kỳ câu hỏi nào, hãy liên hệ với bộ phận hỗ trợ của chúng tôi.</div>" +
                     "</div>" +
                     "</body>" +
@@ -160,7 +169,17 @@ public class TKNhanVienController {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         // check validation
+        boolean hasErrors = false;
+
         if(result.hasErrors()){
+            return "/admin/QLTK/UPDATE/UpdateTKNhanVien";
+        }
+        if (!nhanVienRespository.existsByTentaikhoanAndId(nhanVien.getTentaikhoan(), nhanVien.getId())) {
+            model.addAttribute("emailExist","Email này đã được đăng ký");
+            hasErrors = true;
+        }
+        // show lỗi
+        if (hasErrors) {
             return "/admin/QLTK/UPDATE/UpdateTKNhanVien";
         }
         NhanVien checkNhanVien  = nhanVienService.findById(nhanVien.getId());
