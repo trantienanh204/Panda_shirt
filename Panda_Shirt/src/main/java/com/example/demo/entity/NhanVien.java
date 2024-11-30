@@ -20,7 +20,7 @@ public class NhanVien {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotBlank(message = "Vui lòng nhập tên nhân viên")
+    @NotBlank(message = "Vui lòng nhập họ tên nhân viên")
     @Column(name = "TEN_NHAN_VIEN")
     private String tennhanvien;
     @NotBlank(message = "Vui lòng nhập mã nhân viên ")
@@ -58,4 +58,14 @@ public class NhanVien {
     public void toggleTrangThai() {
         this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
     }
+
+    @Column(name = "DELETEAT")
+    private boolean delete;
+
+    @Column(name = "TINH_TRANG")
+    private Boolean tinhtrang;
+
+    @OneToOne
+    @JoinColumn(name = "TEN_DANG_NHAP") // Tên cột khóa ngoại trong bảng KhachHang
+    private TaiKhoan taiKhoan;
 }

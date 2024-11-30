@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NhanVienRespository extends JpaRepository<NhanVien,Integer> {
     boolean existsNhanVienByManhanvien(String manhanvien);
+    boolean existsByTentaikhoan(String tentaikhoan);
+    boolean existsByTentaikhoanAndId(String tentaikhoan,Integer id);
 }
