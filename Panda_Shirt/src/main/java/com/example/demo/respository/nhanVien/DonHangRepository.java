@@ -23,5 +23,5 @@ public interface DonHangRepository extends JpaRepository<DonHang, Integer> {
             , String tenkh
             , LocalDate Date, String trangThai, Pageable pageable);
 
-
+    List<DonHang> findByKhachHangId(int khachHangId);
 }

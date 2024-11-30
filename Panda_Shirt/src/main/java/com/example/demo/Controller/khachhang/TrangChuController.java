@@ -1,12 +1,13 @@
 package com.example.demo.Controller.khachhang;
 
+import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
-import com.example.demo.service.GioHangService;
-import com.example.demo.service.SanPhamService;
-import com.example.demo.service.TaiKhoanService;
-import com.example.demo.service.TrangchuService;
+import com.example.demo.respository.KhachHangRepository;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -20,14 +21,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/panda/")
 public class TrangChuController {
     @Autowired
-    TrangchuService trangchuService;
+    private TrangchuService trangchuService;
     @Autowired
-    SanPhamService sanPhamService;
+    private SanPhamService sanPhamService;
     @Autowired
     private GioHangService gioHangService;
     @Autowired
     private TaiKhoanService taiKhoanService;
-
+    @Autowired
+    DonHangService donHangService;
+    @Autowired
+    private KhachHangRepository khachHangRepository;
 
     @GetMapping("/trangchu")
     public String hienthi(Model model){
@@ -131,9 +135,34 @@ public class TrangChuController {
 
 
     @GetMapping("/taikhoan")
-    public String taikhoan(){
+    public String taikhoan(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        String tenDangNhap = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+            return "redirect:/login";
+        }
+        KhachHang khachHang = khachHangRepository.findById(taiKhoanDto.getKhachHangDTO().getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
+
+        List<DonHang> donHangs = donHangService.findByKhachHangId(khachHang.getId());
+
+        List<DonHang> choduyet = donHangs.stream().filter(d -> "Chờ duyệt".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> dachuyet = donHangs.stream().filter(d -> "Đã duyệt".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> danggiao = donHangs.stream().filter(d -> "Đang giao".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> hoanthanh = donHangs.stream().filter(d -> "Hoàn thành".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> dahuy = donHangs.stream().filter(d -> "Đã hủy".equals(d.getTrangThai())).collect(Collectors.toList());
+
+        model.addAttribute("khachHang", khachHang);
+        model.addAttribute("choduyet", choduyet);
+        model.addAttribute("dachuyet", dachuyet);
+        model.addAttribute("danggiao", danggiao);
+        model.addAttribute("hoanthanh", hoanthanh);
+        model.addAttribute("dahuy", dahuy);
         return "/khachhang/TaiKhoan";
     }
+
+
+
     @GetMapping("/thanhtoan")
     public String thanhtoan(){
         return "/khachhang/ThanhToan";

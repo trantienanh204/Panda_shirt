@@ -46,6 +46,8 @@ public class diachigiaohangController {
         KhachHang khachHang = khachHangRepository.findById(taiKhoanDto.getKhachHangDTO().getId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
         khachHang.setDiachi(diaChiDTO.getFullAddress());
+        khachHang.setSdt(diaChiDTO.getPhoneNumber());
+        khachHang.setTenkhachhang(diaChiDTO.getRecipientName());
         khachHangRepository.save(khachHang);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Địa chỉ đã được lưu thành công");

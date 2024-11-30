@@ -196,7 +196,11 @@
             .then(response => response.json())
             .then(data => {
                 if (data.message === "Địa chỉ đã được lưu thành công") {
-                    Swal.fire('Thành công!', 'Địa chỉ đã được lưu thành công', 'success');
+                    Swal.fire('Thành công!', 'Địa chỉ đã được lưu thành công', 'success')
+                        .then(() => {
+                            // Chuyển hướng về trang thanh toán
+                            window.location.href = 'http://localhost:8080/panda/giohang/thanhtoan';
+                        });
                 } else {
                     Swal.fire('Lỗi!', 'Có lỗi xảy ra khi lưu địa chỉ', 'error');
                 }
@@ -207,5 +211,6 @@
             });
     });
 </script>
+
 </body>
 </html>
