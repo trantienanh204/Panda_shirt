@@ -81,37 +81,29 @@ public class TKNhanVienController {
                                RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-<<<<<<< HEAD
         // check lỗi
         boolean hasErrors = false;
-=======
 
->>>>>>> thai
         // Kiểm tra lỗi trong BindingResult
         if (result.hasErrors()) {
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
-<<<<<<< HEAD
         // check mail tồn tại;
         if (nhanVienRespository.existsByTentaikhoan(nhanVien.getTentaikhoan())) {
             model.addAttribute("emailExist","Email đã được đăng ký");
             hasErrors = true;
         }
-=======
-
->>>>>>> thai
         // Kiểm tra mã nhân viên đã tồn tại
         if (nhanVienService.existsNhanVienByManhanvien(nhanVien.getManhanvien())) {
             model.addAttribute("errorma", "Mã đã tồn tại");
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
-<<<<<<< HEAD
+
         // trả về trang nếu lỗi
         if (hasErrors) {
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
-=======
->>>>>>> thai
+
 
         try {
             // Tạo mật khẩu ngẫu nhiên
@@ -157,11 +149,7 @@ public class TKNhanVienController {
                     "<h2>Chào mừng bạn gia nhập shop Panda Shirt!</h2>" +
                     "<p>Mật khẩu của bạn đã được tạo thành công. Vui lòng ghi nhớ nó!</p>" +
                     "<div class='password'>" + plainPassword + "</div>" +
-<<<<<<< HEAD
                     "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='http://localhost:8080/panda/login' style='color: #007bff;'>đây</a>.</p>" +
-=======
-                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='https://your-shop-url.com' style='color: #007bff;'>đây</a>.</p>" +
->>>>>>> thai
                     "<div class='footer'>Nếu bạn có bất kỳ câu hỏi nào, hãy liên hệ với bộ phận hỗ trợ của chúng tôi.</div>" +
                     "</div>" +
                     "</body>" +
@@ -230,7 +218,7 @@ public class TKNhanVienController {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         // check validation
-<<<<<<< HEAD
+
         boolean hasErrors = false;
 
         if(result.hasErrors()){
@@ -244,11 +232,7 @@ public class TKNhanVienController {
         if (hasErrors) {
             return "/admin/QLTK/UPDATE/UpdateTKNhanVien";
         }
-=======
-        if(result.hasErrors()){
-            return "/admin/QLTK/UPDATE/UpdateTKNhanVien";
-        }
->>>>>>> thai
+
         NhanVien checkNhanVien  = nhanVienService.findById(nhanVien.getId());
             // Cập nhật
         if(checkNhanVien !=null){
