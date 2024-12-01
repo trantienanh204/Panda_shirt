@@ -59,7 +59,6 @@ public class GiamGiaController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("trangThai", trangThai);
-        System.out.println("Trạng thái: " + trangThai);
         model.addAttribute("chonmavc", voucherRepository.chonVC());
         model.addAttribute("listkh", khachHangRespository.dskhhoatdong());
         model.addAttribute("pageSize", listVC.getSize());

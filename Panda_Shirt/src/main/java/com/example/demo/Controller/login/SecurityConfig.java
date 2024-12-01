@@ -28,10 +28,6 @@ public class SecurityConfig {
 
 
     private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/thongke","/panda/login","/Image/**","panda/mahoa","/panda/banhangoffline","/panda/giohang"};
-//=======
-//    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa",
-//            "/panda/banhangoffline"};
-//>>>>>>> thai
     private final String[] QUANLY_ENDPOINTS= {};
     private final String[] NHANVIEN_ENDPOINTS= {};
 

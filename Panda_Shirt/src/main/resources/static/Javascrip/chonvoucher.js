@@ -14,20 +14,11 @@ $(document).on('input', '#mavoucher-input', function() {
 
 function nhapvoucher(voucherId) {
     console.log("Voucher ID: ", voucherId);
-<<<<<<< HEAD
-    var phishipValue = $("#phiship").val();
-=======
->>>>>>> thai
     $.ajax({
         url: "/panda/banhangoffline/selectvc",
         type: "GET",
         data: {
-<<<<<<< HEAD
-            id: voucherId,
-            phiship: phishipValue
-=======
             id: voucherId
->>>>>>> thai
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
@@ -50,21 +41,13 @@ function nhapvoucher(voucherId) {
 
 function chonVoucher(element) {
     var voucherId = $(element).data('id');
-<<<<<<< HEAD
-    var phishipValue = $("#phiship").val();
-=======
->>>>>>> thai
+
     console.log("Voucher ID: ", voucherId);
     $.ajax({
         url: "/panda/banhangoffline/selectvc",
         type: "GET",
         data: {
-<<<<<<< HEAD
-            id: voucherId,
-            phiship: phishipValue
-=======
             id: voucherId
->>>>>>> thai
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
@@ -84,8 +67,6 @@ function chonVoucher(element) {
         }
     });
 }
-<<<<<<< HEAD
-=======
 
 function chonkh(element) {
     var idkh = $(element).data('id');
@@ -111,7 +92,7 @@ function chonkh(element) {
         }
     });
 }
->>>>>>> thai
+
 // $(document).ready(function() {
 //     var initialVoucherId = $("#mavoucher-input").val();
 //
@@ -164,41 +145,6 @@ function chonkh(element) {
 //         initialVoucherId = voucherId;
 //     });
 // });
-<<<<<<< HEAD
-$(document).ready(function() {
-    $("#province").change(function() {
-        var voucherId = $("#mavoucher-input").val();
-        var phishipValue = $("#phiship").val();
-        $.ajax({
-            url: "/panda/banhangoffline/selectvc",
-            type: "GET",
-            data: {
-                id: voucherId,
-                phiship: phishipValue
-            },
-            success: function(response) {
-                $("#mavoucher-input").val(response.mavocher);
-                $("#idvoucher-input").val(response.idvoucher);
-                $("#mucgiam").text(response.mucgiam);
-                $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
-                $("#thanhTien").val(response.thanhTien);
-                $('#voucherModal').modal('hide');
-            },
-            error: function(xhr, status, error) {
-                console.error("Lỗi khi gọi API:", error);
-            }
-        });
-    });
-});
-
-$('#voucherModal').on('shown.bs.modal', function () {
-    $(this).find('input, button, a').first().focus();
-});
-
-$('#voucherModal').on('hidden.bs.modal', function () {
-    $('#openModalButton').focus();
-})
-=======
 // $(document).ready(function() {
 //     $("#province").change(function() {
 //         var voucherId = $("#mavoucher-input").val();
@@ -230,4 +176,3 @@ $('#voucherModal').on('hidden.bs.modal', function () {
 // $('#voucherModal').on('hidden.bs.modal', function () {
 //     $('#openModalButton').focus();
 // })
->>>>>>> thai
