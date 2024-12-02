@@ -12,6 +12,7 @@ import com.example.demo.service.HoaDonService;
 import com.example.demo.service.TaiKhoanService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,8 @@ public class VnpayController {
     private HoaDonCTRepository hoaDonCTRepository;
     @Autowired
     private SanPhamChiTietRepository sanPhamChiTietRepository;
+
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/submitOrder")
     public String submitOrder(@RequestParam("totalAmount") double totalAmount,
                               @RequestParam("orderInfo") String orderInfo,
@@ -65,7 +68,7 @@ public class VnpayController {
             return "redirect:/api/processInvoice?totalAmount=" + totalAmount + "&paymentMethod=" + paymentMethod + "&note=" + UriUtils.encodePath(orderInfo, StandardCharsets.UTF_8);
         }
     }
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/processInvoice")
     public String processInvoice(@RequestParam double totalAmount,
                                  @RequestParam String paymentMethod,
@@ -104,6 +107,7 @@ public class VnpayController {
         return "redirect:/panda/trangchu";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/vnpay-payment")
     public String handleVnPayReturn(HttpServletRequest request, Model model, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         int paymentStatus = vnPayService.orderReturn(request);

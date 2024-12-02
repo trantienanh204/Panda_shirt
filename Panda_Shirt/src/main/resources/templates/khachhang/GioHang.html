@@ -2,6 +2,8 @@
 
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panda-Shirt</title>
@@ -202,6 +204,8 @@
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const buyButton = document.getElementById('buyButton');
         const totalPriceElement = document.getElementById('totalPrice');
+        const cartMessageElement = document.getElementById('cartMessage'); // Element to show empty cart message
+        const cartTableElement = document.querySelector('table'); // Select cart table
 
         if (!buyButton) {
             console.error("Element with id 'buyButton' not found in DOM");
@@ -212,54 +216,72 @@
             let totalPrice = 0;
             checkboxes.forEach(checkbox => {
                 if (checkbox.checked) {
-                    totalPrice += parseFloat(checkbox.getAttribute('data-price'));
+                    const price = checkbox.getAttribute('data-price');
+                    const parsedPrice = parseFloat(price);
+                    if (!isNaN(parsedPrice)) {
+                        totalPrice += parsedPrice;
+                    }
                 }
             });
-            totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN');
+            totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
         }
 
+
+
         function handleQuantityChange(event) {
-            const quantity = parseInt(event.target.value, 10); // Chuyển đổi sang Integer
-            const sanPhamChiTietId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10); // Chuyển đổi sang Integer
-console.log(sanPhamChiTietId)
+            let quantity = parseInt(event.target.value, 10);
+            const gioHangId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10);
+
+            // Assume maxQuantity is fetched from server-side or given as an attribute
+            const maxQuantity = parseInt(event.target.getAttribute('data-max-quantity'), 10);
+
+            if (quantity < 1) {
+                quantity = 1;
+            } else if (quantity > maxQuantity) {
+                quantity = maxQuantity;
+            }
+
+            event.target.value = quantity; // Ensure value on UI is corrected
+
             $.ajax({
                 type: 'POST',
                 url: '/panda/giohang/updateQuantity',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    sanPhamChiTietId: sanPhamChiTietId,
+                    gioHangId: gioHangId,
                     quantity: quantity
                 }),
                 success: function(response) {
+                    const checkbox = document.getElementById('product' + gioHangId);
+                    checkbox.setAttribute('data-price', response.newPrice);
                     updateTotalPrice();
-                    const checkbox = document.getElementById('product' + sanPhamChiTietId);
-                    checkbox.setAttribute('data-price', response.newPrice * quantity);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText);
-                    alert('Có lỗi khi cập nhật số lượng!');
+                    alert('Có lỗi khi cập nhật số lượng! ' + xhr.responseText);
                 }
             });
         }
 
         function handleDeleteClick(event) {
             const row = event.target.closest('tr');
-            const sanPhamChiTietId = parseInt(row.querySelector('input[type="checkbox"]').id.replace('product', ''), 10); // Chuyển đổi sang Integer
+            const gioHangId = parseInt(row.querySelector('input[type="checkbox"]').id.replace('product', ''), 10);
 
             $.ajax({
                 type: 'POST',
                 url: '/panda/giohang/delete',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    sanPhamChiTietId: sanPhamChiTietId
+                    gioHangId: gioHangId
                 }),
                 success: function(response) {
                     row.remove();
                     updateTotalPrice();
+                    location.reload();
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText);
-                    alert('Có lỗi khi xóa sản phẩm!');
+                    alert('Có lỗi khi xóa sản phẩm! ' + xhr.responseText);
                 }
             });
         }
@@ -289,7 +311,7 @@ console.log(sanPhamChiTietId)
                 const selectedItems = [];
                 checkboxes.forEach(checkbox => {
                     if (checkbox.checked) {
-                        selectedItems.push(parseInt(checkbox.id.replace('product', ''), 10)); // Chuyển đổi sang Integer
+                        selectedItems.push(parseInt(checkbox.id.replace('product', ''), 10));
                     }
                 });
 
@@ -320,8 +342,8 @@ console.log(sanPhamChiTietId)
         }
 
         addEventListeners();
+        checkEmptyCart(); // Initial check for empty cart on page load
     });
-
 </script>
 
 </body>

@@ -352,7 +352,9 @@
                                         <h4 th:text="${i.index + 1}" style="font-size: 16px; font-weight: bold;"></h4>
                                     </div>
                                     <div class="product-image" style="flex: 1; text-align: center;">
-                                        <img th:src="@{/Image/panda_logo.png}" alt="Sản phẩm"
+                                        <img th:src="'data:image/png;base64,' + ${spct.sanPham.base64Image}"
+                                             class="img-fluid main-image"
+                                             alt="Áo Thun Chi Tiết"
                                              style="max-width: 120px; height: auto;">
                                     </div>
                                     <div class="product-details" style="flex: 2; text-align: left; font-size: 14px;">

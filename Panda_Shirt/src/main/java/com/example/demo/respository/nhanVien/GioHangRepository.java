@@ -16,7 +16,9 @@ import java.util.Optional;
 public interface GioHangRepository extends JpaRepository<GioHang, Integer> {
     Optional<GioHang> findByKhachHangAndSanPhamChiTiet(KhachHang khachHang, SanPhamChiTiet sanPhamChiTiet);
     List<GioHang> findByKhachHangId(Integer khachHangId);
-    GioHang findByKhachHangIdAndSanPhamChiTietId(Integer khachHangId, Integer sanPhamChiTietId);
+
+    GioHang findByKhachHangIdAndId(Integer khachHangId, Integer sanPhamChiTietId);
+
     @Query("SELECT g FROM GioHang g WHERE g.id IN :ids AND g.khachHang.id = :khachHangId")
     List<GioHang> findAllByIdInAndKhachHangId(@Param("ids") List<Integer> ids, @Param("khachHangId") int khachHangId);
 }

@@ -52,19 +52,28 @@ import java.util.Optional;
                 return gioHangRepository.save(newCartItem);
             }
         }
-
-            public void updateQuantity(Integer khachHangId, Integer sanPhamChiTietId, Integer quantity) {
-                GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
-                if (gioHang != null) {
-                    gioHang.setSoluong(quantity);
-                    gioHangRepository.save(gioHang);
-                } else {
-                    throw new RuntimeException("Product not found in the cart.");
+        public double updateQuantity(int khachHangId, int gioHangId, int quantity) {
+            GioHang gioHang = gioHangRepository.findByKhachHangIdAndId(khachHangId, gioHangId);
+            if (gioHang != null) {
+                int availableQuantity = gioHang.getSanPhamChiTiet().getSoluongsanpham();
+                if (quantity > availableQuantity) {
+                    quantity = availableQuantity;
                 }
-            }
 
-            public void deleteFromCart(Integer khachHangId, Integer sanPhamChiTietId) {
-                GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
+                gioHang.setSoluong(quantity);
+                gioHangRepository.save(gioHang);
+
+                double newPrice = gioHang.getSanPhamChiTiet().getDongia() * quantity;
+                return newPrice;
+            } else {
+                throw new RuntimeException("Product not found in the cart.");
+            }
+        }
+
+
+
+        public void deleteFromCart(int khachHangId, int gioHangId) {
+                GioHang gioHang = gioHangRepository.findByKhachHangIdAndId(khachHangId, gioHangId);
                 if (gioHang != null) {
                     gioHangRepository.delete(gioHang);
                 } else {
@@ -72,7 +81,7 @@ import java.util.Optional;
                 }
             }
 
-            public List<GioHang> getCartItems(int khachHangId) {
+        public List<GioHang> getCartItems(int khachHangId) {
                 return gioHangRepository.findByKhachHangId(khachHangId);
             }
 

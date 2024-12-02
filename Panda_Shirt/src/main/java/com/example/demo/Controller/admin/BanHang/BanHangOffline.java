@@ -1,9 +1,13 @@
 package com.example.demo.Controller.admin.BanHang;
 
 import com.example.demo.DTO.HoaDonCTDTO;
+import com.example.demo.DTO.NhanVienDTO;
+import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.*;
+import com.example.demo.service.TaiKhoanService;
 import com.example.demo.services.BanHangService;
+import com.example.demo.services.KhachHangService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,6 +15,9 @@ import org.springframework.data.domain.Sort;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +50,8 @@ public class BanHangOffline {
     NhanVienRespository nhanVienRespository;
     @Autowired
     KhachHangRepository khachHangRepository;
-
+    @Autowired
+    TaiKhoanService taiKhoanService;
 
 
     private Integer idhd;
@@ -51,11 +59,22 @@ public class BanHangOffline {
     @GetMapping()
     public String hienthi(Model model) {
 
-        String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
+        String role = "nhanvien"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         List<HoaDon> hoaDon = hoaDonRepository.findHoaDonsWithNullId();
         List<Voucher> voucher = voucherRepository.findAll();
         List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findAll();
+
+        // Mã hóa ảnh của sản phẩm
+        spct.forEach(sp -> {
+            SanPham sanPham = sp.getSanPham();
+            if (sanPham != null && sanPham.getAnhsp() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(sanPham.getAnhsp());
+                sanPham.setBase64Image(base64Image);
+            }
+        });
+
+        // Lọc voucher hợp lệ
         List<Voucher> validVouchers = new ArrayList<>();
         List<KhachHang> listkh = khachHangRepository.findAll(Sort.by(Sort.Order.desc("id")));
         for (Voucher v : voucher) {
@@ -69,13 +88,15 @@ public class BanHangOffline {
             }
         }
 
+        // Thêm dữ liệu vào model
         model.addAttribute("hoaDons", hoaDon);
-
         model.addAttribute("lsvoucher", validVouchers);
         model.addAttribute("lsspct", spct);
         model.addAttribute("listkh", listkh);
+
         return "admin/BanHang/BanHangOffline";
     }
+
 
 
     @GetMapping("/timkiem")
@@ -381,6 +402,7 @@ public class BanHangOffline {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/thanhtoan")
     public String thanhtoan(
             @RequestParam("idhoadon") int idhoadon,
@@ -396,7 +418,7 @@ public class BanHangOffline {
             @RequestParam("ghichu") String ghichu,
             @RequestParam("tenkh") String tenkh,
             RedirectAttributes redirectAttributes,
-            Model model
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
         String currentUrl = request.getRequestURL().toString();
         String diachi = diachicuthe +" - " + tinh + " - " + huyen +" - " + xa ;
@@ -481,8 +503,14 @@ public class BanHangOffline {
                 sanPhamChiTietRepository.save(spct);
             }
         }
-
-        hd.setNhanVien(nv);
+        String tenDangNhap = userDetails.getUsername();
+        String username = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
+        if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
+            return "redirect:/panda/login";
+        }
+        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
+        hd.setNhanVien(nhanVien);
 
         hd.setVoucher(vc);
         hd.setThanhtien(thanhtien);
@@ -491,6 +519,14 @@ public class BanHangOffline {
         hd.setNgaymua(LocalDate.now());
         hoaDonRepository.save(hd);
         return "redirect:/panda/banhangoffline";
+    }
+
+    private NhanVien mapToNhanvien(NhanVienDTO dto) {
+        NhanVien nhanVien = new NhanVien();
+        nhanVien.setId(dto.getId());
+        nhanVien.setManhanvien(dto.getManhanvien());
+        nhanVien.setTennhanvien(dto.getTennhanvien());
+        return nhanVien;
     }
 }
 

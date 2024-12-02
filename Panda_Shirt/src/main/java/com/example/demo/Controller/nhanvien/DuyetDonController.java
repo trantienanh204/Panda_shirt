@@ -11,6 +11,7 @@ import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -241,6 +242,7 @@ public class DuyetDonController {
         return "/nhanvien/Update/DuyetDonUpdate3";
     }
 
+    @PreAuthorize("isAuthenticated()")
         @GetMapping("/dongy/{id}")
         public String dongy(@PathVariable("id") Integer id, @AuthenticationPrincipal UserDetails userDetails) {
             DonHang donHang = donHangRepository.getReferenceById(id);
@@ -277,6 +279,8 @@ public class DuyetDonController {
         donHangRepository.save(donHang);
             return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
+
+    @PreAuthorize("isAuthenticated()")
   @GetMapping("/dagiao/{id}")
     public String dagiao(@PathVariable("id") Integer id,@AuthenticationPrincipal UserDetails userDetails) {
           DonHang donHang = donHangRepository.getReferenceById(id);

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.example.demo.DTO.TaiKhoanDTO;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,6 +57,7 @@ public class GioHangController {
     @Autowired
     SanPhamChiTietRepository sanPhamChiTietRepository ;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public ResponseEntity<String> addToCart(@AuthenticationPrincipal UserDetails userDetails,
                                             @RequestParam int sanPhamChiTietId,
@@ -107,98 +109,72 @@ public class GioHangController {
         return sanPhamChiTiet != null ? sanPhamChiTiet.getId() : null;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/updateQuantity")
-    public ResponseEntity<String> updateQuantity(@RequestBody Map<String, Object> payload,
-                                                 @AuthenticationPrincipal UserDetails userDetails) {
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateQuantity(@RequestBody Map<String, Object> payload,
+                                                              @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            System.err.println("User is not authenticated.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
         try {
-            System.out.println("Received payload: " + payload);
-
-            int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
+            int gioHangId = (int) payload.get("gioHangId");
             int quantity = (int) payload.get("quantity");
-
-            System.out.println("Updating product ID " + sanPhamChiTietId + " with quantity " + quantity);
 
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
 
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-                System.err.println("Account not found for username: " + tenDangNhap);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             }
 
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
-            System.out.println("Customer ID: " + khachHangId);
 
-            GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
-            if (gioHang != null) {
-                gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
-                System.out.println("Product quantity updated successfully.");
-                return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật.");
-            } else {
-                System.err.println("Product ID " + sanPhamChiTietId + " not found in cart for customer ID " + khachHangId);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in the cart.");
-            }
+            double newPrice = gioHangService.updateQuantity(khachHangId, gioHangId, quantity);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("newPrice", newPrice);
+            return ResponseEntity.ok(response);
+
         } catch (RuntimeException e) {
-            System.err.println("Runtime exception: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", e.getMessage()));
         } catch (Exception e) {
-            System.err.println("Internal server error: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/delete")
+    @ResponseBody
     public ResponseEntity<String> deleteFromCart(@RequestBody Map<String, Object> payload,
                                                  @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            System.err.println("User is not authenticated.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Người dùng chưa được xác thực.");
         }
 
         try {
-            System.out.println("Received payload: " + payload);
+            int gioHangId = (int) payload.get("gioHangId");
 
-            int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
-            System.out.println("Deleting product ID " + sanPhamChiTietId);
+            System.out.println("Xóa sản phẩm ID: " + gioHangId);
 
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
-
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-                System.err.println("Account not found for username: " + tenDangNhap);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
             }
-
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
-            System.out.println("Customer ID: " + khachHangId);
 
-            GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
-            if (gioHang != null) {
-                gioHangService.deleteFromCart(khachHangId, sanPhamChiTietId);
-                System.out.println("Product deleted successfully.");
-                return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
-            } else {
-                System.err.println("Product ID " + sanPhamChiTietId + " not found in cart for customer ID " + khachHangId);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in the cart.");
-            }
+            gioHangService.deleteFromCart(khachHangId, gioHangId);
+            return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
         } catch (RuntimeException e) {
-            System.err.println("Runtime exception: " + e.getMessage());
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            System.err.println("Internal server error: " + e.getMessage());
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/thanhtoan")
     public String thanhToan(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String tenDangNhap = userDetails.getUsername();
@@ -299,7 +275,7 @@ public class GioHangController {
 //        }
 //    }
 
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/thanhtoan/hoadon")
     public String xuLyHoaDon(@RequestParam double totalAmount,
                              @RequestParam String paymentMethod,
@@ -309,7 +285,7 @@ public class GioHangController {
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
 
         if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-            return "redirect:/login";
+            return "redirect:/panda/logout";
         }
 
         KhachHangDTO khachHangDto = taiKhoanDto.getKhachHangDTO();
@@ -390,7 +366,7 @@ public class GioHangController {
 
 
 
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/thanhtoan")
     public String xuLyThanhToan(@RequestParam("totalAmount") String totalAmountStr,
                                 @RequestParam("selectedItems") String selectedItemsJson,
