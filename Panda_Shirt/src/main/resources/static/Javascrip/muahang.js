@@ -328,6 +328,7 @@ $(document).on('click', '.product-action button', function (event) {
 
 });
 
+
 const initialProductListkh = document.getElementById('khachhang-list-container').innerHTML;
 function findkhachhang() {
     let keyword = document.getElementById("searchkhachhang").value;
@@ -383,5 +384,7 @@ function lishkhachhang(lskh) {
 
     });
     khachhanglist.innerHTML = khachhangHTML;
+
 }
+
 

@@ -20,9 +20,7 @@ function nhapvoucher(voucherId) {
         type: "GET",
         data: {
 
-            id: voucherId,
-            phiship: phishipValue
-
+            id: voucherId
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
@@ -51,9 +49,7 @@ function chonVoucher(element) {
         url: "/panda/banhangoffline/selectvc",
         type: "GET",
         data: {
-
             id: voucherId
-
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
@@ -152,6 +148,7 @@ function chonkh(element) {
 //         initialVoucherId = voucherId;
 //     });
 // });
+
 
 $(document).ready(function() {
     $("#province").change(function() {

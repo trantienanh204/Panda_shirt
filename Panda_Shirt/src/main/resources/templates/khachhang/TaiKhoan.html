@@ -10,11 +10,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-=======
->>>>>>> thai
 </head>
 <body>
 
@@ -60,7 +56,6 @@
     </div>
 </nav>
 <!-- Main Section -->
-<!-- Main Section -->
 <div class="container my-5">
     <h2 class="text-center mb-5">Tài Khoản Của Tôi</h2>
 
@@ -81,7 +76,6 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Thông Tin Của Bạn</h5>
-<<<<<<< HEAD
                     <p><strong>Họ và Tên:</strong> <span th:text="${khachHang.tenkhachhang}">John Doe</span>
                     </p> <p><strong>Email:</strong> <span th:text="${khachHang.tentaikhoan}">johndoe@example.com</span>
                     <p><strong>Số điện thoại:</strong> <span th:text="${khachHang.sdt}">+84 123 456 789</span></p>
@@ -120,13 +114,6 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button id="submitButton" type="button" class="btn btn-primary">Lưu Thay Đổi</button>
                     </div>
-=======
-                    <p><strong>Họ và Tên:</strong> John Doe</p>
-                    <p><strong>Email:</strong> johndoe@example.com</p>
-                    <p><strong>Số điện thoại:</strong> +84 123 456 789</p>
-                    <p><strong>Địa chỉ:</strong> 1234 Example Street, City, Country</p>
-                    <a href="#" class="btn btn-primary">Cập Nhật Thông Tin</a>
->>>>>>> thai
                 </div>
             </div>
         </div>
@@ -169,45 +156,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-<<<<<<< HEAD
                                 <tr th:each="donHang : ${choduyet}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span></td>
-=======
-                                <tr>
-                                    <td>Đơn Hàng 1</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                    <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
-                                    </td>
-                                </tr><tr>
-                                    <td>Đơn Hàng 2</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                    <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
-                                    </td>
-                                </tr><tr>
-                                    <td>Đơn Hàng 3</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                    <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
-                                    </td>
-                                </tr><tr>
-                                    <td>Đơn Hàng 4</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                    <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
-                                    </td>
-                                </tr><tr>
-                                    <td>Đơn Hàng 5</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
->>>>>>> thai
                                     <td>
                                         <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
                                     </td>
@@ -233,17 +185,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-<<<<<<< HEAD
                                 <tr th:each="donHang : ${daduyet}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span></td>
-=======
-                                <tr>
-                                    <td>Đơn Hàng #124</td>
-                                    <td>16/11/2024</td>
-                                    <td><span class="badge bg-success">Đã duyệt</span></td>
->>>>>>> thai
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -267,17 +212,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-<<<<<<< HEAD
                                 <tr th:each="donHang : ${danggiao}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span></td>
-=======
-                                <tr>
-                                    <td>Đơn Hàng #125</td>
-                                    <td>17/11/2024</td>
-                                    <td><span class="badge bg-primary">Đang giao</span></td>
->>>>>>> thai
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -301,17 +239,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-<<<<<<< HEAD
                                 <tr th:each="donHang : ${hoanthanh}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span></td>
-=======
-                                <tr>
-                                    <td>Đơn Hàng #126</td>
-                                    <td>18/11/2024</td>
-                                    <td><span class="badge bg-success">Hoàn thành</span></td>
->>>>>>> thai
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -335,18 +266,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-<<<<<<< HEAD
                                 <tr th:each="donHang : ${dahuy}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
-
-=======
-                                <tr>
-                                    <td>Đơn Hàng #127</td>
-                                    <td>19/11/2024</td>
-                                    <td><span class="badge bg-danger">Đã hủy</span></td>
->>>>>>> thai
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -362,7 +285,7 @@
 
 
 <!-- Footer -->
-<footer class="bg-dark text-white text-center py-4">
+<footer class="bg-dark text-white text-center py-4" style="margin-top: 200px">
     <p>&copy; 2024 Bán Áo. All rights reserved.</p>
     <ul class="list-inline">
         <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a></li>

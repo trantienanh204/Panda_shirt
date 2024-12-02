@@ -62,6 +62,7 @@ var updateShippingFee = () => {
     let provinceName = province.text();
 
 
+
     if (provinceName === "Thành phố Hà Nội" || provinceName ===  "Chọn") {
         $("#phiship").val(0);
         $("#ship").text("0 VND");
@@ -69,6 +70,7 @@ var updateShippingFee = () => {
         $("#phiship").val(30000);
         $("#ship").text("30,000.00");
     }
+
 
 };
 
