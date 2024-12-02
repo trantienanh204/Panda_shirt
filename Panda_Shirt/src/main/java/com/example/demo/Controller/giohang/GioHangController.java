@@ -5,6 +5,7 @@ import com.example.demo.entity.*;
 import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.respository.SanPhamChiTietRepository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
+import com.example.demo.respository.nhanVien.GioHangRepository;
 import com.example.demo.service.*;
 
 import com.example.demo.services.KhachHangService;
@@ -40,6 +41,8 @@ public class GioHangController {
 
     @Autowired
     private GioHangService gioHangService;
+    @Autowired
+    private GioHangRepository gioHangRepository;
     @Autowired
     private TaiKhoanService taiKhoanService;
     @Autowired
@@ -104,86 +107,97 @@ public class GioHangController {
         return sanPhamChiTiet != null ? sanPhamChiTiet.getId() : null;
     }
 
-
-
     @PostMapping("/updateQuantity")
-    @ResponseBody
-    public ResponseEntity<String> updateQuantity(@RequestBody Map<String, Object> payload
-            ,
-                                                @AuthenticationPrincipal UserDetails userDetails
-    ) {
+    public ResponseEntity<String> updateQuantity(@RequestBody Map<String, Object> payload,
+                                                 @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
+            System.err.println("User is not authenticated.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
         }
 
         try {
+            System.out.println("Received payload: " + payload);
+
             int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
             int quantity = (int) payload.get("quantity");
 
-            System.out.println("Received updateQuantity request for: " + sanPhamChiTietId + " quantity: " + quantity);
+            System.out.println("Updating product ID " + sanPhamChiTietId + " with quantity " + quantity);
 
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+                System.err.println("Account not found for username: " + tenDangNhap);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
             }
+
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+            System.out.println("Customer ID: " + khachHangId);
 
-            // Kiểm tra sản phẩm chi tiết trong giỏ hàng
-            List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
-            boolean productFound = cartItems.stream().anyMatch(item -> item.getSanPhamChiTiet().getId() == sanPhamChiTietId);
-
-            if (!productFound) {
+            GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
+            if (gioHang != null) {
+                gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
+                System.out.println("Product quantity updated successfully.");
+                return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật.");
+            } else {
+                System.err.println("Product ID " + sanPhamChiTietId + " not found in cart for customer ID " + khachHangId);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in the cart.");
             }
-
-            gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
-            return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật.");
         } catch (RuntimeException e) {
+            System.err.println("Runtime exception: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
+            System.err.println("Internal server error: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
         }
     }
 
     @PostMapping("/delete")
-    @ResponseBody
     public ResponseEntity<String> deleteFromCart(@RequestBody Map<String, Object> payload,
                                                  @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
+            System.err.println("User is not authenticated.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
         }
 
         try {
-            int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
+            System.out.println("Received payload: " + payload);
 
-            System.out.println("Received delete request for product: " + sanPhamChiTietId);
+            int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
+            System.out.println("Deleting product ID " + sanPhamChiTietId);
 
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+                System.err.println("Account not found for username: " + tenDangNhap);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
             }
+
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+            System.out.println("Customer ID: " + khachHangId);
 
-            // Kiểm tra sản phẩm chi tiết trong giỏ hàng
-            List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
-            boolean productFound = cartItems.stream().anyMatch(item -> item.getSanPhamChiTiet().getId() == sanPhamChiTietId);
-
-            if (!productFound) {
+            GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId);
+            if (gioHang != null) {
+                gioHangService.deleteFromCart(khachHangId, sanPhamChiTietId);
+                System.out.println("Product deleted successfully.");
+                return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
+            } else {
+                System.err.println("Product ID " + sanPhamChiTietId + " not found in cart for customer ID " + khachHangId);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in the cart.");
             }
-
-            gioHangService.deleteFromCart(khachHangId, sanPhamChiTietId);
-            return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
         } catch (RuntimeException e) {
+            System.err.println("Runtime exception: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
+            System.err.println("Internal server error: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
         }
     }
-
-
 
     @GetMapping("/thanhtoan")
     public String thanhToan(Model model, @AuthenticationPrincipal UserDetails userDetails) {

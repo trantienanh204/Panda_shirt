@@ -221,7 +221,7 @@
         function handleQuantityChange(event) {
             const quantity = parseInt(event.target.value, 10); // Chuyển đổi sang Integer
             const sanPhamChiTietId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10); // Chuyển đổi sang Integer
-
+console.log(sanPhamChiTietId)
             $.ajax({
                 type: 'POST',
                 url: '/panda/giohang/updateQuantity',

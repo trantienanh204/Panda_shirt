@@ -211,10 +211,7 @@ function setActiveTab(tab) {
 
     xhr.setRequestHeader(csrfHeader, csrfToken);
 });
-<<<<<<< HEAD
-=======
 
->>>>>>> thai
 const initialProductList = document.getElementById('product-list-container').innerHTML;
 function updateProductList() {
     let keyword = document.getElementById("searchsanpham").value;
@@ -237,54 +234,7 @@ function updateProductList() {
             console.error('Error fetching product list:', error);
         });
 }
-<<<<<<< HEAD
-// function updateProductListUI(products) {
-//     const productListContainer = document.getElementById('product-list-container'); // Div chứa danh sách sản phẩm
-//
-//     // Kiểm tra nếu không có sản phẩm nào
-//     if (products.length === 0) {
-//         productListContainer.innerHTML = '<p>Không có sản phẩm phù hợp với từ khóa tìm kiếm.</p>';
-//         return;
-//     }
-//     let productHTML = '';
-//     products.forEach((spct, index) => {
-//         productHTML += `
-//             <div class="product-row" style="display: flex; gap: 10px; border-bottom: 1px solid #ddd; padding: 10px;">
-//                 <input type="hidden" name="idspct" value="${spct.id}">
-//                 <div class="product-price" style="display: flex; align-items: center; justify-content: center;">
-//                     <h4 style="font-size: 16px; font-weight: bold;">${index + 1}</h4>
-//                 </div>
-//                 <div class="product-image" style="flex: 1; text-align: center;">
-//                     <img th:src="@{/Image/panda_logo.png}" alt="Sản phẩm" style="max-width: 120px; height: auto;">
-//                 </div>
-//                 <div class="product-details" style="flex: 2; text-align: left; font-size: 14px;">
-//                     <h4 style="font-size: 17px; font-weight: bold;">${spct.sanPham.tensp} [ ${spct.mauSac.ten} - ${spct.kichThuoc.ten} ]</h4>
-//                     <p style="margin: 0;font-size: 15px">Màu: <span>${spct.mauSac.ten}</span> - Kích cỡ: <span>${spct.kichThuoc.ten}</span></p>
-//                     <p style="margin: 0;font-size: 15px">Chất liệu: <span>${spct.sanPham.chatLieu.tenChatLieu}</span></p>
-//                     <span style="display: inline-block; background-color: #d4fcd4; color: #008000; border: 1px solid #c2e5c2; padding: 5px 10px; border-radius: 15px; font-size: 14px; font-weight: bold; text-align: center;">
-//                         Đang kinh doanh
-//                     </span>
-//                 </div>
-//                 <div class="product-price" style="flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; color: red; font-size: 16px;">
-//                     <span style="font-weight: bold; color: black">${spct.soluongsanpham}</span>
-//                 </div>
-//                 <div class="product-price" style="flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; font-size: 16px;">
-//                     <span style="font-weight: bold;">${spct.FormatteddonGia}</span>
-//                 </div>
-//                 <div class="product-action" style="flex: 1; display: flex; align-items: center; justify-content: center;">
-//                     <button class="btn-dark" style="background-color: #FE5621; color: white; padding: 5px 15px; border: none; cursor: pointer; border-radius: 5px;">
-//                         Chọn
-//                     </button>
-//                 </div>
-//             </div>
-//         `;
-//     });
-//
-//     // Gán nội dung vào div chứa danh sách sản phẩm
-//     productListContainer.innerHTML = productHTML;
-// }
-=======
->>>>>>> thai
+
 
 function updateProductListUI(products) {
     const productListContainer = document.getElementById('product-list-container');
@@ -375,9 +325,7 @@ $(document).on('click', '.product-action button', function (event) {
     } else {
         console.error('ID sản phẩm không được xác định');
     }
-<<<<<<< HEAD
-});
-=======
+
 });
 
 const initialProductListkh = document.getElementById('khachhang-list-container').innerHTML;
@@ -436,4 +384,4 @@ function lishkhachhang(lskh) {
     });
     khachhanglist.innerHTML = khachhangHTML;
 }
->>>>>>> thai
+

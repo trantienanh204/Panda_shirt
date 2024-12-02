@@ -14,20 +14,15 @@ $(document).on('input', '#mavoucher-input', function() {
 
 function nhapvoucher(voucherId) {
     console.log("Voucher ID: ", voucherId);
-<<<<<<< HEAD
-    var phishipValue = $("#phiship").val();
-=======
->>>>>>> thai
+
     $.ajax({
         url: "/panda/banhangoffline/selectvc",
         type: "GET",
         data: {
-<<<<<<< HEAD
+
             id: voucherId,
             phiship: phishipValue
-=======
-            id: voucherId
->>>>>>> thai
+
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
@@ -50,21 +45,15 @@ function nhapvoucher(voucherId) {
 
 function chonVoucher(element) {
     var voucherId = $(element).data('id');
-<<<<<<< HEAD
-    var phishipValue = $("#phiship").val();
-=======
->>>>>>> thai
+
     console.log("Voucher ID: ", voucherId);
     $.ajax({
         url: "/panda/banhangoffline/selectvc",
         type: "GET",
         data: {
-<<<<<<< HEAD
-            id: voucherId,
-            phiship: phishipValue
-=======
+
             id: voucherId
->>>>>>> thai
+
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
@@ -84,8 +73,7 @@ function chonVoucher(element) {
         }
     });
 }
-<<<<<<< HEAD
-=======
+
 
 function chonkh(element) {
     var idkh = $(element).data('id');
@@ -111,7 +99,7 @@ function chonkh(element) {
         }
     });
 }
->>>>>>> thai
+
 // $(document).ready(function() {
 //     var initialVoucherId = $("#mavoucher-input").val();
 //
@@ -164,7 +152,7 @@ function chonkh(element) {
 //         initialVoucherId = voucherId;
 //     });
 // });
-<<<<<<< HEAD
+
 $(document).ready(function() {
     $("#province").change(function() {
         var voucherId = $("#mavoucher-input").val();
@@ -198,7 +186,7 @@ $('#voucherModal').on('shown.bs.modal', function () {
 $('#voucherModal').on('hidden.bs.modal', function () {
     $('#openModalButton').focus();
 })
-=======
+
 // $(document).ready(function() {
 //     $("#province").change(function() {
 //         var voucherId = $("#mavoucher-input").val();
@@ -230,4 +218,4 @@ $('#voucherModal').on('hidden.bs.modal', function () {
 // $('#voucherModal').on('hidden.bs.modal', function () {
 //     $('#openModalButton').focus();
 // })
->>>>>>> thai
+

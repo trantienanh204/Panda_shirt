@@ -60,7 +60,7 @@ var updateShippingFee = () => {
     let province = $("#province option:selected");
     let region = province.data("region");
     let provinceName = province.text();
-<<<<<<< HEAD
+
 
     if (provinceName === "Thành phố Hà Nội" || provinceName ===  "Chọn") {
         $("#phiship").val(0);
@@ -69,7 +69,6 @@ var updateShippingFee = () => {
         $("#phiship").val(30000);
         $("#ship").text("30,000.00");
     }
-=======
->>>>>>> thai
+
 };
 
