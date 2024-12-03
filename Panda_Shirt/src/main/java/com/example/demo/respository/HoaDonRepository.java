@@ -30,12 +30,8 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             "ORDER BY hd.ngaytao DESC")
     Page<HoaDon> findByMaAndTenAndTrangthaiHD(String mahd, String tennv, String tenkh, Integer trangThai, Pageable pageable);
 
-
-      HoaDon findTopByOrderByIdDesc();
-
     @Query("SELECT HD FROM HoaDon HD WHERE HD.id =:id ")
     HoaDon finid(Integer id);
-
 
     @Query("SELECT MAX(h.mahoadon) FROM HoaDon h")
     String findMaxMaHoaDon();

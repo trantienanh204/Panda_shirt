@@ -1,14 +1,19 @@
 package com.example.demo.Controller.admin.BanHang;
 
 import com.example.demo.DTO.HoaDonCTDTO;
+import com.example.demo.DTO.NhanVienDTO;
+import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.*;
+import com.example.demo.service.TaiKhoanService;
 import com.example.demo.services.BanHangService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +31,8 @@ import java.util.stream.Collectors;
 public class BanHangOffline {
     @Autowired
     private HttpServletRequest request;
-
+    @Autowired
+    TaiKhoanService taiKhoanService;
     @Autowired
     HoaDonRepository hoaDonRepository;
     @Autowired
@@ -407,7 +413,8 @@ public class BanHangOffline {
             @RequestParam("tenkh") String tenkh,
             @RequestParam("mucgiam") String giagiam,
             RedirectAttributes redirectAttributes,
-            Model model
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
         HoaDon hd = hoaDonRepository.finid(idhoadon);
         if (hd == null) {
@@ -451,7 +458,7 @@ public class BanHangOffline {
             }
             hd.setKhachHang(kh);
         } else {
-            KhachHang kh1 = khachHangRepository.findById(1).orElse(null);
+            KhachHang kh1 = khachHangRepository.findById(2).orElse(null);
             if (kh1 != null) {
                 hd.setKhachHang(kh1);
             } else {
@@ -497,8 +504,13 @@ public class BanHangOffline {
                 sanPhamChiTietRepository.save(spct);
             }
         }
-
-        hd.setNhanVien(nv);
+        String username = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
+        if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
+            return "redirect:/panda/login";
+        }
+        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
+        hd.setNhanVien(nhanVien);
         hd.setVoucher(vc);
         hd.setThanhtien(thanhtien);
         hd.setGiagiam(giagiam);
@@ -507,6 +519,13 @@ public class BanHangOffline {
         hd.setNgaymua(LocalDate.now());
         hoaDonRepository.save(hd);
         return "redirect:/panda/banhangoffline";
+    }
+    private NhanVien mapToNhanvien(NhanVienDTO dto) {
+        NhanVien nhanVien = new NhanVien();
+        nhanVien.setId(dto.getId());
+        nhanVien.setManhanvien(dto.getManhanvien());
+        nhanVien.setTennhanvien(dto.getTennhanvien());
+        return nhanVien;
     }
 }
 

@@ -181,6 +181,7 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
@@ -189,6 +190,7 @@
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -208,6 +210,7 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
@@ -216,6 +219,7 @@
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -235,6 +239,7 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
@@ -243,6 +248,7 @@
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -262,6 +268,7 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
@@ -270,6 +277,7 @@
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>

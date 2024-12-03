@@ -53,7 +53,8 @@
             <th>Mã hóa đơn</th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
-            <th>Tổng tiền</th>
+            <th>Số điện thoại</th>
+            <th>Thành tiền</th>
             <th>Ngày mua</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
@@ -68,7 +69,8 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-            <td th:text="${hd.tongtien}"></td>
+            <td th:text="${hd.khachHang.sdt}"></td>
+            <td th:text="${hd.thanhtien}"></td>
             <td th:text="${hd.ngaymua}"></td>
             <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
@@ -136,6 +138,7 @@
                     <table>
                         <thead>
                         <tr>
+                            <th>Mã sản phẩm</th>
                             <th>Sản phẩm</th>
                             <th>Màu sắc</th>
                             <th>Kích thước</th>
@@ -146,17 +149,19 @@
                         </thead>
                         <tbody>
                         <tr th:each="ct : ${hoaDonCTs}">
+                            <td th:text="${ct.sanPhamChiTiet.sanPham.masp}"></td>
                             <td th:text="${ct.sanPhamChiTiet.sanPham.tensp}"></td>
                             <td th:text="${ct.sanPhamChiTiet.kichThuoc.ten}"></td>
                             <td th:text="${ct.sanPhamChiTiet.mauSac.ten}"></td>
                             <td th:text="${ct.dongia}"></td>
                             <td th:text="${ct.soluong}"></td>
                             <td th:text="${ct.tongtien}"></td>
+<!--                            <td th:text="${ct[0].hoaDon.giagiam != null ? ct[0].hoaDon.giagiam : '0'}"></td>-->
                         </tr>
                         </tbody>
                     </table>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>
