@@ -23,8 +23,8 @@ function nhapvoucher(voucherId) {
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
             $("#idvoucher-input").val(response.idvoucher);
+            $("#mucgiam-input").val(response.mucgiam);
             $("#mucgiam").text(response.mucgiam);
-            // $("#mucgiam").text(response.loai);
             $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
             $("#thanhTien").val(response.thanhTien);
             $('#voucherModal').modal('hide');
@@ -51,6 +51,7 @@ function chonVoucher(element) {
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
             $("#idvoucher-input").val(response.idvoucher);
+            $("#mucgiam-input").val(response.mucgiam);
             $("#mucgiam").text(response.mucgiam);
             // $("#mucgiam").text(response.loai);
             $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
@@ -61,7 +62,13 @@ function chonVoucher(element) {
             console.error("Lỗi khi gọi AJAX:", error);
             const errorResponse = JSON.parse(xhr.responseText);
             if (errorResponse.error) {
-                alert(errorResponse.error);
+                // alert(errorResponse.error);
+                Swal.fire({
+                    title: 'Thông báo',
+                    text: errorResponse.error,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
             }
         }
     });
@@ -78,6 +85,7 @@ function chonkh(element) {
         },
         success: function(response) {
             $("#tenkh-input").val(response.tenkh);
+            $("#idkh-input").val(response.id);
             $("#sdt-input").val(response.sdt);
             $("#diachi-input").val(response.diachi);
             $('#chonkhachhangModal').modal('hide');

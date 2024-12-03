@@ -53,8 +53,8 @@ public class Voucher {
     @Column(name = "DIEU_KIEN_KHUYEN_MAI")
     private String dieuKien;
 
-//    @Column(name = "LOAI_KHACH_HANG")
-//    private boolean loaikhachhang;
+    @Column(name = "LOAI_KHACH_HANG")
+    private boolean loaikhachhang;
 
     //    @NotNull(message = "Ngay bắt đầu không trống")
     @Column(name = "NGAY_BAT_DAU")
@@ -77,11 +77,11 @@ public class Voucher {
     private boolean loai;
 
 
-//    @Column(name = "TRANG_THAI")
-//    private int trangThai;
-
     @Column(name = "TRANG_THAI")
-    private String trangThai;
+    private int trangThai;
+//
+//    @Column(name = "TRANG_THAI")
+//    private String trangThai;
 
     public String getFormattedMucGiam() {
         try {

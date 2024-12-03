@@ -44,6 +44,16 @@ public class KhachHang {
     @Column(name = "DIA_CHI_CU_THE")
     private String diachi;
 
+    @Column(name = "TINH_THANH_PHO")
+    private String tinhtp;
+
+
+    @Column(name = "QUAN_HUYEN")
+    private String quanhuyen;
+
+    @Column(name = "XA_PHUONG")
+    private String xaphuong;
+
 
     @NotBlank(message = "Tên khách hàng không được để trống")
     @Column(name = "TEN_KHACH_HANG")

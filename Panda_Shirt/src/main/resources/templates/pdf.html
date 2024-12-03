@@ -6,6 +6,7 @@
     <title>Hóa Đơn</title>
     <style>
         body {
+           body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -22,7 +23,7 @@
         }
 
         .header {
-            display: flex;
+            display: block;
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #d7d7d7;
@@ -69,12 +70,16 @@
         }
 
         .total {
-            text-align: right;
-            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            margin-left: 335px;
+            margin-top: 30px;
         }
 
-        .total strong {
-            font-size: 18px;
+        .total p, .total strong {
+            margin: 0;  /* Xóa khoảng cách mặc định giữa các phần tử */
         }
 
         .footer {
@@ -99,37 +104,27 @@
             text-decoration: none;
             color: #9a2b31;
         }
-        .background-image {
-            width: 15%;
-            height: 15%;
-            margin-right: 40px;
-            border-radius: 10px;
-        }
     </style>
 </head>
 <body>
 <div class="invoice-container">
     <div class="company-info-3">
-        <h2>Shop Panda-Shirt</h2>
+        <h1 >Shop Panda-Shirt</h1>
     </div>
 
     <div class="header">
         <div class="company-info">
-           <h1>HÓA ĐƠN</h1>
-           <p th:text="'Hóa đơn : ' + ${hoadonct[0].hoaDon.mahoadon}"></p>
+           <h2>HÓA ĐƠN</h2>
+           <p th:text="'Mã hóa đơn : ' + ${hoadonct[0].hoaDon.mahoadon}"></p>
            <p th:text="'Ngày mua : ' +${hoadonct[0].hoaDon.ngaymua}"></p>
            <p th:text="'Nhân viên : ' +${hoadonct[0].hoaDon.nhanVien.tennhanvien}"></p>
         </div>
-        <div>
-
-        </div>
-
     </div>
 
     <div class="customer-info">
         <strong>Thông tin khách hàng</strong><br>
         <span th:text="'Tên khách hàng : ' + ${hoadonct[0].hoaDon.khachHang.tenkhachhang}"></span> <br>
-        <span th:text="'Số điện  thoại : ' + ${hoadonct[0].hoaDon.khachHang.sdt}"></span><br>
+        <span th:text="'Số điện  thoại : ' + ${hoadonct[0].hoaDon.khachHang.sdt == null ? '' : hoadonct[0].hoaDon.khachHang.sdt}"></span><br>
     </div>
 
     <table class="invoice-table">
@@ -159,11 +154,11 @@
 
     <div class="total">
         <p th:text="'Tổng cộng: ' + ${hoadonct[0].hoaDon.tongtien}"></p>
-<!--        <p>Thuế (0%): 0đ</p>-->
-<!--        <strong>TỔNG TIỀN: </strong>-->
+        <p th:text="'Giảm giá: ' + ${hoadonct[0].hoaDon.giagiam != null ? hoadonct[0].hoaDon.giagiam : '0'}"></p>
+        <strong th:text="'Thành tiền: ' + ${hoadonct[0].hoaDon.thanhtien}"></strong>
     </div>
 
-    <div class="footer">
+    <div class="footerfooter">
         <div>
             <h3>Thông tin thanh toán</h3>
             Ngân hàng MB<br>
@@ -172,5 +167,6 @@
         </div>
     </div>
 </div>
+
 </body>
 </html>
