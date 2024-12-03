@@ -18,7 +18,10 @@ import com.example.demo.service.TaiKhoanService;
 import com.example.demo.service.TrangchuService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -114,42 +117,46 @@ public class TrangChuController {
         return "/khachhang/SPCT";
     }
 
-
-
-    @GetMapping("/giohang")
-    public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        String tenDangNhap = userDetails.getUsername();
-        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
-        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-            return "redirect:/panda/login";
-        }
-        int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
-        List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
-
-        // Chuyển đổi dữ liệu byte array thành chuỗi base64
-        List<Map<String, Object>> processedCartItems = cartItems.stream().map(item -> {
-            Map<String, Object> itemMap = new HashMap<>();
-            itemMap.put("id", item.getId());
-            itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
-            itemMap.put("soluong", item.getSoluong());
-
-            if (item.getSanPhamChiTiet().getAnhSanPhamChiTiet() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getSanPham().getAnhsp());
-                itemMap.put("anhspBase64", base64Image);
-            } else {
-                itemMap.put("anhspBase64", null);
+        @PreAuthorize("isAuthenticated()")
+        @GetMapping("/giohang")
+        public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+            if (userDetails == null) {
+                return "redirect:/panda/login";
             }
 
-            return itemMap;
-        }).collect(Collectors.toList());
+            String tenDangNhap = userDetails.getUsername();
+            TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+            if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+                return "redirect:/panda/login";
+            }
+            int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+            List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
 
-        model.addAttribute("cartItems", processedCartItems);
-        return "/khachhang/GioHang";
-    }
+            // Chuyển đổi dữ liệu byte array thành chuỗi base64
+            List<Map<String, Object>> processedCartItems = cartItems.stream().map(item -> {
+                Map<String, Object> itemMap = new HashMap<>();
+                itemMap.put("id", item.getId());
+                itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
+                itemMap.put("soluong", item.getSoluong());
+
+                if (item.getSanPhamChiTiet().getAnhSanPhamChiTiet() != null) {
+                    String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getSanPham().getAnhsp());
+                    itemMap.put("anhspBase64", base64Image);
+                } else {
+                    itemMap.put("anhspBase64", null);
+                }
+
+                return itemMap;
+            }).collect(Collectors.toList());
+
+            model.addAttribute("cartItems", processedCartItems);
+            return "/khachhang/GioHang";
+        }
 
 
 
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/taikhoan")
     public String taikhoan(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         String tenDangNhap = userDetails.getUsername();

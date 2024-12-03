@@ -35,7 +35,6 @@ public class KhachHang {
     private String matkhau;
 
 
-
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 số")
     @Column(name = "SO_DIEN_THOAI")
@@ -44,8 +43,19 @@ public class KhachHang {
     @NotBlank(message = "Địa chỉ không được để trống")
     @Column(name = "DIA_CHI_CU_THE")
     private String diachi;
-    @NotBlank(message = "Tên khách hàng không được để trống")
 
+    @Column(name = "TINH_THANH_PHO")
+    private String tinhtp;
+
+
+    @Column(name = "QUAN_HUYEN")
+    private String quanhuyen;
+
+    @Column(name = "XA_PHUONG")
+    private String xaphuong;
+
+
+    @NotBlank(message = "Tên khách hàng không được để trống")
     @Column(name = "TEN_KHACH_HANG")
     private String tenkhachhang;
     @Column(name = "TRANG_THAI")
@@ -77,6 +87,8 @@ public class KhachHang {
     @ManyToOne
     @JoinColumn(name = "ID_XA_PHUONG")
     private XaPhuong xaPhuong;
+
+
     @Column(name = "DELETEAT")
     private boolean delete;
     @Column(name = "TINH_TRANG")
@@ -85,3 +97,4 @@ public class KhachHang {
     @JoinColumn(name = "TEN_DANG_NHAP") // Tên cột khóa ngoại trong bảng KhachHang
     private TaiKhoan taiKhoan;
 }
+

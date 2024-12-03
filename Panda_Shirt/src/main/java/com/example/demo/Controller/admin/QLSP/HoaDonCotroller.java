@@ -46,7 +46,7 @@ public class HoaDonCotroller {
     @ModelAttribute("listkhachhang")
     List<KhachHang> getkh (){return khachHangRepository.findAll();}
 
-    @GetMapping
+    @GetMapping("")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
                           @RequestParam(value = "tennv", required = false) String tennv,
@@ -60,20 +60,63 @@ public class HoaDonCotroller {
             page = 0;
         }
         Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, tennv , tenkh, trangThai);
-//        Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, tennv , tenkh, trangThai);
         model.addAttribute("totalPage", listHD.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("lshd",listHD.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("tennv", tennv);
-        System.out.println("Tên nhân viên: " + tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listHD.getSize());
-        return "admin/HoaDon/HoaDon";
+        List<HoaDonCT> listhdct = hoaDonCTRepository.findAll();
+        model.addAttribute("listhdct",listhdct);
+        return "/admin/HoaDon/HoaDon";
+    }
+    @GetMapping("xuatfile")
+    public String filePdf(@RequestParam("id") int id, Model model) {
+        List<HoaDonCT> lshdct  = hoaDonCTRepository.findhoadonct(id);
+        model.addAttribute("hoadonct",lshdct);
+//        model.addAttribute("lshd",hoaDonRepository.findAll();
+
+        String directoryPath = "D:\\HocTap\\HoaDon"; // Đường dẫn lưu PDF
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs(); // Tạo thư mục nếu không tồn tại
+        }
+        String customFileName = "hoadon_" + lshdct.get(0).getHoaDon().getKhachHang().getId() + "_" +
+        lshdct.get(0).getHoaDon().getKhachHang().getTenkhachhang()  + ".pdf"; // Tên file tùy chỉnh
+        String filePath = directoryPath + "\\" + customFileName; // Đường dẫn đầy đủ đến file PDF
+
+//        String filePath = directoryPath + "\\hoadon.pdf"; // Đường dẫn đầy đủ đến file PDF
+
+        // Lấy dữ liệu hóa đơn từ SQL
+        List<HoaDon> hd = hoaDonRepository.findAll();
+        model.addAttribute("hd", hd);
+
+        // Render HTML từ Thymeleaf template
+        Context context = new Context();
+        context.setVariables(model.asMap());
+        String htmlContent = templateEngine.process("pdf", context);
+
+        // Chuyển HTML thành PDF
+        try (FileOutputStream fos = new FileOutputStream(new File(filePath))) {
+            HtmlConverter.convertToPdf(htmlContent, fos);
+            return "pdf";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "pdf"+ e.getMessage();
+        }
     }
 
-
+    @GetMapping("/chitiet")
+    public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
+        List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
+        HoaDon hd = hoaDonRepository.finid(id);
+        model.addAttribute("hoaDonCTs", hoaDonCT);
+        model.addAttribute("hd", hd.getMahoadon());
+        System.out.println(hd.getMahoadon());
+        return "/admin/HoaDon/HoaDon::hdct"; // Trả về fragment HTML
+    }
 
     @GetMapping("update")
     public String formupdate(@RequestParam("id") int id,Model model){
@@ -103,39 +146,6 @@ public class HoaDonCotroller {
         System.out.println(lshdct.get(0).getSanPhamChiTiet().getSanPham().getTensp());
         return "pdf";
     }
-    @GetMapping("xuatfile")
-    public String filePdf(@RequestParam("id") int id, Model model) {
-        List<HoaDonCT> lshdct  = hoaDonCTRepository.findhoadonct(id);
-        model.addAttribute("hoadonct",lshdct);
 
-        String directoryPath = "D:\\HocTap\\HoaDon";
-        File directory = new File(directoryPath);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        String customFileName = "hoadon_" + System.currentTimeMillis() + ".pdf";
-        String filePath = directoryPath + "\\" + customFileName;
-
-        List<HoaDon> hd = hoaDonRepository.findAll();
-        model.addAttribute("hd", hd);
-
-        Context context = new Context();
-        context.setVariables(model.asMap());
-        String htmlContent = templateEngine.process("pdf", context);
-
-        try (FileOutputStream fos = new FileOutputStream(new File(filePath))) {
-            HtmlConverter.convertToPdf(htmlContent, fos);
-            return "pdf";
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "pdf"+ e.getMessage();
-        }
-    }
-    @GetMapping("/chitiet")
-    public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
-        List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
-        model.addAttribute("hoaDonCTs", hoaDonCT);
-        return "/nhanvien/DuyetDon :: chiTiet";
-    }
 
 }

@@ -71,7 +71,8 @@ public class XemHoaDonController {
         if (!directory.exists()) {
             directory.mkdirs(); // Tạo thư mục nếu không tồn tại
         }
-        String customFileName = "hoadon_" + System.currentTimeMillis() + ".pdf"; // Tên file tùy chỉnh
+        String customFileName = "hoadon_" + lshdct.get(0).getHoaDon().getKhachHang().getId() + "_" +
+                lshdct.get(0).getHoaDon().getKhachHang().getTenkhachhang()  + ".pdf"; // Tên file tùy chỉnh
         String filePath = directoryPath + "\\" + customFileName; // Đường dẫn đầy đủ đến file PDF
 
 //        String filePath = directoryPath + "\\hoadon.pdf"; // Đường dẫn đầy đủ đến file PDF

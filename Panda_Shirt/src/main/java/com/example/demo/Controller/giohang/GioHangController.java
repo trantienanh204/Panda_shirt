@@ -5,6 +5,7 @@ import com.example.demo.entity.*;
 import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.respository.SanPhamChiTietRepository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
+import com.example.demo.respository.nhanVien.GioHangRepository;
 import com.example.demo.service.*;
 
 import com.example.demo.services.KhachHangService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.example.demo.DTO.TaiKhoanDTO;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,6 +43,8 @@ public class GioHangController {
     @Autowired
     private GioHangService gioHangService;
     @Autowired
+    private GioHangRepository gioHangRepository;
+    @Autowired
     private TaiKhoanService taiKhoanService;
     @Autowired
     private KhachHangService khachHangService;
@@ -53,6 +57,7 @@ public class GioHangController {
     @Autowired
     SanPhamChiTietRepository sanPhamChiTietRepository ;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public ResponseEntity<String> addToCart(@AuthenticationPrincipal UserDetails userDetails,
                                             @RequestParam int sanPhamChiTietId,
@@ -104,60 +109,54 @@ public class GioHangController {
         return sanPhamChiTiet != null ? sanPhamChiTiet.getId() : null;
     }
 
-
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/updateQuantity")
     @ResponseBody
-    public ResponseEntity<String> updateQuantity(@RequestBody Map<String, Object> payload
-            ,
-                                                @AuthenticationPrincipal UserDetails userDetails
-    ) {
+    public ResponseEntity<Map<String, Object>> updateQuantity(@RequestBody Map<String, Object> payload,
+                                                              @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
         try {
-            int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
+            int gioHangId = (int) payload.get("gioHangId");
             int quantity = (int) payload.get("quantity");
-
-            System.out.println("Received updateQuantity request for: " + sanPhamChiTietId + " quantity: " + quantity);
 
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy tài khoản.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             }
+
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
 
-            // Kiểm tra sản phẩm chi tiết trong giỏ hàng
-            List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
-            boolean productFound = cartItems.stream().anyMatch(item -> item.getSanPhamChiTiet().getId() == sanPhamChiTietId);
+            double newPrice = gioHangService.updateQuantity(khachHangId, gioHangId, quantity);
 
-            if (!productFound) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in the cart.");
-            }
+            Map<String, Object> response = new HashMap<>();
+            response.put("newPrice", newPrice);
+            return ResponseEntity.ok(response);
 
-            gioHangService.updateQuantity(khachHangId, sanPhamChiTietId, quantity);
-            return ResponseEntity.ok("Số lượng sản phẩm đã được cập nhật.");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/delete")
     @ResponseBody
     public ResponseEntity<String> deleteFromCart(@RequestBody Map<String, Object> payload,
                                                  @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Người dùng chưa được xác thực.");
         }
 
         try {
-            int sanPhamChiTietId = (int) payload.get("sanPhamChiTietId");
+            int gioHangId = (int) payload.get("gioHangId");
 
-            System.out.println("Received delete request for product: " + sanPhamChiTietId);
+            System.out.println("Xóa sản phẩm ID: " + gioHangId);
 
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
@@ -166,15 +165,7 @@ public class GioHangController {
             }
             int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
 
-            // Kiểm tra sản phẩm chi tiết trong giỏ hàng
-            List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
-            boolean productFound = cartItems.stream().anyMatch(item -> item.getSanPhamChiTiet().getId() == sanPhamChiTietId);
-
-            if (!productFound) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in the cart.");
-            }
-
-            gioHangService.deleteFromCart(khachHangId, sanPhamChiTietId);
+            gioHangService.deleteFromCart(khachHangId, gioHangId);
             return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -183,8 +174,7 @@ public class GioHangController {
         }
     }
 
-
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/thanhtoan")
     public String thanhToan(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String tenDangNhap = userDetails.getUsername();
@@ -285,7 +275,7 @@ public class GioHangController {
 //        }
 //    }
 
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/thanhtoan/hoadon")
     public String xuLyHoaDon(@RequestParam double totalAmount,
                              @RequestParam String paymentMethod,
@@ -295,7 +285,7 @@ public class GioHangController {
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
 
         if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-            return "redirect:/login";
+            return "redirect:/panda/logout";
         }
 
         KhachHangDTO khachHangDto = taiKhoanDto.getKhachHangDTO();
@@ -376,7 +366,7 @@ public class GioHangController {
 
 
 
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/thanhtoan")
     public String xuLyThanhToan(@RequestParam("totalAmount") String totalAmountStr,
                                 @RequestParam("selectedItems") String selectedItemsJson,

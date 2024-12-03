@@ -550,4 +550,25 @@ public class SanPhamService {
 //            }
 //
 //        }
+
+
+
+
+
+
+        public SanPhamService(SanPhamRepository sanPhamRepository) {
+            this.sanPhamRepository = sanPhamRepository;
+        }
+
+        public List<SanPham> searchSanPham(String query) {
+            return sanPhamRepository.findByTenspContainingIgnoreCase(query);
+        }
+
+        public List<SanPham> searchSanPhamByCategory(String query, int categoryId) {
+            return sanPhamRepository.findByTenspContainingIgnoreCaseAndDanhMucId(query, categoryId);
+        }
+
+
+
+
 }
