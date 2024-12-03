@@ -1,3 +1,4 @@
+
 let timeout;
 $(document).on('input', '#mavoucher-input', function() {
     clearTimeout(timeout);
@@ -14,19 +15,17 @@ $(document).on('input', '#mavoucher-input', function() {
 
 function nhapvoucher(voucherId) {
     console.log("Voucher ID: ", voucherId);
-
     $.ajax({
         url: "/panda/banhangoffline/selectvc",
         type: "GET",
         data: {
-
             id: voucherId
         },
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
             $("#idvoucher-input").val(response.idvoucher);
+            $("#mucgiam-input").val(response.mucgiam);
             $("#mucgiam").text(response.mucgiam);
-            // $("#mucgiam").text(response.loai);
             $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
             $("#thanhTien").val(response.thanhTien);
             $('#voucherModal').modal('hide');
@@ -43,7 +42,6 @@ function nhapvoucher(voucherId) {
 
 function chonVoucher(element) {
     var voucherId = $(element).data('id');
-
     console.log("Voucher ID: ", voucherId);
     $.ajax({
         url: "/panda/banhangoffline/selectvc",
@@ -54,6 +52,7 @@ function chonVoucher(element) {
         success: function(response) {
             $("#mavoucher-input").val(response.mavocher);
             $("#idvoucher-input").val(response.idvoucher);
+            $("#mucgiam-input").val(response.mucgiam);
             $("#mucgiam").text(response.mucgiam);
             // $("#mucgiam").text(response.loai);
             $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
@@ -64,12 +63,17 @@ function chonVoucher(element) {
             console.error("Lỗi khi gọi AJAX:", error);
             const errorResponse = JSON.parse(xhr.responseText);
             if (errorResponse.error) {
-                alert(errorResponse.error);
+                // alert(errorResponse.error);
+                Swal.fire({
+                    title: 'Thông báo',
+                    text: errorResponse.error,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
             }
         }
     });
 }
-
 
 function chonkh(element) {
     var idkh = $(element).data('id');
@@ -82,6 +86,7 @@ function chonkh(element) {
         },
         success: function(response) {
             $("#tenkh-input").val(response.tenkh);
+            $("#idkh-input").val(response.id);
             $("#sdt-input").val(response.sdt);
             $("#diachi-input").val(response.diachi);
             $('#chonkhachhangModal').modal('hide');
@@ -95,7 +100,6 @@ function chonkh(element) {
         }
     });
 }
-
 // $(document).ready(function() {
 //     var initialVoucherId = $("#mavoucher-input").val();
 //
@@ -148,42 +152,6 @@ function chonkh(element) {
 //         initialVoucherId = voucherId;
 //     });
 // });
-
-
-$(document).ready(function() {
-    $("#province").change(function() {
-        var voucherId = $("#mavoucher-input").val();
-        var phishipValue = $("#phiship").val();
-        $.ajax({
-            url: "/panda/banhangoffline/selectvc",
-            type: "GET",
-            data: {
-                id: voucherId,
-                phiship: phishipValue
-            },
-            success: function(response) {
-                $("#mavoucher-input").val(response.mavocher);
-                $("#idvoucher-input").val(response.idvoucher);
-                $("#mucgiam").text(response.mucgiam);
-                $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
-                $("#thanhTien").val(response.thanhTien);
-                $('#voucherModal').modal('hide');
-            },
-            error: function(xhr, status, error) {
-                console.error("Lỗi khi gọi API:", error);
-            }
-        });
-    });
-});
-
-$('#voucherModal').on('shown.bs.modal', function () {
-    $(this).find('input, button, a').first().focus();
-});
-
-$('#voucherModal').on('hidden.bs.modal', function () {
-    $('#openModalButton').focus();
-})
-
 // $(document).ready(function() {
 //     $("#province").change(function() {
 //         var voucherId = $("#mavoucher-input").val();

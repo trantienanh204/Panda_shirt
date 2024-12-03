@@ -1,56 +1,57 @@
+
 $(document).ready(function () {
-function checkCart() {
-    const tableBody = $('#productTable tbody');
-    const productTable = $('#productTable');
-    const emptyCartMessage = $('#emptyCartMessage');
+    function checkCart() {
+        const tableBody = $('#productTable tbody');
+        const productTable = $('#productTable');
+        const emptyCartMessage = $('#emptyCartMessage');
 
-    if (tableBody.children().length === 0) {
-        productTable.hide();
-        emptyCartMessage.show();
-    } else {
-        productTable.show();
-        emptyCartMessage.hide();
+        if (tableBody.children().length === 0) {
+            productTable.hide();
+            emptyCartMessage.show();
+        } else {
+            productTable.show();
+            emptyCartMessage.hide();
+        }
     }
-}
 
-$('#searchInput').on('input', function () {
-    const keyword = $(this).val().trim();
-    if (keyword.length >= 1) {
-        $.ajax({
-            url: `/panda/banhangoffline/find`,
-            method: 'GET',
-            data: {keyword: keyword},
-            success: function (data) {
-                $('#productList').empty();
-                if (data.length >= 1) {
-                    data.forEach(function (item) {
-                        const parts = item.split(' - ');
-                        const product = {
-                            id: parts[0],
-                            tensp: parts[1],
-                            mausac: parts[2],
-                            kichthuoc: parts[3],
-                            dongia: parts[4],
-                        };
-                        $('#productList').append(
-                            `<li class="list-group-item product-item" data-product='${JSON.stringify(product)}'>
+    $('#searchInput').on('input', function () {
+        const keyword = $(this).val().trim();
+        if (keyword.length >= 1) {
+            $.ajax({
+                url: `/panda/banhangoffline/find`,
+                method: 'GET',
+                data: {keyword: keyword},
+                success: function (data) {
+                    $('#productList').empty();
+                    if (data.length >= 1) {
+                        data.forEach(function (item) {
+                            const parts = item.split(' - ');
+                            const product = {
+                                id: parts[0],
+                                tensp: parts[1],
+                                mausac: parts[2],
+                                kichthuoc: parts[3],
+                                dongia: parts[4],
+                            };
+                            $('#productList').append(
+                                `<li class="list-group-item product-item" data-product='${JSON.stringify(product)}'>
                         ${product.id} -   ${product.tensp} - ${product.mausac} - ${product.kichthuoc}</li>`
+                            );
+                        });
+                    } else {
+                        $('#productList').append(
+                            `<li class="list-group-item">Không tìm thấy sản phẩm</li>`
                         );
-                    });
-                } else {
-                    $('#productList').append(
-                        `<li class="list-group-item">Không tìm thấy sản phẩm</li>`
-                    );
+                    }
+                },
+                error: function () {
+                    alert('Lỗi tìm sản phẩm!');
                 }
-            },
-            error: function () {
-                alert('Lỗi tìm sản phẩm!');
-            }
-        });
-    } else {
-        $('#productList').empty();
-    }
-});
+            });
+        } else {
+            $('#productList').empty();
+        }
+    });
 
 // $(document).on('click', '.product-item', function () {
 //     event.preventDefault();
@@ -84,18 +85,18 @@ $('#searchInput').on('input', function () {
 // });
 
 
-function addToCart(product) {
-    const tableBody = $('#productTable tbody');
-    const existingRow = tableBody.find(`tr[data-id="${product.id}"]`);
-    console.log(existingRow);
-    if (existingRow.length > 0) {
-        // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng lên 1
-        const soluong = existingRow.find('.so-luong input'); // Lấy ô input để tăng số lượng
-        const tongsl = parseInt(soluong.val());
-        soluong.val(tongsl + 1); // Cập nhật giá trị của ô input
-        updatetongtien(existingRow, product.dongia);
-    } else {
-        const newRow = `
+    function addToCart(product) {
+        const tableBody = $('#productTable tbody');
+        const existingRow = tableBody.find(`tr[data-id="${product.id}"]`);
+        console.log(existingRow);
+        if (existingRow.length > 0) {
+            // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng lên 1
+            const soluong = existingRow.find('.so-luong input'); // Lấy ô input để tăng số lượng
+            const tongsl = parseInt(soluong.val());
+            soluong.val(tongsl + 1); // Cập nhật giá trị của ô input
+            updatetongtien(existingRow, product.dongia);
+        } else {
+            const newRow = `
         <tr th:data-id="${product.id}">
             <td>${product.tensp}</td>
             <td>${product.mausac}</td>
@@ -108,94 +109,94 @@ function addToCart(product) {
             <i class="fa-solid fa-trash"></i></button></td>
         </tr>
     `;
-        tableBody.append(newRow);
+            tableBody.append(newRow);
+        }
+        soluongthaydoi(tableBody.find(`tr[data-id="${product.id}"]`), product.dongia);
+        checkCart();
     }
-    soluongthaydoi(tableBody.find(`tr[data-id="${product.id}"]`), product.dongia);
+
+    function soluongthaydoi(row, dongia) {
+        row.find('.so-luong input').off('input').on('input', function () {
+            let soluong = $(this).val();
+
+            // if (soluong.empty()) {
+            //      soluong = 1; // Nếu ô trống, đặt lại thành 1
+            // } else
+            if (isNaN(soluong) || parseInt(soluong) === 0) {
+                soluong = 1; // Nếu không phải là số hoặc < 1, đặt lại thành 1
+            } else {
+                soluong = parseInt(soluong);
+            }
+            $(this).val(soluong);
+
+            updatetongtien(row, dongia);
+        });
+    }
+
+    let previousValue = 0;
+
+    $(document).on('focus', '.quantity-input', function () {
+        previousValue = $(this).val(); // Lưu giá trị cũ của ô input
+    });
+
+    $(document).on('input', '.quantity-input', function () {
+        const inputElement = $(this); // Lấy phần tử input đã thay đổi
+        const idHoaDonCT = inputElement.data('id'); // Lấy ID từ data-id
+        const productId = inputElement.data('product');// Lấy ID từ data-product
+        const row = $(this).closest('tr'); // Lấy hàng tương ứng
+        const dongia = parseFloat(row.find('td:nth-child(4)').text());
+        const soluong = parseInt($(this).val()) || 1;
+        console.log('ID HoaDonCT: ', idHoaDonCT);
+        console.log('ID spct: ', productId);
+        const thanhtien = dongia * soluong;
+        row.find('.tong-tien').text(thanhtien.toFixed(2));
+        $.ajax({
+            url: '/panda/banhangoffline/update',
+            type: 'POST', // Phương thức POST
+            contentType: 'application/json',
+            data: JSON.stringify({
+                idSanPhamCT: productId,
+                idHoadon: parseInt(idHoaDonCT),
+                soLuong: soluong,
+                thanhTien: thanhtien
+            }),
+            success: function (response) {
+                console.log('Cập nhật thành công:', response);
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+            error: function (xhr) {
+                // Xử lý lỗi từ server
+                const errorMessage = xhr.responseText || 'Có lỗi xảy ra';
+                alert(errorMessage);
+                Swal.fire({
+                    title: 'Thông báo báo!',
+                    text: errorMessage,
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+
+                inputElement.val(previousValue);
+
+                // Hiển thị lại thành tiền cũ
+                const previousTotal = dongia * previousValue;
+                row.find('.tong-tien').text(previousTotal.toFixed(2));
+            }
+        });
+    });
+
+    function updatetongtien(row, dongia) {
+        const soluong = parseInt(row.find('.so-luong input').val());
+        const tongtien = soluong * dongia;
+        row.find('.tong-tien').text(tongtien);
+    }
+
+
     checkCart();
-}
-
-function soluongthaydoi(row, dongia) {
-    row.find('.so-luong input').off('input').on('input', function () {
-        let soluong = $(this).val();
-
-        // if (soluong.empty()) {
-        //      soluong = 1; // Nếu ô trống, đặt lại thành 1
-        // } else
-        if (isNaN(soluong) || parseInt(soluong) === 0) {
-            soluong = 1; // Nếu không phải là số hoặc < 1, đặt lại thành 1
-        } else {
-            soluong = parseInt(soluong);
-        }
-        $(this).val(soluong);
-
-        updatetongtien(row, dongia);
-    });
-}
-
-let previousValue = 0;
-
-$(document).on('focus', '.quantity-input', function () {
-    previousValue = $(this).val(); // Lưu giá trị cũ của ô input
-});
-
-$(document).on('input', '.quantity-input', function () {
-    const inputElement = $(this); // Lấy phần tử input đã thay đổi
-    const idHoaDonCT = inputElement.data('id'); // Lấy ID từ data-id
-    const productId = inputElement.data('product');// Lấy ID từ data-product
-    const row = $(this).closest('tr'); // Lấy hàng tương ứng
-    const dongia = parseFloat(row.find('td:nth-child(4)').text());
-    const soluong = parseInt($(this).val()) || 1;
-    console.log('ID HoaDonCT: ', idHoaDonCT);
-    console.log('ID spct: ', productId);
-    const thanhtien = dongia * soluong;
-    row.find('.tong-tien').text(thanhtien.toFixed(2));
-    $.ajax({
-        url: '/panda/banhangoffline/update',
-        type: 'POST', // Phương thức POST
-        contentType: 'application/json',
-        data: JSON.stringify({
-            idSanPhamCT: productId,
-            idHoadon: parseInt(idHoaDonCT),
-            soLuong: soluong,
-            thanhTien: thanhtien
-        }),
-        success: function (response) {
-            console.log('Cập nhật thành công:', response);
-            setTimeout(function () {
-                location.reload();
-            }, 1000);
-        },
-        error: function (xhr) {
-            // Xử lý lỗi từ server
-            const errorMessage = xhr.responseText || 'Có lỗi xảy ra';
-            alert(errorMessage); // Hiển thị thông báo lỗi
-
-            inputElement.val(previousValue);
-
-            // Hiển thị lại thành tiền cũ
-            const previousTotal = dongia * previousValue;
-            row.find('.tong-tien').text(previousTotal.toFixed(2));
-        }
-    });
-});
-
-function updatetongtien(row, dongia) {
-    const soluong = parseInt(row.find('.so-luong input').val());
-    const tongtien = soluong * dongia;
-    row.find('.tong-tien').text(tongtien);
-}
-
-// // Sự kiện click cho nút xóa sản phẩm trong giỏ hàng
-// $(document).on('click', '.remove-btn', function () {
-//     $(this).closest('tr').remove(); // Xóa hàng sản phẩm
-//     checkCart(); // Kiểm tra giỏ hàng
-// });
-
-checkCart();
 });
 
 function setActiveTab(tab) {
-// Lấy tất cả các tab
     var navLinks = document.querySelectorAll('#invoiceTabs .nav-link');
 
     navLinks.forEach(function (link) {
@@ -203,9 +204,9 @@ function setActiveTab(tab) {
     });
 
     tab.classList.add('active');
-    }
+}
 
-    $(document).ajaxSend(function (event, xhr, settings) {
+$(document).ajaxSend(function (event, xhr, settings) {
     var csrfToken = $('meta[name="_csrf"]').attr('content');
     var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
 
@@ -213,6 +214,7 @@ function setActiveTab(tab) {
 });
 
 const initialProductList = document.getElementById('product-list-container').innerHTML;
+
 function updateProductList() {
     let keyword = document.getElementById("searchsanpham").value;
 
@@ -235,7 +237,6 @@ function updateProductList() {
         });
 }
 
-
 function updateProductListUI(products) {
     const productListContainer = document.getElementById('product-list-container');
     if (products.length === 0) {
@@ -256,7 +257,7 @@ function updateProductListUI(products) {
             soluongsanpham: parts[6],
             hinhanh: parts[6],
         };
-         productHTML += `    
+        productHTML += `    
             <div class="product-row" style="display: flex; gap: 10px; border-bottom: 1px solid #ddd; padding: 10px;">
                 <input type="hidden" name="idspct" value="${spct.id}">
                 <input type="hidden" name="dongia" value="${spct.dongia}">
@@ -325,11 +326,10 @@ $(document).on('click', '.product-action button', function (event) {
     } else {
         console.error('ID sản phẩm không được xác định');
     }
-
 });
 
-
 const initialProductListkh = document.getElementById('khachhang-list-container').innerHTML;
+
 function findkhachhang() {
     let keyword = document.getElementById("searchkhachhang").value;
 
@@ -358,7 +358,6 @@ function lishkhachhang(lskh) {
         khachhanglist.innerHTML = '<p>Không có khách hàng phù hợp </p>';
         return;
     }
-
     let khachhangHTML = "";
     lskh.forEach((item, index) => {
         const parts = item.split(' - ');
@@ -384,7 +383,73 @@ function lishkhachhang(lskh) {
 
     });
     khachhanglist.innerHTML = khachhangHTML;
-
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const path = window.location.pathname;
+    const segments = path.split("/");
+    const idHoaDon = segments[segments.length - 1]; // Lấy ID hóa đơn từ URL
+
+    const tenKhInput = document.getElementById("tenkh-input");
+    const sdtInput = document.getElementById("sdt-input");
+    const voucherInput = document.getElementById("mavoucher-input");
+
+    // Sử dụng sessionStorage với khóa chứa ID hóa đơn
+    const tenKhKey = `tenkh_${idHoaDon}`;
+    const sdtKey = `sdt_${idHoaDon}`;
+    const voucherKey = `mavoucher_${idHoaDon}`;
+
+    // Gán giá trị đã lưu nếu tồn tại trong sessionStorage
+    tenKhInput.value = sessionStorage.getItem(tenKhKey) || "";
+    sdtInput.value = sessionStorage.getItem(sdtKey) || "";
+    voucherInput.value = sessionStorage.getItem(voucherKey) || "";
+
+    // Lưu dữ liệu khi người dùng nhập
+    tenKhInput.addEventListener("input", function () {
+        sessionStorage.setItem(tenKhKey, this.value);
+    });
+    sdtInput.addEventListener("input", function () {
+        sessionStorage.setItem(sdtKey, this.value);
+    });
+    voucherInput.addEventListener("input", function () {
+        sessionStorage.setItem(voucherKey, this.value);
+    });
+
+    const customerItems = document.querySelectorAll(".customer-item");
+
+    customerItems.forEach(function (item) {
+        item.addEventListener("click", function () {
+            const idKhachHang = this.getAttribute("data-id");
+            console.log(idKhachHang);
+            fetch(`/panda/banhangoffline/chonkh?id=${idKhachHang}`)
+                .then(response => response.json())
+                .then(data => {
+                    sessionStorage.setItem(tenKhKey, data.tenkh);
+                    sessionStorage.setItem(sdtKey, data.sdt);
+
+                    tenKhInput.value = data.tenkh;
+                    sdtInput.value = data.sdt;
+                })
+                .catch(error => console.error("Lỗi dữ liệu", error));
+        });
+    });
+
+    const voucher = document.querySelectorAll(".voucher-item");
+    voucher.forEach(function (item) {
+        item.addEventListener("click", function () {
+            const idvoucher = this.getAttribute("data-id");
+            console.log(idvoucher + "voucher");
+            fetch(`/panda/banhangoffline/selectvc?id=${idvoucher}`)
+                .then(response => response.json())
+                .then(data => {
+                    sessionStorage.setItem(voucherKey, data.mavocher);
+                    voucherInput.value = data.mavocher;
+                })
+                .catch(error => console.error("Lỗi dữ liệu", error));
+        });
+    });
+});
+
+
 
 

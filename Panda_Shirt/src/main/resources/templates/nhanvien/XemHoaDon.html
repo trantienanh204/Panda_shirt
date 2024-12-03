@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
@@ -52,7 +53,6 @@
             <th>Mã hóa đơn</th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
-            <!--            <th>Số lượng</th>-->
             <th>Tổng tiền</th>
             <th>Ngày mua</th>
             <th>Trạng thái</th>
@@ -68,7 +68,6 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-            <!--            <td th:text="${hd.soluong}"></td>-->
             <td th:text="${hd.tongtien}"></td>
             <td th:text="${hd.ngaymua}"></td>
             <td>
@@ -81,7 +80,8 @@
                    th:data-id="${hd.id}">
                     <i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>
                 </a>
-                <a class="btn " th:href="@{/panda/nhanvien/xemhoadon/xuatfile(id=${hd.id})}">
+                <a class="btn " th:href="@{/panda/nhanvien/xemhoadon/xuatfile(id=${hd.id})}"
+                   onclick="openPrintPage(event)" target="_self">
                     <i class="fa-solid fa-inbox" style="color: #000000;font-size: 20px"></i>
                 </a>
             </td>
@@ -136,10 +136,9 @@
                     <table>
                         <thead>
                         <tr>
-                            <th>ID HDCT</th>
                             <th>Sản phẩm</th>
-                            <th>Kích thước</th>
                             <th>Màu sắc</th>
+                            <th>Kích thước</th>
                             <th>Giá</th>
                             <th>Số lượng</th>
                             <th>Tổng tiền</th>
@@ -147,7 +146,6 @@
                         </thead>
                         <tbody>
                         <tr th:each="ct : ${hoaDonCTs}">
-                            <td th:text="${ct.mahoadonct}"></td>
                             <td th:text="${ct.sanPhamChiTiet.sanPham.tensp}"></td>
                             <td th:text="${ct.sanPhamChiTiet.kichThuoc.ten}"></td>
                             <td th:text="${ct.sanPhamChiTiet.mauSac.ten}"></td>
@@ -178,7 +176,27 @@
         });
     });
 </script>
+<script>
+    function openPrintPage(event) {
+        // Ngừng hành động mặc định của link
+        event.preventDefault();
 
+        // Lấy URL của thẻ <a> chứa href
+        var href = event.target.closest('a').getAttribute('href');
+
+        // Lấy ID từ URL (ví dụ: 'id=12345')
+        var urlParams = new URLSearchParams(href.split('?')[1]);
+        var invoiceId = urlParams.get('id');
+
+        // Mở trang in mới với ID
+        var printWindow = window.open('/panda/nhanvien/xemhoadon/xuatfile?id=' + invoiceId, '_blank');
+
+        // // Khi trang in đã tải xong, gọi in
+        // printWindow.onload = function() {
+        //     printWindow.print();
+        // };
+    }
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
@@ -290,9 +308,7 @@
     }
 
     .status-orange {
-
-        background-color: #db0202;
-
+        background-color: #ff9800;
     }
 
     .action-icons {
@@ -307,4 +323,5 @@
     }
 </style>
 </body>
+
 </html>
