@@ -1,3 +1,4 @@
+
 package com.example.demo.Controller.admin.BanHang;
 
 import com.example.demo.DTO.HoaDonCTDTO;
@@ -47,7 +48,7 @@ public class BanHangOffline {
 
     @GetMapping("/hienthi")
     public String show(Model model) {
-        String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
+        String role = "nhanvien";
         model.addAttribute("role", role);
         List<HoaDon> hoaDon = hoaDonRepository.findHoaDonsWithNullId();
         List<Voucher> voucher = voucherRepository.findAll();
