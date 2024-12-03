@@ -16,6 +16,11 @@ import java.util.List;
 public interface SanPhamRepository extends JpaRepository<SanPham,Integer> {
 
 
+                List<SanPham> findByTenspContainingIgnoreCase(String query);
+                List<SanPham> findByTenspContainingIgnoreCaseAndDanhMucId(String query, int categoryId);
+
+
+
         @Query("SELECT sp FROM SanPham sp WHERE " +
                 "(?1 IS NULL OR sp.tensp LIKE %?1%) AND " +
                 "(?2 IS NULL OR sp.trangthai = ?2)"+

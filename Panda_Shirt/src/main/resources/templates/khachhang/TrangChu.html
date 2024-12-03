@@ -36,8 +36,12 @@
                 </li>
             </ul>
             <!-- Form Search -->
-            <form class="d-flex mx-auto" style="width: 400px;">
-                <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
+                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">
+                    <option value="">Tất cả danh mục</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                </select>
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
