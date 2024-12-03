@@ -111,8 +111,11 @@ public class HoaDonCotroller {
     @GetMapping("/chitiet")
     public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
         List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
+        HoaDon hd = hoaDonRepository.finid(id);
         model.addAttribute("hoaDonCTs", hoaDonCT);
-        return "/admin/HoaDon/HoaDon :: hdct"; // Trả về fragment HTML
+        model.addAttribute("hd", hd.getMahoadon());
+        System.out.println(hd.getMahoadon());
+        return "/admin/HoaDon/HoaDon::hdct"; // Trả về fragment HTML
     }
 
     @GetMapping("update")
