@@ -43,13 +43,12 @@ public class RegisterController {
     ChiTietVaiTroRepository chiTietVaiTroRepository;
 
     @GetMapping("/register")
-    public String register(Model model) {
-        model.addAttribute("khachHang",new KhachHang());
+    public String register() {
         return "Register"; // Trả về tên view
     }
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute KhachHang khachHang, BindingResult result ,Model model, RedirectAttributes redirectAttributes,
+    public String register( KhachHang khachHang,Model model, RedirectAttributes redirectAttributes,
                            @RequestParam("tentaikhoan") String email, @RequestParam("tenkhachhang") String tenkhachhang, @RequestParam("sdt") String sdt, @RequestParam("diachi") String diachi ) {
 
         // check lỗi
@@ -64,6 +63,23 @@ public class RegisterController {
         }
         if (khachHangRepository.existsBySdt(sdt)){
             model.addAttribute("sdtExists","Số điện thoại đã tồn tại");
+            hasErrors = true;
+        }
+        // check trống
+        if(email.trim().isEmpty()){
+            model.addAttribute("emailEmpty","Email không được để trống");
+            hasErrors = true;
+        }
+        if(tenkhachhang.trim().isEmpty()){
+            model.addAttribute("nameEmpty","Họ tên không được để trống");
+            hasErrors = true;
+        }
+        if(sdt.trim().isEmpty()){
+            model.addAttribute("numberphoneEmpty","Số điện thoại không được để trống");
+            hasErrors = true;
+        }
+        if(diachi.trim().isEmpty()){
+            model.addAttribute("addressEmpty","Địa chỉ không được để trống");
             hasErrors = true;
         }
         // Nếu có lỗi, trả về trang đăng ký với thông báo lỗi
