@@ -5,6 +5,7 @@ import com.example.demo.DTO.NhanVienDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.*;
+
 import com.example.demo.service.TaiKhoanService;
 import com.example.demo.services.BanHangService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,11 +32,10 @@ import java.util.stream.Collectors;
 public class BanHangOffline {
     @Autowired
     private HttpServletRequest request;
-
-    @Autowired
-    HoaDonRepository hoaDonRepository;
     @Autowired
     TaiKhoanService taiKhoanService;
+    @Autowired
+    HoaDonRepository hoaDonRepository;
     @Autowired
     SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
@@ -460,7 +460,7 @@ public class BanHangOffline {
             }
             hd.setKhachHang(kh);
         } else {
-            KhachHang kh1 = khachHangRepository.findById(1).orElse(null);
+            KhachHang kh1 = khachHangRepository.findById(2).orElse(null);
             if (kh1 != null) {
                 hd.setKhachHang(kh1);
             } else {

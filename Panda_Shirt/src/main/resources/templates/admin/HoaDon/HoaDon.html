@@ -6,7 +6,7 @@
 </head>
 <body th:fragment="hoadon">
 <h2>Hóa đơn</h2>
-<form th:action="@{/panda/nhanvien/xemhoadon/hienthi}" method="get">
+<form th:action="@{/panda/hoadon}" method="get">
     <div class="filter-container">
         <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
         <hr>
@@ -16,8 +16,8 @@
                 <input type="text" name="mahd" th:value="${mahd}" placeholder="Mã hóa đơn">
             </div>
             <div class="filter-input">
-                <label>Tên nhân viên</label>
-                <input type="text" name="tennv" th:value="${tennv}" placeholder="Tên nhân viên ">
+                <label>số điện thoại</label>
+                <input type="text" name="sdt" th:value="${sdt}" placeholder="số điện thoại">
             </div>
             <div class="filter-input">
                 <label>Tên khách hàng</label>
@@ -36,7 +36,7 @@
             <button type="submit" class="btn btn-dark">
                 <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
             </button>
-            <a class="btn btn-dark" th:href="@{/panda/nhanvien/xemhoadon/hienthi}">
+            <a class="btn btn-dark" th:href="@{/panda/hoadon}">
                 <i class="fa-solid fa-rotate-right" style="color: #ffffff;padding-top: 10px"></i> Làm mới
             </a>
         </div>
@@ -52,8 +52,10 @@
             <th>Mã hóa đơn</th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
+            <th>Số điện thoại</th>
             <th>Tổng tiền</th>
             <th>Ngày mua</th>
+            <th>hình thức mua hàng</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
@@ -67,8 +69,10 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
+            <td th:text="${hd.khachHang.sdt}"></td>
             <td th:text="${hd.tongtien}"></td>
             <td th:text="${hd.ngaymua}"></td>
+            <td th:text="${hd.hinhthucmuahang != null ?'online':'tại quầy'}"></td>
             <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
@@ -93,7 +97,7 @@
             <!-- Nút Previous -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -108,7 +112,7 @@
             <!-- Nút Next -->
             <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>

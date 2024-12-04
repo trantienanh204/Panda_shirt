@@ -37,22 +37,27 @@ public class XemHoaDonController {
     @GetMapping("/hienthi")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
-                          @RequestParam(value = "tennv", required = false) String tennv,
+                          @RequestParam(value = "sdt", required = false) String sdt,
                           @RequestParam(value = "tenkh", required = false) String tenkh,
                           @RequestParam(value = "trangThai", required = false) Integer trangThai,
                           Model model){
+        System.out.println("mahd: " + mahd);
+        System.out.println("sdt: " + sdt);
+        System.out.println("tenkh: " + tenkh);
+        System.out.println("trangThai: " + trangThai);
+
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
 
         if (page < 0) {
             page = 0;
         }
-        Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, tennv , tenkh, trangThai);
+        Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, sdt , tenkh, trangThai);
         model.addAttribute("totalPage", listHD.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("lshd",listHD.getContent());
         model.addAttribute("mahd", mahd);
-        model.addAttribute("tennv", tennv);
+        model.addAttribute("sdt", sdt);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listHD.getSize());
@@ -60,6 +65,7 @@ public class XemHoaDonController {
         model.addAttribute("listhdct",listhdct);
         return "/nhanvien/XemHoaDon";
     }
+
     @GetMapping("xuatfile")
     public String filePdf(@RequestParam("id") int id, Model model) {
         List<HoaDonCT> lshdct  = hoaDonCTRepository.findhoadonct(id);
@@ -100,6 +106,8 @@ public class XemHoaDonController {
     public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
         List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
         model.addAttribute("hoaDonCTs", hoaDonCT);
+//        HoaDon hoaDon = hoaDonRepository.finid(15);
+//        model.addAttribute("hoaDon", hoaDon);
         return "/nhanvien/XemHoaDon :: chiTiet"; // Trả về fragment HTML
     }
 

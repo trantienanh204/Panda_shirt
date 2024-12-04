@@ -118,12 +118,10 @@ public class TrangChuController {
     }
 
         @PreAuthorize("isAuthenticated()")
+
+
         @GetMapping("/giohang")
         public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-            if (userDetails == null) {
-                return "redirect:/panda/login";
-            }
-
             String tenDangNhap = userDetails.getUsername();
             TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
             if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
@@ -139,7 +137,7 @@ public class TrangChuController {
                 itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
                 itemMap.put("soluong", item.getSoluong());
 
-                if (item.getSanPhamChiTiet().getAnhSanPhamChiTiet() != null) {
+                if (item.getSanPhamChiTiet().getSanPham().getAnhsp() != null) {
                     String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getSanPham().getAnhsp());
                     itemMap.put("anhspBase64", base64Image);
                 } else {
@@ -152,9 +150,6 @@ public class TrangChuController {
             model.addAttribute("cartItems", processedCartItems);
             return "/khachhang/GioHang";
         }
-
-
-
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/taikhoan")
@@ -183,9 +178,6 @@ public class TrangChuController {
         model.addAttribute("dahuy", dahuy);
         return "/khachhang/TaiKhoan";
     }
-
-
-
 
     @GetMapping("/thanhtoan")
     public String thanhtoan(){

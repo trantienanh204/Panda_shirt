@@ -105,6 +105,7 @@
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
+                                    <th>Mã sản phẩm</th>
                                     <th>Tên sản phẩm</th>
                                     <th>Màu sắc</th>
                                     <th>Kích thước</th>
@@ -114,6 +115,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="dd,i: ${listhdct}">
+                                    <td th:text="${dd.sanPhamChiTiet.sanPham.masp}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.sanPham.tensp}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>

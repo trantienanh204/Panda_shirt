@@ -185,9 +185,10 @@
                         data: {idHoaDonCT: idHoaDonCT},
                         success: function (response) {
                             // Xóa dòng tương ứng với idHoaDonCT trong bảng
-                            // $(`button[data-id="${idHoaDonCT}"]`).closest('tr').remove();
+                            $(`button[data-id="${idHoaDonCT}"]`).closest('tr').remove();
                             // $('table').remove();
-                            $(this).closest('table').remove();
+                            // $(this).closest('table').remove();
+                            location.reload();
                             Swal.fire({
                                 title: 'Thông báo!',
                                 text: 'Xóa thành công',
