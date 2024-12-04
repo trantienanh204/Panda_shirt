@@ -23,6 +23,9 @@ public class SanPhamChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "MA_SPCT")
+    private String maspct;
+
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
     private Integer soluongsanpham;
 

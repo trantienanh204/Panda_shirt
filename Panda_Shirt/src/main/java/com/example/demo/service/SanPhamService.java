@@ -428,6 +428,19 @@ public class SanPhamService {
                 } else {
                     // Thêm sản phẩm chi tiết mới
                     SanPhamChiTiet newChiTiet = new SanPhamChiTiet();
+                    String SPCT = sanPhamChiTietRepository.findMaxspct();
+                    int demhdCT;
+                    if (SPCT == null) {
+                        demhdCT = 1; // Nếu chưa có hóa đơn nào thì bắt đầu từ 1
+                    } else {
+                        try {
+                            demhdCT = Integer.parseInt(SPCT.substring(2)) + 1;
+                        } catch (NumberFormatException e) {
+                            throw new RuntimeException("Lỗi định dạng số từ mã hóa đơn: " + SPCT, e);
+                        }
+                    }
+                    String maspct = String.format("SPCT%03d", demhdCT);
+                    newChiTiet.setMaspct(maspct);
                     newChiTiet.setMauSac(mauSac);
                     newChiTiet.setKichThuoc(kichThuoc);
                     newChiTiet.setDongia(chiTietDTO.getGia());

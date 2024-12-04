@@ -118,6 +118,7 @@
         <table class="table">
             <thead>
             <tr>
+                <th>ảnh sản phẩm</th>
                 <th>Tên sản phẩm</th>
                 <th>Màu sắc</th>
                 <th>Kích thước</th>
@@ -129,6 +130,10 @@
             </thead>
             <tbody>
             <tr th:each="hdct : ${hoaDonCTList}">
+                <td ><img th:src="'data:image/png;base64,' + ${hdct.sanPhamChiTiet.sanPham.base64Image}"
+                            class="img-fluid main-image"
+                            alt="Áo Thun Chi Tiết"
+                            style="max-width: 120px; height: auto;"></td>
                 <td th:text="${hdct.sanPhamChiTiet.sanPham.tensp}"></td>
                 <td th:text="${hdct.sanPhamChiTiet.mauSac.ten}"></td>
                 <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>

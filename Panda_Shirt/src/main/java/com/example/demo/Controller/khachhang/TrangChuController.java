@@ -170,14 +170,14 @@ public class TrangChuController {
         List<DonHang> donHangs = donHangService.findByKhachHangId(khachHang.getId());
 
         List<DonHang> choduyet = donHangs.stream().filter(d -> "Chờ duyệt".equals(d.getTrangThai())).collect(Collectors.toList());
-        List<DonHang> dachuyet = donHangs.stream().filter(d -> "Đã duyệt".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> daduyet = donHangs.stream().filter(d -> "Đã duyệt".equals(d.getTrangThai())).collect(Collectors.toList());
         List<DonHang> danggiao = donHangs.stream().filter(d -> "Đang giao".equals(d.getTrangThai())).collect(Collectors.toList());
         List<DonHang> hoanthanh = donHangs.stream().filter(d -> "Hoàn thành".equals(d.getTrangThai())).collect(Collectors.toList());
         List<DonHang> dahuy = donHangs.stream().filter(d -> "Đã hủy".equals(d.getTrangThai())).collect(Collectors.toList());
 
         model.addAttribute("khachHang", khachHang);
         model.addAttribute("choduyet", choduyet);
-        model.addAttribute("dachuyet", dachuyet);
+        model.addAttribute("daduyet", daduyet);
         model.addAttribute("danggiao", danggiao);
         model.addAttribute("hoanthanh", hoanthanh);
         model.addAttribute("dahuy", dahuy);
