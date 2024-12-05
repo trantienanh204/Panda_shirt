@@ -38,10 +38,10 @@
             <!-- Form Search -->
             <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
                 <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
-                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">
-                    <option value="">Tất cả danh mục</option>
-                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-                </select>
+<!--                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
+<!--&lt;!&ndash;                    <option value="">Tất cả danh mục</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>&ndash;&gt;-->
+<!--                </select>-->
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
@@ -120,49 +120,7 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-<!--bộ lọc -->
-<div class="container my-4">
-    <h3><i class="fas fa-filter"></i> BỘ LỌC</h3>
-    <div class="row">
-        <!-- Dropdown Thương hiệu -->
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Thương hiệu">
-                <option selected>Thương hiệu</option>
-                <option value="brand1">Brand 1</option>
-                <option value="brand2">Brand 2</option>
-                <option value="brand3">Brand 3</option>
-            </select>
-        </div>
-        <!-- Dropdown Lọc giá -->
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Lọc giá">
-                <option selected>Lọc giá</option>
-                <option value="low">Dưới 100.000đ</option>
-                <option value="medium">100.000đ - 500.000đ</option>
-                <option value="high">Trên 500.000đ</option>
-            </select>
-        </div>
-        <!-- Dropdown Màu sắc -->
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Màu sắc">
-                <option selected>Màu sắc</option>
-                <option value="red">Đỏ</option>
-                <option value="blue">Xanh dương</option>
-                <option value="black">Đen</option>
-            </select>
-        </div>
-        <!-- Dropdown Kích thước -->
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Kích thước">
-                <option selected>Kích thước</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-            </select>
-        </div>
-    </div>
-</div>
+
 <!-- Main Section -->
 <div class="container my-5">
     <div class="row">
@@ -204,6 +162,9 @@
     </ul>
 </footer>
 
+<a href="https://m.me/61558958207067" class="fb-icon" target="_blank">
+    <i class="fab fa-facebook-messenger"></i>
+</a>
 <style>
     /* Font and Background for Navbar */
     body {
@@ -313,11 +274,33 @@
         margin: 5px;
     }
 
+     .fb-icon {
+         position: fixed;
+         bottom: 20px;
+         right: 20px;
+         background-color: #0084ff;
+         color: white;
+         border-radius: 50%;
+         width: 50px;
+         height: 50px;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         font-size: 24px;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+         text-decoration: none;
+     }
+
+    .fb-icon:hover {
+        background-color: #006bbf;
+    }
+
+
 
 </style>
 <!-- Bootstrap JS and FontAwesome -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </body>
 </html>

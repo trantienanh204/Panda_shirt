@@ -23,7 +23,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
 
     Voucher findByTenAndIdNot(String ten, Integer id);
 
-
+    List<Voucher> findByTrangThaiAndLoaikhachhang(int trangThai, boolean loai);
 //@Query("SELECT vc FROM Voucher vc WHERE " +
 //        "(?1 IS NULL OR vc.ma LIKE CONCAT('%', ?1, '%')) AND " +
 //        "(?2 IS NULL OR vc.ten LIKE CONCAT('%', ?2, '%')) AND " +

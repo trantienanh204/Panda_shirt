@@ -448,4 +448,11 @@ public class GiamGiaController {
         redirectAttributes.addFlashAttribute("Update", "Sửa thành công!");
         return "redirect:/panda/voucher/hienthi";
     }
+
+        @ResponseBody
+        @GetMapping("/active-public")
+        public List<Voucher> getActivePublicVouchers() {
+            return voucherService.getActivePublicVouchers();
+        }
+
 }

@@ -53,5 +53,10 @@ public class VoucherService {
         }
     }
 
+        public List<Voucher> getActivePublicVouchers() {
+            // `trangThai = 1` là trạng thái hoạt động và `loai = false` là công khai
+            return voucherRepository.findByTrangThaiAndLoaikhachhang(1, true);
+        }
+
 }
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Base64;
 import java.util.List;
 
 
@@ -41,9 +42,19 @@ public class SearchController {
             searchResults = sanPhamService.searchSanPhamByCategory(query, Integer.parseInt(categoryId));
         }
 
+        // Xử lý ảnh cho từng sản phẩm
+        searchResults.forEach(sp -> {
+            if (sp != null && sp.getAnhsp() != null) {
+                // Chuyển đổi byte[] sang base64
+                String base64Image = Base64.getEncoder().encodeToString(sp.getAnhsp());
+                sp.setBase64Image(base64Image);
+            }
+        });
+
         List<DanhMuc> categories = danhMucRepository.findAll();
         model.addAttribute("searchResults", searchResults);
         model.addAttribute("categories", categories);
-        return "khachhang/timkiemsanphamTT"; // Đảm bảo tên template trùng khớp
+        return "khachhang/timkiemsanphamTT";
     }
+
 }

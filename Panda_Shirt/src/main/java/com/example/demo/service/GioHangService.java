@@ -87,7 +87,8 @@ import java.util.Optional;
 
 
 
-        public void clearCart(int khachHangId) { List<GioHang> cartItems = gioHangRepository.findByKhachHangId(khachHangId);
+        public void clearCart(int khachHangId) {
+            List<GioHang> cartItems = gioHangRepository.findByKhachHangId(khachHangId);
             if (cartItems != null && !cartItems.isEmpty())
             { gioHangRepository.deleteAll(cartItems); } }
 
