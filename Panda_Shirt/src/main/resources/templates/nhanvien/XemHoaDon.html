@@ -17,8 +17,12 @@
                 <input type="text" name="mahd" th:value="${mahd}" placeholder="Mã hóa đơn">
             </div>
             <div class="filter-input">
-                <label>số điện thoại</label>
-                <input type="text" name="sdt" th:value="${sdt}" placeholder="số điện thoại">
+                <label>Tên nhân viên</label>
+                <input type="text" name="nv" th:value="${nv}" placeholder="Mã hóa đơn">
+            </div>
+            <div class="filter-input">
+                <label>Số điện thoại</label>
+                <input type="text" name="sdt" th:value="${sdt}" placeholder="Số điện thoại">
             </div>
             <div class="filter-input">
                 <label>Tên khách hàng</label>
@@ -73,7 +77,7 @@
             <td th:text="${hd.khachHang.sdt}"></td>
             <td th:text="${hd.tongtien}"></td>
             <td th:text="${hd.ngaymua}"></td>
-            <td th:text="${hd.hinhthucmuahang != null ?'online':'tại quầy'}"></td>
+            <td th:text="${hd.hinhthucmuahang != null ?'Trực tuyến':'Trực tiếp'}"></td>
             <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
@@ -98,7 +102,7 @@
             <!-- Nút Previous -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},nv=${nv},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -113,7 +117,7 @@
             <!-- Nút Next -->
             <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage + 1}, mahd=${mahd},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage + 1}, mahd=${mahd},sdt=${sdt},nv=${nv},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>

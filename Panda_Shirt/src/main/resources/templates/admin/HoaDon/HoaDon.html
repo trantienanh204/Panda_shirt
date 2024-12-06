@@ -16,6 +16,10 @@
                 <input type="text" name="mahd" th:value="${mahd}" placeholder="Mã hóa đơn">
             </div>
             <div class="filter-input">
+                <label>Tên nhân viên</label>
+                <input type="text" name="nv" th:value="${nv}" placeholder="Mã hóa đơn">
+            </div>
+            <div class="filter-input">
                 <label>số điện thoại</label>
                 <input type="text" name="sdt" th:value="${sdt}" placeholder="số điện thoại">
             </div>
@@ -97,7 +101,7 @@
             <!-- Nút Previous -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},nv=${nv},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -112,7 +116,7 @@
             <!-- Nút Next -->
             <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},nv=${nv},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>

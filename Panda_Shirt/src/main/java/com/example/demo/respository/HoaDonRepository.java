@@ -24,11 +24,12 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
 
     @Query("SELECT hd FROM HoaDon hd WHERE " +
             "(?1 IS NULL OR hd.mahoadon LIKE %?1%) AND " +
-            "(?2 IS NULL OR hd.khachHang.sdt LIKE %?2%) AND " +
-            "(?3 IS NULL OR hd.khachHang.tenkhachhang LIKE %?3%) AND " +
-            "(?4 IS NULL OR hd.trangthai = ?4)"+
+            "(?2 IS NULL OR hd.nhanVien.tennhanvien LIKE %?2%) AND " +
+            "(?3 IS NULL OR hd.khachHang.sdt LIKE %?3%) AND " +
+            "(?4 IS NULL OR hd.khachHang.tenkhachhang LIKE %?4%) AND " +
+            "(?5 IS NULL OR hd.trangthai = ?5)"+
             "ORDER BY hd.ngaytao DESC")
-    Page<HoaDon> findByMaAndTenAndTrangthaiHD(String mahd, String sdt, String tenkh, Integer trangThai, Pageable pageable);
+    Page<HoaDon> findByMaAndTenAndTrangthaiHD(String mahd,String nv, String sdt, String tenkh, Integer trangThai, Pageable pageable);
 
     @Query("SELECT HD FROM HoaDon HD WHERE HD.id =:id ")
     HoaDon finid(Integer id);
