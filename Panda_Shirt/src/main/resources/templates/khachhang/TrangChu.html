@@ -142,7 +142,7 @@
                 </a>
                 <h5 class="card-title" style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;" th:text="${sp.tensp}">Hihi</h5>
                 <!-- Hiển thị giá thấp nhất -->
-                <p class="card-text" style="color: red; padding-top: 10px; text-align: center;" th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')} + '₫'"></p>
+                <p class="card-text" style="color: red; padding-top: 10px; text-align: center;" th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT',0, 'COMMA')} + '₫'"></p>
             </div>
             <!-- Đóng và mở div.row sau mỗi 4 sản phẩm -->
             <th:block th:if="${i.count % 4 == 3}">

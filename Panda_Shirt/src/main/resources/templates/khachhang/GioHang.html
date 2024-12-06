@@ -93,7 +93,7 @@
                     <td th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</td>
                     <td th:text="${item.sanPhamChiTiet.mauSac.ten}">Màu sắc</td>
                     <td th:text="${item.sanPhamChiTiet.kichThuoc.ten}">Kích thước</td>
-                    <td th:text="${item.sanPhamChiTiet.dongia}">Giá</td>
+                    <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.dongia, 1, 'POINT',0, 'COMMA') + '₫'}">Giá</td>
                     <td>
                         <input type="number" class="form-control quantity-input" th:value="${item.soluong}" style="width: 60px;">
                     </td>
@@ -104,7 +104,7 @@
                 </tbody>
             </table>
             <div class="text-right">
-                <p>Tổng tiền: <span id="totalPrice">0</span> VND</p>
+                <p>Tổng tiền: <span id="totalPrice">0</span></p>
                 <button type="button" class="btn btn-primary" id="buyButton" style="display: none;">Thanh Toán</button>
             </div>
         </form>
