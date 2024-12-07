@@ -152,6 +152,7 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
@@ -160,6 +161,7 @@
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td>
                                         <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
                                     </td>
