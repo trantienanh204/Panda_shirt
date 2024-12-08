@@ -44,14 +44,14 @@ public class KhachHang {
     @Column(name = "DIA_CHI_CU_THE")
     private String diachi;
 
-    @Column(name = "TINH_THANH_PHO")
+    @Column(name = "ID_TINH_THANH_PHO")
     private String tinhtp;
 
 
-    @Column(name = "QUAN_HUYEN")
+    @Column(name = "ID_QUAN_HUYEN")
     private String quanhuyen;
 
-    @Column(name = "XA_PHUONG")
+    @Column(name = "ID_XA_PHUONG")
     private String xaphuong;
 
 
@@ -78,19 +78,21 @@ public class KhachHang {
         this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
     }
 
-    @ManyToOne
-    @JoinColumn(name = "ID_TINH_THANH_PHO")
-    private Tinh_TP tinh_tp;
-    @ManyToOne
-    @JoinColumn(name = "ID_QUAN_HUYEN")
-    private QuanHuyen quanHuyen;
-    @ManyToOne
-    @JoinColumn(name = "ID_XA_PHUONG")
-    private XaPhuong xaPhuong;
+//    @ManyToOne
+//    @JoinColumn(name = "ID_TINH_THANH_PHO")
+//    private Tinh_TP tinh_tp;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "ID_QUAN_HUYEN")
+//    private QuanHuyen quanHuyen;
+//    @ManyToOne
+//    @JoinColumn(name = "ID_XA_PHUONG")
+//    private XaPhuong xaPhuong;
 
 
     @Column(name = "DELETEAT")
     private boolean delete;
+
     @Column(name = "TINH_TRANG")
     private Boolean tinhtrang;
     @OneToOne

@@ -73,14 +73,15 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     @Query ("SELECT hd FROM HoaDon hd WHERE hd.nhanVien IS NULL")
     Page<HoaDon> hienthihd(Pageable pageable);
 
-    @Query("SELECT h FROM HoaDon h ORDER BY h.id DESC")
+    @Query("SELECT h FROM HoaDon h WHERE h.khachHang is null  " +
+            "ORDER BY h.id DESC")
     List<HoaDon> findHoaDonsDesc();
 
     @Query("SELECT CASE WHEN COUNT(hd) > 0 THEN TRUE ELSE FALSE END " +
-            "FROM HoaDon hd WHERE hd.voucher = :voucher " +
-            "AND hd.khachHang = :khachHang ")
+            "FROM HoaDon hd WHERE hd.voucher =:voucher " +
+            "AND hd.khachHang =:khachHang ")
     boolean checkmavoucher(@Param("voucher") Voucher voucher,
-                                        @Param("khachHang") KhachHang khachHang);
+                            @Param("khachHang") KhachHang khachHang);
 //@Query("SELECT CASE WHEN COUNT(hd) > 0 THEN TRUE ELSE FALSE END " +
 //            "FROM HoaDon hd WHERE hd.voucher = :voucher " +
 //            "AND hd.khachHang = :khachHang " +

@@ -84,4 +84,7 @@ public class NhanVien implements Serializable {
     @JoinColumn(name = "TEN_DANG_NHAP") // Tên cột khóa ngoại trong bảng KhachHang
 
     private TaiKhoan taiKhoan;
+
+
+
 }
