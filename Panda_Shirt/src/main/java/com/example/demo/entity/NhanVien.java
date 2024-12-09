@@ -1,3 +1,4 @@
+
 package com.example.demo.entity;
 
 
@@ -32,8 +33,7 @@ public class NhanVien implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank(message = "Vui lòng nhập họ tên nhân viên")
-
+    @NotBlank(message = "Vui lòng nhập tên nhân viên")
     @Column(name = "TEN_NHAN_VIEN")
     private String tennhanvien;
 
@@ -85,4 +85,8 @@ public class NhanVien implements Serializable {
     @JoinColumn(name = "TEN_DANG_NHAP") // Tên cột khóa ngoại trong bảng KhachHang
 
     private TaiKhoan taiKhoan;
+
+
+
 }
+

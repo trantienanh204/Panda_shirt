@@ -1,6 +1,12 @@
 package com.example.demo.Controller.admin.BanHang;
 
 import com.example.demo.entity.DiaChi;
+import com.example.demo.entity.QuanHuyen;
+import com.example.demo.entity.Tinh_TP;
+import com.example.demo.entity.XaPhuong;
+import com.example.demo.respository.QuanHuyenRepo;
+import com.example.demo.respository.TinhTPRepo;
+import com.example.demo.respository.XaPhuongRepo;
 import com.example.demo.service.DiaChiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,39 +25,29 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class DiaChiController {
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private TinhTPRepo provinceRepository;
 
-//    @Autowired
-//    DiaChiService diaChiService;
-//    public DiaChiController(RestTemplate restTemplate) {
-//        this.restTemplate = restTemplate;
-//    }
-//
-//    @GetMapping("/provinces")
-//    public String getAllProvinces() {
-//        return diaChiService.getHuyen(String.valueOf(1));
-//    }
-//
-//
-//    @GetMapping("/districts")
-//    public ResponseEntity<List<DiaChi>> getDistricts(@RequestParam("provinceId") int provinceId) {
-//        try {
-//            String url = "https://vietnamprovinces.info/api/provinces" + provinceId + "/districts";
-//
-//            ResponseEntity<DiaChi[]> response = restTemplate.getForEntity(url, DiaChi[].class);
-//
-//            List<DiaChi> districts = Arrays.asList(response.getBody());
-//
-//            return ResponseEntity.ok(districts);
-//        } catch (HttpClientErrorException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-//        }
-//    }
-//
-//
-//    @GetMapping("/getWards")
-//    public String getWards(@RequestParam("districtId") int districtId) {
-//        String url = "https://provinces.open-api.vn/api/d/" + districtId + "/wards";
-//        return restTemplate.getForObject(url, String.class);
-//    }
+    @Autowired
+    private QuanHuyenRepo districtRepository;
+
+    @Autowired
+    private XaPhuongRepo wardRepository;
+
+    @GetMapping("/provinces")
+    public List<Tinh_TP> getProvinces() {
+        return provinceRepository.findAll();
+    }
+
+    @GetMapping("/districts")
+    public List<QuanHuyen> getDistricts(@RequestParam int provinceId) {
+        return districtRepository.findByProvinceId(provinceId);
+    }
+
+    @GetMapping("/wards")
+    public List<XaPhuong> getWards(@RequestParam int districtId) {
+        return wardRepository.findByDistrictId(districtId);
+    }
 }
+
+

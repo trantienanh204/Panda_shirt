@@ -1,3 +1,4 @@
+
 package com.example.demo.Controller.admin.BanHang;
 
 import com.example.demo.DTO.HoaDonCTDTO;
@@ -5,7 +6,6 @@ import com.example.demo.DTO.NhanVienDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.*;
-
 import com.example.demo.service.TaiKhoanService;
 import com.example.demo.services.BanHangService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,8 +32,7 @@ import java.util.stream.Collectors;
 public class BanHangOffline {
     @Autowired
     private HttpServletRequest request;
-    @Autowired
-    TaiKhoanService taiKhoanService;
+
     @Autowired
     HoaDonRepository hoaDonRepository;
     @Autowired
@@ -48,6 +47,8 @@ public class BanHangOffline {
     NhanVienRespository nhanVienRespository;
     @Autowired
     KhachHangRepository khachHangRepository;
+    @Autowired
+    TaiKhoanService taiKhoanService;
 
     private Integer idhd;
     private Integer idmax;
@@ -71,27 +72,13 @@ public class BanHangOffline {
                 System.out.println("Lỗi : " + v.getMa());
             }
         }
-        spct.forEach(sp -> {
-            SanPham sanPham = sp.getSanPham();
-            if (sanPham != null && sanPham.getAnhsp() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(sanPham.getAnhsp());
-                sanPham.setBase64Image(base64Image);
-            }
-        });
-        List<HoaDon> hoaDonMax = hoaDonRepository.findHoaDonsDesc();
-        int id ;
-        if (hoaDonMax != null) {
-            id = hoaDonMax.get(0).getId();
-        } else {
-            id = 1;
-        }
-
         model.addAttribute("hoaDons", hoaDon);
         model.addAttribute("lsvoucher", validVouchers);
         model.addAttribute("lsspct", spct);
         model.addAttribute("listkh", listkh);
         return "admin/BanHang/BanHangOffline";
     }
+
     @GetMapping()
     public String hienthi(Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
@@ -112,18 +99,23 @@ public class BanHangOffline {
             }
         }
         List<HoaDon> hoaDonMax = hoaDonRepository.findHoaDonsDesc();
-        int id ;
-        if (hoaDonMax != null) {
-             id = hoaDonMax.get(0).getId();
+        int id;
+        if (hoaDonMax != null && !hoaDonMax.isEmpty()) {
+            id = hoaDonMax.get(0).getId();
         } else {
-             id = 1;
+            id = 1;
         }
         this.idmax = id;
         model.addAttribute("hoaDons", hoaDon);
         model.addAttribute("lsvoucher", validVouchers);
         model.addAttribute("lsspct", spct);
         model.addAttribute("listkh", listkh);
-        return "redirect:/panda/banhangoffline/muahang/" +id;
+        if (hoaDonMax == null || hoaDonMax.size() == 0) {
+            return "admin/BanHang/BanHangOffline";
+        } else {
+            return "redirect:/panda/banhangoffline/muahang/" + id;
+        }
+
     }
 
     @GetMapping("/timkiem")
@@ -145,7 +137,7 @@ public class BanHangOffline {
         try {
             results = banHangService.findByTenSanPham(keyword).stream()
                     .filter(sp -> sp.getSanPham() != null && sp.getMauSac() != null && sp.getKichThuoc() != null)
-                    .map(sp -> String.format("%s - %s - %s - %s - %s - %s - %s ",
+                    .map(sp -> String.format("%s - %s - %s - %s - %s - %s - %s",
                             sp.getId(),
                             sp.getSanPham().getTensp(),
                             sp.getMauSac().getTen(),
@@ -153,7 +145,6 @@ public class BanHangOffline {
                             sp.getDongia(),
                             sp.getSanPham().getChatLieu().getTenChatLieu(),
                             sp.getSoluongsanpham()
-
                     ))
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -274,8 +265,11 @@ public class BanHangOffline {
 
     @PostMapping("/taohdct")
     public ResponseEntity<String> createHoaDonCT(@RequestBody HoaDonCTDTO dto,
-                                                 Model model) {
+                                                 Model model,RedirectAttributes redirectAttributes) {
         HoaDonCT hoaDonCT = new HoaDonCT();
+        if(idhd == null){
+            return ResponseEntity.badRequest().body("Chưa chọn hóa đơn!");
+        }
         hoaDonCT.setHoaDon(new HoaDon(idhd));
         hoaDonCT.setSanPhamChiTiet(new SanPhamChiTiet(dto.getIdSanPhamCT()));
         hoaDonCT.setDongia(dto.getDonGia());
@@ -336,6 +330,9 @@ public class BanHangOffline {
         response.put("id", String.valueOf(kh.getId()));
         response.put("sdt", kh.getSdt());
         response.put("diachi", kh.getDiachi());
+        response.put("idTinhThanhPho", kh.getTinhtp() != null ? kh.getTinhtp() : "");
+        response.put("idQuanHuyen", kh.getQuanhuyen() != null ? kh.getQuanhuyen() : "");
+        response.put("idXaPhuong", kh.getXaphuong() != null ? kh.getXaphuong() : "");
         return ResponseEntity.ok(response);
     }
 
@@ -379,7 +376,9 @@ public class BanHangOffline {
         String formattedThanhtien = decimalFormat.format(thanhtien);
 
         response.put("thanhtien", formattedThanhtien);
+        response.put("thanhtien", formattedThanhtien);
         response.put("thanhTien", String.valueOf(thanhtien));
+        response.put("tt", String.valueOf(tt));
         response.put("mavocher", checkvoucher.isPresent() ? checkvoucher.get().getMa() : "");
         response.put("idvoucher", checkvoucher.isPresent() ? String.valueOf(checkvoucher.get().getId()) : "0");
         response.put("mucgiam", loai);
@@ -387,12 +386,11 @@ public class BanHangOffline {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteHoaDonCT(@RequestParam Integer idHoaDonCT) {
+    public ResponseEntity<?> deleteHoaDonCT(@RequestParam Integer idHoaDonCT,RedirectAttributes redirectAttributes,Model model) {
         System.out.println("ID hd : " + idHoaDonCT);
         try {
             HoaDonCT hoaDonCT = hoaDonCTRepository.findById(idHoaDonCT)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy Hóa đơn chi tiết"));
-
             hoaDonCTRepository.delete(hoaDonCT);
             return ResponseEntity.ok("Xóa thành công");
         } catch (Exception e) {
@@ -410,7 +408,7 @@ public class BanHangOffline {
             @RequestParam("tinh") String tinh,
             @RequestParam("huyen") String huyen,
             @RequestParam("xa") String xa,
-            @RequestParam("diachicuthe") String diachicuthe,
+            @RequestParam(value = "diachicuthe",defaultValue = "trống") String diachicuthe,
             @RequestParam("ghichu") String ghichu,
             @RequestParam("tenkh") String tenkh,
             @RequestParam("mucgiam") String giagiam,
@@ -420,16 +418,39 @@ public class BanHangOffline {
     ) {
         HoaDon hd = hoaDonRepository.finid(idhoadon);
         if (hd == null) {
+            System.out.println("hd trống ");
             redirectAttributes.addFlashAttribute("loi", "Hóa đơn");
-            return "redirect:/panda/banhangoffline/" + idhoadon;
+            return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
         }
         NhanVien nv = nhanVienRespository.findById(1).orElse(null);
         if (nv == null) {
+            System.out.println("nv trống ");
             redirectAttributes.addFlashAttribute("loi", "Nhân viên");
+            return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
         }
-        KhachHang kh = khachHangRepository.findBySdt(sdt);
-        if (!sdt.isBlank() && !tenkh.isBlank() && !tinh.isBlank() && !huyen.isBlank()) {
+
+        List<HoaDonCT> lshdct = hoaDonCTRepository.findhdct(idhoadon);
+        if (lshdct == null || lshdct.isEmpty()) {
+            redirectAttributes.addFlashAttribute("loi", "Chưa có sản phẩm nào");
+            model.addAttribute("loi", "Chưa có sản phẩm nào");
+            return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+        }
+
+        if (sdt.isBlank()) {
+            KhachHang kh1 = khachHangRepository.findById(1).orElse(null);
+            if (kh1 != null) {
+                System.out.println("Khách hàng mặc định");
+                hd.setKhachHang(kh1);
+            } else {
+                System.out.println("Không tìm thấy khách hàng mặc định!");
+            }
+        } else {
+            KhachHang kh = khachHangRepository.findBySdt(sdt);
             if (kh == null) {
+                if (!sdt.matches("^0[0-9]{9}$")) {
+                    redirectAttributes.addFlashAttribute("loi", "Số sai định dạng");
+                    return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+                }
                 kh = new KhachHang();
                 String ma = khachHangRepository.findMaxMakh();
                 int demhd;
@@ -447,41 +468,35 @@ public class BanHangOffline {
                 kh.setTinhtp(tinh);
                 kh.setQuanhuyen(huyen);
                 kh.setXaphuong(xa);
+                System.out.println("Thêm khách hàng mới");
                 khachHangRepository.save(kh);
             } else {
                 kh.setTenkhachhang(tenkh);
                 kh.setSdt(sdt);
                 kh.setDiachi(diachicuthe);
-                kh.setDiachi(diachicuthe);
                 kh.setTinhtp(tinh);
                 kh.setQuanhuyen(huyen);
                 kh.setXaphuong(xa);
+                System.out.println("Cập nhật khách hàng");
                 khachHangRepository.save(kh);
             }
             hd.setKhachHang(kh);
-        } else {
-            KhachHang kh1 = khachHangRepository.findById(2).orElse(null);
-            if (kh1 != null) {
-                hd.setKhachHang(kh1);
-            } else {
-                redirectAttributes.addFlashAttribute("loi", "Không tìm thấy khách hàng mặc định");
-                return "redirect:/panda/banhangoffline/" + idhoadon;
-            };
         }
-
         Voucher vc = null;
         if (idvoucher != null && idvoucher > 0) {
             vc = voucherRepository.findById(idvoucher).orElse(null);
             if (vc == null || Integer.parseInt(vc.getSoLuong()) <= 0) {
+                System.out.println("vc trống ");
                 redirectAttributes.addFlashAttribute("loi", "Voucher không hợp lệ hoặc đã hết số lượng");
-                return "redirect:/panda/banhangoffline/muahang/" + idhd;
+                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
             }
 
-            boolean checkmavoucher = hoaDonRepository.checkmavoucher(vc, kh);
+            KhachHang checkkh = khachHangRepository.findBySdt(sdt);
+            boolean checkmavoucher = hoaDonRepository.checkmavoucher(vc, checkkh);
             if (checkmavoucher) {
                 redirectAttributes.addFlashAttribute("loi", "Voucher đã được sử dụng cho khách hàng này");
                 System.out.println("đã dùng ");
-                return "redirect:/panda/banhangoffline/muahang/" + idhd;
+                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
             }
 
             if (vc != null && Integer.parseInt(vc.getSoLuong()) > 0) {
@@ -492,11 +507,6 @@ public class BanHangOffline {
             }
         }
 
-        List<HoaDonCT> lshdct = hoaDonCTRepository.findhdct(idhoadon);
-        if (lshdct == null || lshdct.isEmpty()) {
-            redirectAttributes.addFlashAttribute("loi", "Chưa có sản phẩm nào");
-            return "redirect:/panda/banhangoffline/muahang/" + idhd;
-        }
         for (HoaDonCT hdct : lshdct) {
             SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
             if (spct != null) {
@@ -530,5 +540,6 @@ public class BanHangOffline {
         nhanVien.setTennhanvien(dto.getTennhanvien());
         return nhanVien;
     }
-}
+    }
+
 

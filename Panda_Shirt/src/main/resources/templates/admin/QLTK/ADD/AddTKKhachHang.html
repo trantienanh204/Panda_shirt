@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
@@ -58,23 +59,24 @@
             <h3>Thông Tin Tài Khoản</h3>
             <form th:action="@{/panda/tkkhachhang/save}" method="post" enctype="multipart/form-data"
                   th:object="${khachHang}">
-                <div class="form-group">
-                    <label for="image"> Ảnh Đại Diện:</label>
-                    <input type="file" class="form-control-file" id="image" name="file" accept="image/*">
-                </div>
+
 
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label> Mã Khách Hàng:</label>
-                        <input type="text" class="form-control" th:field="*{makhachhang}"
-                               placeholder="Mã khách hàng">
-                        <div th:if="${#fields.hasErrors('makhachhang')}" class="text-danger">
-                            <span th:errors="*{makhachhang}"></span>
-                        </div>
-                        <div th:if="${errorma}" class="text-danger">
-                            <span th:text="${errorma}"></span>
-                        </div>
+                        <label for="image"> Ảnh Đại Diện:</label>
+                        <input type="file" class="form-control-file" id="image" name="file" accept="image/*">
                     </div>
+<!--                    <div class="form-group col-md-6">-->
+<!--                        <label> Mã Khách Hàng:</label>-->
+<!--                        <input type="text" class="form-control" th:field="*{makhachhang}"-->
+<!--                               placeholder="Mã khách hàng">-->
+<!--                        <div th:if="${#fields.hasErrors('makhachhang')}" class="text-danger">-->
+<!--                            <span th:errors="*{makhachhang}"></span>-->
+<!--                        </div>-->
+<!--                        <div th:if="${errorma}" class="text-danger">-->
+<!--                            <span th:text="${errorma}"></span>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
                     <div class="form-group col-md-6">
                         <label> Họ Tên:</label>
@@ -89,14 +91,12 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label> Email:</label>
-
-                        <input type="email" class="form-control" th:field="*{tentaikhoan}" placeholder="Email">
+                        <input type="text" class="form-control" th:field="*{tentaikhoan}" placeholder="Email">
                         <div th:if="${#fields.hasErrors('tentaikhoan')}" class="text-danger">
                             <span th:errors="*{tentaikhoan}"></span>
                         </div>
-                        <div th:if="${emailExist!= null}">
-                            <div style="color: red" th:each="error : ${emailExist}" th:text="${error}"></div>
-
+                        <div th:if="${errortentk}" class="text-danger">
+                            <span th:text="${errortentk}"></span>
                         </div>
                     </div>
 
@@ -144,3 +144,4 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

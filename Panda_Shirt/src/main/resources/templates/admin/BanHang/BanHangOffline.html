@@ -118,22 +118,17 @@
         <table class="table">
             <thead>
             <tr>
-                <th>ảnh sản phẩm</th>
                 <th>Tên sản phẩm</th>
                 <th>Màu sắc</th>
                 <th>Kích thước</th>
                 <th>Đơn giá</th>
                 <th>Số lượng</th>
-                <th>Thành tiền</th>
+                <th>Tổng tiền</th>
                 <th>Thao tác</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="hdct : ${hoaDonCTList}">
-                <td ><img th:src="'data:image/png;base64,' + ${hdct.sanPhamChiTiet.sanPham.base64Image}"
-                            class="img-fluid main-image"
-                            alt="Áo Thun Chi Tiết"
-                            style="max-width: 120px; height: auto;"></td>
                 <td th:text="${hdct.sanPhamChiTiet.sanPham.tensp}"></td>
                 <td th:text="${hdct.sanPhamChiTiet.mauSac.ten}"></td>
                 <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
@@ -184,24 +179,25 @@
                         method: 'POST',
                         data: {idHoaDonCT: idHoaDonCT},
                         success: function (response) {
-                            // Xóa dòng tương ứng với idHoaDonCT trong bảng
-                            $(`button[data-id="${idHoaDonCT}"]`).closest('tr').remove();
-                            // $('table').remove();
-                            // $(this).closest('table').remove();
-                            location.reload();
+                            const $row = $(`button[data-id="${idHoaDonCT}"]`).closest('tr').remove();
+                            $row.remove();
+                            if ($('#productTable  tbody tr').length === 0) {
+                                // Xóa cả bảng
+                                $('#productTable').remove();
+                            }
                             Swal.fire({
                                 title: 'Thông báo!',
                                 text: 'Xóa thành công',
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             });
+                            // location.reload()
                         },
                         error: function (error) {
-                            // Hiển thị thông báo lỗi nếu có
                             console.log("Lỗi khi xóa:", error);
                             Swal.fire({
                                 title: 'Cảnh báo!',
-                                text: 'Có lỗi xảy ra khi xóa.',
+                                text: 'Xóa thất bại',
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             });
@@ -215,7 +211,6 @@
         });
 
     </script>
-
 
     <div style="text-align: center;margin-bottom: 15px"><h4>Thông tin thanh toán</h4></div>
     <form th:action="@{/panda/banhangoffline/thanhtoan}" th:method="post">
@@ -240,7 +235,7 @@
                                th:name="sdt">
                     </div>
                     <div class="mb-3">
-                        <div class="row">
+                        <div class="row" >
                             <div class="col-md-4">
                                 <label for="province" class="form-label">Tỉnh/Thành phố:</label>
                             </div>
@@ -251,7 +246,7 @@
                                 <label for="ward" class="form-label">Xã/Phường:</label>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="customerSelect">
                             <div class="col-md-4">
                                 <select class="form-select" id="province" name="province">
                                     <option value="">Chọn</option>
@@ -276,9 +271,9 @@
                     <div class="mb-3">
                         <textarea class="form-control" placeholder="Ghi chú" rows="3" th:name="ghichu"></textarea>
                     </div>
-                    <input type="text" id="selectedProvince" name="tinh" hidden>
-                    <input type="text" id="selectedDistrict" name="huyen" hidden>
-                    <input type="text" id="selectedWard" name="xa" hidden>
+                    <input type="hidden" id="selectedProvince" name="tinh" >
+                    <input type="hidden" id="selectedDistrict" name="huyen" >
+                    <input type="hidden" id="selectedWard" name="xa" >
                 </div>
             </div>
             <div class="col-md-6">
@@ -309,22 +304,18 @@
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <label>Tiền hàng</label>
-                    <input type="hidden" th:name="tongtien" th:value="${tongtien}">
-                    <span id="tongTien" th:text="${tongTien !=  '.00' ? tongTien : '0'}"></span>
+                    <input type="hidden" id="tongtien-input" th:name="tongtien" th:value="${tongtien}">
+                    <span id="tongTien" th:text="${tongTien !=  '.00' ? tongTien : '0'}" ></span>
                 </div>
-                <!--                <div class="d-flex justify-content-between mb-3">-->
-                <!--                    <label>Phí vận chuyển</label>-->
-                <!--                    <span id="ship">0</span>-->
-                <!--                    <input type="hidden" id="phiship" th:name="phiship" th:value="0">-->
-                <!--                </div>-->
                 <div class="d-flex justify-content-between mb-3">
                     <label>Giảm giá</label>
-                    <span id="mucgiam" th:text="${mucgiam != null ? mucgiam : '0' }"></span>
+                    <span id="mucgiam" th:text="${mucgiam != null ? mucgiam : '0' }" ></span>
                     <input id="mucgiam-input" type="hidden" th:name="mucgiam" th:value="${mucgiam != null ? mucgiam : '0' }">
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
                     <input type="hidden" id="thanhTien" th:name="thanhtien" th:value="${thanhTien}">
+<!--                    <input type="text" id="thanhtien-input"  th:value="${thanhtien}">-->
                     <span class="total-price fw-4" id="thanhtien" th:text="${'Tổng tiền : '
                 + (thanhtien != '.00' ? thanhtien : '0') + ' VNĐ'}"
                           style="font-size: 25px;text-align: center;font-weight: bold;"></span>
@@ -391,9 +382,7 @@
                                         <h4 th:text="${i.index + 1}" style="font-size: 16px; font-weight: bold;"></h4>
                                     </div>
                                     <div class="product-image" style="flex: 1; text-align: center;">
-                                        <img th:src="'data:image/png;base64,' + ${spct.sanPham.base64Image}"
-                                             class="img-fluid main-image"
-                                             alt="Áo Thun Chi Tiết"
+                                        <img th:src="@{/Image/panda_logo.png}" alt="Sản phẩm"
                                              style="max-width: 120px; height: auto;">
                                     </div>
                                     <div class="product-details" style="flex: 2; text-align: left; font-size: 14px;">
@@ -554,15 +543,19 @@
         </div>
     </div>
 </div>
-<!--<div class="custom-alert success" id="statusMessage" th:if="${loi != null}">-->
-<!--    <i class="fa-solid fa-triangle-exclamation"></i></i> <span th:text="${loi}"></span>-->
-<!--</div>-->
+<div class="custom-alert success" id="statusMessage" th:if="${loi != null}">
+    <i class="fa-solid fa-triangle-exclamation"></i></i> <span th:text="${loi}"></span>
+
+</div>
+<div class="custom-alert success" id="statusMessage" th:if="${message != null}">
+    <i class="fa-solid fa-triangle-exclamation"></i></i> <span th:text="${message}"></span>
+</div>
 
 <div th:if="${loi}">
     <script th:inline="javascript">
         Swal.fire({
             title: 'Thông báo',
-            text: /*[[${loi}]]*/,
+            text:/*[[${loi}]]*/,
             icon: 'error',
             confirmButtonText: 'OK'
         });
