@@ -110,7 +110,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
 
-        // Ẩn nút Lưu thay đổi khi tải trang
         $('#saveChanges').hide();
 
         if (id) {
@@ -122,11 +121,6 @@
                 success: function(data) {
                     console.log("Dữ liệu nhận được từ server:", data);
 
-                    // Kiểm tra chi tiết từng phần dữ liệu
-                    data.sanPhamChiTietList.forEach(function(chiTiet, index) {
-                        console.log("Chi tiết sản phẩm " + (index + 1) + ": ", chiTiet);
-                    });
-
                     if (data.sanPhamChiTietList && data.sanPhamChiTietList.length > 0) {
                         let productDetailHtml = '';
                         data.sanPhamChiTietList.forEach(function(chiTiet) {
@@ -134,11 +128,6 @@
                             let kichThuocId = chiTiet.kichThuoc && typeof chiTiet.kichThuoc === 'object' ? chiTiet.kichThuoc.id : '';
                             let mauSac = chiTiet.mauSac && typeof chiTiet.mauSac === 'object' ? chiTiet.mauSac.ten : 'Không có màu sắc';
                             let mauSacId = chiTiet.mauSac && typeof chiTiet.mauSac === 'object' ? chiTiet.mauSac.id : '';
-
-                            // Kiểm tra và in ra giá trị của kichThuoc và mauSac
-                            console.log("ID Chi tiết sản phẩm:", chiTiet.id);
-                            console.log("Kích thước:", kichThuoc, "- ID:", kichThuocId);
-                            console.log("Màu sắc:", mauSac, "- ID:", mauSacId);
 
                             productDetailHtml += `
                             <tr data-id="${chiTiet.id}">
@@ -190,13 +179,12 @@
                 $('.soluong-edit, .dongia-edit').prop('disabled', true);
                 selectedRows.clear();
             }
-            // Cập nhật trạng thái nút Lưu thay đổi
             updateSaveButtonVisibility();
         });
 
         $(document).on('change', '.select-row', function() {
             const row = $(this).closest('tr');
-            const rowId = row.data('id'); // Lấy ID từ thuộc tính data-id
+            const rowId = row.data('id');
             if (this.checked) {
                 selectedRows.add(rowId);
                 row.find('.soluong-edit, .dongia-edit').prop('disabled', false);
@@ -204,12 +192,10 @@
                 selectedRows.delete(rowId);
                 row.find('.soluong-edit, .dongia-edit').prop('disabled', true);
             }
-            // Cập nhật trạng thái nút Lưu thay đổi
             updateSaveButtonVisibility();
         });
 
         function updateSaveButtonVisibility() {
-            // Hiển thị nút Lưu thay đổi nếu có ít nhất một hàng được chọn
             if (selectedRows.size > 0) {
                 $('#saveChanges').show();
             } else {
@@ -219,23 +205,26 @@
 
         $('#saveChanges').on('click', function() {
             const updates = [];
+            let totalQuantity = 0;
+
             $('#sanPhamDetails tr').each(function() {
                 const row = $(this);
                 const rowId = row.data('id');
                 if (selectedRows.has(rowId)) {
                     const soluong = row.find('.soluong-edit').val();
                     const dongia = row.find('.dongia-edit').val();
-                    // Lấy giá trị ID của màu sắc và kích thước
-                    const mauSacId = row.find('.mau-sac-id').val(); // Giá trị ID màu sắc
-                    const kichThuocId = row.find('.kich-thuoc-id').val(); // Giá trị ID kích thước
+                    const mauSacId = row.find('.mau-sac-id').val();
+                    const kichThuocId = row.find('.kich-thuoc-id').val();
 
                     updates.push({
                         idSanPham: rowId,
                         soLuong: Number(soluong),
                         gia: Number(dongia),
                         mauSac: mauSacId,
-                        kichThuoc: kichThuocId
+                        kichThuoc: kichThuocId,
                     });
+
+                    totalQuantity += Number(soluong);
                 }
             });
 
@@ -248,8 +237,22 @@
                     contentType: 'application/json',
                     data: JSON.stringify(updates),
                     success: function(response) {
-                        alert('Lưu thay đổi thành công!');
-                        location.reload();
+                        let trangThai = totalQuantity === 0 ? 0 : 1; // Xác định trạng thái dựa trên tổng số lượng
+
+                        $.ajax({
+                            url: '/panda/sanpham/updateStatus',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ trangthai: trangThai, sanPhamId: id }), // Gửi cả trạng thái và ID sản phẩm
+                            success: function() {
+                                alert(`Trạng thái sản phẩm đã được cập nhật thành ${trangThai === 0 ? 'hết hàng' : 'còn hàng'}!`);
+                                location.reload();
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error updating product status:', xhr.responseText);
+                                alert('Có lỗi xảy ra khi cập nhật trạng thái sản phẩm! ' + xhr.responseText);
+                            }
+                        });
                     },
                     error: function(xhr, status, error) {
                         console.error('Error updating product details:', error);
@@ -261,6 +264,7 @@
             }
         });
     });
+
 </script>
 
 

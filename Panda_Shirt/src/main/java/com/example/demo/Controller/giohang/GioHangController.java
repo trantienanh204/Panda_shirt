@@ -433,6 +433,17 @@ public class GioHangController {
     }
 
 
+        @GetMapping("/checkQuantity")
+        public ResponseEntity<Map<String, Object>> checkQuantity(@RequestParam Integer sizeId, @RequestParam Integer colorId, @RequestParam Integer productId) {
+            try {
+                Map<String, Object> result = gioHangService.checkQuantity(sizeId, colorId, productId);
+                return ResponseEntity.ok(result);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+
 
 }
 

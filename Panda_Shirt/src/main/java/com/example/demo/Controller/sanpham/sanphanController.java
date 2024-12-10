@@ -471,9 +471,24 @@ public class sanphanController {
 
 
 
-
-
-
+        @PostMapping("/sanpham/updateStatus")
+        public ResponseEntity<Void> updateProductStatus(@RequestBody Map<String, Object> statusUpdate) {
+            try {
+                // Kiểm tra xem các khóa có tồn tại không trước khi chuyển đổi giá trị
+                if (statusUpdate.containsKey("trangthai") && statusUpdate.containsKey("sanPhamId")) {
+                    int trangThai = Integer.parseInt(statusUpdate.get("trangthai").toString());
+                    Integer sanPhamId = Integer.valueOf(statusUpdate.get("sanPhamId").toString());
+                    sanPhamService.updateProductStatus(trangThai, sanPhamId);
+                    return ResponseEntity.ok().build();
+                } else {
+                    return ResponseEntity.badRequest().build();
+                }
+            } catch (Exception e) {
+                // Log lỗi chi tiết
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
 
 
 
