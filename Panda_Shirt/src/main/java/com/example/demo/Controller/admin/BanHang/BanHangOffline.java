@@ -5,6 +5,7 @@ import com.example.demo.DTO.NhanVienDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.*;
+
 import com.example.demo.service.TaiKhoanService;
 import com.example.demo.services.BanHangService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -144,7 +145,7 @@ public class BanHangOffline {
         try {
             results = banHangService.findByTenSanPham(keyword).stream()
                     .filter(sp -> sp.getSanPham() != null && sp.getMauSac() != null && sp.getKichThuoc() != null)
-                    .map(sp -> String.format("%s - %s - %s - %s - %s - %s - %s",
+                    .map(sp -> String.format("%s - %s - %s - %s - %s - %s - %s ",
                             sp.getId(),
                             sp.getSanPham().getTensp(),
                             sp.getMauSac().getTen(),
@@ -152,6 +153,7 @@ public class BanHangOffline {
                             sp.getDongia(),
                             sp.getSanPham().getChatLieu().getTenChatLieu(),
                             sp.getSoluongsanpham()
+
                     ))
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -520,6 +522,7 @@ public class BanHangOffline {
         hoaDonRepository.save(hd);
         return "redirect:/panda/banhangoffline";
     }
+
     private NhanVien mapToNhanvien(NhanVienDTO dto) {
         NhanVien nhanVien = new NhanVien();
         nhanVien.setId(dto.getId());

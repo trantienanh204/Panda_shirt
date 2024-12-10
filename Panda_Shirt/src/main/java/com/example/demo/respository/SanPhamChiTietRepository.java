@@ -34,6 +34,8 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 //            "WHERE p.sanPham.id = :productId")
 //    List<Map<String, Object>> getSizesAndColorsWithPriceAndQuantity(@Param("productId") Integer productId);
 
+    @Query("SELECT MAX(h.maspct) FROM SanPhamChiTiet h")
+    String findMaxspct();
 
         // Giả sử bạn có bảng SanPhamChiTiet với các cột productId, sizeId, colorId và price
         @Query("SELECT spc.dongia FROM SanPhamChiTiet spc WHERE spc.sanPham.id = :productId AND spc.kichThuoc.id = :sizeId AND spc.mauSac.id = :colorId")

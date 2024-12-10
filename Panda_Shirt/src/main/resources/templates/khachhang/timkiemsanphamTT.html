@@ -12,7 +12,6 @@
     <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.min.css" rel="stylesheet">
     <style>
-        /* Font and Background for Navbar */
         body {
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -25,7 +24,7 @@
             color: rgb(255, 255, 255) !important;
         }
         .nav-link:hover {
-            color: #FFC048 !important; /* hover màu vàng nhạt */
+            color: #FFC048 !important;
         }
         .navbar-toggler {
             border-color: rgb(119, 30, 30);
@@ -84,7 +83,7 @@
             margin: 5px 0;
         }
         .card-img-top {
-            object-fit: cover; /* Đảm bảo hình ảnh không bị méo mó */
+            object-fit: cover;
         }
         .card-title, .card-text {
             text-align: center;
@@ -99,7 +98,7 @@
 </head>
 <body>
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg ">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <img th:src="@{/Image/panda_logo.png}" width="70px" height="70px">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,13 +116,8 @@
                     <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
-            <!-- Form Search -->
             <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
                 <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
-                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">
-                    <option value="">Tất cả danh mục</option>
-                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-                </select>
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
@@ -143,20 +137,67 @@
         </div>
     </div>
 </nav>
+<!-- Form Search for Categories -->
 
 <!-- Main Section -->
 <div class="container my-5">
-    <h1 class="mb-4">Kết Quả Tìm Kiếm</h1>
+<!--    <h2 class="mt-5">Tìm kiếm theo danh mục</h2>-->
+    <form class="d-flex" action="/panda/search" method="get">
+<!--        <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">-->
+<!--        <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
+<!--            <option value="">Tất cả danh mục</option>-->
+<!--            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.tendanhmuc}"></option>-->
+<!--        </select>-->
+<!--        <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>-->
+
+    <div class="container my-4">
+        <h3><i class="fas fa-filter"></i> BỘ LỌC</h3>
+        <div class="row">
+            <!-- Dropdown Thương hiệu -->
+            <div class="col-md-3">
+                <select class="form-select" aria-label="Thương hiệu">
+                    <option selected>Thương hiệu</option>
+                    <option value="brand1">Brand 1</option>
+                    <option value="brand2">Brand 2</option>
+                    <option value="brand3">Brand 3</option>
+                </select>
+            </div>
+            <!-- Dropdown Lọc giá -->
+            <div class="col-md-3">
+                <select class="form-select" aria-label="Lọc giá">
+                    <option selected>Lọc giá</option>
+                    <option value="low">Dưới 100.000đ</option>
+                    <option value="medium">100.000đ - 500.000đ</option>
+                    <option value="high">Trên 500.000đ</option>
+                </select>
+            </div>
+            <!-- Dropdown danh mục -->
+            <div class="col-md-3">
+                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">
+                    <option value="">Tất cả danh mục</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.tendanhmuc}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+    </form>
+
     <div class="row">
         <th:block th:if="${searchResults != null}">
             <th:block th:each="sp : ${searchResults}">
                 <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
                     <a style="text-decoration: none;" th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}">
                         <div class="card">
-                            <div th:if="${sp.anhsp != null}">
-                                <img th:src="'data:image/png;base64,' + ${sp.anhsp}" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                            <div th:if="${sp.base64Image != null}">
+                                <img th:src="'data:image/png;base64,' + ${sp.base64Image}" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
                             </div>
-                            <div th:if="${sp.anhsp == null}">
+                            <div th:if="${sp.base64Image == null}">
                                 <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
                             </div>
                         </div>
@@ -170,10 +211,11 @@
             <p>Không tìm thấy sản phẩm nào phù hợp với tìm kiếm của bạn.</p>
         </th:block>
     </div>
-</div>
 
+
+</div>
 <!-- Footer -->
-<footer class="bg-dark text-white text-center py-4">
+<footer class="bg-dark text-white text-center py-4" style="margin-top: 350px">
     <p>&copy; 2024 Bán Áo. All rights reserved.</p>
     <ul class="list-inline">
         <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a></li>

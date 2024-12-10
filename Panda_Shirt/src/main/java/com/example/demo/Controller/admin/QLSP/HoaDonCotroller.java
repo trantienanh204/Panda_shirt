@@ -18,7 +18,9 @@ import org.thymeleaf.context.Context;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/panda/hoadon")
@@ -49,7 +51,7 @@ public class HoaDonCotroller {
     @GetMapping("")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
-                          @RequestParam(value = "tennv", required = false) String tennv,
+                          @RequestParam(value = "nv", required = false) String nv,
                           @RequestParam(value = "sdt", required = false) String sdt,
                           @RequestParam(value = "tenkh", required = false) String tenkh,
                           @RequestParam(value = "trangThai", required = false) Integer trangThai,
@@ -60,12 +62,12 @@ public class HoaDonCotroller {
         if (page < 0) {
             page = 0;
         }
-        Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, tennv ,sdt, tenkh, trangThai);
+        Page<HoaDon> listHD = hoaDonService.hienThiHD(page,mahd, nv, sdt , tenkh, trangThai);
         model.addAttribute("totalPage", listHD.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("lshd",listHD.getContent());
         model.addAttribute("mahd", mahd);
-        model.addAttribute("tennv", tennv);
+        model.addAttribute("nv", nv);
         model.addAttribute("sdt", sdt);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
@@ -148,6 +150,26 @@ public class HoaDonCotroller {
         System.out.println(lshdct.get(0).getSanPhamChiTiet().getSanPham().getTensp());
         return "pdf";
     }
+
+
+
+//        @ResponseBody
+//        @GetMapping("testA")
+//        public Map<String, Object> testA(
+//                @RequestParam(value = "page", defaultValue = "0") int page,
+//                @RequestParam(value = "size", defaultValue = "10") int size,
+//                @RequestParam(value = "mahd", required = false) String mahd,
+//                @RequestParam(value = "sdt", required = false) String sdt,
+//                @RequestParam(value = "tenkh", required = false) String tenkh,
+//                @RequestParam(value = "trangThai", required = false) Integer trangThai) {
+//            Page<HoaDon> listHD = hoaDonService.hienThiHD(page, mahd, sdt, tenkh, trangThai);
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("totalPages", listHD.getTotalPages());
+//            response.put("content", listHD.getContent());
+//
+//            return response;
+//        }
+
 
 
 }

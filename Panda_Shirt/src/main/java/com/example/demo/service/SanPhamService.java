@@ -428,6 +428,24 @@ public class SanPhamService {
                 } else {
                     // Thêm sản phẩm chi tiết mới
                     SanPhamChiTiet newChiTiet = new SanPhamChiTiet();
+                    String SPCT = sanPhamChiTietRepository.findMaxspct();
+                    int demhdCT;
+                    if (SPCT == null) {
+                        demhdCT = 1; // Nếu chưa có hóa đơn nào thì bắt đầu từ 1
+                    } else {
+                        // Thêm kiểm tra định dạng mã sản phẩm chi tiết
+                        if (SPCT.length() > 2 && SPCT.startsWith("SPCT")) {
+                            try {
+                                demhdCT = Integer.parseInt(SPCT.substring(4)) + 1; // Lấy phần số và tăng lên 1
+                            } catch (NumberFormatException e) {
+                                throw new RuntimeException("Lỗi định dạng số từ mã sản phẩm chi tiết: " + SPCT, e);
+                            }
+                        } else {
+                            throw new RuntimeException("Mã sản phẩm chi tiết không đúng định dạng: " + SPCT);
+                        }
+                    }
+                    String maspct = String.format("SPCT%03d", demhdCT);
+                    newChiTiet.setMaspct(maspct);
                     newChiTiet.setMauSac(mauSac);
                     newChiTiet.setKichThuoc(kichThuoc);
                     newChiTiet.setDongia(chiTietDTO.getGia());
@@ -452,6 +470,7 @@ public class SanPhamService {
 
         sanPhamRepository.save(sanPham);
     }
+
 
     public Optional<SanPham> findSanPhamById(Integer id) {
         return sanPhamRepository.findById(id);
@@ -550,10 +569,6 @@ public class SanPhamService {
 //            }
 //
 //        }
-
-
-
-
 
 
         public SanPhamService(SanPhamRepository sanPhamRepository) {

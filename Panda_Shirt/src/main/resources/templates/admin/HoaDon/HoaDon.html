@@ -6,7 +6,7 @@
 </head>
 <body th:fragment="hoadon">
 <h2>Hóa đơn</h2>
-<form th:action="@{/panda/nhanvien/xemhoadon/hienthi}" method="get">
+<form th:action="@{/panda/hoadon}" method="get">
     <div class="filter-container">
         <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
         <hr>
@@ -17,7 +17,11 @@
             </div>
             <div class="filter-input">
                 <label>Tên nhân viên</label>
-                <input type="text" name="tennv" th:value="${tennv}" placeholder="Tên nhân viên ">
+                <input type="text" name="nv" th:value="${nv}" placeholder="Tên nhân viên">
+            </div>
+            <div class="filter-input">
+                <label>số điện thoại</label>
+                <input type="text" name="sdt" th:value="${sdt}" placeholder="số điện thoại">
             </div>
             <div class="filter-input">
                 <label>Tên khách hàng</label>
@@ -36,7 +40,7 @@
             <button type="submit" class="btn btn-dark">
                 <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
             </button>
-            <a class="btn btn-dark" th:href="@{/panda/nhanvien/xemhoadon/hienthi}">
+            <a class="btn btn-dark" th:href="@{/panda/hoadon}">
                 <i class="fa-solid fa-rotate-right" style="color: #ffffff;padding-top: 10px"></i> Làm mới
             </a>
         </div>
@@ -52,8 +56,10 @@
             <th>Mã hóa đơn</th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
+            <th>Số điện thoại</th>
             <th>Tổng tiền</th>
             <th>Ngày mua</th>
+            <th>hình thức mua hàng</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
@@ -67,8 +73,10 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-            <td th:text="${hd.tongtien}"></td>
+            <td th:text="${hd.khachHang.sdt}"></td>
+            <td th:text="${#numbers.formatDecimal(hd.tongtien, 1, 'POINT',0, 'COMMA')}"></td>
             <td th:text="${hd.ngaymua}"></td>
+            <td th:text="${hd.hinhthucmuahang != null ?'Trực tuyến':'Trực tiếp'}"></td>
             <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
@@ -93,7 +101,7 @@
             <!-- Nút Previous -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},nv=${nv},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -108,7 +116,7 @@
             <!-- Nút Next -->
             <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},nv=${nv},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
@@ -123,7 +131,7 @@
         <div class="modal-content">
             <div th:fragment="hdct">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' "></h5>
+                    <h5 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn ' "></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -135,7 +143,7 @@
                             <th>Sản phẩm</th>
                             <th>Màu sắc</th>
                             <th>Kích thước</th>
-                            <th>Giá</th>
+                            <th>Đơn giá</th>
                             <th>Số lượng</th>
                             <th>Tổng tiền</th>
                         </tr>

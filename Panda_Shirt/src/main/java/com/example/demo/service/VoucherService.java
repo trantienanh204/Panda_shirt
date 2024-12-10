@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.HoaDonCT;
 import com.example.demo.entity.Voucher;
 import com.example.demo.respository.VoucherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,16 @@ public class VoucherService {
     VoucherRepository voucherRepository;
 
     private final int size = 5;
-    public Page<Voucher> hienThiVC(int page,String ma, String ten,LocalDate startDate, LocalDate endDate, Integer trangThai) {
+
+    public Page<Voucher> hienThiVC(int page, String ma, String ten, LocalDate startDate, LocalDate endDate, Integer trangThai) {
         if (page < 0) {
             throw new IllegalArgumentException("Chỉ số trang không được nhỏ hơn số không");
         }
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
-        return voucherRepository.findByMaAndTenAndTrangthaiVC(ma, ten,startDate,endDate,trangThai, pageable);
+        return voucherRepository.findByMaAndTenAndTrangthaiVC(ma, ten, startDate, endDate, trangThai, pageable);
     }
+
     // Phương thức để cập nhật trạng thái voucher
     public void updateVoucherStatus() {
         LocalDate currentDate = LocalDate.now();
@@ -51,6 +54,11 @@ public class VoucherService {
                 voucherRepository.save(voucher);
             }
         }
+    }
+
+    public List<Voucher> getActivePublicVouchers() {
+        // `trangThai = 1` là trạng thái hoạt động và `loai = false` là công khai
+        return voucherRepository.findByTrangThaiAndLoaikhachhang(1, true);
     }
 
 }

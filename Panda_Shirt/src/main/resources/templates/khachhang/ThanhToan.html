@@ -68,9 +68,9 @@
     <div class="container product-section border p-3 mb-4">
         <h5>Sản phẩm</h5>
         <div th:each="item : ${cartItems}" class="d-flex justify-content-between align-items-center border-bottom py-3">
-            <div class="d-flex align-items-center">
-                <img th:src="@{${item.sanPhamChiTiet.anhSanPhamChiTiet}}" alt="Sản phẩm" class="product-img me-3">
-                <div>
+            <div class="d-flex align-items-center ">
+                <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image" class="img-fluid" style="max-width: 80px;">
+                <div  style="margin-left: 40px">
                     <p class="product-name mb-1" th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</p>
                     <p class="product-details text-muted"
                        th:text="'Loại: ' + ${item.sanPhamChiTiet.mauSac.ten} + ', Kích thước: ' + ${item.sanPhamChiTiet.kichThuoc.ten}">
@@ -79,7 +79,13 @@
                 </div>
             </div>
             <div class="d-flex align-items-center">
-                <p class="product-price mb-0 me-4" th:text="${item.sanPhamChiTiet.dongia * item.soluong} + ' VND'">Tổng tiền</p>
+                <p class=" mb-0 me-4" th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.dongia, 1, 'POINT',0, 'COMMA') + '₫'}"></p>
+            </div>
+            <div class="d-flex align-items-center">
+                <p class=" mb-0 me-4" th:text="${item.soluong}"></p>
+            </div>
+            <div class="d-flex align-items-center">
+                <p class="product-price mb-0 me-4" th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.dongia * item.soluong, 1, 'POINT',0, 'COMMA') + '₫'}">Tổng tiền</p>
             </div>
         </div>
     </div>
@@ -193,7 +199,7 @@
 
             productPriceElements.forEach(function(element) {
                 const priceText = element.textContent.replace(/[^\d]/g, '');
-                const price = parseFloat(priceText) / 10; // Sửa đổi để giá trị đúng
+                const price = parseFloat(priceText) ; // Sửa đổi để giá trị đúng
                 totalProductAmount += price;
 
                 // Logging each price for debugging

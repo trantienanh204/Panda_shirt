@@ -405,12 +405,14 @@ public class GioHangController {
             List<Map<String, Object>> processedCartItems = new ArrayList<>();
             for (GioHang item : cartItems) {
                 Map<String, Object> itemMap = new HashMap<>();
+                double tong = item.getSanPhamChiTiet().getDongia() * item.getSoluong();
                 itemMap.put("id", item.getId());
                 itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
                 itemMap.put("soluong", item.getSoluong());
+                itemMap.put("tongtien", tong);
 
-                if (item.getSanPhamChiTiet().getAnhSanPhamChiTiet() != null) {
-                    String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getAnhSanPhamChiTiet());
+                if (item.getSanPhamChiTiet().getSanPham().getAnhsp() != null) {
+                    String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getSanPham().getAnhsp());
                     itemMap.put("anhspBase64", base64Image);
                 } else {
                     itemMap.put("anhspBase64", ""); // Giá trị rỗng nếu không có ảnh

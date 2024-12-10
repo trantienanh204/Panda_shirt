@@ -164,6 +164,7 @@ public class VnpayController {
         hoaDon.setThanhtien(BigDecimal.valueOf(totalAmount));
         hoaDon.setNgaytao(LocalDate.now());
         hoaDon.setNgaymua(LocalDate.now());
+        hoaDon.setHinhthucmuahang(true);
         hoaDon.setTrangthai(1);
         hoaDon.setDiaChi(khachHang.getDiachi());
         hoaDon.setGhiChu(note);
