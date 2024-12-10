@@ -30,6 +30,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             "(?4 IS NULL OR hd.khachHang.tenkhachhang LIKE %?4%) AND " +
             "(?5 IS NULL OR hd.trangthai = ?5)"+
             "ORDER BY hd.ngaytao DESC")
+
     Page<HoaDon> findByMaAndTenAndTrangthaiHD(String mahd,String nv, String sdt, String tenkh, Integer trangThai, Pageable pageable);
 
     @Query("SELECT HD FROM HoaDon HD WHERE HD.id =:id ")

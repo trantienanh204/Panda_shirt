@@ -143,7 +143,7 @@
                             <td th:text="${ct.mauSac.ten}"></td>
                             <td th:text="${ct.kichThuoc.ten}"></td>
                             <td th:text="${ct.soluongsanpham}"></td>
-                            <td th:text="${ct.dongia}"></td>
+                            <td th:text="${#numbers.formatDecimal(ct.dongia, 1, 'POINT',0, 'COMMA')}"></td>
                             <td th:text="${ct.ngaytao != null? #temporals.format(ct.ngaytao, 'dd/MM/yyyy'): 'chưa có'}"></td>
                             <td th:if="${ct.trangthai} == true">
                             <span class="status-label status-green"

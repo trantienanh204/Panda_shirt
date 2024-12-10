@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+
 </head>
 <body th:fragment="duyetdon">
 <h2>Duyệt Đơn</h2>
@@ -98,7 +100,7 @@
 <!--            <td th:text="${dd.nhanVien.tennhanvien}"></td>-->
             <td th:text="${dd.khachHang.tenkhachhang}"></td>
             <td th:text="${dd.ngaytao != null ? #temporals.format(dd.hoaDon.ngaymua, 'dd/MM/yyyy') : ''}"></td>
-            <td th:text="${dd.tongtien}"></td>
+            <td th:text="${#numbers.formatDecimal(dd.tongtien, 1, 'POINT',0, 'COMMA')}"></td>
             <td th:if="${dd.trangThai == 'Chờ duyệt'}">
                 <span class="status-label status-orange"
                       th:text="${dd.trangThai}">
@@ -247,6 +249,21 @@
         </ul>
     </nav>
 </div>
+<div class="custom-alert danger" id="statusMessage" th:text="${error}"
+     th:if="${error != null}"><i class="fa-solid fa-circle-check"></i></div>
+<script>
+    // Sau khi trang load xong
+    window.onload = function() {
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -361,6 +378,31 @@
     .btn-actions {
         display: flex;
         justify-content: center;
+    }
+    .action-icons i {
+        font-size: 18px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    .custom-alert {
+        position: fixed;
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        background-color: #ff001e; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt lại thành hiển thị */
     }
 </style>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

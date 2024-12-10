@@ -36,6 +36,31 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
+        .action-icons i {
+            font-size: 18px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        .custom-alert {
+            position: fixed;
+            top: 20px; /* Cách từ đỉnh */
+            right: 20px; /* Cách từ bên phải */
+            background-color: #4CAF50; /* Màu nền thông báo thành công */
+            color: white; /* Màu chữ */
+            padding: 15px; /* Padding xung quanh */
+            border-radius: 5px; /* Bo góc */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+            z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+            opacity: 0; /* Ban đầu ẩn */
+            visibility: hidden; /* Không hiển thị */
+            transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
+        }
+
+        .custom-alert.show {
+            opacity: 1; /* Hiển thị thông báo */
+            visibility: visible; /* Đặt lại thành hiển thị */
+        }
     </style>
 </head>
 <body>
@@ -120,7 +145,7 @@
                                     <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>
                                     <td th:text="${dd.soluong}"></td>
-                                    <td th:text="${dd.dongia}"></td>
+                                    <td th:text="${#numbers.formatDecimal(dd.dongia, 1, 'POINT',0, 'COMMA')}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -163,7 +188,7 @@
                         <label class="form-label"><b style="color: red">*</b> Lý do:</label>
                         <div class="input-group">
                             <textarea th:name="lydohuy" class="form-control" aria-label="With textarea"
-                                      placeholder="Nêu lý do từ chối..."></textarea>
+                                      placeholder="Nêu lý do từ chối..." required></textarea>
                         </div>
                     </div>
                     <!-- Nút xác nhận -->
@@ -176,5 +201,20 @@
         </div>
     </div>
 </div>
+<div class="custom-alert success" id="statusMessage" th:text="${error}"
+     th:if="${error != null}"><i class="fa-solid fa-circle-check"></i></div>
+<script>
+    // Sau khi trang load xong
+    window.onload = function() {
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
 </body>
 </html>

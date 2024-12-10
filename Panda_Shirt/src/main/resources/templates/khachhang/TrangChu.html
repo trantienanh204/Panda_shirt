@@ -120,7 +120,7 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-
+<h2 style="text-align: center; padding-top: 30px">Các sản phẩm đang hot <i class="fa-solid fa-fire" style="color: #db0000;"></i></h2>
 <!-- Main Section -->
 <div class="container my-5">
     <div class="row">
@@ -134,10 +134,10 @@
                         <div th:if="${sp.anhsp == null}">
                             <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
                         </div>
-                        <div class="card-hover-buttons">
-                            <button class="btn btn-success">Mua ngay</button>
-                            <button class="btn btn-primary">Thêm vào giỏ</button>
-                        </div>
+<!--                        <div class="card-hover-buttons">-->
+<!--                            <button class="btn btn-success">Mua ngay</button>-->
+<!--                            <button class="btn btn-primary">Thêm vào giỏ</button>-->
+<!--                        </div>-->
                     </div>
                 </a>
                 <h5 class="card-title" style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;" th:text="${sp.tensp}">Hihi</h5>
