@@ -200,7 +200,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const buyButton = document.getElementById('buyButton');
         const totalPriceElement = document.getElementById('totalPrice');
@@ -225,8 +225,6 @@
             });
             totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
         }
-
-
 
         function handleQuantityChange(event) {
             let quantity = parseInt(event.target.value, 10);
@@ -320,31 +318,48 @@
                     return;
                 }
 
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/panda/giohang/thanhtoan';
+                // AJAX request để kiểm tra số lượng tồn kho trước khi thanh toán
+                $.ajax({
+                    type: 'POST',
+                    url: '/panda/giohang/checkInventory',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ selectedItems: selectedItems }),
+                    success: function(response) {
+                        if (response.valid) {
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = '/panda/giohang/thanhtoan';
 
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'selectedItems';
-                input.value = JSON.stringify(selectedItems);
-                form.appendChild(input);
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'selectedItems';
+                            input.value = JSON.stringify(selectedItems);
+                            form.appendChild(input);
 
-                const totalAmountInput = document.createElement('input');
-                totalAmountInput.type = 'hidden';
-                totalAmountInput.name = 'totalAmount';
-                totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
-                form.appendChild(totalAmountInput);
+                            const totalAmountInput = document.createElement('input');
+                            totalAmountInput.type = 'hidden';
+                            totalAmountInput.name = 'totalAmount';
+                            totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
+                            form.appendChild(totalAmountInput);
 
-                document.body.appendChild(form);
-                form.submit();
+                            document.body.appendChild(form);
+                            form.submit();
+                        } else {
+                            alert('Số lượng sản phẩm trong giỏ hàng vượt quá số lượng tồn kho.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Có lỗi xảy ra khi kiểm tra tồn kho!');
+                    }
+                });
             });
         }
 
         addEventListeners();
-        checkEmptyCart(); // Initial check for empty cart on page load
     });
 </script>
+
 
 </body>
 

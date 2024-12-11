@@ -103,6 +103,20 @@ import java.util.Optional;
             }
 
 
+            public boolean checkInventory(List<Integer> selectedItems) {
+                for (Integer itemId : selectedItems) {
+                    GioHang item = gioHangRepository.findById(itemId).orElse(null);
+                    if (item != null) {
+                        int availableQuantity = item.getSanPhamChiTiet().getSoluongsanpham();
+                        if (item.getSoluong() > availableQuantity) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+
 
         public void clearCart(int khachHangId) {
             List<GioHang> cartItems = gioHangRepository.findByKhachHangId(khachHangId);

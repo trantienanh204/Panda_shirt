@@ -444,6 +444,21 @@ public class GioHangController {
             }
         }
 
+        @PostMapping("/checkInventory")
+        public ResponseEntity<Map<String, Object>> checkInventory(@RequestBody Map<String, Object> requestData) {
+            try {
+                List<Integer> selectedItems = (List<Integer>) requestData.get("selectedItems");
+                boolean isValid = gioHangService.checkInventory(selectedItems);
+                Map<String, Object> response = new HashMap<>();
+                response.put("valid", isValid);
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+
+
 
 }
 
