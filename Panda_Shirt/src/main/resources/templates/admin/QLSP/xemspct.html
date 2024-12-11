@@ -237,7 +237,7 @@
                     contentType: 'application/json',
                     data: JSON.stringify(updates),
                     success: function(response) {
-                        let trangThai = totalQuantity === 0 ? 0 : 1; // Xác định trạng thái dựa trên tổng số lượng
+                        let trangThai = totalQuantity === 0 ? 0 : 1;
 
                         $.ajax({
                             url: '/panda/sanpham/updateStatus',

@@ -53,7 +53,9 @@ public interface SanPhamRepository extends JpaRepository<SanPham,Integer> {
 
                 @Transactional
                 @Modifying
-                @Query("UPDATE SanPham s SET s.trangthai = :trangthai WHERE s.id = :sanPhamId AND NOT EXISTS (SELECT 1 FROM SanPhamChiTiet c WHERE c.sanPham.id = s.id AND c.soluongsanpham > 0)")
+                @Query("UPDATE SanPham s SET s.trangthai = :trangthai WHERE s.id = :sanPhamId" +
+                        " AND NOT EXISTS" +
+                        " (SELECT 1 FROM SanPhamChiTiet c WHERE c.sanPham.id = s.id AND c.soluongsanpham > 0)")
                 void updateProductStatus(@Param("trangthai") Integer trangthai, @Param("sanPhamId") Integer sanPhamId);
 
 
