@@ -314,8 +314,8 @@ public class GiamGiaController {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/UPDATE/UpdateVC";
         }
-        if (voucher.getTen() == null || voucher.getTen().length() <= 3 || voucher.getTen().length() >= 30) {
-            model.addAttribute("errorten", "Tên phải lớn hơn 3 ký tự và nhỏ hơn 30 ký tự");
+        if (voucher.getTen() == null || voucher.getTen().length() <= 1 || voucher.getTen().length() >= 30) {
+            model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 30 ký tự");
             return "admin/QLSP/UPDATE/UpdateVC";
         }
         if (findten != null) {
