@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nhập Địa Chỉ Nhận Hàng</title>
+    <script src="https://kit.fontawesome.com/bd9b5e640d.js" crossorigin="anonymous"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -107,6 +108,9 @@
 </head>
 <body>
 <div class="container">
+    <a th:href="@{/panda/giohang/thanhtoan}">
+        <i class="fa-solid fa-arrow-right fa-flip-horizontal" style="color: #000000;"></i>
+    </a>
     <h1>Nhập Địa Chỉ</h1>
     <form id="addressForm">
         <label for="recipientName">Tên người nhận</label>
