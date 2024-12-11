@@ -17,31 +17,33 @@
 
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg ">
+<nav class="navbar navbar-expand-lg" id="navbar">
     <div class="container-fluid">
-        <img th:src="@{/Image/panda_logo.png}" width="70px"; height="70px">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <img th:src="@{/Image/panda_logo.png}" width="70px" ; height="70px">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active"style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active" style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"style="font-size: 20px" href="#">Liên Hệ</a>
+                    <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
             <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
-                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
-<!--                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
-<!--&lt;!&ndash;                    <option value="">Tất cả danh mục</option>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>&ndash;&gt;-->
-<!--                </select>-->
+                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..."
+                       aria-label="Search">
+                <!--                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
+                <!--&lt;!&ndash;                    <option value="">Tất cả danh mục</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>&ndash;&gt;-->
+                <!--                </select>-->
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
@@ -98,9 +100,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
 
-
-
-
 <!--ảnh banner-->
 <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
@@ -120,7 +119,8 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-<h2 style="text-align: center; padding-top: 30px">Các sản phẩm đang hot <i class="fa-solid fa-fire" style="color: #db0000;"></i></h2>
+<h2 style="text-align: center; padding-top: 30px">Các sản phẩm đang hot <i class="fa-solid fa-fire"
+                                                                           style="color: #db0000;"></i></h2>
 <!-- Main Section -->
 <div class="container my-5">
     <div class="row">
@@ -129,27 +129,33 @@
                 <a style="text-decoration: none;" th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}">
                     <div class="card">
                         <div th:if="${sp.anhsp != null}">
-                            <img th:src="'data:image/png;base64,' + ${sp.anhsp}" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                            <img th:src="'data:image/png;base64,' + ${sp.anhsp}" class="card-img-top"
+                                 style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
                         </div>
                         <div th:if="${sp.anhsp == null}">
-                            <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                            <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top"
+                                 style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
                         </div>
-<!--                        <div class="card-hover-buttons">-->
-<!--                            <button class="btn btn-success">Mua ngay</button>-->
-<!--                            <button class="btn btn-primary">Thêm vào giỏ</button>-->
-<!--                        </div>-->
+                        <!--                        <div class="card-hover-buttons">-->
+                        <!--                            <button class="btn btn-success">Mua ngay</button>-->
+                        <!--                            <button class="btn btn-primary">Thêm vào giỏ</button>-->
+                        <!--                        </div>-->
                     </div>
                 </a>
-                <h5 class="card-title" style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;" th:text="${sp.tensp}">Hihi</h5>
+                <h5 class="card-title"
+                    style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;"
+                    th:text="${sp.tensp}">Hihi</h5>
                 <!-- Hiển thị giá thấp nhất -->
-                <p class="card-text" style="color: red; padding-top: 10px; text-align: center;" th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT',0, 'COMMA')} + '₫'"></p>
+                <p class="card-text" style="color: red; padding-top: 10px; text-align: center;"
+                   th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT',0, 'COMMA')} + '₫'"></p>
             </div>
             <!-- Đóng và mở div.row sau mỗi 4 sản phẩm -->
             <th:block th:if="${i.count % 4 == 3}">
-    </div><div class="row">
-    </th:block>
-    </th:block>
-</div>
+    </div>
+    <div class="row">
+        </th:block>
+        </th:block>
+    </div>
 </div>
 
 <!-- Footer -->
@@ -208,8 +214,18 @@
     }
 
     .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(90deg, #FE5621, #FF7F50);
+        transition: background 0.3s ease-in-out;
+        position: fixed;
+        width: 100%;
         background: #FE5621;
+        z-index: 1000;
     }
+
     .nav-link {
         font-size: 1rem;
         font-weight: bold;
@@ -258,9 +274,9 @@
         margin: 5px 0;
     }
 
-     .card-img-top {
-         object-fit: cover; /* Đảm bảo hình ảnh không bị méo mó */
-     }
+    .card-img-top {
+        object-fit: cover; /* Đảm bảo hình ảnh không bị méo mó */
+    }
 
     .card-title, .card-text {
         text-align: center;
@@ -274,30 +290,38 @@
         margin: 5px;
     }
 
-     .fb-icon {
-         position: fixed;
-         bottom: 20px;
-         right: 20px;
-         background-color: #0084ff;
-         color: white;
-         border-radius: 50%;
-         width: 50px;
-         height: 50px;
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         font-size: 24px;
-         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-         text-decoration: none;
-     }
+    .fb-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #0084ff;
+        color: white;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+    }
 
     .fb-icon:hover {
         background-color: #006bbf;
     }
-
-
-
 </style>
+<script>
+    // Thay đổi màu nền Navbar khi cuộn
+    window.addEventListener('scroll', function () {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+</script>
 <!-- Bootstrap JS and FontAwesome -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
