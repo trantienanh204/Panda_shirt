@@ -130,7 +130,7 @@
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th>Mã sản phẩm</th>
+                                    <th>Mã spct</th>
                                     <th>Tên sản phẩm</th>
                                     <th>Màu sắc</th>
                                     <th>Kích thước</th>
@@ -140,7 +140,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="dd,i: ${listhdct}">
-                                    <td th:text="${dd.sanPhamChiTiet.sanPham.masp}"></td>
+                                    <td th:text="${dd.sanPhamChiTiet.maspct}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.sanPham.tensp}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>
@@ -152,7 +152,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label" style="margin-top: 10px">Tổng tiền</label>
-                            <input type="text" th:field="*{tongtien}" class="form-control" readonly
+                            <input type="text" th:value="${DonHang.tongtien != null ? #numbers.formatDecimal(DonHang.tongtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
                                    style="background-color: white; color: black;">
                         </div>
                     </div>

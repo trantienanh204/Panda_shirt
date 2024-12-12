@@ -64,23 +64,24 @@ public class TrangChuController {
         List<Map<String, Object>> processedSanPhamList = new ArrayList<>();
 
         for (SanPham sp : sanphamList) {
-            Map<String, Object> spMap = new HashMap<>();
-            spMap.put("id", sp.getId());
-            spMap.put("masp", sp.getMasp());
-            spMap.put("tensp", sp.getTensp());
-            spMap.put("minPrice", sp.getMinPrice());
+            if (sp.getTrangthai() == 1) {
+                Map<String, Object> spMap = new HashMap<>();
+                spMap.put("id", sp.getId());
+                spMap.put("masp", sp.getMasp());
+                spMap.put("tensp", sp.getTensp());
+                spMap.put("minPrice", sp.getMinPrice());
 
-            if (sp.getAnhsp() != null) {
-                // Chuyển đổi dữ liệu byte array thành chuỗi base64
-                String base64Image = Base64.getEncoder().encodeToString(sp.getAnhsp());
-                spMap.put("anhsp", base64Image);
-            } else {
-                spMap.put("anhsp", null);
+                if (sp.getAnhsp() != null) {
+                    // Chuyển đổi dữ liệu byte array thành chuỗi base64
+                    String base64Image = Base64.getEncoder().encodeToString(sp.getAnhsp());
+                    spMap.put("anhsp", base64Image);
+                } else {
+                    spMap.put("anhsp", null);
+                }
+
+                processedSanPhamList.add(spMap);
             }
-
-            processedSanPhamList.add(spMap);
         }
-
         model.addAttribute("sanpham", processedSanPhamList);
         return "/khachhang/TrangChu";
     }
@@ -126,6 +127,7 @@ public class TrangChuController {
         @PreAuthorize("isAuthenticated()")
 
 
+
         @GetMapping("/giohang")
         public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
             String tenDangNhap = userDetails.getUsername();
@@ -167,6 +169,7 @@ public class TrangChuController {
         }
         KhachHang khachHang = khachHangRepository.findById(taiKhoanDto.getKhachHangDTO().getId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
+
 
         List<DonHang> donHangs = donHangService.findByKhachHangId(khachHang.getId());
 

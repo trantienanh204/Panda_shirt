@@ -24,7 +24,7 @@ public class HoaDonService {
     private final int size = 5;
 
 
-    public Page<HoaDon> hienThiHD(int page, String mahd,String nv, String sdt, String tenkh, Integer trangThai) {
+    public Page<HoaDon> hienThiHD(int page, String mahd,String nv,  String tenkh, Integer trangThai) {
         if (page < 0) {
             throw new IllegalArgumentException("Chỉ số trang không được nhỏ hơn số không");
         }
@@ -32,7 +32,7 @@ public class HoaDonService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
 
-        return hoaDonRepository.findByMaAndTenAndTrangthaiHD(mahd,nv, sdt, tenkh, trangThai, pageable);
+        return hoaDonRepository.findByMaAndTenAndTrangthaiHD(mahd,nv,  tenkh, trangThai, pageable);
     }
 
 

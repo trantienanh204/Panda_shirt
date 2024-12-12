@@ -52,7 +52,6 @@ public class HoaDonCotroller {
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
                           @RequestParam(value = "nv", required = false) String nv,
-                          @RequestParam(value = "sdt", required = false) String sdt,
                           @RequestParam(value = "tenkh", required = false) String tenkh,
                           @RequestParam(value = "trangThai", required = false) Integer trangThai,
                           Model model){
@@ -62,13 +61,12 @@ public class HoaDonCotroller {
         if (page < 0) {
             page = 0;
         }
-        Page<HoaDon> listHD = hoaDonService.hienThiHD(page,mahd, nv, sdt , tenkh, trangThai);
+        Page<HoaDon> listHD = hoaDonService.hienThiHD(page,mahd, nv , tenkh, trangThai);
         model.addAttribute("totalPage", listHD.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("lshd",listHD.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("nv", nv);
-        model.addAttribute("sdt", sdt);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listHD.getSize());
@@ -118,6 +116,9 @@ public class HoaDonCotroller {
         HoaDon hd = hoaDonRepository.finid(id);
         model.addAttribute("hoaDonCTs", hoaDonCT);
         model.addAttribute("hd", hd.getMahoadon());
+        model.addAttribute("hoadon", hd);
+        HoaDon HD = hoaDonRepository.findById(id).orElse(null);
+        model.addAttribute("giagiam",HD);
         System.out.println(hd.getMahoadon());
         return "/admin/HoaDon/HoaDon::hdct"; // Trả về fragment HTML
     }

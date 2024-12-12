@@ -12,6 +12,16 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg">
+    <div th:if="${message}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: 'Thông báo',
+                text:/*[[${message}]]*/,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    </div>
     <div class="container-fluid">
         <a class="navbar-brand" href="#"><img th:src="@{/Image/panda_logo.png}" width="50px"; height="50px"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -264,6 +274,7 @@
     });
 
 </script>
+<<<<<<< HEAD
 <!--modal voucher-->
 <div class="modal fade" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable  modal-lg">
@@ -450,6 +461,7 @@
 
 
 </style>
+
 
 </body>
 </html>

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 public class HoaDonCTDTO{
     private Integer id;
     private Integer idSanPhamCT;
+    private String maspct;
     private Integer idHoadon;
     private String mahdct;
     private BigDecimal donGia;

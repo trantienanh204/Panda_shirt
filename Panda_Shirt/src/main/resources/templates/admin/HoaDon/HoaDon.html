@@ -20,10 +20,6 @@
                 <input type="text" name="nv" th:value="${nv}" placeholder="Tên nhân viên">
             </div>
             <div class="filter-input">
-                <label>số điện thoại</label>
-                <input type="text" name="sdt" th:value="${sdt}" placeholder="số điện thoại">
-            </div>
-            <div class="filter-input">
                 <label>Tên khách hàng</label>
                 <input type="text" name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng ">
             </div>
@@ -57,7 +53,7 @@
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
             <th>Số điện thoại</th>
-            <th>Tổng tiền</th>
+            <th>Thành tiền</th>
             <th>Ngày mua</th>
             <th>hình thức mua hàng</th>
             <th>Trạng thái</th>
@@ -73,8 +69,9 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-            <td th:text="${hd.khachHang.sdt}"></td>
-            <td th:text="${#numbers.formatDecimal(hd.tongtien, 1, 'POINT',0, 'COMMA')}"></td>
+            <td th:text="${hd.khachHang.sdt==null ?'Trống':hd.khachHang.sdt}"></td>
+            <td th:text="${#numbers.formatDecimal(hd.thanhtien, 1, 'POINT',0, 'COMMA')}"></td>
+
             <td th:text="${hd.ngaymua}"></td>
             <td th:text="${hd.hinhthucmuahang != null ?'Trực tuyến':'Trực tiếp'}"></td>
             <td>
@@ -101,7 +98,7 @@
             <!-- Nút Previous -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},nv=${nv},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},nv=${nv},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -116,7 +113,7 @@
             <!-- Nút Next -->
             <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},nv=${nv},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},nv=${nv},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
@@ -131,36 +128,48 @@
         <div class="modal-content">
             <div th:fragment="hdct">
                 <div class="modal-header">
-
                     <h5 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn ' "></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-
                 </div>
-                <div class="modal-body">
+                <div class="row mb-3">
+                <div class="col-md-8">
                     <table>
                         <thead>
                         <tr>
+                            <th>Mã spct</th>
                             <th>Sản phẩm</th>
-                            <th>Màu sắc</th>
                             <th>Kích thước</th>
-                            <th>Đơn giá</th>
+                            <th>Màu sắc</th>
                             <th>Số lượng</th>
-                            <th>Tổng tiền</th>
+                            <th>Đơn giá</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="ct : ${hoaDonCTs}">
+                            <td th:text="${ct.sanPhamChiTiet.maspct}"></td>
                             <td th:text="${ct.sanPhamChiTiet.sanPham.tensp}"></td>
                             <td th:text="${ct.sanPhamChiTiet.kichThuoc.ten}"></td>
                             <td th:text="${ct.sanPhamChiTiet.mauSac.ten}"></td>
-                            <td th:text="${ct.dongia}"></td>
                             <td th:text="${ct.soluong}"></td>
-                            <td th:text="${ct.tongtien}"></td>
+                            <td th:text="${#numbers.formatDecimal(ct.dongia, 1, 'POINT',0, 'COMMA')}"></td>
                         </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
+                    <input type="text"
+                           th:value="${giagiam?.tongtien != null ? #numbers.formatDecimal(giagiam?.tongtien , 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}"
+                           class="form-control" readonly style="background-color: white; color: black;margin-top: 13px">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
+                    <input type="text"
+                           th:value="${giagiam?.giagiam != null ? giagiam?.giagiam  : '0'}"
+                           class="form-control" readonly style="background-color: white; color: black;margin-top: 13px">
+                </div>
                 </div>
             </div>
         </div>
@@ -169,17 +178,18 @@
 
 <script>
     $(document).ready(function() {
-        $('#xemhoadon').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Nhận thông tin từ nút kích hoạt modal
-            var id = button.data('id'); // Lấy ID của hóa đơn
+        $('#xemhoadon').on('show.bs.modal', function(event) {
+            var modal = $(this);
+            modal.find('.modal-content').html(''); // Xóa nội dung cũ
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
 
-            // Gửi yêu cầu AJAX để lấy chi tiết hóa đơn
+            // Gửi yêu cầu AJAX
             $.get('/panda/hoadon/chitiet', { id: id }, function(data) {
-                var modal = $('#xemhoadon');
-                modal.find('.modal-body').html(data); // Chèn nội dung vào modal body
-
+                modal.find('.modal-content').html(data); // Chèn nội dung mới
             });
         });
+
     });
 </script>
 <script>
@@ -207,6 +217,20 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <style>
+    .modal-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .modal-header .modal-title {
+        margin-bottom: 10px;
+    }
+
+    .modal-header div {
+        margin-bottom: 5px;
+    }
     * {
         box-sizing: border-box;
         padding: 0;
@@ -304,17 +328,22 @@
     }
 
     .status-label {
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: white;
+        display: inline-block; /* Đảm bảo chiều rộng và chiều cao áp dụng */
+        width: 100px; /* Đặt chiều rộng cố định */
+        text-align: center; /* Căn giữa nội dung */
+        padding: 5px 0; /* Tùy chỉnh khoảng cách bên trong */
+        border-radius: 5px; /* Tùy chọn, tạo góc bo */
+        font-weight: bold; /* In đậm nội dung */
     }
 
     .status-green {
-        background-color: #4CAF50;
+        background-color: #28a745; /* Màu xanh lá */
+        color: white; /* Màu chữ */
     }
 
     .status-orange {
-        background-color: #ff9800;
+        background-color: #ffc107; /* Màu cam */
+        color: black; /* Màu chữ */
     }
 
     .action-icons {

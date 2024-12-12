@@ -176,7 +176,7 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span>
                                     </td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -215,7 +215,7 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span>
                                     </td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -254,7 +254,7 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span>
                                     </td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -293,7 +293,7 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span>
                                     </td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -330,7 +330,7 @@
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -339,7 +339,6 @@
                                            data-bs-target="#add">
                                             <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
                                         </a>
-
                                     </td>
                                 </tr>
                                 </tbody>
@@ -578,13 +577,13 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
-                                    <input type="text" th:value="${DonHang?.hoaDon?.giagiam != null ? #numbers.formatDecimal(DonHang?.hoaDon?.giagiam, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : 'Không có dữ liệu'}" class="form-control" readonly
+                                    <input type="text" th:value="${DonHang?.hoaDon?.giagiam != null ? #numbers.formatDecimal(DonHang?.hoaDon?.giagiam, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
                                            style="background-color: white; color: black;">
                                     <!--                            <td th:text="${#numbers.formatDecimal(tongtien, 1, 'POINT',0, 'COMMA')}"></td>-->
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
-                                    <input type="text" th:value="${DonHang?.tongtien != null ? #numbers.formatDecimal(DonHang.tongtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : 'Không có dữ liệu'}"
+                                    <input type="text" th:value="${DonHang?.tongtien != null ? #numbers.formatDecimal(DonHang.tongtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}"
                                      class="form-control" readonly
                                            style="background-color: white; color: black;">
                                 </div>

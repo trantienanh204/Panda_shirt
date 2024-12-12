@@ -25,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -176,9 +177,11 @@ public class GioHangController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/thanhtoan")
-    public String thanhToan(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        String tenDangNhap = userDetails.getUsername();
-        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+    public String thanhToan(Model model
+//            , @AuthenticationPrincipal UserDetails userDetails
+    ) {
+//        String tenDangNhap = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap("A");
         if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
             return "redirect:/login";
         }
@@ -215,6 +218,7 @@ public class GioHangController {
 
 
 
+//
 //    @PostMapping("/thanhtoan")
 //    public String xuLyThanhToan(@RequestParam("totalAmount") String totalAmountStr,
 //                                @RequestParam("selectedItems") String selectedItemsJson,
@@ -274,13 +278,15 @@ public class GioHangController {
 //            return "khachhang/GioHang";
 //        }
 //    }
+//
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/thanhtoan/hoadon")
     public String xuLyHoaDon(@RequestParam double totalAmount,
                              @RequestParam String paymentMethod,
                              @RequestParam String note,
-                             @AuthenticationPrincipal UserDetails userDetails, Model model) {
+                             @AuthenticationPrincipal UserDetails userDetails,
+                             Model model) {
         String tenDangNhap = userDetails.getUsername();
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
 

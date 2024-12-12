@@ -56,7 +56,16 @@
         </div>
     </div>
 </nav>
-
+<div th:if="${message}">
+    <script th:inline="javascript">
+        Swal.fire({
+            title: 'Thông báo',
+            text:/*[[${message}]]*/,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    </script>
+</div>
 <div class="container mt-3" style="padding-bottom: 80px;">
     <h2 class="mb-4">Giỏ hàng</h2>
     <div th:if="${#lists.isEmpty(cartItems)}">
@@ -226,20 +235,51 @@
             totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
         }
 
-        function handleQuantityChange(event) {
+        function handleQuantityInput(event) {
             let quantity = parseInt(event.target.value, 10);
-            const gioHangId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10);
-
-            // Assume maxQuantity is fetched from server-side or given as an attribute
             const maxQuantity = parseInt(event.target.getAttribute('data-max-quantity'), 10);
 
             if (quantity < 1) {
                 quantity = 1;
             } else if (quantity > maxQuantity) {
+                alert('Số lượng sản phẩm vượt quá số lượng tồn kho!');
                 quantity = maxQuantity;
             }
 
-            event.target.value = quantity; // Ensure value on UI is corrected
+            event.target.value = quantity; // Đảm bảo giá trị trên giao diện được cập nhật
+
+            const gioHangId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10);
+
+            $.ajax({
+                type: 'POST',
+                url: '/panda/giohang/updateQuantity',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    gioHangId: gioHangId,
+                    quantity: quantity
+                }),
+                success: function(response) {
+                    const checkbox = document.getElementById('product' + gioHangId);
+                    checkbox.setAttribute('data-price', response.newPrice);
+                    updateTotalPrice();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    alert('Có lỗi khi cập nhật số lượng! ' + xhr.responseText);
+                }
+            });
+        }
+
+        function handleQuantityBlur(event) {
+            let quantity = parseInt(event.target.value, 10);
+            const maxQuantity = parseInt(event.target.getAttribute('data-max-quantity'), 10);
+
+            if (quantity > maxQuantity) {
+                alert('Số lượng sản phẩm vượt quá số lượng tồn kho!');
+                event.target.value = maxQuantity;
+            }
+
+            const gioHangId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10);
 
             $.ajax({
                 type: 'POST',
@@ -287,7 +327,9 @@
         function addEventListeners() {
             const quantityInputs = document.querySelectorAll('.quantity-input');
             quantityInputs.forEach(input => {
-                input.addEventListener('change', handleQuantityChange);
+                input.setAttribute('data-max-quantity', input.value); // Cập nhật giá trị tối đa từ server
+                input.addEventListener('input', handleQuantityInput); // Sử dụng sự kiện input
+                input.addEventListener('blur', handleQuantityBlur); // Sử dụng sự kiện blur để kiểm tra lại
             });
 
             const deleteButtons = document.querySelectorAll('.delete-button');
