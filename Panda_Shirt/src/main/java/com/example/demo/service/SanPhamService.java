@@ -587,7 +587,12 @@ public class SanPhamService {
 
 
         public void updateProductStatus(int trangThai, Integer sanPhamId) {
-            sanPhamRepository.updateProductStatus(trangThai, sanPhamId);
+        SanPham sp = sanPhamRepository.findById(sanPhamId).orElse(null);
+        if(sp!= null){
+            sp.setTrangthai(trangThai);
+            sanPhamRepository.save(sp);
+        }
+
         }
 
 

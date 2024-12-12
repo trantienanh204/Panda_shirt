@@ -124,7 +124,7 @@
 <!-- Main Section -->
 <div class="container my-5">
     <div class="row">
-        <th:block th:each="sp, i : ${sanpham}">
+        <th:block th:each="sp, i : ${sanpham}" >
             <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
                 <a style="text-decoration: none;" th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}">
                     <div class="card">

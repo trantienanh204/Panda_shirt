@@ -474,8 +474,7 @@ public class sanphanController {
                     .body("Có lỗi xảy ra khi cập nhật: " + e.getMessage());
         }
     }
-
-
+    
 
         @PostMapping("/sanpham/updateStatus")
         public ResponseEntity<Void> updateProductStatus(@RequestBody Map<String, Object> statusUpdate) {
@@ -484,6 +483,7 @@ public class sanphanController {
                 if (statusUpdate.containsKey("trangthai") && statusUpdate.containsKey("sanPhamId")) {
                     int trangThai = Integer.parseInt(statusUpdate.get("trangthai").toString());
                     Integer sanPhamId = Integer.valueOf(statusUpdate.get("sanPhamId").toString());
+                    System.out.println(trangThai == 1 ? "dangban":"ngungban");
                     sanPhamService.updateProductStatus(trangThai, sanPhamId);
                     return ResponseEntity.ok().build();
                 } else {
@@ -494,7 +494,9 @@ public class sanphanController {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
-        }
+
+    }
+
 
 
 

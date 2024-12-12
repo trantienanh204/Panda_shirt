@@ -137,7 +137,7 @@
                                 <td>${data.thuongHieu ? data.thuongHieu.tenthuonghieu : 'Không có thương hiệu'}</td>
                                 <td>${data.coAo ? data.coAo.ten : 'Không có cổ áo'}</td>
                                 <td>${data.chatLieu ? data.chatLieu.tenChatLieu : 'Không có chất liệu'}</td>
-                                <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" disabled></td>
+                                <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" min="0" disabled></td>
                                 <td><input type="number" class="form-control dongia-edit" value="${chiTiet.dongia}" disabled></td>
                                 <td>${chiTiet.ngaytao ? chiTiet.ngaytao : 'Không có ngày tạo'}</td>
                                 <td>${chiTiet.trangthai == 1 ? 'Đang bán' : 'Ngừng bán'}</td>
@@ -211,21 +211,25 @@
                 const row = $(this);
                 const rowId = row.data('id');
                 if (selectedRows.has(rowId)) {
-                    const soluong = row.find('.soluong-edit').val();
+                    const soluong = Math.max(0, Number(row.find('.soluong-edit').val())); // Đảm bảo số lượng không âm
                     const dongia = row.find('.dongia-edit').val();
                     const mauSacId = row.find('.mau-sac-id').val();
                     const kichThuocId = row.find('.kich-thuoc-id').val();
 
+                    console.log(' trangThai trả về  = ' +soluong)
+
                     updates.push({
                         idSanPham: rowId,
-                        soLuong: Number(soluong),
+                        soLuong: soluong,
                         gia: Number(dongia),
                         mauSac: mauSacId,
                         kichThuoc: kichThuocId,
                     });
 
-                    totalQuantity += Number(soluong);
+                    totalQuantity += soluong;
+
                 }
+                console.log(' số lượng sp = ' +totalQuantity)
             });
 
             console.log("Updates before sending:", updates);
@@ -237,8 +241,10 @@
                     contentType: 'application/json',
                     data: JSON.stringify(updates),
                     success: function(response) {
-                        let trangThai = totalQuantity === 0 ? 0 : 1;
 
+                        let trangThai = totalQuantity === 0 ? 0 : 1;
+                        console.log(' số lượng sp = ' +totalQuantity)
+                        console.log(' trangThai trả về  = ' +trangThai)
                         $.ajax({
                             url: '/panda/sanpham/updateStatus',
                             type: 'POST',
@@ -246,7 +252,7 @@
                             data: JSON.stringify({ trangthai: trangThai, sanPhamId: id }), // Gửi cả trạng thái và ID sản phẩm
                             success: function() {
                                 alert(`Trạng thái sản phẩm đã được cập nhật thành ${trangThai === 0 ? 'hết hàng' : 'còn hàng'}!`);
-                                location.reload();
+                                // location.reload();
                             },
                             error: function(xhr, status, error) {
                                 console.error('Error updating product status:', xhr.responseText);
