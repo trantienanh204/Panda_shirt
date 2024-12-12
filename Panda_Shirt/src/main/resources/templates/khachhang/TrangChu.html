@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/CSS/style.css" th:href="@{/CSS/style.css}">
     <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.min.css" rel="stylesheet">
 </head>
@@ -19,20 +19,21 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
-        <img th:src="@{/Image/panda_logo.png}" width="70px"; height="70px">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <img th:src="@{/Image/panda_logo.png}" width="70px" ; height="70px">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active"style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active" style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"style="font-size: 20px" href="#">Liên Hệ</a>
+                    <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
@@ -94,9 +95,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
 
-
-
-
 <!--ảnh banner-->
 <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
@@ -117,60 +115,61 @@
     </button>
 </div>
 <!--bộ lọc -->
-<div class="container my-4">
-    <h3><i class="fas fa-filter"></i> BỘ LỌC</h3>
-    <div class="row">
-        <!-- Dropdown Thương hiệu -->
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Thương hiệu">
-                <option selected>Thương hiệu</option>
-                <option value="brand1">Brand 1</option>
-                <option value="brand2">Brand 2</option>
-                <option value="brand3">Brand 3</option>
-            </select>
+<div class="container2 my-4">
+    <div class="filters">
+        <h3>Bộ lọc <i class="fas fa-filter"></i> </h3>
+        <div class="filter-section">
+
+            <h4>DANH MỤC</h4>
+            <ul>
+                <li><input type="checkbox" id="aoNu"> Áo Nữ</li>
+                <li><input type="checkbox" id="aoKhoac"> Áo Khoác</li>
+                <li><input type="checkbox" id="vayDam">Áo nam</li>
+                <li><input type="checkbox" id="setDo"> Áo len</li>
+                <li><input type="checkbox" id="yem"> ÁO sơ mi</li>
+            </ul>
         </div>
-        <!-- Dropdown Lọc giá -->
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Lọc giá">
-                <option selected>Lọc giá</option>
-                <option value="low">Dưới 100.000đ</option>
-                <option value="medium">100.000đ - 500.000đ</option>
-                <option value="high">Trên 500.000đ</option>
-            </select>
+        <div class="filter-section">
+            <h4>MÀU SẮC</h4>
+            <ul>
+                <li><input type="checkbox" id="mauBe"> Be</li>
+                <li><input type="checkbox" id="mauDo"> Đỏ</li>
+                <li><input type="checkbox" id="mauDen"> Đen</li>
+                <li><input type="checkbox" id="mauHong"> Hồng</li>
+                <li><input type="checkbox" id="mauTrang"> Trắng</li>
+                <li><input type="checkbox" id="mauXanhLa"> Xanh Lá</li>
+            </ul>
         </div>
-        <!-- Dropdown Màu sắc -->
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Màu sắc">
-                <option selected>Màu sắc</option>
-                <option value="red">Đỏ</option>
-                <option value="blue">Xanh dương</option>
-                <option value="black">Đen</option>
-            </select>
+        <div class="filter-section">
+            <h4>SIZE</h4>
+            <ul>
+                <li><input type="checkbox" id="sizeS"> S</li>
+                <li><input type="checkbox" id="sizeM"> M</li>
+                <li><input type="checkbox" id="sizeL"> L</li>
+            </ul>
         </div>
-        <!-- Dropdown Kích thước -->
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Kích thước">
-                <option selected>Kích thước</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-            </select>
+        <div class="filter-section">
+            <h4>GIÁ TIỀN</h4>
+            <input type="range" id="priceRange" min="0" max="1000000" step="50000">
+            <span id="priceLabel">0 đ - 1.000.000 đ</span>
+        </div>
+        <div class="filter-section">
+            <h4>KHUYẾN MÃI</h4>
+            <input type="checkbox" id="khuyenMai"> Có khuyến mãi
         </div>
     </div>
-</div>
-<!-- Main Section -->
-<div class="container my-5">
-    <div class="row">
+    <div class="row products container">
         <th:block th:each="sp, i : ${sanpham}">
-            <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
+            <div class="product-item ">
                 <a style="text-decoration: none;" th:href="@{/panda/sanphamchitiet/{id}(id=${sp.id})}">
                     <div class="card">
                         <div th:if="${sp.anhsp != null}">
-                            <img th:src="'data:image/png;base64,' + ${sp.anhsp}" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                            <img th:src="'data:image/png;base64,' + ${sp.anhsp}" class="card-img-top"
+                                 style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
                         </div>
                         <div th:if="${sp.anhsp == null}">
-                            <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top" style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
+                            <img src="https://placehold.co/600x400?text=Áo+Sơ+Mi" class="card-img-top"
+                                 style="width: 300px; height: 300px;" alt="Ảnh sản phẩm">
                         </div>
                         <div class="card-hover-buttons">
                             <button class="btn btn-success">Mua ngay</button>
@@ -178,16 +177,19 @@
                         </div>
                     </div>
                 </a>
-                <h5 class="card-title" style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;" th:text="${sp.tensp}">Hihi</h5>
+                <h5 class="card-title"
+                    style="color: #00040a; padding-top: 20px; font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;"
+                    th:text="${sp.tensp}">Hihi</h5>
                 <!-- Hiển thị giá thấp nhất -->
-                <p class="card-text" style="color: red; padding-top: 10px; text-align: center;" th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')} + '₫'"></p>
+                <p class="card-text" style="color: red; padding-top: 10px; text-align: center;"
+                   th:text="${#numbers.formatDecimal(sp.minPrice, 1, 'POINT', 2, 'COMMA')} + '₫'"></p>
             </div>
             <!-- Đóng và mở div.row sau mỗi 4 sản phẩm -->
-            <th:block th:if="${i.count % 4 == 3}">
-    </div><div class="row">
-    </th:block>
-    </th:block>
-</div>
+<!--                <th:block th:if="${i.count % 4 == 3}">-->
+            </th:block>
+    </div>
+
+
 </div>
 
 <!-- Footer -->
@@ -213,9 +215,9 @@
     .card-hover-buttons {
         position: absolute;
         top: 90%;
-        left: 50%;
+        left: 155px;
         transform: translate(-50%, -50%);
-        opacity: 0;
+        opacity: 1;
         display: flex;
         gap: 10px;
         transition: opacity 0.3s ease-in-out;
@@ -245,6 +247,7 @@
     .navbar {
         background: #FE5621;
     }
+
     .nav-link {
         font-size: 1rem;
         font-weight: bold;
@@ -292,9 +295,9 @@
         margin: 5px 0;
     }
 
-     .card-img-top {
-         object-fit: cover; /* Đảm bảo hình ảnh không bị méo mó */
-     }
+    .card-img-top {
+        object-fit: cover;
+    }
 
     .card-title, .card-text {
         text-align: center;

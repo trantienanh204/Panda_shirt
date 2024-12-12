@@ -1,15 +1,19 @@
-
 package com.example.demo.Controller.admin.BanHang;
 
 import com.example.demo.DTO.HoaDonCTDTO;
+import com.example.demo.DTO.NhanVienDTO;
+import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.*;
+import com.example.demo.service.TaiKhoanService;
 import com.example.demo.services.BanHangService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +46,11 @@ public class BanHangOffline {
     NhanVienRespository nhanVienRespository;
     @Autowired
     KhachHangRepository khachHangRepository;
+    @Autowired
+    TaiKhoanService taiKhoanService;
 
     private Integer idhd;
-    private Integer idmax;
+    private Integer idmax;;
 
     @GetMapping("/hienthi")
     public String show(Model model) {
@@ -65,6 +71,13 @@ public class BanHangOffline {
                 System.out.println("Lỗi : " + v.getMa());
             }
         }
+        spct.forEach(sp -> {
+            SanPham sanPham = sp.getSanPham();
+            if (sanPham != null && sanPham.getAnhsp() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(sanPham.getAnhsp());
+                sanPham.setBase64Image(base64Image);
+            }
+        });
         model.addAttribute("hoaDons", hoaDon);
         model.addAttribute("lsvoucher", validVouchers);
         model.addAttribute("lsspct", spct);
@@ -121,7 +134,6 @@ public class BanHangOffline {
                         sp.getMauSac().getTen(),
                         sp.getKichThuoc().getTen()))
                 .collect(Collectors.toList());
-
     }
 
     @GetMapping("/search")
@@ -129,16 +141,24 @@ public class BanHangOffline {
         List<String> results = new ArrayList<>();
         try {
             results = banHangService.findByTenSanPham(keyword).stream()
-                    .filter(sp -> sp.getSanPham() != null && sp.getMauSac() != null && sp.getKichThuoc() != null)
-                    .map(sp -> String.format("%s - %s - %s - %s - %s - %s - %s",
-                            sp.getId(),
-                            sp.getSanPham().getTensp(),
-                            sp.getMauSac().getTen(),
-                            sp.getKichThuoc().getTen(),
-                            sp.getDongia(),
-                            sp.getSanPham().getChatLieu().getTenChatLieu(),
-                            sp.getSoluongsanpham()
-                    ))
+                    .filter(sp -> sp.getSanPham() != null && sp.getMauSac() != null
+                            && sp.getKichThuoc() != null && sp.getSoluongsanpham() > 0)
+                    .map(sp -> {
+                        String base64Image = "";
+                        if (sp.getSanPham().getAnhsp() != null) {
+                            base64Image = Base64.getEncoder().encodeToString(sp.getSanPham().getAnhsp());
+                        }
+                        return String.format("%s - %s - %s - %s - %s - %s - %s - %s",
+                                sp.getId(),
+                                sp.getSanPham().getTensp(),
+                                sp.getMauSac().getTen(),
+                                sp.getKichThuoc().getTen(),
+                                sp.getDongia(),
+                                sp.getSanPham().getChatLieu().getTenChatLieu(),
+                                sp.getSoluongsanpham(),
+                                base64Image
+                        );
+                    })
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -260,6 +280,7 @@ public class BanHangOffline {
     public ResponseEntity<String> createHoaDonCT(@RequestBody HoaDonCTDTO dto,
                                                  Model model,RedirectAttributes redirectAttributes) {
         HoaDonCT hoaDonCT = new HoaDonCT();
+        Map<String, String> response = new HashMap<>();
         if(idhd == null){
             return ResponseEntity.badRequest().body("Chưa chọn hóa đơn!");
         }
@@ -267,9 +288,15 @@ public class BanHangOffline {
         hoaDonCT.setSanPhamChiTiet(new SanPhamChiTiet(dto.getIdSanPhamCT()));
         hoaDonCT.setDongia(dto.getDonGia());
         hoaDonCT.setSoluong(dto.getSoLuong());
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findById(dto.getIdSanPhamCT()).get();
         HoaDonCT existingHoaDonCT = hoaDonCTRepository.findByHoaDonIdAndSanPhamId(idhd, dto.getIdSanPhamCT());
         if (existingHoaDonCT != null) {
-            existingHoaDonCT.setSoluong(existingHoaDonCT.getSoluong() + 1);
+            int soluongban = existingHoaDonCT.getSoluong() + 1;
+            if(soluongban > spct.getSoluongsanpham()){
+                System.out.println("số lượng không đủ");
+                return ResponseEntity.badRequest().body("Số lượng vượt quá số lượng tồn kho");
+            }
+            existingHoaDonCT.setSoluong(soluongban);
             existingHoaDonCT.setId(existingHoaDonCT.getId());
             BigDecimal totalPrice = existingHoaDonCT.getDongia().multiply(BigDecimal.valueOf(existingHoaDonCT.getSoluong()));
             existingHoaDonCT.setTongtien(totalPrice);
@@ -283,9 +310,54 @@ public class BanHangOffline {
         BigDecimal thanhTien = donGia.multiply(BigDecimal.valueOf(soLuong));
         hoaDonCT.setTongtien(thanhTien);
         hoaDonCT.setNgaytao(LocalDate.now());
-        System.out.println("add");
         hoaDonCTRepository.save(hoaDonCT);
         return ResponseEntity.ok("Thành công !");
+    }
+
+    @PostMapping("/taohdctqr")
+    public ResponseEntity<?> taohdct(@RequestBody HoaDonCTDTO dto,Model model,RedirectAttributes redirectAttributes) {
+        String maspct = dto.getMaspct();
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findByMaspct(maspct);
+        System.out.println("mã spct" + maspct);
+        HoaDonCT hoaDonCT = new HoaDonCT();
+        if(idhd == null){
+            redirectAttributes.addFlashAttribute("loi", "Chưa chọn hóa đơn!");
+            return ResponseEntity.badRequest().body(Map.of("message","Chưa chọn hóa đơn!"));
+        }
+        int soLuongTonKho = spct.getSoluongsanpham();
+
+        if (soLuongTonKho <= 0) {
+            redirectAttributes.addFlashAttribute("loi", "Sản phẩm hết hàng!");
+            return ResponseEntity.badRequest().body(Map.of("message", "Sản phẩm hết hàng!"));
+        }
+
+        hoaDonCT.setHoaDon(new HoaDon(idhd));
+        hoaDonCT.setSanPhamChiTiet(spct);
+        hoaDonCT.setDongia(BigDecimal.valueOf(spct.getDongia()));
+        hoaDonCT.setSoluong(1);
+        HoaDonCT existingHoaDonCT = hoaDonCTRepository.findByHoaDonIdAndSanPhamId(idhd, spct.getId());
+        if (existingHoaDonCT != null) {
+            int soLuongMoi = existingHoaDonCT.getSoluong() + 1;
+            if (soLuongMoi > soLuongTonKho) {
+                redirectAttributes.addFlashAttribute("loi", "Số lượng nhập vượt quá số lượng tồn kho");
+                return ResponseEntity.badRequest().body(Map.of("message", "Số lượng yêu cầu vượt quá tồn kho!"));
+            }
+            existingHoaDonCT.setSoluong(soLuongMoi);
+            existingHoaDonCT.setId(existingHoaDonCT.getId());
+            BigDecimal totalPrice = existingHoaDonCT.getDongia().multiply(BigDecimal.valueOf(existingHoaDonCT.getSoluong()));
+            existingHoaDonCT.setTongtien(totalPrice);
+            System.out.println("id hdct : " + existingHoaDonCT.getId());
+            hoaDonCTRepository.save(existingHoaDonCT);
+            return ResponseEntity.ok(Map.of("ok", "Thành công!"));
+        }
+        // Nếu không tồn tại, tạo mới
+        BigDecimal donGia = BigDecimal.valueOf(spct.getDongia());
+        int soLuong = 1;
+        BigDecimal thanhTien = donGia.multiply(BigDecimal.valueOf(soLuong));
+        hoaDonCT.setTongtien(thanhTien);
+        hoaDonCT.setNgaytao(LocalDate.now());
+        hoaDonCTRepository.save(hoaDonCT);
+        return ResponseEntity.ok(Map.of("message", "Thành công!"));
     }
 
 
@@ -301,7 +373,6 @@ public class BanHangOffline {
         SanPhamChiTiet spct = spctOptional.get();
 
         if (dto.getSoLuong() > spct.getSoluongsanpham()) {
-            model.addAttribute("loi", "Số lượng nhập vượt quá số lượng tồn kho");
             return ResponseEntity.badRequest().body("Số lượng nhập vượt quá số lượng tồn kho");
         }
 
@@ -309,9 +380,11 @@ public class BanHangOffline {
         hoaDonCT.setTongtien(dto.getThanhTien());
         hoaDonCT.setTrangthai(1);
         BigDecimal tongTien = tongtien(idhd);
-        model.addAttribute("tongTien", tongTien);
+        System.out.println("tongTien :"+ tongTien);
+        System.out.println("Thành tièn:"+  dto.getThanhTien());
+        System.out.println("sl :"+  dto.getSoLuong());
         hoaDonCTRepository.save(hoaDonCT);
-        return ResponseEntity.ok("Cập nhật thành công");
+        return ResponseEntity.ok("Cập nhật thành công" );
     }
 
     @GetMapping("/chonkh")
@@ -326,6 +399,9 @@ public class BanHangOffline {
         response.put("idTinhThanhPho", kh.getTinhtp() != null ? kh.getTinhtp() : "");
         response.put("idQuanHuyen", kh.getQuanhuyen() != null ? kh.getQuanhuyen() : "");
         response.put("idXaPhuong", kh.getXaphuong() != null ? kh.getXaphuong() : "");
+        response.put("tentinh", kh.getTentinh() != null ? kh.getTentinh() : "");
+        response.put("tenhuyen", kh.getTenhuyen() != null ? kh.getTenhuyen() : "");
+        response.put("tenxa", kh.getTenxa() != null ? kh.getTenxa() : "");
         return ResponseEntity.ok(response);
     }
 
@@ -401,12 +477,16 @@ public class BanHangOffline {
             @RequestParam("tinh") String tinh,
             @RequestParam("huyen") String huyen,
             @RequestParam("xa") String xa,
+            @RequestParam("tentinh") String tentinh,
+            @RequestParam("tenhuyen") String tenhuyen,
+            @RequestParam("tenxa") String tenxa,
             @RequestParam(value = "diachicuthe",defaultValue = "trống") String diachicuthe,
-            @RequestParam("ghichu") String ghichu,
+            @RequestParam(value = "ghichu",defaultValue = "trống") String ghichu,
             @RequestParam("tenkh") String tenkh,
             @RequestParam("mucgiam") String giagiam,
             RedirectAttributes redirectAttributes,
             Model model
+//            ,@AuthenticationPrincipal UserDetails userDetails
     ) {
         HoaDon hd = hoaDonRepository.finid(idhoadon);
         if (hd == null) {
@@ -460,6 +540,9 @@ public class BanHangOffline {
                 kh.setTinhtp(tinh);
                 kh.setQuanhuyen(huyen);
                 kh.setXaphuong(xa);
+                kh.setTentinh(tentinh);
+                kh.setTenhuyen(tenhuyen);
+                kh.setTenxa(tenxa);
                 System.out.println("Thêm khách hàng mới");
                 khachHangRepository.save(kh);
             } else {
@@ -469,6 +552,9 @@ public class BanHangOffline {
                 kh.setTinhtp(tinh);
                 kh.setQuanhuyen(huyen);
                 kh.setXaphuong(xa);
+                kh.setTentinh(tentinh);
+                kh.setTenhuyen(tenhuyen);
+                kh.setTenxa(tenxa);
                 System.out.println("Cập nhật khách hàng");
                 khachHangRepository.save(kh);
             }
@@ -501,23 +587,56 @@ public class BanHangOffline {
 
         for (HoaDonCT hdct : lshdct) {
             SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
+            int soLuongBan = hdct.getSoluong();
+            int soLuongTon = spct.getSoluongsanpham();
             if (spct != null) {
-                int soLuongTon = spct.getSoluongsanpham();
-                int soLuongBan = hdct.getSoluong();
+                if(soLuongTon == 0){
+                    redirectAttributes.addFlashAttribute("loi", "Sản phẩm : "+spct.getSanPham().getTensp() +spct.getMauSac().getTen()
+                            + " " + spct.getKichThuoc().getTen() + " đã hết hàng");
+                    return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+                }
+                if(soLuongBan <= 0){
+                    System.out.println("số lg bán");
+                    redirectAttributes.addFlashAttribute("loi", "Số lượng sản phẩm không hợp lệ");
+                    return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+                }
+                if(soLuongTon < soLuongBan){
+                    redirectAttributes.addFlashAttribute("loi", "Sản phẩm : "+spct.getSanPham().getTensp() +spct.getMauSac().getTen()
+                            + " " + spct.getKichThuoc().getTen() + " không đủ hàng");
+                    System.out.println("số lg k đủ");
+                    return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+                }
                 spct.setSoluongsanpham(soLuongTon - soLuongBan);
                 sanPhamChiTietRepository.save(spct);
             }
         }
 
-        hd.setNhanVien(nv);
+//        String username = userDetails.getUsername();
+//        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
+//        if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
+//            return "redirect:/panda/login";
+//        }
+
+//        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
+        NhanVien nhanVien = nhanVienRespository.findById(1).orElse(null);
+        hd.setNhanVien(nhanVien);
         hd.setVoucher(vc);
         hd.setThanhtien(thanhtien);
         hd.setGiagiam(giagiam);
         hd.setTongtien(tongtien);
         hd.setTrangthai(1);
         hd.setNgaymua(LocalDate.now());
-        System.out.println("thanh toán ");
+        hd.setGhiChu(ghichu);
         hoaDonRepository.save(hd);
         return "redirect:/panda/banhangoffline";
     }
+
+    private NhanVien mapToNhanvien(NhanVienDTO dto) {
+        NhanVien nhanVien = new NhanVien();
+        nhanVien.setId(dto.getId());
+        nhanVien.setManhanvien(dto.getManhanvien());
+        nhanVien.setTennhanvien(dto.getTennhanvien());
+        return nhanVien;
+    }
 }
+

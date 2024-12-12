@@ -33,7 +33,12 @@ function nhapvoucher(voucherId) {
             console.error("Lỗi khi gọi AJAX:", error);
             const errorResponse = JSON.parse(xhr.responseText);
             if (errorResponse.error) {
-                alert(errorResponse.error);
+                Swal.fire({
+                    title: 'Thông báo',
+                    text:errorResponse,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         }
     });
@@ -93,13 +98,22 @@ function chonkh(element) {
             $("#selectedDistrict").val(response.idQuanHuyen);
             $("#selectedWard").val(response.idXaPhuong);
 
+            $("#tentinh").val(response.tentinh);
+            $("#tenhuyen").val(response.tenhuyen);
+            $("#tenxa").val(response.tenxa);
+
             $('#chonkhachhangModal').modal('hide');
         },
         error: function (xhr, status, error) {
             console.error("Lỗi khi gọi AJAX:", error);
             const errorResponse = JSON.parse(xhr.responseText);
             if (errorResponse.error) {
-                alert(errorResponse.error);
+                Swal.fire({
+                    title: 'Thông báo',
+                    text:errorResponse,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         }
     });
@@ -107,7 +121,7 @@ function chonkh(element) {
 
 
 function chonkh(element) {
-    var idkh = $(element).data('id');  // 'element' là tham chiếu đến phần tử mà người dùng nhấn
+    var idkh = $(element).data('id');
     localStorage.removeItem("selectedCustomer");
     axios.get(`/panda/banhangoffline/chonkh?id=${idkh}`)
         .then(response => {
@@ -140,90 +154,3 @@ function chonkh(element) {
         });
 }
 
-
-
-
-
-// $(document).ready(function() {
-//     var initialVoucherId = $("#mavoucher-input").val();
-//
-//     $("#mavoucher-input").on("input", function() {
-//         var voucherId = $(this).val();
-//         var phishipValue = $("#phiship").val();
-//
-//         if (!voucherId && initialVoucherId) {
-//             $.ajax({
-//                 url: "/panda/banhangoffline/selectvc",
-//                 type: "GET",
-//                 data: {
-//                     id: "",
-//                     phiship: phishipValue
-//                 },
-//                 success: function(response) {
-//                     $("#mavoucher-input").val(response.mavocher);
-//                     $("#idvoucher-input").val(response.idvoucher);
-//                     $("#mucgiam").text(response.mucgiam);
-//                     $("#thanhtien").text('Tổng tiền : ' + response.thanhtien);
-//                     $("#thanhTien").val(response.thanhTien);
-//                     $('#voucherModal').modal('hide');
-//                 },
-//                 error: function(xhr, status, error) {
-//                     console.error("Lỗi khi gọi API:", error);
-//                 }
-//             });
-//         }
-//         else if (voucherId) {
-//             $.ajax({
-//                 url: "/panda/banhangoffline/selectvc",
-//                 type: "GET",
-//                 data: {
-//                     id: voucherId,
-//                     phiship: phishipValue
-//                 },
-//                 success: function(response) {
-//                     $("#mavoucher-input").val(response.mavocher);
-//                     $("#idvoucher-input").val(response.idvoucher);
-//                     $("#mucgiam").text(response.mucgiam);
-//                     $("#thanhtien").text('Tổng tiền : ' + response.thanhtien);
-//                     $("#thanhTien").val(response.thanhTien);
-//                     $('#voucherModal').modal('hide');
-//                 },
-//                 error: function(xhr, status, error) {
-//                     console.error("Lỗi khi gọi API:", error);
-//                 }
-//             });
-//         }
-//         initialVoucherId = voucherId;
-//     });
-// });
-// $(document).ready(function() {
-//     $("#province").change(function() {
-//         var voucherId = $("#mavoucher-input").val();
-//         $.ajax({
-//             url: "/panda/banhangoffline/selectvc",
-//             type: "GET",
-//             data: {
-//                 id: voucherId
-//             },
-//             success: function(response) {
-//                 $("#mavoucher-input").val(response.mavocher);
-//                 $("#idvoucher-input").val(response.idvoucher);
-//                 $("#mucgiam").text(response.mucgiam);
-//                 $("#thanhtien").text('Tổng tiền : ' +response.thanhtien);
-//                 $("#thanhTien").val(response.thanhTien);
-//                 $('#voucherModal').modal('hide');
-//             },
-//             error: function(xhr, status, error) {
-//                 console.error("Lỗi khi gọi API:", error);
-//             }
-//         });
-//     });
-// });
-//
-// $('#voucherModal').on('shown.bs.modal', function () {
-//     $(this).find('input, button, a').first().focus();
-// });
-//
-// $('#voucherModal').on('hidden.bs.modal', function () {
-//     $('#openModalButton').focus();
-// })

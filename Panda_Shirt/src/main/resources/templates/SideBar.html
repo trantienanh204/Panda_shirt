@@ -111,6 +111,10 @@
             <a class="nav-link" th:href="@{/panda/thongke}">
                 <i class="fa-solid fa-chart-simple" style="color: #ffffff;"></i> Thống kê </a>
         </li>
+        <li th:if="${role == 'admin'}" class="nav-item">
+            <a class="nav-link" th:href="@{/panda/qrsp}">
+                <i class="fa-solid fa-qrcode" style="color: #ffffff;"></i> Mã QRCODE </a>
+        </li>
 
 
 

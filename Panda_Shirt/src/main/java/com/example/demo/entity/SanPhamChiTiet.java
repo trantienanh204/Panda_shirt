@@ -26,8 +26,14 @@ public class SanPhamChiTiet {
     @Column(name = "SO_LUONG_SAN_PHAM_CHI_TIET")
     private Integer soluongsanpham;
 
+    @Column(name = "MA_SPCT")
+    private String maspct;
+
     @Column(name = "DON_GIA")
     private double dongia;
+
+//    @Column(name = "MA_QR")
+//    private byte[] qrspct;
 
     @Column(name = "MO_TA")
     private String mota;
@@ -72,6 +78,15 @@ public class SanPhamChiTiet {
         this.id = id;
     }
 
+    private transient String base64Image;
+
+    public String getBase64Imagespct() {
+        return base64Image;
+    }
+
+    public void setBase64Imagespct(String base64Image) {
+        this.base64Image = base64Image;
+    }
 
     @Column(name = "ANH_SAN_PHAM_CHI_TIET")
     private byte[] anhSanPhamChiTiet;

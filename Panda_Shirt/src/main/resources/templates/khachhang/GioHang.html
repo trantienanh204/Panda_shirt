@@ -54,7 +54,16 @@
         </div>
     </div>
 </nav>
-
+<div th:if="${message}">
+    <script th:inline="javascript">
+        Swal.fire({
+            title: 'Thông báo',
+            text:/*[[${message}]]*/,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    </script>
+</div>
 <div class="container mt-3" style="padding-bottom: 80px;">
     <h2 class="mb-4">Giỏ hàng</h2>
     <div th:if="${#lists.isEmpty(cartItems)}">
@@ -323,7 +332,22 @@
     });
 
 </script>
-
+</style>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+        integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script th:src="@{/Javascrip/diachi.js}"></script>
+<script th:src="@{/Javascrip/muahang.js}"></script>
+<script th:src="@{/Javascrip/chonvoucher.js}"></script>
+<script th:src="@{/Javascrip/quetmaqr.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

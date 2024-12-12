@@ -223,12 +223,14 @@ public class TKKhachHangController {
     // thay đổi trạng thái
     @GetMapping("/tkkhachhang/change")
     public String changeStatus(@RequestParam("id") int id, Model model, RedirectAttributes redirectAttributes) {
-        String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
+        String role = "admin";
         model.addAttribute("role", role);
 
         KhachHang khachHang = khachHangService.findById(id);
         if (khachHang != null) {
-            khachHang.toggleTrangThai(); // Đảo ngược trạng thái
+            khachHang.toggleTrangThai();
+            khachHang.toggledeleteat();
+            khachHang.toggletinhtrang();
             khachHangRepository.save(khachHang);
         }
         redirectAttributes.addFlashAttribute("ChangesStatusMessage", "Chuyển trạng thái thành công !");

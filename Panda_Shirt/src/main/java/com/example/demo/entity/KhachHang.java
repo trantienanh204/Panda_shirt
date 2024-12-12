@@ -40,13 +40,12 @@ public class KhachHang {
     @Column(name = "SO_DIEN_THOAI")
     private String sdt;
 
-    @NotBlank(message = "Địa chỉ không được để trống")
+//    @NotBlank(message = "Địa chỉ không được để trống")
     @Column(name = "DIA_CHI_CU_THE")
     private String diachi;
 
     @Column(name = "ID_TINH_THANH_PHO")
     private String tinhtp;
-
 
     @Column(name = "ID_QUAN_HUYEN")
     private String quanhuyen;
@@ -54,6 +53,14 @@ public class KhachHang {
     @Column(name = "ID_XA_PHUONG")
     private String xaphuong;
 
+    @Column(name = "TEN_TINH")
+    private String tentinh;
+
+    @Column(name = "TEN_HUYEN")
+    private String tenhuyen;
+
+    @Column(name = "TEN_XA")
+    private String tenxa;
 
     @NotBlank(message = "Tên khách hàng không được để trống")
     @Column(name = "TEN_KHACH_HANG")
@@ -75,7 +82,13 @@ public class KhachHang {
 
 
     public void toggleTrangThai() {
-        this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
+        this.trangthai = (this.trangthai == 0) ? 1 : 0;
+    }
+    public void toggledeleteat() {
+        this.delete = !this.delete;
+    }
+    public void toggletinhtrang() {
+        this.tinhtrang = (this.tinhtrang == null || !this.tinhtrang);
     }
 
 //    @ManyToOne
@@ -96,6 +109,6 @@ public class KhachHang {
     @Column(name = "TINH_TRANG")
     private Boolean tinhtrang;
     @OneToOne
-    @JoinColumn(name = "TEN_DANG_NHAP") // Tên cột khóa ngoại trong bảng KhachHang
+    @JoinColumn(name = "TEN_DANG_NHAP")
     private TaiKhoan taiKhoan;
 }

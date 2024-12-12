@@ -98,11 +98,12 @@ public class TrangChuController {
 
     @GetMapping("/giohang")
     public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        String tenDangNhap = userDetails.getUsername();
-        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
-        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-            return "redirect:/panda/login";
-        }
+//        String tenDangNhap = userDetails.getUsername();
+//        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+//        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+//            return "redirect:/panda/login";
+//        }
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap("A");
         int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
         List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
 

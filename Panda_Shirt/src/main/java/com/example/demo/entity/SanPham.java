@@ -1,11 +1,6 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,10 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "SAN_PHAM")
 
-//
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
-
 public class SanPham {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +29,7 @@ public class SanPham {
 
     @Column(name = "ANH_SAN_PHAM")
     private byte[] anhsp;
+
 
     @Column(name = "NGAY_TAO")
     private LocalDate ngaytao;
@@ -84,6 +76,18 @@ public class SanPham {
                 .map(SanPhamChiTiet::getDongia)
                 .min(Double::compareTo)
                 .orElse(0.0);
+    }
+
+
+
+    private transient String base64Image;
+
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
     }
 
 

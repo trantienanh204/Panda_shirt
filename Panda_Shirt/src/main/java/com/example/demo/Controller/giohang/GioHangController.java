@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -181,9 +182,11 @@ public class GioHangController {
 
 
     @GetMapping("/thanhtoan")
-    public String thanhToan(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        String tenDangNhap = userDetails.getUsername();
-        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+    public String thanhToan(Model model
+//            , @AuthenticationPrincipal UserDetails userDetails
+    ) {
+//        String tenDangNhap = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap("A");
         if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
             return "redirect:/login";
         }
@@ -222,17 +225,21 @@ public class GioHangController {
     @PostMapping("/thanhtoan")
     public String xuLyThanhToan(@RequestParam("totalAmount") String totalAmountStr,
                                 @RequestParam("selectedItems") String selectedItemsJson,
-                                Model model, @AuthenticationPrincipal UserDetails userDetails) {
+                                RedirectAttributes redirectAttributes,
+                                Model model
+//            , @AuthenticationPrincipal UserDetails userDetails
+    ) {
         try {
+
             // Chuyển đổi totalAmount từ chuỗi sang BigDecimal
             BigDecimal totalAmount = new BigDecimal(totalAmountStr);
 
-            String tenDangNhap = userDetails.getUsername();
-            TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
-            if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-                return "redirect:/login";
-            }
-
+//            String tenDangNhap = userDetails.getUsername();
+//            TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+//            if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+//                return "redirect:/login";
+//            }
+            TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap("A");
             // Chuyển đổi JSON thành danh sách Integer
             ObjectMapper objectMapper = new ObjectMapper();
             List<Integer> selectedItems = Arrays.asList(objectMapper.readValue(selectedItemsJson, Integer[].class));
@@ -257,6 +264,15 @@ public class GioHangController {
                 itemMap.put("id", item.getId());
                 itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
                 itemMap.put("soluong", item.getSoluong());
+                System.out.println("id spct " + item.getSanPhamChiTiet().getId());
+                System.out.println("so lg " + item.getSoluong());
+                SanPhamChiTiet spct = sanPhamChiTietRepository.findById(item.getSanPhamChiTiet().getId()).get();
+                if (item.getSoluong() > spct.getSoluongsanpham()) {
+                    model.addAttribute("message", "Không có sản phẩm nào được chọn.");
+                    redirectAttributes.addFlashAttribute("message", "số lương lớn");
+                    System.out.println("số lương lớn");
+                    return "redirect:/panda/giohang/thanhtoan";
+                }
 
                 if (item.getSanPhamChiTiet().getAnhSanPhamChiTiet() != null) {
                     String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getAnhSanPhamChiTiet());
@@ -283,7 +299,8 @@ public class GioHangController {
     public String xuLyHoaDon(@RequestParam double totalAmount,
                              @RequestParam String paymentMethod,
                              @RequestParam String note,
-                             @AuthenticationPrincipal UserDetails userDetails, Model model) {
+                             @AuthenticationPrincipal UserDetails userDetails,
+                             Model model) {
         String tenDangNhap = userDetails.getUsername();
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
 

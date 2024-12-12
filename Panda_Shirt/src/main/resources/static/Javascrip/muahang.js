@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     function checkCart() {
         const tableBody = $('#productTable tbody');
@@ -45,6 +46,12 @@ $(document).ready(function () {
                 },
                 error: function () {
                     alert('Lỗi tìm sản phẩm!');
+                    Swal.fire({
+                        title: 'Thông báo',
+                        text:'Lỗi tìm sản phẩm!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
         } else {
@@ -122,7 +129,7 @@ $(document).ready(function () {
             //      soluong = 1; // Nếu ô trống, đặt lại thành 1
             // } else
             if (isNaN(soluong) || parseInt(soluong) === 0) {
-                soluong = 1; // Nếu không phải là số hoặc < 1, đặt lại thành 1
+                soluong = 1;
             } else {
                 soluong = parseInt(soluong);
             }
@@ -143,11 +150,15 @@ $(document).ready(function () {
         const idHoaDonCT = inputElement.data('id'); // Lấy ID từ data-id
         const productId = inputElement.data('product');// Lấy ID từ data-product
         const row = $(this).closest('tr'); // Lấy hàng tương ứng
-        const dongia = parseFloat(row.find('td:nth-child(4)').text());
+        const dongia = parseFloat($('#giasp').text());
         const soluong = parseInt($(this).val()) || 1;
         console.log('ID HoaDonCT: ', idHoaDonCT);
         console.log('ID spct: ', productId);
+        console.log('sl: ', soluong);
+        console.log('đơn giá: ', dongia);
+
         const thanhtien = dongia * soluong;
+        console.log('thanhtien : ', thanhtien);
         row.find('.tong-tien').text(thanhtien.toFixed(2));
         $.ajax({
             url: '/panda/banhangoffline/update',
@@ -166,18 +177,14 @@ $(document).ready(function () {
                 }, 1000);
             },
             error: function (xhr) {
-                // Xử lý lỗi từ server
                 const errorMessage = xhr.responseText || 'Có lỗi xảy ra';
-                // alert(errorMessage);
                 Swal.fire({
                     title: 'Cảnh báo!',
                     text: errorMessage,
                     icon: 'warning',
                     confirmButtonText: 'OK'
                 });
-
                 inputElement.val(previousValue);
-
                 // Hiển thị lại thành tiền cũ
                 const previousTotal = dongia * previousValue;
                 row.find('.tong-tien').text(previousTotal.toFixed(2));
@@ -232,7 +239,7 @@ function updateProductList() {
             updateProductListUI(data);
         })
         .catch(error => {
-            console.error('Error fetching product list:', error);
+            console.error('Lỗi danh sách sản phẩm:', error);
         });
 }
 
@@ -254,7 +261,7 @@ function updateProductListUI(products) {
             dongia: parts[4],
             tenChatLieu: parts[5],
             soluongsanpham: parts[6],
-            hinhanh: parts[6],
+            hinhanh: parts[7],
         };
         productHTML += `    
             <div class="product-row" style="display: flex; gap: 10px; border-bottom: 1px solid #ddd; padding: 10px;">
@@ -264,7 +271,10 @@ function updateProductListUI(products) {
                     <h4 style="font-size: 16px; font-weight: bold;">${index + 1}</h4>
                 </div>
                 <div class="product-image" style="flex: 1; text-align: center;">
-                    <img th:src="@{/Image/panda_logo.png}" alt="Sản phẩm" style="max-width: 120px; height: auto;">
+                  <div>            
+                  <img src="data:image/jpeg;base64,${spct.hinhanh}"  class="img-fluid main-image"
+                                                  alt="Áo Thun Chi Tiết" style="max-width: 120px; height: auto;">            
+                  </div>
                 </div>
                 <div class="product-details" style="flex: 2; text-align: left; font-size: 14px;">
                     <h4 style="font-size: 17px; font-weight: bold;">${spct.tensp} [ ${spct.mausac} - ${spct.kichthuoc} ]</h4>
@@ -295,15 +305,11 @@ function updateProductListUI(products) {
 
 $(document).on('click', '.product-action button', function (event) {
     event.preventDefault();
-
-    // Lấy giá trị idspct từ input hidden trong cùng phần tử cha
     const productId = $(this).closest('.product-row').find('input[name="idspct"]').val();
     const productdongia = $(this).closest('.product-row').find('input[name="dongia"]').val();
 
     if (productId) {
         console.log('ID Sản phẩm:', productId);
-
-        // Tiến hành các hành động khác, ví dụ như gọi API để thêm vào giỏ hàng hoặc xử lý khác
         $.ajax({
             url: '/panda/banhangoffline/taohdct',
             method: 'POST',
@@ -314,22 +320,28 @@ $(document).on('click', '.product-action button', function (event) {
                 soLuong: 1,
                 thanhTien: productdongia
             }),
+
             success: function (response) {
-                console.log('Dữ liệu gửi thành công:', response);
-                location.reload();
+                    console.log('Dữ liệu gửi thành công:', response);
+                    location.reload();
             },
             error: function (xhr, status, error) {
-                console.error('Lỗi khi gửi dữ liệu:', error);
+                console.log('Lỗi khi gửi dữ liệu:', xhr.responseText);
                 Swal.fire({
                     title: 'Thông báo',
-                    text:"Chưa chọn hóa đơn",
+                    text:xhr.responseText,
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             }
         });
     } else {
-        console.error('ID sản phẩm không được xác định');
+        console.error('ID sản phẩm không được xác định');Swal.fire({
+            title: 'Thông báo',
+            text:'ID sản phẩm không được xác định',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
     }
 });
 
@@ -353,7 +365,7 @@ function findkhachhang() {
             lishkhachhang(data);
         })
         .catch(error => {
-            console.error('Error fetching product list:', error);
+            console.error('Lỗi tải dữ liệu', error);
         });
 }
 
@@ -441,6 +453,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
 
 

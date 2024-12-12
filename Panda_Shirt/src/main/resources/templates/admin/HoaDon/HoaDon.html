@@ -52,7 +52,8 @@
             <th>Mã hóa đơn</th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
-            <th>Tổng tiền</th>
+            <th>Giảm giá</th>
+            <th>Thành tiền</th>
             <th>Ngày mua</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
@@ -67,7 +68,8 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-            <td th:text="${hd.tongtien}"></td>
+            <td th:text="${hd.giagiam == '0' ? '0 VND' : hd.giagiam }"></td>
+            <td th:text="${hd.getFormatthanhtien}"></td>
             <td th:text="${hd.ngaymua}"></td>
             <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
@@ -123,7 +125,18 @@
         <div class="modal-content">
             <div th:fragment="hdct">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h5>
+                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4><br>
+                    <div th:if="${hoadon != null && hoadon.khachHang != null}">
+                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.makhachhang != null
+                        ? hoadon.khachHang.tenkhachhang : 'Mua tại quầy'}"></span> <br>
+                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>
+                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tentinh != null ? hoadon.khachHang.tentinh.trim() : '')
+                         ? '' : '- ' + hoadon.khachHang.tentinh}"></span>
+                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tenhuyen != null ? hoadon.khachHang.tenhuyen.trim() : '')
+                        ? '' : '- ' + hoadon.khachHang.tenhuyen}"></span>
+                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tenxa != null ? hoadon.khachHang.tenxa.trim() : '')
+                        ? '' : '- ' + hoadon.khachHang.tenxa}"></span>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <table>
@@ -156,17 +169,18 @@
 
 <script>
     $(document).ready(function() {
-        $('#xemhoadon').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Nhận thông tin từ nút kích hoạt modal
-            var id = button.data('id'); // Lấy ID của hóa đơn
+        $('#xemhoadon').on('show.bs.modal', function(event) {
+            var modal = $(this);
+            modal.find('.modal-content').html(''); // Xóa nội dung cũ
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
 
-            // Gửi yêu cầu AJAX để lấy chi tiết hóa đơn
+            // Gửi yêu cầu AJAX
             $.get('/panda/hoadon/chitiet', { id: id }, function(data) {
-                var modal = $('#xemhoadon');
-                modal.find('.modal-body').html(data); // Chèn nội dung vào modal body
-
+                modal.find('.modal-content').html(data); // Chèn nội dung mới
             });
         });
+
     });
 </script>
 <script>
@@ -194,6 +208,20 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <style>
+    .modal-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .modal-header .modal-title {
+        margin-bottom: 10px;
+    }
+
+    .modal-header div {
+        margin-bottom: 5px;
+    }
     * {
         box-sizing: border-box;
         padding: 0;
@@ -291,17 +319,22 @@
     }
 
     .status-label {
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: white;
+        display: inline-block; /* Đảm bảo chiều rộng và chiều cao áp dụng */
+        width: 100px; /* Đặt chiều rộng cố định */
+        text-align: center; /* Căn giữa nội dung */
+        padding: 5px 0; /* Tùy chỉnh khoảng cách bên trong */
+        border-radius: 5px; /* Tùy chọn, tạo góc bo */
+        font-weight: bold; /* In đậm nội dung */
     }
 
     .status-green {
-        background-color: #4CAF50;
+        background-color: #28a745; /* Màu xanh lá */
+        color: white; /* Màu chữ */
     }
 
     .status-orange {
-        background-color: #ff9800;
+        background-color: #ffc107; /* Màu cam */
+        color: black; /* Màu chữ */
     }
 
     .action-icons {

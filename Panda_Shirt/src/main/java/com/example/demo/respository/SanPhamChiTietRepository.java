@@ -59,5 +59,7 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             "OR LOWER(spct.sanPham.masp) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<SanPhamChiTiet> timtenspvama(@Param("keyword") String keyword);
 
+    SanPhamChiTiet findByMaspct(String ma);
+
 }
 
