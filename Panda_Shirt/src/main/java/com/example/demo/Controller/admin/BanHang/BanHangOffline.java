@@ -510,7 +510,7 @@ public class BanHangOffline {
         }
 
         if (sdt.isBlank()) {
-            KhachHang kh1 = khachHangRepository.findById(1).orElse(null);
+            KhachHang kh1 = khachHangRepository.findById(9).orElse(null);
             if (kh1 != null) {
                 System.out.println("Khách hàng mặc định");
                 hd.setKhachHang(kh1);

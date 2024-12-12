@@ -38,12 +38,10 @@ public class XemHoaDonController {
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
                           @RequestParam(value = "nv", required = false) String nv,
-                          @RequestParam(value = "sdt", required = false) String sdt,
                           @RequestParam(value = "tenkh", required = false) String tenkh,
                           @RequestParam(value = "trangThai", required = false) Integer trangThai,
                           Model model){
         System.out.println("mahd: " + mahd);
-        System.out.println("sdt: " + sdt);
         System.out.println("tenkh: " + tenkh);
         System.out.println("trangThai: " + trangThai);
 
@@ -53,13 +51,13 @@ public class XemHoaDonController {
         if (page < 0) {
             page = 0;
         }
-        Page<HoaDon> listHD = hoaDonService.hienThiHD(page,mahd, nv, sdt , tenkh, trangThai);
+        Page<HoaDon> listHD = hoaDonService.hienThiHD(page,mahd, nv , tenkh, trangThai);
         model.addAttribute("totalPage", listHD.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("lshd",listHD.getContent());
         model.addAttribute("mahd", mahd);
         model.addAttribute("nv", nv);
-        model.addAttribute("sdt", sdt);
+
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listHD.getSize());

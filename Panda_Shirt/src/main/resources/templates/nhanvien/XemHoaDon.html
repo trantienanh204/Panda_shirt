@@ -21,10 +21,6 @@
                 <input type="text" name="nv" th:value="${nv}" placeholder="Mã hóa đơn">
             </div>
             <div class="filter-input">
-                <label>Số điện thoại</label>
-                <input type="text" name="sdt" th:value="${sdt}" placeholder="Số điện thoại">
-            </div>
-            <div class="filter-input">
                 <label>Tên khách hàng</label>
                 <input type="text" name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng ">
             </div>
@@ -74,7 +70,7 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-            <td th:text="${hd.khachHang.sdt}"></td>
+            <td th:text="${hd.khachHang.sdt==null ?'Trống':hd.khachHang.sdt}"></td>
             <td th:text="${#numbers.formatDecimal(hd.tongtien, 1, 'POINT',0, 'COMMA')}"></td>
             <td th:text="${hd.ngaymua}"></td>
             <td th:text="${hd.hinhthucmuahang != null ?'Trực tuyến':'Trực tiếp'}"></td>
@@ -103,7 +99,7 @@
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
 
-                   th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},nv=${nv},sdt=${sdt},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},nv=${nv},tenkh=${tenkh}, trangThai=${trangthai})}"
 
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
@@ -120,7 +116,7 @@
             <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
 
-                   th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage + 1}, mahd=${mahd},sdt=${sdt},nv=${nv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/nhanvien/xemhoadon/hienthi(page=${currentPage + 1}, mahd=${mahd},nv=${nv},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
