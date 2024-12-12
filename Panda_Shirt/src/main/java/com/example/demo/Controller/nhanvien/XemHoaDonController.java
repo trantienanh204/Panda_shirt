@@ -108,6 +108,8 @@ public class XemHoaDonController {
     public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
         List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
         model.addAttribute("hoaDonCTs", hoaDonCT);
+        HoaDon HD = hoaDonRepository.findById(id).orElse(null);
+        model.addAttribute("giagiam",HD);
 //        HoaDon hoaDon = hoaDonRepository.finid(15);
 //        model.addAttribute("hoaDon", hoaDon);
         return "/nhanvien/XemHoaDon :: chiTiet"; // Trả về fragment HTML
