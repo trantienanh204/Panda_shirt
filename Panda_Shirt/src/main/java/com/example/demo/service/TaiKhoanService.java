@@ -56,7 +56,7 @@ public class TaiKhoanService {
             KhachHang khachHang = taiKhoan.getKhachHang();
             KhachHangDTO khachHangDTO = khachHang != null ? convertToKhachHangDTO(khachHang) : null;
             if (khachHangDTO != null) {
-                System.out.println("Tê khách hàng: " + khachHangDTO.getTenkhachhang());
+                System.out.println("Tên khách hàng: " + khachHangDTO.getTenkhachhang());
             } else {
                 System.out.println("Không tìm thấy khách hàng cho tài khoản: " + taiKhoan.getTenDangNhap());
             }

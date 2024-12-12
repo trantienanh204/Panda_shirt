@@ -14,7 +14,7 @@
             }
             // Gán URL ảnh mã QR vào thẻ img
             const qrCodeImage = document.getElementById('qrCodeImage');
-            qrCodeImage.src = url;  // URL là chuỗi Base64 của mã QR
+            qrCodeImage.src = url;
         });
     }
 
