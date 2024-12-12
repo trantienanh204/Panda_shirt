@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
     @Service
@@ -52,17 +54,75 @@ import java.util.Optional;
                 return gioHangRepository.save(newCartItem);
             }
         }
+        public double updateQuantity(int khachHangId, int gioHangId, int quantity) {
+            GioHang gioHang = gioHangRepository.findByKhachHangIdAndId(khachHangId, gioHangId);
+            if (gioHang != null) {
+                int availableQuantity = gioHang.getSanPhamChiTiet().getSoluongsanpham();
+                if (quantity > availableQuantity) {
+                    quantity = availableQuantity;
+                }
 
+                gioHang.setSoluong(quantity);
+                gioHangRepository.save(gioHang);
 
-        public List<GioHang> getCartItems(int khachHangId) {
-            return gioHangRepository.findByKhachHangId(khachHangId);
+                double newPrice = gioHang.getSanPhamChiTiet().getDongia() * quantity;
+                return newPrice;
+            } else {
+                throw new RuntimeException("Product not found in the cart.");
+            }
         }
 
-        public void updateQuantity(int khachHangId, int sanPhamChiTietId, int quantity) { GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId); if (gioHang != null) { gioHang.setSoluong(quantity); gioHangRepository.save(gioHang); } else { throw new RuntimeException("Product not found in the cart."); } } public void deleteFromCart(int khachHangId, int sanPhamChiTietId) { GioHang gioHang = gioHangRepository.findByKhachHangIdAndSanPhamChiTietId(khachHangId, sanPhamChiTietId); if (gioHang != null) { gioHangRepository.delete(gioHang); } else { throw new RuntimeException("Product not found in the cart."); } }
 
-        public void clearCart(int khachHangId) { List<GioHang> cartItems = gioHangRepository.findByKhachHangId(khachHangId);
+
+        public void deleteFromCart(int khachHangId, int gioHangId) {
+                GioHang gioHang = gioHangRepository.findByKhachHangIdAndId(khachHangId, gioHangId);
+                if (gioHang != null) {
+                    gioHangRepository.delete(gioHang);
+                } else {
+                    throw new RuntimeException("Product not found in the cart.");
+                }
+            }
+
+        public List<GioHang> getCartItems(int khachHangId) {
+                return gioHangRepository.findByKhachHangId(khachHangId);
+            }
+
+
+            public Map<String, Object> checkQuantity(Integer sizeId, Integer colorId, Integer productId) {
+                Map<String, Object> response = new HashMap<>();
+                SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findByKichThuocIdAndMauSacIdAndSanPhamId(sizeId, colorId, productId);
+
+                if (sanPhamChiTiet != null) {
+                    response.put("availableQuantity", sanPhamChiTiet.getSoluongsanpham());
+                    response.put("sanPhamChiTietId", sanPhamChiTiet.getId());
+                } else {
+                    response.put("availableQuantity", 0);
+                }
+
+                return response;
+            }
+
+
+            public boolean checkInventory(List<Integer> selectedItems) {
+                for (Integer itemId : selectedItems) {
+                    GioHang item = gioHangRepository.findById(itemId).orElse(null);
+                    if (item != null) {
+                        int availableQuantity = item.getSanPhamChiTiet().getSoluongsanpham();
+                        if (item.getSoluong() > availableQuantity) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+
+
+        public void clearCart(int khachHangId) {
+            List<GioHang> cartItems = gioHangRepository.findByKhachHangId(khachHangId);
             if (cartItems != null && !cartItems.isEmpty())
             { gioHangRepository.deleteAll(cartItems); } }
+
         public List<GioHang> getCartItemsByIds(int khachHangId, List<Integer> itemIds) { return gioHangRepository.findAllByIdInAndKhachHangId(itemIds, khachHangId); }
 
     }

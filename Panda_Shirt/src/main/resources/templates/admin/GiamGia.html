@@ -94,7 +94,7 @@
             <td th:text="${vc.soLuong}"></td>
             <td th:text="${vc.formattedMucGiam}"></td>
             <td th:text="${vc.loai == true ? '%':'VND'}"></td>
-            <td th:text="${vc.loaikhachhang == true ? 'Cộng đồng':'Cá nhân'}"></td>
+            <td th:text="${vc.loaikhachhang == true ? 'Mọi người':'Cá nhân'}"></td>
             <td th:text="${vc.ngaybatdau != null ? #temporals.format(vc.ngaybatdau, 'dd/MM/yyyy') : ''}"></td>
             <td th:text="${vc.ngayketthuc != null ? #temporals.format(vc.ngayketthuc, 'dd/MM/yyyy') : ''}"></td>
             <td>
@@ -158,9 +158,9 @@
                     <button class="btn btn-primary" onclick="searchInModal()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
                 <div class="form-group">
-                    <label for="voucherId">Chọn Voucher</label>
+                    <label for="voucherId">Chọn mã</label>
                     <select class="form-control" id="voucherId" name="voucherId">
-                        <option value="" disabled selected>-- Chọn Voucher --</option>
+                        <option value="" disabled selected>-- Chọn mã --</option>
                         <tr th:each="voucher : ${chonmavc}"> <!-- Giả sử bạn đã có danh sách voucher -->
                             <option th:value="${voucher.id}" th:text="${voucher.ma}"></option>
                         </tr>

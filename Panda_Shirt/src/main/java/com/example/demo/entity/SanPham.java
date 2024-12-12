@@ -41,7 +41,7 @@ public class SanPham {
     private Integer soluongsp;
 
     @Column(name = "TRANG_THAI")
-    private Integer trangthai;
+    private int trangthai;
 
     @ManyToOne
     @JoinColumn(name = "ID_DANH_MUC", referencedColumnName = "id")
@@ -80,15 +80,17 @@ public class SanPham {
 
 
 
-    private transient String base64Image;
 
-    public String getBase64Image() {
-        return base64Image;
-    }
+        private transient String base64Image;
 
-    public void setBase64Image(String base64Image) {
-        this.base64Image = base64Image;
-    }
+        public String getBase64Image() {
+            return base64Image;
+        }
+
+        public void setBase64Image(String base64Image) {
+            this.base64Image = base64Image;
+        }
+
 
 
 

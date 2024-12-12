@@ -1,4 +1,5 @@
 
+
 $(document).ready(function () {
     function checkCart() {
         const tableBody = $('#productTable tbody');

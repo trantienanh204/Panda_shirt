@@ -10,6 +10,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -55,7 +56,6 @@
     </div>
 </nav>
 <!-- Main Section -->
-<!-- Main Section -->
 <div class="container my-5">
     <h2 class="text-center mb-5">Tài Khoản Của Tôi</h2>
 
@@ -76,11 +76,44 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Thông Tin Của Bạn</h5>
-                    <p><strong>Họ và Tên:</strong> John Doe</p>
-                    <p><strong>Email:</strong> johndoe@example.com</p>
-                    <p><strong>Số điện thoại:</strong> +84 123 456 789</p>
-                    <p><strong>Địa chỉ:</strong> 1234 Example Street, City, Country</p>
-                    <a href="#" class="btn btn-primary">Cập Nhật Thông Tin</a>
+                    <p><strong>Họ và Tên:</strong> <span th:text="${khachHang.tenkhachhang}">John Doe</span>
+                    </p> <p><strong>Email:</strong> <span th:text="${khachHang.tentaikhoan}">johndoe@example.com</span>
+                    <p><strong>Số điện thoại:</strong> <span th:text="${khachHang.sdt}">+84 123 456 789</span></p>
+                    <p><strong>Địa chỉ:</strong> <span th:text="${khachHang.diachi}">1234 Example Street, City, Country</span></p></p>
+                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateInfoModal">Cập Nhật Thông Tin</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="updateInfoModal" tabindex="-1" aria-labelledby="updateInfoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateInfoModalLabel">Cập Nhật Thông Tin</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateInfoForm">
+                            <div class="mb-3">
+                                <label for="updateName" class="form-label">Họ và Tên</label>
+                                <input type="text" class="form-control" id="updateName" placeholder="Nhập họ và tên">
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatePhone" class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control" id="updatePhone" placeholder="Nhập số điện thoại">
+                            </div>
+                            <div class="mb-3">
+                                <label for="searchBox" class="form-label">Địa chỉ</label>
+                                <input type="text" class="form-control" id="searchBox" placeholder="Nhập địa chỉ">
+                                <ul id="suggestions" class="list-group mt-2"></ul>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button id="submitButton" type="button" class="btn btn-primary">Lưu Thay Đổi</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,42 +152,16 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Đơn Hàng 1</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                    <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
-                                    </td>
-                                </tr><tr>
-                                    <td>Đơn Hàng 2</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                    <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
-                                    </td>
-                                </tr><tr>
-                                    <td>Đơn Hàng 3</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                    <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
-                                    </td>
-                                </tr><tr>
-                                    <td>Đơn Hàng 4</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                    <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
-                                    </td>
-                                </tr><tr>
-                                    <td>Đơn Hàng 5</td>
-                                    <td>15/11/2024</td>
-                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
+                                <tr th:each="donHang : ${choduyet}">
+                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td>
                                         <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
                                     </td>
@@ -176,14 +183,16 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Đơn Hàng #124</td>
-                                    <td>16/11/2024</td>
-                                    <td><span class="badge bg-success">Đã duyệt</span></td>
+                                <tr th:each="donHang : ${daduyet}">
+                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -203,14 +212,16 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Đơn Hàng #125</td>
-                                    <td>17/11/2024</td>
-                                    <td><span class="badge bg-primary">Đang giao</span></td>
+                                <tr th:each="donHang : ${danggiao}">
+                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -230,14 +241,16 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Đơn Hàng #126</td>
-                                    <td>18/11/2024</td>
-                                    <td><span class="badge bg-success">Hoàn thành</span></td>
+                                <tr th:each="donHang : ${hoanthanh}">
+                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -257,14 +270,16 @@
                                     <th>Đơn Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Tổng tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Đơn Hàng #127</td>
-                                    <td>19/11/2024</td>
-                                    <td><span class="badge bg-danger">Đã hủy</span></td>
+                                <tr th:each="donHang : ${dahuy}">
+                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
+                                    <td th:text="${donHang.tongtien}"></td>
                                     <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
                                 </tr>
                                 </tbody>
@@ -280,7 +295,7 @@
 
 
 <!-- Footer -->
-<footer class="bg-dark text-white text-center py-4">
+<footer class="bg-dark text-white text-center py-4" style="margin-top: 150px">
     <p>&copy; 2024 Bán Áo. All rights reserved.</p>
     <ul class="list-inline">
         <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a></li>
@@ -378,10 +393,124 @@
         list-style: none;
         margin: 5px 0;
     }
+    #updateInfoModal .form-label {
+        font-weight: bold;
+    }
+
 </style>
+<style>
+    #suggestions {
+        position: absolute;
+        z-index: 1000;
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    #suggestions li {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    #suggestions li:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+
 <!-- Bootstrap JS and FontAwesome -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script>
+    function updateInfo() {
+        const name = document.getElementById("updateName").value;
+        const phone = document.getElementById("updatePhone").value;
+        const address = document.getElementById("updateAddress").value;
 
+
+        console.log("Họ và Tên:", name);
+        console.log("Số điện thoại:", phone);
+        console.log("Địa chỉ:", address);
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('updateInfoModal'));
+        modal.hide();
+    }
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const API_KEY = "hXNlf8DeExDWSmhMJljrGfTMspYo5xO5Uix1qHbn";
+        const AUTOCOMPLETE_URL = "https://rsapi.goong.io/Place/AutoComplete";
+        const searchBox = document.getElementById('searchBox');
+        const suggestionsList = document.getElementById('suggestions');
+        let selectedAddress = "";
+
+        searchBox.addEventListener('input', function () {
+            const query = this.value;
+
+            if (query.trim() === "") {
+                suggestionsList.innerHTML = "";
+                return;
+            }
+
+            fetch(`${AUTOCOMPLETE_URL}?api_key=${API_KEY}&input=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsList.innerHTML = "";
+                    data.predictions.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.description;
+                        li.classList.add('list-group-item');
+                        li.style.cursor = 'pointer';
+                        li.onclick = () => {
+                            searchBox.value = item.description;
+                            selectedAddress = item.description;
+                            suggestionsList.innerHTML = "";
+                        };
+                        suggestionsList.appendChild(li);
+                    });
+                })
+                .catch(err => console.error("Lỗi:", err));
+        });
+
+        document.getElementById('submitButton').addEventListener('click', () => {
+            const recipientName = document.getElementById('updateName').value;
+            const phoneNumber = document.getElementById('updatePhone').value;
+            const address = selectedAddress;
+            if (!recipientName || !phoneNumber || !selectedAddress) {
+                Swal.fire("Lỗi", "Vui lòng nhập đầy đủ thông tin!", "error");
+                return;
+            }
+
+            const dataToSend = { recipientName,
+                phoneNumber,
+                fullAddress: address };
+
+            fetch('/diachi/api/save-address', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "Địa chỉ đã được lưu thành công") {
+                        Swal.fire("Thành công!", "Địa chỉ đã được lưu!", "success");
+                        location.reload()
+                    } else {
+                        Swal.fire("Lỗi", "Không thể lưu địa chỉ!", "error");
+                    }
+                })
+                .catch(err => {
+                    Swal.fire("Lỗi", "Không thể kết nối đến server!", "error");
+                });
+        });
+    });
+</script>
 </body>
 </html>

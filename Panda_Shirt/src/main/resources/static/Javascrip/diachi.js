@@ -1,3 +1,4 @@
+
 const host = "https://provinces.open-api.vn/api/";
 var callAPI = (api) => {
     return axios.get(api)
@@ -109,3 +110,4 @@ $(document).ready(() => {
         $("#result").text(result)
     }
 });
+

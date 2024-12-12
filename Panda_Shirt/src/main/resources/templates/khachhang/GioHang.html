@@ -2,6 +2,8 @@
 
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panda-Shirt</title>
@@ -100,7 +102,7 @@
                     <td th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</td>
                     <td th:text="${item.sanPhamChiTiet.mauSac.ten}">Màu sắc</td>
                     <td th:text="${item.sanPhamChiTiet.kichThuoc.ten}">Kích thước</td>
-                    <td th:text="${item.sanPhamChiTiet.dongia}">Giá</td>
+                    <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.dongia, 1, 'POINT',0, 'COMMA') + '₫'}">Giá</td>
                     <td>
                         <input type="number" class="form-control quantity-input" th:value="${item.soluong}" style="width: 60px;">
                     </td>
@@ -111,7 +113,7 @@
                 </tbody>
             </table>
             <div class="text-right">
-                <p>Tổng tiền: <span id="totalPrice">0</span> VND</p>
+                <p>Tổng tiền: <span id="totalPrice">0</span></p>
                 <button type="button" class="btn btn-primary" id="buyButton" style="display: none;">Thanh Toán</button>
             </div>
         </form>
@@ -207,10 +209,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const buyButton = document.getElementById('buyButton');
         const totalPriceElement = document.getElementById('totalPrice');
+        const cartMessageElement = document.getElementById('cartMessage'); // Element to show empty cart message
+        const cartTableElement = document.querySelector('table'); // Select cart table
 
         if (!buyButton) {
             console.error("Element with id 'buyButton' not found in DOM");
@@ -221,54 +225,101 @@
             let totalPrice = 0;
             checkboxes.forEach(checkbox => {
                 if (checkbox.checked) {
-                    totalPrice += parseFloat(checkbox.getAttribute('data-price'));
+                    const price = checkbox.getAttribute('data-price');
+                    const parsedPrice = parseFloat(price);
+                    if (!isNaN(parsedPrice)) {
+                        totalPrice += parsedPrice;
+                    }
                 }
             });
-            totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN');
+            totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
         }
 
-        function handleQuantityChange(event) {
-            const quantity = parseInt(event.target.value, 10); // Chuyển đổi sang Integer
-            const sanPhamChiTietId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10); // Chuyển đổi sang Integer
+        function handleQuantityInput(event) {
+            let quantity = parseInt(event.target.value, 10);
+            const maxQuantity = parseInt(event.target.getAttribute('data-max-quantity'), 10);
+
+            if (quantity < 1) {
+                quantity = 1;
+            } else if (quantity > maxQuantity) {
+                alert('Số lượng sản phẩm vượt quá số lượng tồn kho!');
+                quantity = maxQuantity;
+            }
+
+            event.target.value = quantity; // Đảm bảo giá trị trên giao diện được cập nhật
+
+            const gioHangId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10);
 
             $.ajax({
                 type: 'POST',
                 url: '/panda/giohang/updateQuantity',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    sanPhamChiTietId: sanPhamChiTietId,
+                    gioHangId: gioHangId,
                     quantity: quantity
                 }),
                 success: function(response) {
+                    const checkbox = document.getElementById('product' + gioHangId);
+                    checkbox.setAttribute('data-price', response.newPrice);
                     updateTotalPrice();
-                    const checkbox = document.getElementById('product' + sanPhamChiTietId);
-                    checkbox.setAttribute('data-price', response.newPrice * quantity);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText);
-                    alert('Có lỗi khi cập nhật số lượng!');
+                    alert('Có lỗi khi cập nhật số lượng! ' + xhr.responseText);
+                }
+            });
+        }
+
+        function handleQuantityBlur(event) {
+            let quantity = parseInt(event.target.value, 10);
+            const maxQuantity = parseInt(event.target.getAttribute('data-max-quantity'), 10);
+
+            if (quantity > maxQuantity) {
+                alert('Số lượng sản phẩm vượt quá số lượng tồn kho!');
+                event.target.value = maxQuantity;
+            }
+
+            const gioHangId = parseInt(event.target.closest('tr').querySelector('input[type="checkbox"]').id.replace('product', ''), 10);
+
+            $.ajax({
+                type: 'POST',
+                url: '/panda/giohang/updateQuantity',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    gioHangId: gioHangId,
+                    quantity: quantity
+                }),
+                success: function(response) {
+                    const checkbox = document.getElementById('product' + gioHangId);
+                    checkbox.setAttribute('data-price', response.newPrice);
+                    updateTotalPrice();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    alert('Có lỗi khi cập nhật số lượng! ' + xhr.responseText);
                 }
             });
         }
 
         function handleDeleteClick(event) {
             const row = event.target.closest('tr');
-            const sanPhamChiTietId = parseInt(row.querySelector('input[type="checkbox"]').id.replace('product', ''), 10); // Chuyển đổi sang Integer
+            const gioHangId = parseInt(row.querySelector('input[type="checkbox"]').id.replace('product', ''), 10);
 
             $.ajax({
                 type: 'POST',
                 url: '/panda/giohang/delete',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    sanPhamChiTietId: sanPhamChiTietId
+                    gioHangId: gioHangId
                 }),
                 success: function(response) {
                     row.remove();
                     updateTotalPrice();
+                    location.reload();
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText);
-                    alert('Có lỗi khi xóa sản phẩm!');
+                    alert('Có lỗi khi xóa sản phẩm! ' + xhr.responseText);
                 }
             });
         }
@@ -276,7 +327,9 @@
         function addEventListeners() {
             const quantityInputs = document.querySelectorAll('.quantity-input');
             quantityInputs.forEach(input => {
-                input.addEventListener('change', handleQuantityChange);
+                input.setAttribute('data-max-quantity', input.value); // Cập nhật giá trị tối đa từ server
+                input.addEventListener('input', handleQuantityInput); // Sử dụng sự kiện input
+                input.addEventListener('blur', handleQuantityBlur); // Sử dụng sự kiện blur để kiểm tra lại
             });
 
             const deleteButtons = document.querySelectorAll('.delete-button');
@@ -298,7 +351,7 @@
                 const selectedItems = [];
                 checkboxes.forEach(checkbox => {
                     if (checkbox.checked) {
-                        selectedItems.push(parseInt(checkbox.id.replace('product', ''), 10)); // Chuyển đổi sang Integer
+                        selectedItems.push(parseInt(checkbox.id.replace('product', ''), 10));
                     }
                 });
 
@@ -307,47 +360,49 @@
                     return;
                 }
 
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/panda/giohang/thanhtoan';
+                // AJAX request để kiểm tra số lượng tồn kho trước khi thanh toán
+                $.ajax({
+                    type: 'POST',
+                    url: '/panda/giohang/checkInventory',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ selectedItems: selectedItems }),
+                    success: function(response) {
+                        if (response.valid) {
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = '/panda/giohang/thanhtoan';
 
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'selectedItems';
-                input.value = JSON.stringify(selectedItems);
-                form.appendChild(input);
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'selectedItems';
+                            input.value = JSON.stringify(selectedItems);
+                            form.appendChild(input);
 
-                const totalAmountInput = document.createElement('input');
-                totalAmountInput.type = 'hidden';
-                totalAmountInput.name = 'totalAmount';
-                totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
-                form.appendChild(totalAmountInput);
+                            const totalAmountInput = document.createElement('input');
+                            totalAmountInput.type = 'hidden';
+                            totalAmountInput.name = 'totalAmount';
+                            totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
+                            form.appendChild(totalAmountInput);
 
-                document.body.appendChild(form);
-                form.submit();
+                            document.body.appendChild(form);
+                            form.submit();
+                        } else {
+                            alert('Số lượng sản phẩm trong giỏ hàng vượt quá số lượng tồn kho.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Có lỗi xảy ra khi kiểm tra tồn kho!');
+                    }
+                });
             });
         }
 
         addEventListeners();
     });
-
 </script>
-</style>
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
-        integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script th:src="@{/Javascrip/diachi.js}"></script>
-<script th:src="@{/Javascrip/muahang.js}"></script>
-<script th:src="@{/Javascrip/chonvoucher.js}"></script>
-<script th:src="@{/Javascrip/quetmaqr.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 </body>
 
 </html>

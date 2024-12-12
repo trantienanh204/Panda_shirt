@@ -1,3 +1,4 @@
+
 package com.example.demo.entity;
 import jakarta.persistence.*;
 
@@ -112,3 +113,4 @@ public class KhachHang {
     @JoinColumn(name = "TEN_DANG_NHAP")
     private TaiKhoan taiKhoan;
 }
+

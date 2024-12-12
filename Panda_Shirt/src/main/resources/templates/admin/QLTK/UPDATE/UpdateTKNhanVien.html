@@ -79,7 +79,7 @@
 
                     <div class="form-group">
                         <label for="tennhanvien"> Họ Tên:</label>
-                        <input type="text" class="form-control" id="tennhanvien" th:field="*{tennhanvien}" required>
+                        <input type="text" class="form-control" id="tennhanvien" th:field="*{tennhanvien}">
                         <div th:if="${#fields.hasErrors('tennhanvien')}" class="text-danger">
                             <span th:errors="*{tennhanvien}"></span>
                         </div>
@@ -99,6 +99,9 @@
                         <input type="email" class="form-control" id="tentaikhoan" th:field="*{tentaikhoan}" required>
                         <div th:if="${#fields.hasErrors('tentaikhoan')}" class="text-danger">
                             <span th:errors="*{tentaikhoan}"></span>
+                        </div>
+                        <div th:if="${emailExist!= null}">
+                            <div style="color: red" th:each="error : ${emailExist}" th:text="${error}"></div>
                         </div>
                     </div>
 

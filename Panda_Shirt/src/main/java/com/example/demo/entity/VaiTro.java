@@ -21,4 +21,6 @@ public class VaiTro {
     private String tenVaiTro;
 
 
+
 }
+

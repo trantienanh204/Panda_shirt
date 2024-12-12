@@ -1,5 +1,15 @@
 package com.example.demo.Controller.khachhang;
 
+
+import com.example.demo.DTO.KhachHangDTO;
+import com.example.demo.DTO.TaiKhoanDTO;
+import com.example.demo.entity.*;
+import com.example.demo.respository.KhachHangRepository;
+import com.example.demo.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.GioHangService;
@@ -7,7 +17,11 @@ import com.example.demo.service.SanPhamService;
 import com.example.demo.service.TaiKhoanService;
 import com.example.demo.service.TrangchuService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,13 +34,22 @@ import java.util.stream.Collectors;
 @RequestMapping("/panda/")
 public class TrangChuController {
     @Autowired
-    TrangchuService trangchuService;
+
+    private TrangchuService trangchuService;
     @Autowired
-    SanPhamService sanPhamService;
+    private SanPhamService sanPhamService;
+
     @Autowired
     private GioHangService gioHangService;
     @Autowired
     private TaiKhoanService taiKhoanService;
+
+    @Autowired
+    DonHangService donHangService;
+    @Autowired
+    private KhachHangRepository khachHangRepository;
+
+
 
 
     @GetMapping("/trangchu")
@@ -35,23 +58,24 @@ public class TrangChuController {
         List<Map<String, Object>> processedSanPhamList = new ArrayList<>();
 
         for (SanPham sp : sanphamList) {
-            Map<String, Object> spMap = new HashMap<>();
-            spMap.put("id", sp.getId());
-            spMap.put("masp", sp.getMasp());
-            spMap.put("tensp", sp.getTensp());
-            spMap.put("minPrice", sp.getMinPrice());
+            if (sp.getTrangthai() == 1) {
+                Map<String, Object> spMap = new HashMap<>();
+                spMap.put("id", sp.getId());
+                spMap.put("masp", sp.getMasp());
+                spMap.put("tensp", sp.getTensp());
+                spMap.put("minPrice", sp.getMinPrice());
 
-            if (sp.getAnhsp() != null) {
-                // Chuyển đổi dữ liệu byte array thành chuỗi base64
-                String base64Image = Base64.getEncoder().encodeToString(sp.getAnhsp());
-                spMap.put("anhsp", base64Image);
-            } else {
-                spMap.put("anhsp", null);
+                if (sp.getAnhsp() != null) {
+                    // Chuyển đổi dữ liệu byte array thành chuỗi base64
+                    String base64Image = Base64.getEncoder().encodeToString(sp.getAnhsp());
+                    spMap.put("anhsp", base64Image);
+                } else {
+                    spMap.put("anhsp", null);
+                }
+
+                processedSanPhamList.add(spMap);
             }
-
-            processedSanPhamList.add(spMap);
         }
-
         model.addAttribute("sanpham", processedSanPhamList);
         return "/khachhang/TrangChu";
     }
@@ -94,47 +118,70 @@ public class TrangChuController {
         return "/khachhang/SPCT";
     }
 
+        @PreAuthorize("isAuthenticated()")
 
 
-    @GetMapping("/giohang")
-    public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-//        String tenDangNhap = userDetails.getUsername();
-//        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
-//        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-//            return "redirect:/panda/login";
-//        }
-        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap("A");
-        int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
-        List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
 
-        // Chuyển đổi dữ liệu byte array thành chuỗi base64
-        List<Map<String, Object>> processedCartItems = cartItems.stream().map(item -> {
-            Map<String, Object> itemMap = new HashMap<>();
-            itemMap.put("id", item.getId());
-            itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
-            itemMap.put("soluong", item.getSoluong());
-
-            if (item.getSanPhamChiTiet().getAnhSanPhamChiTiet() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getSanPham().getAnhsp());
-                itemMap.put("anhspBase64", base64Image);
-            } else {
-                itemMap.put("anhspBase64", null);
+        @GetMapping("/giohang")
+        public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+            String tenDangNhap = userDetails.getUsername();
+            TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+            if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+                return "redirect:/panda/login";
             }
+            int khachHangId = taiKhoanDto.getKhachHangDTO().getId();
+            List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
 
-            return itemMap;
-        }).collect(Collectors.toList());
+            // Chuyển đổi dữ liệu byte array thành chuỗi base64
+            List<Map<String, Object>> processedCartItems = cartItems.stream().map(item -> {
+                Map<String, Object> itemMap = new HashMap<>();
+                itemMap.put("id", item.getId());
+                itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
+                itemMap.put("soluong", item.getSoluong());
 
-        model.addAttribute("cartItems", processedCartItems);
-        return "/khachhang/GioHang";
-    }
+                if (item.getSanPhamChiTiet().getSanPham().getAnhsp() != null) {
+                    String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getSanPham().getAnhsp());
+                    itemMap.put("anhspBase64", base64Image);
+                } else {
+                    itemMap.put("anhspBase64", null);
+                }
 
+                return itemMap;
+            }).collect(Collectors.toList());
 
+            model.addAttribute("cartItems", processedCartItems);
+            return "/khachhang/GioHang";
+        }
 
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/taikhoan")
-    public String taikhoan(){
+    public String taikhoan(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        String tenDangNhap = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
+        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+            return "redirect:/login";
+        }
+        KhachHang khachHang = khachHangRepository.findById(taiKhoanDto.getKhachHangDTO().getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
+
+
+        List<DonHang> donHangs = donHangService.findByKhachHangId(khachHang.getId());
+
+        List<DonHang> choduyet = donHangs.stream().filter(d -> "Chờ duyệt".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> daduyet = donHangs.stream().filter(d -> "Đã duyệt".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> danggiao = donHangs.stream().filter(d -> "Đang giao".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> hoanthanh = donHangs.stream().filter(d -> "Hoàn thành".equals(d.getTrangThai())).collect(Collectors.toList());
+        List<DonHang> dahuy = donHangs.stream().filter(d -> "Đã hủy".equals(d.getTrangThai())).collect(Collectors.toList());
+
+        model.addAttribute("khachHang", khachHang);
+        model.addAttribute("choduyet", choduyet);
+        model.addAttribute("daduyet", daduyet);
+        model.addAttribute("danggiao", danggiao);
+        model.addAttribute("hoanthanh", hoanthanh);
+        model.addAttribute("dahuy", dahuy);
         return "/khachhang/TaiKhoan";
     }
+
     @GetMapping("/thanhtoan")
     public String thanhtoan(){
         return "/khachhang/ThanhToan";

@@ -1,3 +1,4 @@
+
 let timeout;
 $(document).on('input', '#mavoucher-input', function () {
     clearTimeout(timeout);

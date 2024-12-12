@@ -62,25 +62,25 @@
 
 <!-- Checkout Section -->
 <div class="container mt-5">
-    <!-- Địa chỉ nhận hàng -->
-    <div class="address-section border p-3 mb-4">
-        <h5 style="color:#FE5621"><i class="fas fa-map-marker-alt" style="color:#FE5621"></i> Địa Chỉ Nhận Hàng</h5>
-        <div class="d-flex justify-content-between align-items-center">
-            <p th:if="${khachHang != null}" th:text="${khachHang.tenkhachhang} + ' (' + ${khachHang.sdt} + '), ' + ${khachHang.diachi}">
-                Thông tin khách hàng
-            </p>
-            <p th:if="${khachHang == null}">Thông tin khách hàng không có sẵn.</p>
-            <a href="#" class="btn btn-link">Thay Đổi</a>
-        </div>
-    </div>
 
+        <!-- Địa chỉ nhận hàng -->
+        <div class="address-section border p-3 mb-4">
+            <h5 style="color:#FE5621"><i class="fas fa-map-marker-alt" style="color:#FE5621"></i> Địa Chỉ Nhận Hàng</h5>
+            <div class="d-flex justify-content-between align-items-center">
+                <p th:if="${khachHang != null}" th:text="${khachHang.tenkhachhang} + ' (' + ${khachHang.sdt} + '), ' + ${khachHang.diachi}">
+                    Thông tin khách hàng
+                </p>
+                <p th:if="${khachHang == null}">Thông tin khách hàng không có sẵn.</p>
+                <a th:href="@{/diachi/themdiachi}" class="btn btn-link" style="text-decoration: none">Thay Đổi</a>
+            </div>
+        </div>
     <!-- Sản phẩm -->
     <div class="container product-section border p-3 mb-4">
         <h5>Sản phẩm</h5>
         <div th:each="item : ${cartItems}" class="d-flex justify-content-between align-items-center border-bottom py-3">
-            <div class="d-flex align-items-center">
-                <img th:src="@{${item.sanPhamChiTiet.anhSanPhamChiTiet}}" alt="Sản phẩm" class="product-img me-3">
-                <div>
+            <div class="d-flex align-items-center ">
+                <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image" class="img-fluid" style="max-width: 80px;">
+                <div  style="margin-left: 40px">
                     <p class="product-name mb-1" th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</p>
                     <p class="product-details text-muted"
                        th:text="'Loại: ' + ${item.sanPhamChiTiet.mauSac.ten} + ', Kích thước: ' + ${item.sanPhamChiTiet.kichThuoc.ten}">
@@ -89,12 +89,30 @@
                 </div>
             </div>
             <div class="d-flex align-items-center">
-                <p class="product-price mb-0 me-4" th:text="${item.sanPhamChiTiet.dongia * item.soluong} + ' VND'">Tổng tiền</p>
+                <p class=" mb-0 me-4" th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.dongia, 1, 'POINT',0, 'COMMA') + '₫'}"></p>
+            </div>
+            <div class="d-flex align-items-center">
+                <p class=" mb-0 me-4" th:text="${item.soluong}"></p>
+            </div>
+            <div class="d-flex align-items-center">
+                <p class="product-price mb-0 me-4" th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.dongia * item.soluong, 1, 'POINT',0, 'COMMA') + '₫'}">Tổng tiền</p>
             </div>
         </div>
     </div>
-
-
+<!--voucher-->
+    <div class="address-section border p-3 mb-4">
+        <h5><i class="fa-solid fa-ticket" style="color:#FE5621"></i> Panda Voucher</h5>
+        <div class="row mb-3 align-items-center">
+            <div>
+                <a class="btn btn-link float-end" data-bs-toggle="modal" data-bs-target="#add"
+                   style="text-decoration: none;">Chọn voucher</a>
+            </div>
+            <label class="col-sm-2 col-form-label">Nhập mã voucher:</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" placeholder="Nhập mã...">
+            </div>
+        </div>
+    </div>
     <!-- Thanh toán và hình thức thanh toán -->
     <div class="container">
         <div class="row">
@@ -126,7 +144,7 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <p><i class="fas fa-shield-alt"></i> Bảo hiểm đơn hàng:</p>
-                        <p class="insurance-price">₫500</p>
+                        <p class="insurance-price">₫0</p>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="total-price mb-0">Tổng thanh toán:</h5>
@@ -148,27 +166,30 @@
 </div>
 
 <footer>
-    <div class="container">
+    <div class="container mt-3">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 " style="margin-top: 10px">
                 <h5>Giới thiệu</h5>
                 <ul>
-                    <li><a href="#">Về chúng tôi</a></li>
-                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                    <li><a style="text-decoration:none;color: black" >Về chúng tôi</a></li>
+                    <li><a style="text-decoration:none;color: black" >Điều khoản dịch vụ</a></li>
                 </ul>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 " style="margin-top: 10px">
+
                 <h5>Liên hệ</h5>
                 <ul>
                     <li>Email: support@pandashop.com</li>
                     <li>Hotline: 1900 1234</li>
                 </ul>
             </div>
-            <div class="col-md-4">
+
+            <div class="col-md-4 " style="margin-top: 10px">
                 <h5>Kết nối với chúng tôi</h5>
                 <ul class="d-flex">
-                    <li><a href="#"><i class="fab fa-facebook fa-2x"></i></a></li>
-                    <li class="ms-3"><a href="#"><i class="fab fa-instagram fa-2x"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white "><i style="color: black" class="fab fa-facebook-f"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white"><i style="color: black" class="fab fa-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white"><i style="color: black" class="fab fa-twitter"></i></a></li>
                 </ul>
             </div>
         </div>
@@ -200,7 +221,7 @@
 
             productPriceElements.forEach(function(element) {
                 const priceText = element.textContent.replace(/[^\d]/g, '');
-                const price = parseFloat(priceText) / 10; // Sửa đổi để giá trị đúng
+                const price = parseFloat(priceText) ; // Sửa đổi để giá trị đúng
                 totalProductAmount += price;
 
                 // Logging each price for debugging
@@ -253,21 +274,194 @@
     });
 
 </script>
+<<<<<<< HEAD
+<!--modal voucher-->
+<div class="modal fade" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    <i class="fa-solid fa-list" style="color: #000000;"></i>
+                    Danh sách voucher
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="search-container">
+                    <input type="text" id="modalSearchInput" placeholder="Tìm kiếm mã voucher" class="search-box"
+                           style="border-radius: 10px;padding-bottom: 10px; margin-right: 15px">
+                    <button class="btn btn-primary" onclick="searchInModalVoucher()"><i
+                            class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                    </button>
+                </div>
+                <br>
+                <table class="table" style="text-align: center;">
+                    <thead>
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Mã vocher</th>
+                        <th>Tên vocher</th>
+                        <th>Mức giảm</th>
+                        <th>Loại</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="vc,i: ${listvc}">
+                        <td>Hình ảnh</td>
+                        <td th:text="${vc.ma}"></td>
+                        <td th:text="${vc.ten}"></td>
+                        <td th:text="${vc.formattedMucGiam}"></td>
+                        <td th:text="${vc.loai == true ? '%':'VND'}"></td>
+                        <td>
+                            <a>
+                                <i class="fa-solid fa-circle-check"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--tìm kiếm voucher -->
+<script>
+    function searchInModalVoucher() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("modalSearchInput");
+        filter = input.value.toUpperCase();
+        table = document.querySelector(".modal-body table");
+        tr = table.getElementsByTagName("tr");
+
+        // Lặp qua tất cả các hàng, ẩn những hàng không khớp với tìm kiếm
+        for (i = 1; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
+            // td = tr[i].getElementsByTagName("td")[1]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+<style>
+    /* Font and Background for Navbar */
+    body {
+        font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card-hover-buttons {
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        display: flex;
+        gap: 10px;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .card:hover .card-hover-buttons {
+        opacity: 1;
+    }
+
+    .card-hover-buttons .btn {
+        width: 120px;
+        height: 45px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .card-hover-buttons .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .card-hover-buttons .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .navbar {
+        background: #FE5621;
+    }
+    .nav-link {
+        font-size: 1rem;
+        font-weight: bold;
+        color: rgb(255, 255, 255) !important;
+    }
+
+    .nav-link:hover {
+        color: #FFC048 !important; /* hover màu vàng nhạt */
+    }
+
+    .navbar-toggler {
+        border-color: rgb(119, 30, 30);
+    }
+
+    .navbar-toggler-icon {
+        background-color: white;
+    }
+
+    .form-control {
+        border-radius: 30px;
+    }
+
+    .card {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    footer {
+        background-color: #d4d3d3;
+    }
+
+    footer h5 {
+        font-weight: bold;
+    }
+
+    footer ul {
+        list-style-type: none;
+
+        padding-left: 0;
+    }
+
+    li {
+        list-style: none;
+        margin: 5px 0;
+    }
+
+    .card-img-top {
+        object-fit: cover; /* Đảm bảo hình ảnh không bị méo mó */
+    }
+
+    .card-title, .card-text {
+        text-align: center;
+    }
+
+    .card-hover-buttons {
+        text-align: center;
+    }
+
+    .card-hover-buttons button {
+        margin: 5px;
+    }
+
+
 </style>
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
-        integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script th:src="@{/Javascrip/diachi.js}"></script>
-<script th:src="@{/Javascrip/muahang.js}"></script>
-<script th:src="@{/Javascrip/chonvoucher.js}"></script>
-<script th:src="@{/Javascrip/quetmaqr.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 </body>
 </html>

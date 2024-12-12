@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ThuongHieuService {
     @Autowired
@@ -23,5 +25,9 @@ public class ThuongHieuService {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
         return thuongHieuRepository.findByTenAndTrangthaiTH(tenth, trangthai, pageable);
+    }
+
+    public  List<ThuongHieu> findAllThuongHieu (){
+        return thuongHieuRepository.findAll();
     }
 }

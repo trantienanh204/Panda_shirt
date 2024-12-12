@@ -47,35 +47,40 @@ public class SanPhamService {
     private final int size = 5;
 
     public Page<SanPham> hienThiSanPhamTheoDieuKien(int page, String tensp, Integer trangthai) {
-        Sort sort = Sort.by(Sort.Direction.ASC,"id");
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"id");
+
 
         Pageable pageable = PageRequest.of(page, size,sort);
         return sanPhamRepository.findByTenspAndTrangthai(tensp, trangthai, pageable);
     }
 
     public List<SanPham> getallsp() {
-        return sanPhamRepository.findAll();
+
+        return sanPhamRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
+
     public List<NhaSanXuat> getallNXS() {
-        return nsxRepository.findAll();
+        return nsxRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<DanhMuc> getallDanhmuc() {
-        return danhMucRepository.findAll();
+        return danhMucRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<ChatLieu> getallCL() {
-        return chatLieuRespository.findAll();
+        return chatLieuRespository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<ThuongHieu> getallthuonghieu() {
-        return thuongHieuRepository.findAll();
+        return thuongHieuRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<CoAo> getallcoao() {
-        return coAoRepository.findAll();
+        return coAoRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<MauSac> getallmausac() {
-        return mauSacRepsitory.findAll();
+        return mauSacRepsitory.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     public List<KichThuoc> getallkichco() {
-        return kichThuocRepository.findAll();
+        return kichThuocRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+
     }
     public void saveSanPhamChiTiet(SanPhamChiTiet sanPhamChiTiet) {
         sanPhamChiTietRepository.save(sanPhamChiTiet);
@@ -423,6 +428,24 @@ public class SanPhamService {
                 } else {
                     // Thêm sản phẩm chi tiết mới
                     SanPhamChiTiet newChiTiet = new SanPhamChiTiet();
+                    String SPCT = sanPhamChiTietRepository.findMaxspct();
+                    int demhdCT;
+                    if (SPCT == null) {
+                        demhdCT = 1; // Nếu chưa có hóa đơn nào thì bắt đầu từ 1
+                    } else {
+                        // Thêm kiểm tra định dạng mã sản phẩm chi tiết
+                        if (SPCT.length() > 2 && SPCT.startsWith("SPCT")) {
+                            try {
+                                demhdCT = Integer.parseInt(SPCT.substring(4)) + 1; // Lấy phần số và tăng lên 1
+                            } catch (NumberFormatException e) {
+                                throw new RuntimeException("Lỗi định dạng số từ mã sản phẩm chi tiết: " + SPCT, e);
+                            }
+                        } else {
+                            throw new RuntimeException("Mã sản phẩm chi tiết không đúng định dạng: " + SPCT);
+                        }
+                    }
+                    String maspct = String.format("SPCT%03d", demhdCT);
+                    newChiTiet.setMaspct(maspct);
                     newChiTiet.setMauSac(mauSac);
                     newChiTiet.setKichThuoc(kichThuoc);
                     newChiTiet.setDongia(chiTietDTO.getGia());
@@ -447,6 +470,7 @@ public class SanPhamService {
 
         sanPhamRepository.save(sanPham);
     }
+
 
     public Optional<SanPham> findSanPhamById(Integer id) {
         return sanPhamRepository.findById(id);
@@ -545,4 +569,35 @@ public class SanPhamService {
 //            }
 //
 //        }
+
+
+        public SanPhamService(SanPhamRepository sanPhamRepository) {
+            this.sanPhamRepository = sanPhamRepository;
+        }
+
+        public List<SanPham> searchSanPham(String query) {
+            return sanPhamRepository.findByTenspContainingIgnoreCase(query);
+        }
+
+        public List<SanPham> searchSanPhamByCategory(String query, int categoryId) {
+            return sanPhamRepository.findByTenspContainingIgnoreCaseAndDanhMucId(query, categoryId);
+        }
+
+
+
+
+        public void updateProductStatus(int trangThai, Integer sanPhamId) {
+        SanPham sp = sanPhamRepository.findById(sanPhamId).orElse(null);
+        if(sp!= null){
+            sp.setTrangthai(trangThai);
+            sanPhamRepository.save(sp);
+        }
+
+        }
+
+
+
+
+
+
 }

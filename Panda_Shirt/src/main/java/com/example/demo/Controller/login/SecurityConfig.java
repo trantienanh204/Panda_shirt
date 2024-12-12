@@ -28,10 +28,6 @@ public class SecurityConfig {
 
 
     private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/thongke","/panda/login","/Image/**","panda/mahoa","/panda/banhangoffline","/panda/giohang"};
-//=======
-//    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa",
-//            "/panda/banhangoffline"};
-//>>>>>>> thai
     private final String[] QUANLY_ENDPOINTS= {};
     private final String[] NHANVIEN_ENDPOINTS= {};
 
@@ -91,7 +87,7 @@ public class SecurityConfig {
                 response.sendRedirect("/panda/vaitro");
             } else if (roles.contains("ROLE_NHANVIEN")) {
                 System.out.println("Chuyển hướng đến /panda/nhanvien/banhang/hienthi");
-                response.sendRedirect("/panda/banhangoffline");
+                response.sendRedirect("/panda/banhangoffline/hienthi");
             } else {
                 System.out.println("Chuyển hướng mặc định đến /panda/thongke");
                 response.sendRedirect("/panda/trangchu");
@@ -147,4 +143,6 @@ public class SecurityConfig {
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
         }
+
+
 }

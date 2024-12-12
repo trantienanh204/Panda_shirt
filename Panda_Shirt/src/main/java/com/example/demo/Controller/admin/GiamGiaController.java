@@ -58,7 +58,6 @@ public class GiamGiaController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("trangThai", trangThai);
-        System.out.println("Trạng thái: " + trangThai);
         model.addAttribute("chonmavc", voucherRepository.chonVC());
         model.addAttribute("listkh", khachHangRespository.dskhhoatdong());
         model.addAttribute("pageSize", listVC.getSize());
@@ -153,7 +152,7 @@ public class GiamGiaController {
         }
         if (voucher.getNgayketthuc().isBefore(today)) {
             voucher.setTrangThai(0); // Đặt trạng thái thành "Sắp hpạt động"
-            model.addAttribute("errornkt", "Voucher không thể hoạt động vì đã qua ngày kết thúc");
+            model.addAttribute("errornkt", "Voucher không thể tạo vì đã qua ngày kết thúc");
             return "admin/QLSP/ADD/AddVC"; // Trả về trang với thông báo lỗi
         }
         //số lượng
@@ -187,7 +186,7 @@ public class GiamGiaController {
         try {
             Integer dieuKien = Integer.parseInt(voucher.getDieuKien());
             if (dieuKien < 10000) {
-                model.addAttribute("errordk", "Điều kiện phải lớn hơn hoặc bằng 10.000$");
+                model.addAttribute("errordk", "Điều kiện phải lớn hơn hoặc bằng 10.000 VND");
                 return "admin/QLSP/ADD/AddVC";
             }
         } catch (Exception e) {
@@ -315,8 +314,8 @@ public class GiamGiaController {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/UPDATE/UpdateVC";
         }
-        if (voucher.getTen() == null || voucher.getTen().length() <= 3 || voucher.getTen().length() >= 30) {
-            model.addAttribute("errorten", "Tên phải lớn hơn 3 ký tự và nhỏ hơn 30 ký tự");
+        if (voucher.getTen() == null || voucher.getTen().length() <= 1 || voucher.getTen().length() >= 30) {
+            model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 30 ký tự");
             return "admin/QLSP/UPDATE/UpdateVC";
         }
         if (findten != null) {
@@ -345,7 +344,7 @@ public class GiamGiaController {
         }
         if (voucher.getNgayketthuc().isBefore(today)) {
             voucher.setTrangThai(2); // Đặt trạng thái thành "Ngừng hoạt động"
-            model.addAttribute("errornkt", "Voucher không thể hoạt động vì đã qua ngày kết thúc");
+            model.addAttribute("errornkt", "Voucher không thể tạo vì đã qua ngày kết thúc");
             return "admin/QLSP/UPDATE/UpdateVC"; // Trả về trang với thông báo lỗi
         }
         //số lượng
@@ -449,4 +448,11 @@ public class GiamGiaController {
         redirectAttributes.addFlashAttribute("Update", "Sửa thành công!");
         return "redirect:/panda/voucher/hienthi";
     }
+
+        @ResponseBody
+        @GetMapping("/active-public")
+        public List<Voucher> getActivePublicVouchers() {
+            return voucherService.getActivePublicVouchers();
+        }
+
 }

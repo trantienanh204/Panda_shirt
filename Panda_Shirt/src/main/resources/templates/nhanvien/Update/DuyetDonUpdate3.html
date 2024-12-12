@@ -105,20 +105,23 @@
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
+                                    <th>Mã sản phẩm</th>
                                     <th>Tên sản phẩm</th>
                                     <th>Màu sắc</th>
                                     <th>Kích thước</th>
-                                    <th>Đơn giá</th>
                                     <th>Số lượng</th>
+                                    <th>Đơn giá</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="dd,i: ${listhdct}">
+                                    <td th:text="${dd.sanPhamChiTiet.sanPham.masp}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.sanPham.tensp}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>
                                     <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>
                                     <td th:text="${dd.soluong}"></td>
-                                    <td th:text="${dd.dongia}"></td>
+                                    <td th:text="${#numbers.formatDecimal(dd.dongia, 1, 'POINT',0, 'COMMA')}"></td>
                                 </tr>
                                 </tbody>
                             </table>

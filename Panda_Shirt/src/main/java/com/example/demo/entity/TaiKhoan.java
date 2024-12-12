@@ -1,5 +1,9 @@
 package com.example.demo.entity;
+
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +24,7 @@ import java.util.Set;
 @Table(name = "TAI_KHOAN")
 public class TaiKhoan {
 
+
         @Id
         @Column(name = "TEN_DANG_NHAP")
         @NotBlank(message = "Tên đăng nhập không được để trống")
@@ -38,4 +43,5 @@ public class TaiKhoan {
 
         @OneToMany(mappedBy = "taiKhoan",fetch = FetchType.EAGER)
         private Set<ChiTietVaiTro> chiTietVaiTros;
+
 }

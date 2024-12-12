@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+import java.util.List;
+
+
 @Service
 public class DonHangService {
     @Autowired
@@ -32,6 +35,13 @@ public class DonHangService {
         return donHangRepository.findByMaAndTenAndDH(mahd,  tenkh,Date, trangThai, pageable);
 
     }
+
+
+        public List<DonHang> findByKhachHangId(int khachHangId) {
+            return donHangRepository.findByKhachHangId(khachHangId);
+        }
+
+
 
     public DonHang findID(Integer id) {
         return donHangRepository.findById(id).orElse(null);
