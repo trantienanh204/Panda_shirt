@@ -198,21 +198,31 @@ public class TrangChuController {
         System.out.println("Result: " + result);
         return result;
     }
-    @GetMapping("/donhangchitiet/chitiet/{id}")
-    public String chiTietHoaDon(@PathVariable("id") Integer id, Model model) {
-        DonHang donHang = donHangRepository.getReferenceById(id);
-        model.addAttribute("DonHang", donHang);
-        System.out.println("Don hang"+donHang);
+    @GetMapping("/donhangchitiet/chitiet")
+    public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
+        try {
+            DonHang donHang = donHangRepository.findById(id).orElse(null);
+            if (donHang == null) {
+                throw new RuntimeException("Đơn hàng không tồn tại.");
+            }
+            model.addAttribute("DonHang", donHang);
 
-        List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
-        model.addAttribute("listhdct", hoaDonCT);
-        System.out.println("HDCT"+hoaDonCT);
-        List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
-                .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
-                .collect(Collectors.toList());
-        model.addAttribute("listsp", sanPhamChiTiet);
+            List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
+            model.addAttribute("listhdct", hoaDonCT);
 
-        return "/khachhang/TaiKhoan :: chiTiet"; // Trả về fragment HTML
+            List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
+                    .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
+                    .collect(Collectors.toList());
+            model.addAttribute("listsp", sanPhamChiTiet);
+
+            return "khachhang/TaiKhoan :: chiTiet"; // Trả về fragment HTML
+        } catch (Exception e) {
+            // Ghi log lỗi
+            System.err.println("Lỗi khi xử lý yêu cầu chi tiết đơn hàng: " + e.getMessage());
+            e.printStackTrace();
+            return "error"; // Trả về trang lỗi nếu có lỗi xảy ra
+        }
     }
+
 
 }

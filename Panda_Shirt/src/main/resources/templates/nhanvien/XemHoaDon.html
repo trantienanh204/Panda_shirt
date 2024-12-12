@@ -140,9 +140,9 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body row mb-3">
                 <!-- Fragment cho chi tiết hóa đơn -->
-                <div th:fragment="chiTiet">
+                <div th:fragment="chiTiet" class="col-md-10">
                     <table>
                         <thead>
                         <tr>
@@ -165,9 +165,19 @@
 
 <!--                            <td th:text="${ct[0].hoaDon.giagiam != null ? ct[0].hoaDon.giagiam : '0'}"></td>-->
                         </tr>
+
                         </tbody>
                     </table>
+                    <div class="col-md-2">
+                        <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
+                        <input type="text" th:value="${giagiam?.giagiam != null ? #numbers.formatDecimal(giagiam?.giagiam, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : 'Không có dữ liệu'}" class="form-control" readonly
+                               style="background-color: white; color: black;">
+                        <!--                            <td th:text="${#numbers.formatDecimal(tongtien, 1, 'POINT',0, 'COMMA')}"></td>-->
+                    </div>
+
                 </div>
+
+
             </div>
         </div>
     </div>
