@@ -62,8 +62,12 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
     List<SanPhamChiTiet> timtenspvama(@Param("keyword") String keyword);
 
 
+
         SanPhamChiTiet findByKichThuocIdAndMauSacIdAndSanPhamId(Integer sizeId, Integer colorId, Integer productId);
 
+
+
+    SanPhamChiTiet findByMaspct(String ma);
 
 
 }

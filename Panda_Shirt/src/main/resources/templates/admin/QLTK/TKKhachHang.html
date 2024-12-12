@@ -79,7 +79,7 @@
         <tr th:if="${list.empty}">
             <td colspan="10" style="text-align: center; color: #ff0000;">Không có dữ liệu</td>
         </tr>
-        <tr  th:each="tkkhachhang,i : ${list}">
+        <tr  th:each="tkkhachhang,i : ${list}" th:if="${tkkhachhang.makhachhang != null}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td>
                 <img th:if="${tkkhachhang.image != null}"

@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,5 +107,17 @@ public class HoaDon {
 
     public HoaDon(Integer id) {
         this.id = id;
+    }
+
+    public String getFormatthanhtien() {
+        if (thanhtien == null) {
+            return "0"; // Trả về nếu giá trị null
+        }
+        try {
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+            return formatter.format(thanhtien);
+        } catch (NumberFormatException e) {
+            return "Không hợp lệ"; //
+        }
     }
 }

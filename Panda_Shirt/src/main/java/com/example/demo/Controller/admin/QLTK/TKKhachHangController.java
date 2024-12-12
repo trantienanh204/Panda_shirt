@@ -83,17 +83,18 @@ public class TKKhachHangController {
                        RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
+        String hd = khachHangRepository.findMaxMakh();
+        int demhd;
+        if (hd == null) {
+            demhd = 1;
+        } else {
+            demhd = Integer.parseInt(hd.substring(2)) + 1;
+        }
+        String makh = String.format("KH%03d", demhd);
 
-        // check lỗi
-        boolean hasErrors = false;
-        if (khachHangRepository.existsByTentaikhoan(khachHang.getTentaikhoan())) {
-            model.addAttribute("emailExist","Email này đã được đăng ký");
-            hasErrors = true;
-        }
+        // Tạo mã hóa đơn
+
         if (result.hasErrors()) {
-            return "admin/QLTK/ADD/AddTKKhachHang";
-        }
-        if (hasErrors) {
             return "admin/QLTK/ADD/AddTKKhachHang";
         }
 
@@ -127,7 +128,16 @@ public class TKKhachHangController {
             // Lưu mật khẩu đã băm vào đối tượng KhachHang
             khachHang.setMatkhau(hashedPassword);
 
-
+            String tentk = khachHang.getTentaikhoan();
+            String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+            if (tentk == null || tentk.isBlank()) {
+                model.addAttribute("errortentk", "Chưa có tên tài khoản");
+                return "admin/QLTK/ADD/AddTKKhachHang";
+            }
+            if (!tentk.matches(emailRegex)) {
+                model.addAttribute("errortentk", "Email sai định dạng");
+                return "admin/QLTK/ADD/AddTKKhachHang";
+            }
 
             // Gửi email thông báo
             String subject = "Chào mừng khách hàng mới " + khachHang.getTenkhachhang() + " đã tạo tài khoản tại shop Panda Shirt!";
@@ -150,9 +160,7 @@ public class TKKhachHangController {
                     "<h2>Chào mừng bạn mở tài khoản tại web bán áo phông Panda Shirt!</h2>" +
                     "<p>Mật khẩu của bạn đã được tạo thành công. Vui lòng ghi nhớ nó!</p>" +
                     "<div class='password'>" + plainPassword + "</div>" + // Gửi mật khẩu chưa băm
-
-                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='http://localhost:8080/panda/login' style='color: #007bff;'>đây</a>.</p>" +
-
+                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='https://your-shop-url.com' style='color: #007bff;'>đây</a>.</p>" +
                     "<div class='footer'>Nếu bạn có bất kỳ câu hỏi nào, hãy liên hệ với bộ phận hỗ trợ của chúng tôi.</div>" +
                     "</div>" +
                     "</body>" +
@@ -160,17 +168,13 @@ public class TKKhachHangController {
 
             // Gửi email
             emailService.sendEmail(khachHang.getTentaikhoan(), subject, body);
-
             // Set trạng thái và ngày tạo
             khachHang.setTrangthai(1);
             khachHang.setNgaytao(LocalDate.now());
             TaiKhoan tk = new TaiKhoan();
             ChiTietVaiTro ctvt = new ChiTietVaiTro();
-
-
-            String tentk = khachHang.getTentaikhoan();
-            // Lưu nhân viên vào cơ sở dữ liệu
             int vaitro = 3;
+
             tk.setMatKhau(hashedPassword);
             tk.setTenDangNhap(tentk);
             taiKhoanRepo.save(tk);
@@ -179,7 +183,10 @@ public class TKKhachHangController {
             TaiKhoan tenDangNhap = taiKhoanRepo.findByTenDangNhap(tentk);
             System.out.println("vaitro " +vt.getTenVaiTro());
             System.out.println("tên " +tenDangNhap.getTenDangNhap());
-
+            System.out.println("tên " +khachHang.getTenkhachhang());
+            System.out.println("tên " +khachHang.getDiachi());
+            System.out.println("tên " +khachHang.getSdt());
+            System.out.println("tên " +tenDangNhap.getTenDangNhap());
             System.out.println("tên " +tentk);
             ctvt.setVaiTro(vt);
             khachHang.setTinhtrang(true);
@@ -188,6 +195,7 @@ public class TKKhachHangController {
             chiTietVaiTroRepo.save(ctvt);
 
             khachHang.setTaiKhoan(tenDangNhap);
+            khachHang.setMakhachhang(makh);
 
             // Lưu khách hàng vào cơ sở dữ liệu
             khachHangService.saveCustomerToDb(file, khachHang);
@@ -195,7 +203,6 @@ public class TKKhachHangController {
         } catch (Exception e) {
             e.printStackTrace(); // In ra lỗi nếu có
         }
-
         return "redirect:/panda/tkkhachhang";
     }
 
@@ -217,15 +224,18 @@ public class TKKhachHangController {
     // thay đổi trạng thái
     @GetMapping("/tkkhachhang/change")
     public String changeStatus(@RequestParam("id") int id, Model model, RedirectAttributes redirectAttributes) {
-        String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
+        String role = "admin";
         model.addAttribute("role", role);
 
         KhachHang khachHang = khachHangService.findById(id);
         if (khachHang != null) {
-            khachHang.toggleTrangThai(); // Đảo ngược trạng thái
+            khachHang.toggleTrangThai();
+            khachHang.toggledeleteat();
+            khachHang.toggletinhtrang();
             khachHangRepository.save(khachHang);
         }
         redirectAttributes.addFlashAttribute("ChangesStatusMessage", "Chuyển trạng thái thành công !");
         return "redirect:/panda/tkkhachhang";
     }
 }
+

@@ -121,6 +121,7 @@ public class TrangChuController {
         @PreAuthorize("isAuthenticated()")
 
 
+
         @GetMapping("/giohang")
         public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
             String tenDangNhap = userDetails.getUsername();
@@ -162,6 +163,7 @@ public class TrangChuController {
         }
         KhachHang khachHang = khachHangRepository.findById(taiKhoanDto.getKhachHangDTO().getId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
+
 
         List<DonHang> donHangs = donHangService.findByKhachHangId(khachHang.getId());
 

@@ -56,7 +56,16 @@
         </div>
     </div>
 </nav>
-
+<div th:if="${message}">
+    <script th:inline="javascript">
+        Swal.fire({
+            title: 'Thông báo',
+            text:/*[[${message}]]*/,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    </script>
+</div>
 <div class="container mt-3" style="padding-bottom: 80px;">
     <h2 class="mb-4">Giỏ hàng</h2>
     <div th:if="${#lists.isEmpty(cartItems)}">
@@ -392,11 +401,6 @@
         addEventListeners();
     });
 </script>
-
-
-
-
-
 
 
 </body>

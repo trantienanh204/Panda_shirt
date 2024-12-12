@@ -80,7 +80,7 @@ public class ThuongHieuController {
 
 
     @PostMapping("add")
-    public String add(@ModelAttribute("thuonghieu") ThuongHieu thuongHieu , Model model) {
+    public String add(@ModelAttribute("thuonghieu") ThuongHieu thuongHieu , Model model,RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         model.addAttribute( "nsx", thuongHieu);
@@ -92,37 +92,43 @@ public class ThuongHieuController {
 
         Matcher tennsxMatcher = pattern.matcher(thuongHieu.getMathuonghieu());
         Matcher mansxMatcher = patternma.matcher(thuongHieu.getMathuonghieu());
+        boolean loi = true ;
 
         if(thuongHieu.getMathuonghieu().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }else if (!mansxMatcher.matches()) {
             model.addAttribute("errorma" ,"Mã chỉ được chứa chữ và số");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }
         if(thuongHieuRepository.existsThuongHieuByMathuonghieu(thuongHieu.getMathuonghieu())){
             model.addAttribute("errorma","Mã đã tồn tại");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }
 
         if(thuongHieu.getTenthuonghieu().isEmpty()){
             model.addAttribute("errorten","Không được để trống");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }else if (!tennsxMatcher.matches()) {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }
         if(thuongHieuRepository.existsThuongHieuByTenthuonghieu(thuongHieu.getTenthuonghieu())){
             model.addAttribute("errorten","Tên đã tồn tại");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }
-
-        thuongHieuRepository.save(thuongHieu);
-        return "redirect:/panda/thuonghieu";
-    }
+        if(loi == false) {
+            model.addAttribute("thongbao","Thất bại!");
+            return "admin/QLSP/ADD/AddThuongHieu";
+        }else{
+            redirectAttributes.addFlashAttribute("thongbao","Thêm thành công!");
+            thuongHieuRepository.save(thuongHieu);
+            return "redirect:/panda/thuonghieu";
+        }
+}
 
     @PostMapping("update")
-    public String update(@ModelAttribute("thuonghieu") ThuongHieu thuongHieu , Model model) {
+    public String update(@ModelAttribute("thuonghieu") ThuongHieu thuongHieu , Model model,RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         model.addAttribute( "nsx", thuongHieu);
@@ -143,33 +149,39 @@ public class ThuongHieuController {
 
         ThuongHieu findma = thuongHieuRepository.findByMathuonghieuAndIdNot(ma,thuongHieu.getId());
         ThuongHieu findten = thuongHieuRepository.findByTenthuonghieuAndIdNot(ten,thuongHieu.getId());
-
+        boolean loi = true ;
         if(thuongHieu.getMathuonghieu().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }else if (!mansxMatcher.matches()) {
             model.addAttribute("errorma" ,"Mã chỉ được chứa chữ và số");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }
         if(findma != null){
             model.addAttribute("errorma","Mã đã tồn tại");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }
 
         if(thuongHieu.getTenthuonghieu().isEmpty()){
             model.addAttribute("errorten","Không được để trống");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }else if (!tennsxMatcher.matches()) {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }
         if(findten != null){
             model.addAttribute("errorten","Tên đã tồn tại");
+            loi = false;
+        }
+        if(loi == false) {
+            model.addAttribute("thongbao","Thất bại!");
             return "admin/QLSP/UPDATE/UpdateThuongHieu";
+        }else{
+            redirectAttributes.addFlashAttribute("thongbao","Sửa thành công!");
+            thuongHieu.setNgaysua(LocalDate.now());
+            thuongHieuRepository.save(thuongHieu);
+            return "redirect:/panda/thuonghieu";
         }
 
-        thuongHieu.setNgaysua(LocalDate.now());
-        thuongHieuRepository.save(thuongHieu);
-        return "redirect:/panda/thuonghieu";
     }
 }
