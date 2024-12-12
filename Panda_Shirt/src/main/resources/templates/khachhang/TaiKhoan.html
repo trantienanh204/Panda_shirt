@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -177,7 +178,8 @@
                                     </td>
                                     <td th:text="${donHang.tongtien}"></td>
                                     <td>
-                                        <a th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang.id}"
+                                                th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
 
                                            class="view-details"
                                            data-bs-toggle="modal"
@@ -215,7 +217,8 @@
                                     </td>
                                     <td th:text="${donHang.tongtien}"></td>
                                     <td>
-                                        <a th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang.id}"
+                                                th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
 
                                            class="view-details"
                                            data-bs-toggle="modal"
@@ -253,7 +256,8 @@
                                     </td>
                                     <td th:text="${donHang.tongtien}"></td>
                                     <td>
-                                        <a th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang.id}"
+                                                th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
 
                                            class="view-details"
                                            data-bs-toggle="modal"
@@ -291,13 +295,13 @@
                                     </td>
                                     <td th:text="${donHang.tongtien}"></td>
                                     <td>
-                                        <a th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
-
+                                        <a th:data-id="${donHang.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
                                            class="view-details"
                                            data-bs-toggle="modal"
                                            data-bs-target="#add">
-                                            <i class="fa-solid fa-eye"
-                                               style="color: #000000; font-size: 20px"></i></a>
+                                            <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -328,13 +332,14 @@
                                     <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
                                     <td th:text="${donHang.tongtien}"></td>
                                     <td>
-                                        <a th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
-
+                                        <a th:data-id="${donHang.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
                                            class="view-details"
                                            data-bs-toggle="modal"
                                            data-bs-target="#add">
-                                            <i class="fa-solid fa-eye"
-                                               style="color: #000000; font-size: 20px"></i></a>
+                                            <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
+                                        </a>
+
                                     </td>
                                 </tr>
                                 </tbody>
@@ -477,7 +482,7 @@
     }
 </style>
 <div class="modal fade" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable  modal-xl">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">
@@ -492,21 +497,21 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Đơn hàng:</label>
-<!--                                <input type="text" class="form-control" th:value="${DonHang.hoaDon.mahoadon}" readonly>-->
+                                <input type="text" class="form-control" th:value="${DonHang?.hoaDon?.mahoadon}" readonly>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Ngày đặt:</label>
-<!--                                <input type="text" class="form-control" th:value="${DonHang.ngaytao}" readonly>-->
+                                <input type="text" class="form-control" th:value="${DonHang?.ngaytao}" readonly>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Tên khách hàng:</label>
-<!--                                <input type="text" class="form-control" th:value="${DonHang.khachHang.tenkhachhang}" readonly>-->
+                                <input type="text" class="form-control" th:value="${DonHang?.khachHang?.tenkhachhang}" readonly>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Số điện thoại:</label>
-<!--                                <input type="text" class="form-control" th:value="${DonHang.sdt}" readonly>-->
+                                <input type="text" class="form-control" th:value="${DonHang?.khachHang?.sdt}" readonly>
                             </div>
                         </div>
                         <div class="row">
@@ -523,10 +528,10 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="sp : ${listhdct}">
-                                        <td th:text="${sp.sanPhamChiTiet.sanPham.masp}"></td>
-                                        <td th:text="${sp.sanPhamChiTiet.sanPham.tensp}"></td>
-                                        <td th:text="${sp.soluong}"></td>
-                                        <td th:text="${#numbers.formatDecimal(sp.dongia, 1, 'POINT', 0, 'COMMA')}"></td>
+                                        <td th:text="${sp?.sanPhamChiTiet?.sanPham?.masp}"></td>
+                                        <td th:text="${sp?.sanPhamChiTiet?.sanPham?.tensp}"></td>
+                                        <td th:text="${sp?.soluong}"></td>
+                                        <td th:text="${#numbers.formatDecimal(sp?.dongia, 1, 'POINT', 0, 'COMMA')}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -535,7 +540,7 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="form-label">Tổng tiền:</label>
-<!--                                <input type="text" class="form-control" th:value="${#numbers.formatDecimal(Donhang.tongtien, 1, 'POINT', 0, 'COMMA')}" readonly>-->
+                                <input type="text" class="form-control" th:value="${#numbers.formatDecimal(DonHang?.tongtien, 1, 'POINT', 0, 'COMMA')}" readonly>
                             </div>
                         </div>
                     </div>
@@ -564,28 +569,29 @@
     }
 
 </script>
-<!--<script>-->
-<!--    $(document).ready(function () {-->
-<!--        $('#add').on('show.bs.modal', function (event) {-->
-<!--            var button = $(event.relatedTarget); // Lấy thông tin nút kích hoạt modal-->
-<!--            var id = button.data('id'); // Lấy ID đơn hàng từ data-id-->
+<script>
+    $(document).ready(function () {
+        $('#add').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Lấy thông tin nút kích hoạt modal
+            var id = button.data('id'); // Lấy ID đơn hàng từ data-id
 
-<!--            // AJAX để lấy nội dung chi tiết hóa đơn-->
-<!--            $.ajax({-->
-<!--                url: 'panda/donhangchitiet/chitiet',-->
-<!--                type: 'GET',-->
-<!--                data: { id: id },-->
-<!--                success: function (data) {-->
-<!--                    // Chèn nội dung vào modal body-->
-<!--                    $('#add .modal-body').html(data);-->
-<!--                },-->
-<!--                error: function () {-->
-<!--                    alert('Không thể tải thông tin chi tiết đơn hàng.');-->
-<!--                }-->
-<!--            });-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+            // AJAX để lấy nội dung chi tiết hóa đơn
+            $.ajax({
+                url: '/panda/donhangchitiet/chitiet', // Cập nhật đường dẫn URL
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    // Chèn nội dung vào modal body
+                    $('#add .modal-body').html(data);
+                },
+                error: function () {
+                    alert('Không thể tải thông tin chi tiết đơn hàng.');
+                }
+            });
+        });
+    });
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
