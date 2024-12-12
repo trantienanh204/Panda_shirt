@@ -162,8 +162,7 @@
                             <td th:text="${ct.sanPhamChiTiet.mauSac.ten}"></td>
                             <td th:text="${ct.soluong}"></td>
                             <td th:text="${#numbers.formatDecimal(ct.dongia, 1, 'POINT',0, 'COMMA')}"></td>
-
-<!--                            <td th:text="${ct[0].hoaDon.giagiam != null ? ct[0].hoaDon.giagiam : '0'}"></td>-->
+                            
                         </tr>
 
                         </tbody>
@@ -172,12 +171,10 @@
                         <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
                         <input type="text" th:value="${giagiam?.giagiam != null ? #numbers.formatDecimal(giagiam?.giagiam, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : 'Không có dữ liệu'}" class="form-control" readonly
                                style="background-color: white; color: black;">
-                        <!--                            <td th:text="${#numbers.formatDecimal(tongtien, 1, 'POINT',0, 'COMMA')}"></td>-->
+
                     </div>
 
                 </div>
-
-
             </div>
         </div>
     </div>
