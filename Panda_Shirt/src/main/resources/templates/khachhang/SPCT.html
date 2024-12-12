@@ -5,13 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panda-Shirt Thanh Toán</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-
 </head>
-
 <body>
 
 <!-- Navbar -->
@@ -357,8 +354,6 @@
     });
 </script>
 
-</script>
-
 <script>
     $(document).ready(function() {
         const productId = $('#productId').val(); // Lấy ID sản phẩm từ một phần tử ẩn hoặc phần tử khác trong trang
@@ -384,37 +379,41 @@
                         console.log("ProductId: " + productId);
                         console.log("Quantity: " + quantity);
 
-                        // AJAX request để lấy sanPhamChiTietId từ sizeId, colorId và productId
+                        // AJAX request để kiểm tra số lượng sản phẩm chi tiết trước khi thêm vào giỏ hàng
                         $.ajax({
                             type: 'GET',
-                            url: '/panda/giohang/findSanPhamChiTietId',
+                            url: '/panda/giohang/checkQuantity', // Endpoint kiểm tra số lượng sản phẩm chi tiết
                             data: {
                                 sizeId: selectedSizeId,
                                 colorId: selectedColorId,
                                 productId: productId
                             },
-                            success: function(sanPhamChiTietId) {
-                                console.log("SanPhamChiTietId: " + sanPhamChiTietId);
-                                // Sau khi có sanPhamChiTietId, gửi request để thêm vào giỏ hàng
-                                $.ajax({
-                                    type: 'POST',
-                                    url: '/panda/giohang/add',
-                                    data: {
-                                        sanPhamChiTietId: sanPhamChiTietId,
-                                        quantity: quantity
-                                    },
-                                    success: function(response) {
-                                        alert(response);
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error('Có lỗi xảy ra:', error);
-                                        alert('Có lỗi khi thêm sản phẩm vào giỏ hàng!');
-                                    }
-                                });
+                            success: function(response) {
+                                if (response.availableQuantity >= quantity) {
+                                    // Nếu số lượng sản phẩm chi tiết đủ, tiếp tục thêm vào giỏ hàng
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '/panda/giohang/add',
+                                        data: {
+                                            sanPhamChiTietId: response.sanPhamChiTietId,
+                                            quantity: quantity
+                                        },
+                                        success: function(response) {
+                                            alert(response);
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error('Có lỗi xảy ra:', error);
+                                            alert('Có lỗi khi thêm sản phẩm vào giỏ hàng!');
+                                        }
+                                    });
+                                } else {
+                                    // Nếu không đủ số lượng sản phẩm chi tiết, hiển thị thông báo lỗi
+                                    alert('Không đủ số lượng sản phẩm chi tiết để thêm vào giỏ hàng.');
+                                }
                             },
                             error: function(xhr, status, error) {
-                                console.error('Có lỗi xảy ra khi lấy sanPhamChiTietId:', error);
-                                alert('Không thể tìm thấy sanPhamChiTietId!');
+                                console.error('Có lỗi xảy ra khi kiểm tra số lượng sản phẩm chi tiết:', error);
+                                alert('Không thể kiểm tra số lượng sản phẩm chi tiết!');
                             }
                         });
                     }
@@ -426,7 +425,6 @@
             });
         });
     });
-
 </script>
 
 <script>

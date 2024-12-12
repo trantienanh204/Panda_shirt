@@ -433,6 +433,32 @@ public class GioHangController {
     }
 
 
+        @GetMapping("/checkQuantity")
+        public ResponseEntity<Map<String, Object>> checkQuantity(@RequestParam Integer sizeId, @RequestParam Integer colorId, @RequestParam Integer productId) {
+            try {
+                Map<String, Object> result = gioHangService.checkQuantity(sizeId, colorId, productId);
+                return ResponseEntity.ok(result);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+
+        @PostMapping("/checkInventory")
+        public ResponseEntity<Map<String, Object>> checkInventory(@RequestBody Map<String, Object> requestData) {
+            try {
+                List<Integer> selectedItems = (List<Integer>) requestData.get("selectedItems");
+                boolean isValid = gioHangService.checkInventory(selectedItems);
+                Map<String, Object> response = new HashMap<>();
+                response.put("valid", isValid);
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+
+
 
 }
 

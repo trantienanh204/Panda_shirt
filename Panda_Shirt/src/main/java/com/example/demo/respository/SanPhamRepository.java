@@ -3,10 +3,13 @@ package com.example.demo.respository;
 
 import com.example.demo.entity.DanhMuc;
 import com.example.demo.entity.SanPham;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -48,8 +51,12 @@ public interface SanPhamRepository extends JpaRepository<SanPham,Integer> {
 //    List<SanPham> findByDanhMuc(DanhMuc danhMuc);
 //    List<SanPham> findAllByOrderByNgaytaoDesc();
 
-
-
+                @Transactional
+                @Modifying
+                @Query("UPDATE SanPham s SET s.trangthai = :trangthai WHERE s.id = :sanPhamId" +
+                        " AND NOT EXISTS" +
+                        " (SELECT 1 FROM SanPhamChiTiet c WHERE c.sanPham.id = s.id AND c.soluongsanpham > 0)")
+                void updateProductStatus(@Param("trangthai") Integer trangthai, @Param("sanPhamId") Integer sanPhamId);
 
 
 }

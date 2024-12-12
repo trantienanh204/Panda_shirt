@@ -349,4 +349,21 @@ public class DuyetDonController {
         model.addAttribute("listsp", sanPhamChiTiet);
         return "/nhanvien/Update/DuyetDonDetal";
     }
+    @GetMapping("/chitietdonhang/{id}")
+    public String detailDHCT(@PathVariable Integer id, Model model) {
+        String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
+        model.addAttribute("role", role);
+
+        DonHang donHang = donHangRepository.getReferenceById(id);
+        model.addAttribute("DonHang", donHang);
+
+        List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
+        model.addAttribute("listhdct", hoaDonCT);
+
+        List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
+                .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
+                .collect(Collectors.toList());
+        model.addAttribute("listsp", sanPhamChiTiet);
+        return "/khachhang/ChiTietDonHang";
+    }
 }

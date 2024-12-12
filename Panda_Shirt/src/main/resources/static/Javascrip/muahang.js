@@ -1,4 +1,5 @@
 
+
 $(document).ready(function () {
     function checkCart() {
         const tableBody = $('#productTable tbody');
@@ -169,9 +170,9 @@ $(document).ready(function () {
             error: function (xhr) {
                 // Xử lý lỗi từ server
                 const errorMessage = xhr.responseText || 'Có lỗi xảy ra';
-                alert(errorMessage);
+                // alert(errorMessage);
                 Swal.fire({
-                    title: 'Thông báo báo!',
+                    title: 'Cảnh báo!',
                     text: errorMessage,
                     icon: 'warning',
                     confirmButtonText: 'OK'
@@ -321,6 +322,12 @@ $(document).on('click', '.product-action button', function (event) {
             },
             error: function (xhr, status, error) {
                 console.error('Lỗi khi gửi dữ liệu:', error);
+                Swal.fire({
+                    title: 'Thông báo',
+                    text:"Chưa chọn hóa đơn",
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     } else {
@@ -341,7 +348,7 @@ function findkhachhang() {
         document.getElementById('khachhang-list-container').innerHTML = initialProductListkh;
         return;
     }
-    fetch(`http://localhost:8080/panda/banhangoffline/searchkh?keyword=${encodeURIComponent(keyword)}`)
+    fetch(`http://localhost:8080/panda/banhangoffline/update?keyword=${encodeURIComponent(keyword)}`)
         .then(response => response.json())
         .then(data => {
             console.log("Dữ liệu trả về từ API:", data);
@@ -388,21 +395,22 @@ function lishkhachhang(lskh) {
 document.addEventListener("DOMContentLoaded", function () {
     const path = window.location.pathname;
     const segments = path.split("/");
-    const idHoaDon = segments[segments.length - 1]; // Lấy ID hóa đơn từ URL
+    const idHoaDon = segments[segments.length - 1];
 
     const tenKhInput = document.getElementById("tenkh-input");
     const sdtInput = document.getElementById("sdt-input");
-    const voucherInput = document.getElementById("mavoucher-input");
+    const diachiInput = document.getElementById("diachi-input");
 
     // Sử dụng sessionStorage với khóa chứa ID hóa đơn
     const tenKhKey = `tenkh_${idHoaDon}`;
     const sdtKey = `sdt_${idHoaDon}`;
-    const voucherKey = `mavoucher_${idHoaDon}`;
+    const diachiKey = `diachi_${idHoaDon}`;
+
 
     // Gán giá trị đã lưu nếu tồn tại trong sessionStorage
     tenKhInput.value = sessionStorage.getItem(tenKhKey) || "";
     sdtInput.value = sessionStorage.getItem(sdtKey) || "";
-    voucherInput.value = sessionStorage.getItem(voucherKey) || "";
+    diachiInput.value = sessionStorage.getItem(diachiKey) || "";
 
     // Lưu dữ liệu khi người dùng nhập
     tenKhInput.addEventListener("input", function () {
@@ -411,12 +419,11 @@ document.addEventListener("DOMContentLoaded", function () {
     sdtInput.addEventListener("input", function () {
         sessionStorage.setItem(sdtKey, this.value);
     });
-    voucherInput.addEventListener("input", function () {
-        sessionStorage.setItem(voucherKey, this.value);
+    diachiInput.addEventListener("input", function () {
+        sessionStorage.setItem(diachiKey, this.value);
     });
 
     const customerItems = document.querySelectorAll(".customer-item");
-
     customerItems.forEach(function (item) {
         item.addEventListener("click", function () {
             const idKhachHang = this.getAttribute("data-id");
@@ -426,30 +433,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(data => {
                     sessionStorage.setItem(tenKhKey, data.tenkh);
                     sessionStorage.setItem(sdtKey, data.sdt);
+                    sessionStorage.setItem(diachiKey, data.diachi);
 
                     tenKhInput.value = data.tenkh;
                     sdtInput.value = data.sdt;
-                })
-                .catch(error => console.error("Lỗi dữ liệu", error));
-        });
-    });
-
-    const voucher = document.querySelectorAll(".voucher-item");
-    voucher.forEach(function (item) {
-        item.addEventListener("click", function () {
-            const idvoucher = this.getAttribute("data-id");
-            console.log(idvoucher + "voucher");
-            fetch(`/panda/banhangoffline/selectvc?id=${idvoucher}`)
-                .then(response => response.json())
-                .then(data => {
-                    sessionStorage.setItem(voucherKey, data.mavocher);
-                    voucherInput.value = data.mavocher;
+                    diachiInput.value = data.diachi;
                 })
                 .catch(error => console.error("Lỗi dữ liệu", error));
         });
     });
 });
-
-
 
 

@@ -70,9 +70,13 @@ public class sanphanController {
         }).collect(Collectors.toList());
     }
 
+
+    //dat biet
     @GetMapping("/Listnxs")
     public List<Map<String, Object>> ListNXS() {
-        return sanPhamService.getallNXS().stream().map(nxs -> {
+        return sanPhamService.getallNXS().stream()
+                .filter(nxs -> nxs.getTrangthai()==1)
+                .map(nxs -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", nxs.getId());
             map.put("text", nxs.getTennsx());
@@ -80,9 +84,10 @@ public class sanphanController {
         }).collect(Collectors.toList());
     }
 
+    //dac biet
     @GetMapping("/Listdanhmuc")
     public List<Map<String, Object>> ListDanhmuc() {
-        return sanPhamService.getallDanhmuc().stream().map(danhmuc -> {
+        return sanPhamService.getallDanhmuc().stream().filter(danhMuc -> danhMuc.getTrangthai()==1).map(danhmuc -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", danhmuc.getId());
             map.put("text", danhmuc.getTendanhmuc());
@@ -92,7 +97,7 @@ public class sanphanController {
 
     @GetMapping("/Listchatlieu")
     public List<Map<String, Object>> ListChatLieu() {
-        return sanPhamService.getallCL().stream().map(chatlieu -> {
+        return sanPhamService.getallCL().stream().filter(chatlieu -> chatlieu.getTrangThai()==0).map(chatlieu -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", chatlieu.getId());
             map.put("text", chatlieu.getTenChatLieu());
@@ -100,9 +105,10 @@ public class sanphanController {
         }).collect(Collectors.toList());
     }
 
+    //dac biet
     @GetMapping("/Listthuonghieu")
     public List<Map<String, Object>> ListThuongHieu() {
-        return sanPhamService.getallthuonghieu().stream().map(thuonghieu -> {
+        return sanPhamService.getallthuonghieu().stream().filter(thuonghieu -> thuonghieu.getTrangthai()==1).map(thuonghieu -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", thuonghieu.getId());
             map.put("text", thuonghieu.getTenthuonghieu());
@@ -112,7 +118,7 @@ public class sanphanController {
 
     @GetMapping("/Listcoao")
     public List<Map<String, Object>> ListCoAo() {
-        return sanPhamService.getallcoao().stream().map(coao -> {
+        return sanPhamService.getallcoao().stream().filter(coAo -> coAo.getTrangThai()==0).map(coao -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", coao.getId());
             map.put("text", coao.getTen());
@@ -122,7 +128,7 @@ public class sanphanController {
 
     @GetMapping("/Listkichthuoc")
     public List<Map<String, Object>> Listkichthuoc() {
-        return sanPhamService.getallkichco().stream().map(coao -> {
+        return sanPhamService.getallkichco().stream().filter(kichThuoc -> kichThuoc.getTrangthai()==0).map(coao -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", coao.getId());
             map.put("text", coao.getTen());
@@ -132,7 +138,7 @@ public class sanphanController {
 
     @GetMapping("/Listmausac")
     public List<Map<String, Object>> Listmausac() {
-        return sanPhamService.getallmausac().stream().map(mausac -> {
+        return sanPhamService.getallmausac().stream().filter(mauSac -> mauSac.getTrangthai()==0).map(mausac -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", mausac.getId());
             map.put("text", mausac.getTen());
@@ -471,9 +477,24 @@ public class sanphanController {
 
 
 
-
-
-
+        @PostMapping("/sanpham/updateStatus")
+        public ResponseEntity<Void> updateProductStatus(@RequestBody Map<String, Object> statusUpdate) {
+            try {
+                // Kiểm tra xem các khóa có tồn tại không trước khi chuyển đổi giá trị
+                if (statusUpdate.containsKey("trangthai") && statusUpdate.containsKey("sanPhamId")) {
+                    int trangThai = Integer.parseInt(statusUpdate.get("trangthai").toString());
+                    Integer sanPhamId = Integer.valueOf(statusUpdate.get("sanPhamId").toString());
+                    sanPhamService.updateProductStatus(trangThai, sanPhamId);
+                    return ResponseEntity.ok().build();
+                } else {
+                    return ResponseEntity.badRequest().build();
+                }
+            } catch (Exception e) {
+                // Log lỗi chi tiết
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
 
 
 

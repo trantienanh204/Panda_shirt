@@ -83,7 +83,7 @@
             </td>
             <td>
                 <a th:href="@{/panda/hoadon/chitiet(id=${hd.id})}"
-                   data-toggle="modal" data-target="#xemchitiet"
+                   data-toggle="modal" data-target="#xemhoadon"
                    th:data-id="${hd.id}">
                     <i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>
                 </a>
@@ -125,16 +125,18 @@
     </nav>
 </div>
 <!-- modal-->
-<div class="modal fade" id="xemchitiet" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel"
+<div class="modal fade" id="xemhoadon" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div th:fragment="hdct">
                 <div class="modal-header">
+
                     <h5 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn ' "></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
+
                 </div>
                 <div class="modal-body">
                     <table>
@@ -167,14 +169,15 @@
 
 <script>
     $(document).ready(function() {
-        $('#xemchitiet').on('show.bs.modal', function (event) {
+        $('#xemhoadon').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Nhận thông tin từ nút kích hoạt modal
             var id = button.data('id'); // Lấy ID của hóa đơn
 
             // Gửi yêu cầu AJAX để lấy chi tiết hóa đơn
-            $.get('/panda/nhanvien/xemhoadon/chitiet', { id: id }, function(data) {
-                var modal = $('#xemchitiet');
+            $.get('/panda/hoadon/chitiet', { id: id }, function(data) {
+                var modal = $('#xemhoadon');
                 modal.find('.modal-body').html(data); // Chèn nội dung vào modal body
+
             });
         });
     });
@@ -194,7 +197,7 @@
         // Mở trang in mới với ID
         var printWindow = window.open('/panda/nhanvien/xemhoadon/xuatfile?id=' + invoiceId, '_blank');
 
-        // // Khi trang in đã tải xong, gọi in
+        // Khi trang in đã tải xong, gọi in
         // printWindow.onload = function() {
         //     printWindow.print();
         // };

@@ -1,3 +1,4 @@
+
 const host = "https://provinces.open-api.vn/api/";
 var callAPI = (api) => {
     return axios.get(api)
@@ -31,7 +32,6 @@ $("#province").change(() => {
     $("#ward").html('<option value="">Chọn</option>');
     callApiDistrict(host + "p/" + $("#province").val() + "?depth=2");
     updateAddressResult();
-    updateShippingFee();
 });
 $("#district").change(() => {
     callApiWard(host + "d/" + $("#district").val() + "?depth=2");
@@ -44,33 +44,40 @@ $("#ward").change(() => {
 });
 
 var updateAddressResult = () => {
-    let provinceText = $("#province option:selected").text() || "Tỉnh/Thành phố";
-    let districtText = $("#district option:selected").text() || "Quận/Huyện";
-    let wardText = $("#ward option:selected").text() || "Xã/Phường";
+    let provinceId = $("#province").val() || "";
+    let districtText = $("#district").val() || "";
+    let wardText = $("#ward").val() || "";
 
-    let result = `${provinceText} | ${districtText} | ${wardText}`;
+    let result = `${provinceId} | ${districtText} | ${wardText}`;
     $("#result").text(result);
 
-    $("#selectedProvince").val(provinceText !== "Tỉnh/Thành phố" ? provinceText : "");
-    $("#selectedDistrict").val(districtText !== "Quận/Huyện" ? districtText : "");
-    $("#selectedWard").val(wardText !== "Xã/Phường" ? wardText : "");
+    $("#selectedProvince").val(provinceId);
+    $("#selectedDistrict").val(districtText);
+    $("#selectedWard").val(wardText);
 };
+$(document).ready(() => {
+    const savedCustomer = JSON.parse(localStorage.getItem("selectedCustomer"));
+    if (savedCustomer) {
+        const {idTinhThanhPho, idQuanHuyen, idXaPhuong} = savedCustomer;
+        console.log("Dữ liệu từ localStorage:", savedCustomer);
 
-var updateShippingFee = () => {
-    let province = $("#province option:selected");
-    let region = province.data("region");
-    let provinceName = province.text();
+        // Gọi lại API để tải danh sách tỉnh thành
+        callAPI('https://provinces.open-api.vn/api/?depth=1').then(() => {
+            $("#province").val(idTinhThanhPho).trigger("change");
 
 
+            callApiDistrict(`https://provinces.open-api.vn/api/p/${idTinhThanhPho}?depth=2`).then(() => {
+                $("#district").val(idQuanHuyen).trigger("change");
 
-    if (provinceName === "Thành phố Hà Nội" || provinceName ===  "Chọn") {
-        $("#phiship").val(0);
-        $("#ship").text("0 VND");
-    } else {
-        $("#phiship").val(30000);
-        $("#ship").text("30,000.00");
+                callApiWard(`https://provinces.open-api.vn/api/d/${idQuanHuyen}?depth=2`).then(() => {
+                    $("#ward").val(idXaPhuong).trigger("change");
+                });
+            });
+        });
+
+        $("#selectedProvince").val(idTinhThanhPho);
+        $("#selectedDistrict").val(idQuanHuyen);
+        $("#selectedWard").val(idXaPhuong);
     }
-
-
-};
+});
 

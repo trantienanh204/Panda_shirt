@@ -49,7 +49,7 @@ public class SanPham {
     private Integer soluongsp;
 
     @Column(name = "TRANG_THAI")
-    private Integer trangthai;
+    private int trangthai;
 
     @ManyToOne
     @JoinColumn(name = "ID_DANH_MUC", referencedColumnName = "id")

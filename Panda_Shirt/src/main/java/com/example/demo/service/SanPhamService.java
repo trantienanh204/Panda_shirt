@@ -586,4 +586,13 @@ public class SanPhamService {
 
 
 
+        public void updateProductStatus(int trangThai, Integer sanPhamId) {
+            sanPhamRepository.updateProductStatus(trangThai, sanPhamId);
+        }
+
+
+
+
+
+
 }

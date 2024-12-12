@@ -1,3 +1,4 @@
+
 package com.example.demo.entity;
 
 
@@ -75,6 +76,9 @@ public class Voucher {
 
     @Column(name = "LOAI")
     private boolean loai;
+
+//    @Column(name = "LOAI_KHACH_HANG")
+//    private boolean loaikh;
 
 
     @Column(name = "TRANG_THAI")

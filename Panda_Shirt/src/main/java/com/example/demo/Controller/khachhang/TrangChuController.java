@@ -4,7 +4,9 @@ package com.example.demo.Controller.khachhang;
 import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
+import com.example.demo.respository.HoaDonCTRepository;
 import com.example.demo.respository.KhachHangRepository;
+import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,14 +40,18 @@ public class TrangChuController {
     private TrangchuService trangchuService;
     @Autowired
     private SanPhamService sanPhamService;
-
+    @Autowired
+    private HoaDonCTRepository hoaDonCTRepository;
     @Autowired
     private GioHangService gioHangService;
     @Autowired
     private TaiKhoanService taiKhoanService;
-
+    @Autowired
+    private DonHangRepository donHangRepository;
     @Autowired
     DonHangService donHangService;
+    @Autowired
+    HDCTService hdctService;
     @Autowired
     private KhachHangRepository khachHangRepository;
 
@@ -192,6 +198,21 @@ public class TrangChuController {
         System.out.println("Result: " + result);
         return result;
     }
+    @GetMapping("/donhangchitiet/chitiet/{id}")
+    public String chiTietHoaDon(@PathVariable("id") Integer id, Model model) {
+        DonHang donHang = donHangRepository.getReferenceById(id);
+        model.addAttribute("DonHang", donHang);
+        System.out.println("Don hang"+donHang);
 
+        List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
+        model.addAttribute("listhdct", hoaDonCT);
+        System.out.println("HDCT"+hoaDonCT);
+        List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
+                .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
+                .collect(Collectors.toList());
+        model.addAttribute("listsp", sanPhamChiTiet);
+
+        return "/khachhang/TaiKhoan :: chiTiet"; // Trả về fragment HTML
+    }
 
 }
