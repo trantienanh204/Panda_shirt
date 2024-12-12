@@ -4,7 +4,9 @@ package com.example.demo.Controller.khachhang;
 import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
+import com.example.demo.respository.HoaDonCTRepository;
 import com.example.demo.respository.KhachHangRepository;
+import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,14 +40,18 @@ public class TrangChuController {
     private TrangchuService trangchuService;
     @Autowired
     private SanPhamService sanPhamService;
-
+    @Autowired
+    private HoaDonCTRepository hoaDonCTRepository;
     @Autowired
     private GioHangService gioHangService;
     @Autowired
     private TaiKhoanService taiKhoanService;
-
+    @Autowired
+    private DonHangRepository donHangRepository;
     @Autowired
     DonHangService donHangService;
+    @Autowired
+    HDCTService hdctService;
     @Autowired
     private KhachHangRepository khachHangRepository;
 
@@ -194,6 +200,31 @@ public class TrangChuController {
         List<SanPhamChiTiet> result = trangchuService.timkiemspct(id);
         System.out.println("Result: " + result);
         return result;
+    }
+    @GetMapping("/donhangchitiet/chitiet")
+    public String chiTietHoaDon(@RequestParam("id") Integer id, Model model) {
+        try {
+            DonHang donHang = donHangRepository.findById(id).orElse(null);
+            if (donHang == null) {
+                throw new RuntimeException("Đơn hàng không tồn tại.");
+            }
+            model.addAttribute("DonHang", donHang);
+
+            List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
+            model.addAttribute("listhdct", hoaDonCT);
+
+            List<SanPhamChiTiet> sanPhamChiTiet = hoaDonCT.stream()
+                    .map(hdct -> sanPhamService.Listtimkiemspct(hdct.getSanPhamChiTiet().getId()))
+                    .collect(Collectors.toList());
+            model.addAttribute("listsp", sanPhamChiTiet);
+
+            return "khachhang/TaiKhoan :: chiTiet"; // Trả về fragment HTML
+        } catch (Exception e) {
+            // Ghi log lỗi
+            System.err.println("Lỗi khi xử lý yêu cầu chi tiết đơn hàng: " + e.getMessage());
+            e.printStackTrace();
+            return "error"; // Trả về trang lỗi nếu có lỗi xảy ra
+        }
     }
 
 

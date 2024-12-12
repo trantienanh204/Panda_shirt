@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -17,20 +18,21 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
-        <img th:src="@{/Image/panda_logo.png}" width="70px"; height="70px">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <img th:src="@{/Image/panda_logo.png}" width="70px" ; height="70px">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active"style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active" style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"style="font-size: 20px" href="#">Liên Hệ</a>
+                    <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
@@ -62,10 +64,12 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" id="accountTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true" style="color: black;">Thông Tin Tài Khoản</a>
+            <a class="nav-link active" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info"
+               aria-selected="true" style="color: black;">Thông Tin Tài Khoản</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false" style="color: black;">Theo Dõi Đơn Hàng</a>
+            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders"
+               aria-selected="false" style="color: black;">Theo Dõi Đơn Hàng</a>
         </li>
     </ul>
 
@@ -77,16 +81,20 @@
                 <div class="card-body">
                     <h5 class="card-title">Thông Tin Của Bạn</h5>
                     <p><strong>Họ và Tên:</strong> <span th:text="${khachHang.tenkhachhang}">John Doe</span>
-                    </p> <p><strong>Email:</strong> <span th:text="${khachHang.tentaikhoan}">johndoe@example.com</span>
+                    </p>
+                    <p><strong>Email:</strong> <span th:text="${khachHang.tentaikhoan}">johndoe@example.com</span>
                     <p><strong>Số điện thoại:</strong> <span th:text="${khachHang.sdt}">+84 123 456 789</span></p>
-                    <p><strong>Địa chỉ:</strong> <span th:text="${khachHang.diachi}">1234 Example Street, City, Country</span></p></p>
-                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateInfoModal">Cập Nhật Thông Tin</a>
+                    <p><strong>Địa chỉ:</strong> <span
+                            th:text="${khachHang.diachi}">1234 Example Street, City, Country</span></p></p>
+                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateInfoModal">Cập
+                        Nhật Thông Tin</a>
                 </div>
             </div>
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="updateInfoModal" tabindex="-1" aria-labelledby="updateInfoModalLabel" aria-hidden="true">
+        <div class="modal fade" id="updateInfoModal" tabindex="-1" aria-labelledby="updateInfoModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -101,7 +109,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="updatePhone" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" id="updatePhone" placeholder="Nhập số điện thoại">
+                                <input type="text" class="form-control" id="updatePhone"
+                                       placeholder="Nhập số điện thoại">
                             </div>
                             <div class="mb-3">
                                 <label for="searchBox" class="form-label">Địa chỉ</label>
@@ -123,19 +132,24 @@
             <!-- Nav Subtabs for Order Status -->
             <ul class="nav nav-tabs" id="orderSubTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">Chờ Duyệt</a>
+                    <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" href="#pending" role="tab"
+                       aria-controls="pending" aria-selected="true">Chờ Duyệt</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="approved-tab" data-bs-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="false">Đã Duyệt</a>
+                    <a class="nav-link" id="approved-tab" data-bs-toggle="tab" href="#approved" role="tab"
+                       aria-controls="approved" aria-selected="false">Đã Duyệt</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="shipping-tab" data-bs-toggle="tab" href="#shipping" role="tab" aria-controls="shipping" aria-selected="false">Đang Giao</a>
+                    <a class="nav-link" id="shipping-tab" data-bs-toggle="tab" href="#shipping" role="tab"
+                       aria-controls="shipping" aria-selected="false">Đang Giao</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="completed-tab" data-bs-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="false">Hoàn Thành</a>
+                    <a class="nav-link" id="completed-tab" data-bs-toggle="tab" href="#completed" role="tab"
+                       aria-controls="completed" aria-selected="false">Hoàn Thành</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="cancelled-tab" data-bs-toggle="tab" href="#cancelled" role="tab" aria-controls="cancelled" aria-selected="false">Đã Hủy</a>
+                    <a class="nav-link" id="cancelled-tab" data-bs-toggle="tab" href="#cancelled" role="tab"
+                       aria-controls="cancelled" aria-selected="false">Đã Hủy</a>
                 </li>
             </ul>
 
@@ -160,10 +174,18 @@
                                 <tr th:each="donHang : ${choduyet}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span></td>
+                                    <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span>
+                                    </td>
                                     <td th:text="${donHang.tongtien}"></td>
                                     <td>
-                                        <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
+                                        <a th:data-id="${donHang.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+
+                                           class="view-details"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#add">
+                                            <i class="fa-solid fa-eye"
+                                               style="color: #000000; font-size: 20px"></i></a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -191,9 +213,19 @@
                                 <tr th:each="donHang : ${daduyet}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span></td>
+                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span>
+                                    </td>
                                     <td th:text="${donHang.tongtien}"></td>
-                                    <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
+                                    <td>
+                                        <a th:data-id="${donHang.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+
+                                           class="view-details"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#add">
+                                            <i class="fa-solid fa-eye"
+                                               style="color: #000000; font-size: 20px"></i></a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -220,9 +252,19 @@
                                 <tr th:each="donHang : ${danggiao}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span></td>
+                                    <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span>
+                                    </td>
                                     <td th:text="${donHang.tongtien}"></td>
-                                    <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
+                                    <td>
+                                        <a th:data-id="${donHang.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+
+                                           class="view-details"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#add">
+                                            <i class="fa-solid fa-eye"
+                                               style="color: #000000; font-size: 20px"></i></a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -249,9 +291,18 @@
                                 <tr th:each="donHang : ${hoanthanh}">
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span></td>
+                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span>
+                                    </td>
                                     <td th:text="${donHang.tongtien}"></td>
-                                    <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
+                                    <td>
+                                        <a th:data-id="${donHang.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                           class="view-details"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#add">
+                                            <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -280,7 +331,16 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
                                     <td th:text="${donHang.tongtien}"></td>
-                                    <td><a href="#" class="btn btn-info btn-sm">Chi Tiết</a></td>
+                                    <td>
+                                        <a th:data-id="${donHang.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                           class="view-details"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#add">
+                                            <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
+                                        </a>
+
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -291,7 +351,6 @@
         </div>
     </div>
 </div>
-
 
 
 <!-- Footer -->
@@ -309,6 +368,7 @@
     body {
         font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
     /* Màu sắc cho tab đang chọn */
     .nav-tabs .nav-link.active {
         color: #FE5621; /* Màu sắc của tab khi được chọn */
@@ -393,12 +453,11 @@
         list-style: none;
         margin: 5px 0;
     }
+
     #updateInfoModal .form-label {
         font-weight: bold;
     }
 
-</style>
-<style>
     #suggestions {
         position: absolute;
         z-index: 1000;
@@ -422,6 +481,223 @@
         background-color: #f1f1f1;
     }
 </style>
+<div class="modal fade" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    <i class="fa-solid fa-list" style="color: #000000;"></i>
+                    Thông tin đơn hàng
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div th:fragment="chiTiet">
+                    <div class="card-body p-4">
+                        <div class="modal-header">
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Hóa đơn:</label>
+                                <div class="col-sm-7">
+                                    <input type="text" th:value="*{DonHang?.hoaDon?.mahoadon}" class="form-control" readonly
+                                           style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Tên khách hàng</label>
+                                    <div class="input-group">
+                                        <input type="text" th:value="${DonHang?.khachHang?.tenkhachhang}" class="form-control"
+                                               readonly
+                                               style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <div class="input-group">
+                                        <input type="text" th:value="${DonHang?.khachHang?.sdt}" class="form-control" readonly
+                                               style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Ghi chú</label>
+                                    <div class="input-group">
+                                        <input type="text" th:value="${DonHang?.ghiChu}" class="form-control" readonly
+                                               style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Lý do nếu đơn hủy</label>
+                                    <div class="input-group">
+                                        <input type="text" th:value="${DonHang?.lydohuy}" class="form-control" readonly
+                                               style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Ngày đặt</label>
+                                    <div class="input-group">
+                                        <input type="date"
+                                               th:value="${DonHang?.ngaytao}"
+                                               class="form-control" readonly
+                                               style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-label">Địa chỉ</label>
+                                    <input type="text" th:value="${DonHang?.hoaDon?.khachHang?.diachi}" class="form-control" readonly
+                                           style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Mã SPCT</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Màu sắc</th>
+                                            <th>Kích thước</th>
+                                            <th>Số lượng</th>
+                                            <th>Đơn giá</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="dd,i: ${listhdct}">
+                                            <td th:text="${dd.sanPhamChiTiet.maspct}"></td>
+                                            <td th:text="${dd.sanPhamChiTiet.sanPham.tensp}"></td>
+                                            <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>
+                                            <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>
+                                            <td th:text="${dd.soluong}"></td>
+                                            <td th:text="${#numbers.formatDecimal(dd.dongia, 1, 'POINT',0, 'COMMA')}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
+                                    <input type="text" th:value="${DonHang?.hoaDon?.giagiam != null ? #numbers.formatDecimal(DonHang?.hoaDon?.giagiam, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : 'Không có dữ liệu'}" class="form-control" readonly
+                                           style="background-color: white; color: black;">
+                                    <!--                            <td th:text="${#numbers.formatDecimal(tongtien, 1, 'POINT',0, 'COMMA')}"></td>-->
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
+                                    <input type="text" th:value="${DonHang?.tongtien != null ? #numbers.formatDecimal(DonHang.tongtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : 'Không có dữ liệu'}"
+                                     class="form-control" readonly
+                                           style="background-color: white; color: black;">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!--<div class="modal-body">-->
+<!--    <div th:fragment="chiTiet">-->
+<!--        <div class="card-body p-4">-->
+<!--            <div class="modal-header">-->
+<!--                <div class="row mb-3">-->
+<!--                    <label class="col-sm-4 col-form-label">Hóa đơn:</label>-->
+<!--                    <div class="col-sm-7">-->
+<!--                        <input type="text" th:value="*{DonHang?.hoaDon?.mahoadon}" class="form-control" readonly-->
+<!--                               style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <div class="row mb-3">-->
+<!--                    <div class="col-md-3">-->
+<!--                        <label class="form-label">Tên khách hàng</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <input type="text" th:value="${DonHang?.khachHang?.tenkhachhang}" class="form-control"-->
+<!--                                   readonly-->
+<!--                                   style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-3">-->
+<!--                        <label class="form-label">Số điện thoại</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <input type="text" th:value="${DonHang?.khachHang?.sdt}" class="form-control" readonly-->
+<!--                                   style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-3">-->
+<!--                        <label class="form-label">Ghi chú</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <input type="text" th:value="${DonHang?.ghiChu}" class="form-control" readonly-->
+<!--                                   style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-3">-->
+<!--                        <label class="form-label">Lý do nếu đơn hủy</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <input type="text" th:value="${DonHang?.lydohuy}" class="form-control" readonly-->
+<!--                                   style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row mb-3">-->
+<!--                    <div class="col-md-3">-->
+<!--                        <label class="form-label">Ngày đặt</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <input type="date"-->
+<!--                                   th:value="${DonHang?.hoaDon.ngaymua}"-->
+<!--                                   class="form-control" readonly-->
+<!--                                   style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-9">-->
+<!--                        <label class="form-label">Địa chỉ</label>-->
+<!--                        <input type="text" th:value="${DonHang?.hoaDon?.khachHang?.diachi}" class="form-control" readonly-->
+<!--                               style="background-color: white; color: black; pointer-events: none; border: 1px solid #ced4da;;">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row mb-3">-->
+<!--                    <div class="col-md-9">-->
+<!--                        <table class="table table-bordered">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th>Mã sản phẩm</th>-->
+<!--                                <th>Tên sản phẩm</th>-->
+<!--                                <th>Màu sắc</th>-->
+<!--                                <th>Kích thước</th>-->
+<!--                                <th>Số lượng</th>-->
+<!--                                <th>Đơn giá</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            <tr th:each="dd,i: ${listhdct}">-->
+<!--                                <td th:text="${dd.sanPhamChiTiet.sanPham.masp}"></td>-->
+<!--                                <td th:text="${dd.sanPhamChiTiet.sanPham.tensp}"></td>-->
+<!--                                <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>-->
+<!--                                <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>-->
+<!--                                <td th:text="${dd.soluong}"></td>-->
+<!--                                <td th:text="${#numbers.formatDecimal(dd.dongia, 1, 'POINT',0, 'COMMA')}"></td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-3">-->
+<!--                        <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>-->
+<!--                        <input type="text" th:field="*{tongtien}" class="form-control" readonly-->
+<!--                               style="background-color: white; color: black;">-->
+<!--                        &lt;!&ndash;                            <td th:text="${#numbers.formatDecimal(tongtien, 1, 'POINT',0, 'COMMA')}"></td>&ndash;&gt;-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
 
 <!-- Bootstrap JS and FontAwesome -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
@@ -442,6 +718,29 @@
     }
 
 </script>
+<script>
+    $(document).ready(function () {
+        $('#add').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Lấy thông tin nút kích hoạt modal
+            var id = button.data('id'); // Lấy ID đơn hàng từ data-id
+
+            // AJAX để lấy nội dung chi tiết hóa đơn
+            $.ajax({
+                url: '/panda/donhangchitiet/chitiet', // Cập nhật đường dẫn URL
+                type: 'GET',
+                data: {id: id},
+                success: function (data) {
+                    // Chèn nội dung vào modal body
+                    $('#add .modal-body').html(data);
+                },
+                error: function () {
+                    alert('Không thể tải thông tin chi tiết đơn hàng.');
+                }
+            });
+        });
+    });
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -488,13 +787,15 @@
                 return;
             }
 
-            const dataToSend = { recipientName,
+            const dataToSend = {
+                recipientName,
                 phoneNumber,
-                fullAddress: address };
+                fullAddress: address
+            };
 
             fetch('/diachi/api/save-address', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(dataToSend),
             })
                 .then(response => response.json())
