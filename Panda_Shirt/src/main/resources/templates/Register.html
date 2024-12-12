@@ -16,8 +16,8 @@
         <form method="post" th:action="@{/panda/register}">
             <!-- Nhập Email -->
             <div class="mb-3">
-                <input type="text" name="tentaikhoan"
-                       class="form-control" placeholder="Email">
+                <input readonly type="text" name="tentaikhoan"
+                       class="form-control" placeholder="Email" th:value="${email != null ? email : ''}">
 
                 <div th:if="${emailErrors != null}">
                     <div th:each="error : ${emailErrors}" th:text="${error}"></div>
@@ -50,15 +50,18 @@
                 <div th:if="${numberphoneEmpty != null}">
                     <div th:each="error : ${numberphoneEmpty}" th:text="${error}"></div>
                 </div>
-            </div>
-            <div class="mb-3">
-                <input type="text" name="diachi"
-                       class="form-control" placeholder="Địa chỉ">
-                <!--dia chi empty-->
-                <div th:if="${addressEmpty != null}">
-                    <div th:each="error : ${addressEmpty}" th:text="${error}"></div>
+                <div th:if="${phoneErrors != null}">
+                    <div th:each="error : ${phoneErrors}" th:text="${error}"></div>
                 </div>
             </div>
+<!--            <div class="mb-3">-->
+<!--                <input hidden type="text" name="diachi"-->
+<!--                       class="form-control" placeholder="Địa chỉ">-->
+<!--                &lt;!&ndash;dia chi empty&ndash;&gt;-->
+<!--                <div th:if="${addressEmpty != null}">-->
+<!--                    <div th:each="error : ${addressEmpty}" th:text="${error}"></div>-->
+<!--                </div>-->
+<!--            </div>-->
             <button type="submit" class="btn btn-primary w-100">Đăng Ký</button>
         </form>
     </div>

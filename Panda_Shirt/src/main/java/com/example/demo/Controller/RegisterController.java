@@ -10,6 +10,7 @@ import com.example.demo.respository.TaiKhoanRepository;
 import com.example.demo.respository.VaiTroRepository;
 import com.example.demo.services.EmailService;
 import com.example.demo.services.RegisterService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +44,17 @@ public class RegisterController {
     ChiTietVaiTroRepository chiTietVaiTroRepository;
 
     @GetMapping("/register")
-    public String register() {
+    public String register(HttpSession session,Model model) {
+        // Lấy email từ session
+        String email = (String) session.getAttribute("email");
+        // Truyền dữ liệu sang
+        model.addAttribute("email", email);
         return "Register"; // Trả về tên view
     }
 
     @PostMapping("/register")
-    public String register( KhachHang khachHang,Model model, RedirectAttributes redirectAttributes,
-                           @RequestParam("tentaikhoan") String email, @RequestParam("tenkhachhang") String tenkhachhang, @RequestParam("sdt") String sdt, @RequestParam("diachi") String diachi ) {
+    public String register(HttpSession session, KhachHang khachHang,Model model, RedirectAttributes redirectAttributes,
+                           @RequestParam("tentaikhoan") String email, @RequestParam("tenkhachhang") String tenkhachhang, @RequestParam("sdt") String sdt ) {
 
         // check lỗi
         boolean hasErrors = false;
@@ -78,10 +83,14 @@ public class RegisterController {
             model.addAttribute("numberphoneEmpty","Số điện thoại không được để trống");
             hasErrors = true;
         }
-        if(diachi.trim().isEmpty()){
-            model.addAttribute("addressEmpty","Địa chỉ không được để trống");
+        if (!sdt.matches("^0\\d{9}$")) {
+            model.addAttribute("phoneErrors", "Số điện phải thoại bắt đầu bằng 0 và có 10 số");
             hasErrors = true;
         }
+//        if(diachi.trim().isEmpty()){
+//            model.addAttribute("addressEmpty","Địa chỉ không được để trống");
+//            hasErrors = true;
+//        }
         // Nếu có lỗi, trả về trang đăng ký với thông báo lỗi
         if (hasErrors) {
             return "Register";
@@ -153,13 +162,16 @@ public class RegisterController {
         khachHang.setMakhachhang(maKhachHang);
         khachHang.setSdt(sdt);
         khachHang.setTenkhachhang(tenkhachhang);
-        khachHang.setDiachi(diachi);
+        //khachHang.setDiachi(diachi);
         khachHang.setDelete(true);
         khachHang.setTinhtrang(true);
         khachHang.setMatkhau(hashedPassword);
         khachHang.setTrangthai(1);
+        khachHang.setGioitinh(null);
         khachHang.setNgaytao(LocalDate.now());
         khachHangRepository.save(khachHang);
+        // xóa session email
+        session.removeAttribute("email");
         redirectAttributes.addFlashAttribute("message", "Bạn đã đăng ký thành công!");
         // Redirect sau khi đăng ký thành công
         return "redirect:/panda/login"; // Quay lại trang đăng nhập sau khi đăng ký
