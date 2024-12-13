@@ -487,7 +487,7 @@ public class BanHangOffline {
             @RequestParam("mucgiam") String giagiam,
             RedirectAttributes redirectAttributes,
             Model model
-//            ,@AuthenticationPrincipal UserDetails userDetails
+  //          @AuthenticationPrincipal UserDetails userDetails
     ) {
         HoaDon hd = hoaDonRepository.finid(idhoadon);
         if (hd == null) {
@@ -495,8 +495,8 @@ public class BanHangOffline {
             redirectAttributes.addFlashAttribute("loi", "Hóa đơn");
             return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
         }
-        NhanVien nv = nhanVienRespository.findById(1).orElse(null);
-        if (nv == null) {
+        NhanVien nhanVien = nhanVienRespository.findById(3).orElse(null);
+        if (nhanVien == null) {
             System.out.println("nv trống ");
             redirectAttributes.addFlashAttribute("loi", "Nhân viên");
             return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
@@ -617,9 +617,8 @@ public class BanHangOffline {
 //        if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
 //            return "redirect:/panda/login";
 //        }
-
 //        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
-        NhanVien nhanVien = nhanVienRespository.findById(1).orElse(null);
+
         hd.setNhanVien(nhanVien);
         hd.setVoucher(vc);
         hd.setThanhtien(thanhtien);

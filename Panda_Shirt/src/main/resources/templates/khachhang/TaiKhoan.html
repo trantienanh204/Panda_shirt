@@ -176,7 +176,7 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span>
                                     </td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -215,7 +215,7 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span>
                                     </td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -254,7 +254,7 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span>
                                     </td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -293,7 +293,7 @@
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span>
                                     </td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -330,7 +330,7 @@
                                     <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
                                     <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
                                     <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
-                                    <td th:text="${donHang.tongtien}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
                                         <a th:data-id="${donHang.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
@@ -339,7 +339,6 @@
                                            data-bs-target="#add">
                                             <i class="fa-solid fa-eye" style="color: #000000; font-size: 20px"></i>
                                         </a>
-
                                     </td>
                                 </tr>
                                 </tbody>
@@ -590,6 +589,7 @@
                                 </div>
                             </div>
                         </div>
+
 
                     </div>
                 </div>

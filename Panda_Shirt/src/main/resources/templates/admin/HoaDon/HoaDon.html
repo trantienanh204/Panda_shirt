@@ -52,10 +52,8 @@
             <th>Mã hóa đơn</th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
-
             <th>Số điện thoại</th>
-            <th>Tổng tiền</th>
-
+            <th>Thành tiền</th>
             <th>Ngày mua</th>
             <th>hình thức mua hàng</th>
             <th>Trạng thái</th>
@@ -71,9 +69,8 @@
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-
             <td th:text="${hd.khachHang.sdt==null ?'Trống':hd.khachHang.sdt}"></td>
-            <td th:text="${#numbers.formatDecimal(hd.tongtien, 1, 'POINT',0, 'COMMA')}"></td>
+            <td th:text="${#numbers.formatDecimal(hd.thanhtien, 1, 'POINT',0, 'COMMA')}"></td>
 
             <td th:text="${hd.ngaymua}"></td>
             <td th:text="${hd.hinhthucmuahang != null ?'Trực tuyến':'Trực tiếp'}"></td>
@@ -131,51 +128,48 @@
         <div class="modal-content">
             <div th:fragment="hdct">
                 <div class="modal-header">
-
-
                     <h5 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn ' "></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-
-<!--=======-->
-<!--                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4><br>-->
-<!--                    <div th:if="${hoadon != null && hoadon.khachHang != null}">-->
-<!--                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.makhachhang != null-->
-<!--                        ? hoadon.khachHang.tenkhachhang : 'Mua tại quầy'}"></span> <br>-->
-<!--                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>-->
-<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tentinh != null ? hoadon.khachHang.tentinh.trim() : '')-->
-<!--                         ? '' : '- ' + hoadon.khachHang.tentinh}"></span>-->
-<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tenhuyen != null ? hoadon.khachHang.tenhuyen.trim() : '')-->
-<!--                        ? '' : '- ' + hoadon.khachHang.tenhuyen}"></span>-->
-<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tenxa != null ? hoadon.khachHang.tenxa.trim() : '')-->
-<!--                        ? '' : '- ' + hoadon.khachHang.tenxa}"></span>-->
-<!--                    </div>-->
-<!--&gt;>>>>>> thai-->
                 </div>
-                <div class="modal-body">
+                <div class="row mb-3">
+                <div class="col-md-8">
                     <table>
                         <thead>
                         <tr>
+                            <th>Mã spct</th>
                             <th>Sản phẩm</th>
-                            <th>Màu sắc</th>
                             <th>Kích thước</th>
-                            <th>Đơn giá</th>
+                            <th>Màu sắc</th>
                             <th>Số lượng</th>
-                            <th>Tổng tiền</th>
+                            <th>Đơn giá</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="ct : ${hoaDonCTs}">
+                            <td th:text="${ct.sanPhamChiTiet.maspct}"></td>
                             <td th:text="${ct.sanPhamChiTiet.sanPham.tensp}"></td>
                             <td th:text="${ct.sanPhamChiTiet.kichThuoc.ten}"></td>
                             <td th:text="${ct.sanPhamChiTiet.mauSac.ten}"></td>
-                            <td th:text="${ct.dongia}"></td>
                             <td th:text="${ct.soluong}"></td>
-                            <td th:text="${ct.tongtien}"></td>
+                            <td th:text="${#numbers.formatDecimal(ct.dongia, 1, 'POINT',0, 'COMMA')}"></td>
                         </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
+                    <input type="text"
+                           th:value="${giagiam?.tongtien != null ? #numbers.formatDecimal(giagiam?.tongtien , 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}"
+                           class="form-control" readonly style="background-color: white; color: black;margin-top: 13px">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
+                    <input type="text"
+                           th:value="${giagiam?.giagiam != null ? giagiam?.giagiam  : '0'}"
+                           class="form-control" readonly style="background-color: white; color: black;margin-top: 13px">
+                </div>
                 </div>
             </div>
         </div>

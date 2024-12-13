@@ -117,6 +117,8 @@ public class HoaDonCotroller {
         model.addAttribute("hoaDonCTs", hoaDonCT);
         model.addAttribute("hd", hd.getMahoadon());
         model.addAttribute("hoadon", hd);
+        HoaDon HD = hoaDonRepository.findById(id).orElse(null);
+        model.addAttribute("giagiam",HD);
         System.out.println(hd.getMahoadon());
         return "/admin/HoaDon/HoaDon::hdct"; // Trả về fragment HTML
     }
