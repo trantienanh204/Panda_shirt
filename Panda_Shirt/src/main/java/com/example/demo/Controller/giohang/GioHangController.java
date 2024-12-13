@@ -178,10 +178,10 @@ public class GioHangController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/thanhtoan")
     public String thanhToan(Model model
-//            , @AuthenticationPrincipal UserDetails userDetails
+          , @AuthenticationPrincipal UserDetails userDetails
     ) {
-//        String tenDangNhap = userDetails.getUsername();
-        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap("A");
+      String tenDangNhap = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
         if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
             return "redirect:/login";
         }
@@ -211,6 +211,7 @@ public class GioHangController {
         model.addAttribute("khachHang", khachHang);
 
         double totalAmount = cartItems.stream().mapToDouble(item -> item.getSanPhamChiTiet().getDongia() * item.getSoluong()).sum();
+        System.out.println("tong tiền : "+ totalAmount);
         model.addAttribute("totalAmount", totalAmount);
 
         return "khachhang/ThanhToan";
@@ -412,6 +413,7 @@ public class GioHangController {
             for (GioHang item : cartItems) {
                 Map<String, Object> itemMap = new HashMap<>();
                 double tong = item.getSanPhamChiTiet().getDongia() * item.getSoluong();
+                System.out.println("tổng ỏ giỏ hàng post; "+tong );
                 itemMap.put("id", item.getId());
                 itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
                 itemMap.put("soluong", item.getSoluong());

@@ -199,9 +199,10 @@ public class DuyetDonController {
     public String detailDH(@PathVariable Integer id, Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        model.addAttribute("DonHang", new Voucher());
+
         DonHang donHang = donHangRepository.getReferenceById(id);
         model.addAttribute("DonHang", donHang);
+
 
         List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
         model.addAttribute("listhdct", hoaDonCT);

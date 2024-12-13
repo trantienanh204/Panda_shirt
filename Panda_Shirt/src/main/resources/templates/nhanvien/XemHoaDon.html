@@ -165,7 +165,7 @@
                     </table>
                     <div class="col-md-2">
                         <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
-                        <input type="text" th:value="${giagiam?.giagiam != null ? #numbers.formatDecimal(giagiam?.giagiam, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : 'Không có dữ liệu'}" class="form-control" readonly
+                        <input type="text" th:value="${giagiam?.giagiam != null ? giagiam?.giagiam : '0'}" class="form-control" readonly
                                style="background-color: white; color: black;">
 
                     </div>

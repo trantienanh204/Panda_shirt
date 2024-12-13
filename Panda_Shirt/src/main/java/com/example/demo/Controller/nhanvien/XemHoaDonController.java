@@ -107,6 +107,7 @@ public class XemHoaDonController {
         List<HoaDonCT> hoaDonCT = hoaDonCTRepository.findhoadonct(id);
         model.addAttribute("hoaDonCTs", hoaDonCT);
         HoaDon HD = hoaDonRepository.findById(id).orElse(null);
+        System.out.println("giá giảm : "+HD.getGiagiam());
         model.addAttribute("giagiam",HD);
 //        HoaDon hoaDon = hoaDonRepository.finid(15);
 //        model.addAttribute("hoaDon", hoaDon);

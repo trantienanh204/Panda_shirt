@@ -125,9 +125,6 @@ public class TrangChuController {
     }
 
         @PreAuthorize("isAuthenticated()")
-
-
-
         @GetMapping("/giohang")
         public String giohang(Model model, @AuthenticationPrincipal UserDetails userDetails) {
             String tenDangNhap = userDetails.getUsername();
@@ -152,12 +149,16 @@ public class TrangChuController {
                     itemMap.put("anhspBase64", null);
                 }
 
+                itemMap.put("soLuongTon", item.getSanPhamChiTiet().getSoluongsanpham()); // Truyền giá trị soLuongTon
+                System.out.println("SanPhamChiTiet ID: " + item.getSanPhamChiTiet().getId() + " - SoLuongTon: " + item.getSanPhamChiTiet().getSoluongsanpham());
+
                 return itemMap;
             }).collect(Collectors.toList());
 
             model.addAttribute("cartItems", processedCartItems);
             return "/khachhang/GioHang";
         }
+
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/taikhoan")
