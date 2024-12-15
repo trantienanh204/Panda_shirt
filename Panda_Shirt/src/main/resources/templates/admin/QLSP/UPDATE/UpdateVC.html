@@ -102,14 +102,17 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label"><b style="color: red">*</b> Điều kiện áp dụng mã</label>
-                        <input type="text" th:field="*{dieuKien}" class="form-control" readonly placeholder="Điều kiện...">
+
+                        <input type="text" th:field="*{dieuKien}" class="form-control" placeholder="Điều kiện..." readonly>
+
                         <div th:if="${errordk}" th:text="${errordk}" style="color: red;"></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label"><b style="color: red">*</b> Mức giảm</label>
-                        <input type="text" th:field="*{mucGiam}" class="form-control" readonly placeholder="Mức giảm...">
+
+                        <input type="text" th:field="*{mucGiam}" class="form-control" placeholder="Mức giảm..." readonly>
                         <div th:if="${errormg}" th:text="${errormg}" style="color: red;"></div>
                     </div>
                     <div class="col-md-2">
@@ -125,7 +128,9 @@
                     <div class="col-md-3">
                         <label class="form-label"><b style="color: red">*</b> Dành cho</label>
                         <div>
+
                             <input type="radio" th:field="*{loaikhachhang}" th:value="true" disabled>
+
                             Mọi người
                             <input type="radio" th:field="*{loaikhachhang}" th:value="false" disabled>
                             Cá nhân
