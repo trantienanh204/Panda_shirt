@@ -4,6 +4,7 @@ import com.example.demo.Controller.login.UserUtils;
 import com.example.demo.entity.*;
 import com.example.demo.DTO.KhachHangDTO;
 import com.example.demo.respository.SanPhamChiTietRepository;
+import com.example.demo.respository.VoucherRepository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.respository.nhanVien.GioHangRepository;
 import com.example.demo.service.*;
@@ -36,6 +37,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/panda/giohang")
@@ -57,6 +59,8 @@ public class GioHangController {
     private DonHangRepository donHangRepository;
     @Autowired
     SanPhamChiTietRepository sanPhamChiTietRepository ;
+    @Autowired
+    VoucherRepository voucherRepository ;
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
@@ -180,34 +184,55 @@ public class GioHangController {
     public String thanhToan(Model model
           , @AuthenticationPrincipal UserDetails userDetails
     ) {
-      String tenDangNhap = userDetails.getUsername();
-        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(tenDangNhap);
-        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-            return "redirect:/login";
+        String tenDangNhap = userDetails.getUsername();
+        KhachHang khachHang = khachHangService.findByTenTaiKhoan(tenDangNhap);
+        if (khachHang == null) {
+            return "redirect:/panda/login";
         }
 
-        KhachHangDTO khachHangDto = taiKhoanDto.getKhachHangDTO();
-        if (khachHangDto == null) {
-            model.addAttribute("message", "Không tìm thấy thông tin khách hàng.");
-            return "khachhang/ThongBaoLoi";
-        }
+//        KhachHangDTO khachHangDto = taiKhoanDto.getKhachHangDTO();
+//        if (khachHangDto == null) {
+//            model.addAttribute("message", "Không tìm thấy thông tin khách hàng.");
+//            return "khachhang/ThongBaoLoi";
+//        }
 
-        KhachHang khachHang = new KhachHang();
-        khachHang.setId(khachHangDto.getId());
-        khachHang.setMakhachhang(khachHangDto.getMakhachhang());
-        khachHang.setTenkhachhang(khachHangDto.getTenkhachhang());
-        khachHang.setSdt(khachHangDto.getSdt());
-        khachHang.setDiachi(khachHangDto.getDiachi());
+//        KhachHang khachHang = new KhachHang();
+//        khachHang.setId(khachHangDto.getId());
+//        khachHang.setMakhachhang(khachHangDto.getMakhachhang());
+//        khachHang.setTenkhachhang(khachHangDto.getTenkhachhang());
+//        khachHang.setSdt(khachHangDto.getSdt());
+//        khachHang.setDiachi(khachHangDto.getDiachi());
 
         int khachHangId = khachHang.getId();
         List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
+        List<Map<String, Object>> processedCartItems = new ArrayList<>();
+        for (GioHang item : cartItems) {
+            Map<String, Object> itemMap = new HashMap<>();
+            double tong = item.getSanPhamChiTiet().getDongia() * item.getSoluong();
+            System.out.println("tổng ỏ giỏ hàng post; "+tong );
+            itemMap.put("id", item.getId());
+            itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
+            itemMap.put("soluong", item.getSoluong());
+            itemMap.put("tongtien", tong);
+
+            if (item.getSanPhamChiTiet().getSanPham().getAnhsp() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(item.getSanPhamChiTiet().getSanPham().getAnhsp());
+                itemMap.put("anhspBase64", base64Image);
+            } else {
+                itemMap.put("anhspBase64", ""); // Giá trị rỗng nếu không có ảnh
+            }
+
+            processedCartItems.add(itemMap);
+        }
 
         if (cartItems.isEmpty()) {
             model.addAttribute("message", "Giỏ hàng của bạn đang trống.");
             return "khachhang/GioHang";
         }
-
-        model.addAttribute("cartItems", cartItems);
+        List<Voucher> voucher = voucherRepository.findAll();
+        List<Voucher> voucrs = voucher.stream().filter(vc -> vc.isLoaikhachhang()==true).collect(Collectors.toList());
+        model.addAttribute("listvc",voucrs);
+        model.addAttribute("cartItems", processedCartItems);
         model.addAttribute("khachHang", khachHang);
 
         double totalAmount = cartItems.stream().mapToDouble(item -> item.getSanPhamChiTiet().getDongia() * item.getSoluong()).sum();
@@ -385,10 +410,10 @@ public class GioHangController {
             String tenDangNhap = userDetails.getUsername();
             KhachHang khachHang = khachHangService.findByTenTaiKhoan(tenDangNhap);
             if (khachHang == null) {
-                return "redirect:/login";
+                return "redirect:/panda/login";
             }
 
-            // Log dữ liệu KhachHang để kiểm tra
+
             System.out.println("KhachHang: " + khachHang);
 
             // Chuyển đổi JSON thành danh sách Integer
@@ -428,7 +453,9 @@ public class GioHangController {
 
                 processedCartItems.add(itemMap);
             }
-
+            List<Voucher> voucher = voucherRepository.findAll();
+            List<Voucher> voucrs = voucher.stream().filter(vc -> vc.isLoaikhachhang()==true).collect(Collectors.toList());
+            model.addAttribute("listvc",voucrs);
             model.addAttribute("cartItems", processedCartItems);
             model.addAttribute("totalAmount", totalAmount);
             model.addAttribute("khachHang", khachHang); // Thêm thông tin khách hàng vào model

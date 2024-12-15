@@ -79,7 +79,13 @@
         <h5>Sản phẩm</h5>
         <div th:each="item : ${cartItems}" class="d-flex justify-content-between align-items-center border-bottom py-3">
             <div class="d-flex align-items-center ">
-                <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image" class="img-fluid" style="max-width: 80px;">
+                <div th:if="${item.anhspBase64 != null}">
+                    <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image" class="img-fluid" style="max-width: 80px;">
+                </div>
+
+                <div th:if="${item.anhspBase64 == null}">
+                    <img src="https://placehold.co/600x400?text=Không+có+ảnh" alt="Product Image" class="img-fluid" style="max-width: 80px;" >
+                </div>
                 <div  style="margin-left: 40px">
                     <p class="product-name mb-1" th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</p>
                     <p class="product-details text-muted"
@@ -143,8 +149,8 @@
                         <p id="totalAmountText">₫140.000</p>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
-                        <p><i class="fas fa-shield-alt"></i> Bảo hiểm đơn hàng:</p>
-                        <p class="insurance-price">₫0</p>
+                        <p><i class="fas fa-tag"></i> Voucher giảm giá:</p>
+                        <p class="discount-amount">₫0</p>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="total-price mb-0">Tổng thanh toán:</h5>
@@ -159,6 +165,7 @@
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -199,6 +206,7 @@
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+<!-- Script cập nhật tổng tiền và áp dụng mã voucher -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const bankTransferRadio = document.getElementById('bankTransfer');
@@ -208,76 +216,118 @@
         const finalTotalElement = document.getElementById('finalTotal');
         const totalProductPriceElement = document.getElementById('totalAmountText');
         const paymentMethodInput = document.getElementById('paymentMethodInput');
-        const insurancePriceElement = document.querySelector('.insurance-price');
+        const discountAmountElement = document.querySelector('.discount-amount');
+        const voucherSelectElements = document.querySelectorAll('.voucher-select');
+
+        let selectedVoucherCode = null;
 
         function updateTotalAmount() {
             let totalProductAmount = 0;
 
-            // Select all product total price elements
             const productPriceElements = document.querySelectorAll('.product-price');
-
-            // Logging the price elements for debugging
-            console.log("Product price elements:", productPriceElements);
-
             productPriceElements.forEach(function(element) {
                 const priceText = element.textContent.replace(/[^\d]/g, '');
-                const price = parseFloat(priceText) ; // Sửa đổi để giá trị đúng
-                totalProductAmount += price;
+                const price = parseFloat(priceText);
 
-                // Logging each price for debugging
+                if (isNaN(price)) {
+                    console.error("Invalid product price: ", priceText);
+                } else {
+                    totalProductAmount += price;
+                }
+
                 console.log("Product price:", price);
             });
 
-            // Display Tổng tiền hàng
-            console.log("Total product amount:", totalProductAmount);
             totalProductPriceElement.textContent = '₫' + totalProductAmount.toLocaleString('vi-VN');
 
-            // Calculate Tổng thanh toán
-            const insurancePriceText = insurancePriceElement.textContent.replace(/[^\d]/g, '');
-            const insurancePrice = parseFloat(insurancePriceText);
-            console.log("Insurance price:", insurancePrice);
-            const finalTotal = totalProductAmount + insurancePrice;
+            let discountAmount = 0;
+            voucherSelectElements.forEach(function(selectElement) {
+                if (selectElement.classList.contains('selected')) {
+                    const discountType = selectElement.getAttribute('data-discount-type');
+                    const discountValue = parseFloat(selectElement.getAttribute('data-discount-value'));
 
-            // Display Tổng thanh toán
+                    const voucherCodeElement = selectElement.closest('tr').querySelector('td:nth-child(2)');
+                    if (voucherCodeElement) {
+                        selectedVoucherCode = voucherCodeElement.textContent;
+                    } else {
+                        console.error("Cannot read properties of null: voucherCodeElement is null");
+                        return;
+                    }
+
+                    if (isNaN(discountValue)) {
+                        console.error("Invalid discount value: ", selectElement.getAttribute('data-discount-value'));
+                    } else {
+                        if (discountType === '%') {
+                            discountAmount += (totalProductAmount * discountValue / 100);
+                        } else {
+                            discountAmount += discountValue;
+                        }
+                    }
+                }
+            });
+
+            discountAmountElement.textContent = '₫' + discountAmount.toLocaleString('vi-VN');
+
+            const finalTotal = totalProductAmount - discountAmount;
+
+            if (isNaN(finalTotal)) {
+                console.error("Final total amount is NaN: ", finalTotal);
+                finalTotalElement.textContent = '₫0';
+            } else {
+                finalTotalElement.textContent = '₫' + finalTotal.toLocaleString('vi-VN');
+            }
+
+            console.log("Total product amount:", totalProductAmount);
+            console.log("Discount amount:", discountAmount);
             console.log("Final total amount:", finalTotal);
-            finalTotalElement.textContent = '₫' + finalTotal.toLocaleString('vi-VN');
         }
 
-        // Initially update the total amount
         updateTotalAmount();
+
+        voucherSelectElements.forEach(function(selectElement) {
+            selectElement.addEventListener('click', function() {
+                voucherSelectElements.forEach(function(el) {
+                    el.classList.remove('selected');
+                });
+                selectElement.classList.add('selected');
+                updateTotalAmount();
+            });
+        });
 
         paymentForm.addEventListener('submit', function(event) {
             event.preventDefault();
-
-            // Ensure the total amount is updated before submission
             updateTotalAmount();
 
-            // Set the total amount input value
             const finalTotalText = finalTotalElement.textContent.replace(/[^\d]/g, '');
             const finalTotalAmount = parseFloat(finalTotalText);
-            totalAmountInput.value = finalTotalAmount;
+            totalAmountInput.value = isNaN(finalTotalAmount) ? 0 : finalTotalAmount;
 
-            // Set the payment method
             if (bankTransferRadio && bankTransferRadio.checked) {
                 paymentMethodInput.value = 'BankTransfer';
             } else if (codRadio && codRadio.checked) {
                 paymentMethodInput.value = 'COD';
             }
 
-            // Logging the final amount and payment method for debugging
+            const voucherCodeInput = document.createElement('input');
+            voucherCodeInput.type = 'hidden';
+            voucherCodeInput.name = 'voucherCode';
+            voucherCodeInput.value = selectedVoucherCode;
+            paymentForm.appendChild(voucherCodeInput);
+
             console.log("Final total amount submitted:", finalTotalAmount);
             console.log("Payment method submitted:", paymentMethodInput.value);
+            console.log("Voucher code submitted:", voucherCodeInput.value);
 
-            // Submit the form
             paymentForm.submit();
         });
     });
 
 </script>
-<<<<<<< HEAD
 <!--modal voucher-->
+
+<!-- Modal hiển thị danh sách voucher -->
 <div class="modal fade" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable  modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">
@@ -288,19 +338,16 @@
             </div>
             <div class="modal-body">
                 <div class="search-container">
-                    <input type="text" id="modalSearchInput" placeholder="Tìm kiếm mã voucher" class="search-box"
-                           style="border-radius: 10px;padding-bottom: 10px; margin-right: 15px">
-                    <button class="btn btn-primary" onclick="searchInModalVoucher()"><i
-                            class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
-                    </button>
+                    <input type="text" id="modalSearchInput" placeholder="Tìm kiếm mã voucher" class="search-box" style="border-radius: 10px;padding-bottom: 10px; margin-right: 15px">
+                    <button class="btn btn-primary" onclick="searchInModalVoucher()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
                 <br>
                 <table class="table" style="text-align: center;">
                     <thead>
                     <tr>
                         <th>Hình ảnh</th>
-                        <th>Mã vocher</th>
-                        <th>Tên vocher</th>
+                        <th>Mã voucher</th>
+                        <th>Tên voucher</th>
                         <th>Mức giảm</th>
                         <th>Loại</th>
                         <th>Hành động</th>
@@ -308,13 +355,13 @@
                     </thead>
                     <tbody>
                     <tr th:each="vc,i: ${listvc}">
-                        <td>Hình ảnh</td>
+                        <td><img th:src="@{/image/panda_logo.png}" class="img-fluid" style="max-width: 100px; height: auto;"></td>
                         <td th:text="${vc.ma}"></td>
                         <td th:text="${vc.ten}"></td>
                         <td th:text="${vc.formattedMucGiam}"></td>
                         <td th:text="${vc.loai == true ? '%':'VND'}"></td>
                         <td>
-                            <a>
+                            <a class="voucher-select" href="#" th:data-discount-type="${vc.loai == true ? '%' : 'VND'}" th:data-discount-value="${vc.mucGiam}">
                                 <i class="fa-solid fa-circle-check"></i>
                             </a>
                         </td>
@@ -325,7 +372,8 @@
         </div>
     </div>
 </div>
-<!--tìm kiếm voucher -->
+
+<!-- Script tìm kiếm voucher -->
 <script>
     function searchInModalVoucher() {
         var input, filter, table, tr, td, i, txtValue;
@@ -336,8 +384,7 @@
 
         // Lặp qua tất cả các hàng, ẩn những hàng không khớp với tìm kiếm
         for (i = 1; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
-            // td = tr[i].getElementsByTagName("td")[1]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
+            td = tr[i].getElementsByTagName("td")[1]; // Tìm theo cột mã voucher
             if (td) {
                 txtValue = td.textContent || td.innerText;
                 if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -349,6 +396,10 @@
         }
     }
 </script>
+
+
+
+
 <style>
     /* Font and Background for Navbar */
     body {
@@ -461,7 +512,6 @@
 
 
 </style>
-
 
 </body>
 </html>

@@ -27,6 +27,8 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
 
     Optional<Voucher> findByMa(String ma);
 
+
+
 @Query("SELECT vc FROM Voucher vc WHERE " +
         "(?1 IS NULL OR vc.ma LIKE %?1%) AND " +
         "(?2 IS NULL OR vc.ten LIKE %?2%) AND " +

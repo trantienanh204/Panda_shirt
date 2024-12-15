@@ -401,8 +401,20 @@
                             const totalAmountInput = document.createElement('input');
                             totalAmountInput.type = 'hidden';
                             totalAmountInput.name = 'totalAmount';
-                            totalAmountInput.value = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
+                            const totalAmountValue = totalPriceElement.textContent.replace(/[^0-9.-]+/g, '');
 
+                            // Kiểm tra và chuyển đổi giá trị totalAmountValue
+                            const totalAmount = parseInt(totalAmountValue, 10);
+                            if (isNaN(totalAmount)) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    text: 'Giá trị tổng tiền không hợp lệ.'
+                                });
+                                return;
+                            }
+
+                            totalAmountInput.value = totalAmount;
                             console.log("Total Amount: ", totalAmountInput.value); // Kiểm tra giá trị của totalAmountInput
 
                             form.appendChild(totalAmountInput);
@@ -428,6 +440,7 @@
                     }
                 });
             });
+
         }
 
         addEventListeners();

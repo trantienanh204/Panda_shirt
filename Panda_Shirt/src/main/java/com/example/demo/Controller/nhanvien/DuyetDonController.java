@@ -6,6 +6,7 @@ import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.HoaDonCTRepository;
 import com.example.demo.respository.NhanVienRespository;
+import com.example.demo.respository.VoucherRepository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,8 @@ public class DuyetDonController {
     VoucherService voucherService;
     @Autowired
     private TaiKhoanService taiKhoanService;
+    @Autowired
+    private VoucherRepository voucherRepository;
     @GetMapping("/hienthi")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
@@ -173,12 +176,15 @@ public class DuyetDonController {
                            @RequestParam(value = "Date", required = false)
                                @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate Date,
                            @RequestParam(value = "trangThai", required = false, defaultValue = "Đã hủy") String trangThai,
-                           Model model) {
+                           Model model,
+                           @AuthenticationPrincipal UserDetails userDetails) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         if (page < 0) {
             page = 0;
         }
+
+
 
         Page<DonHang> listDH = donHangService.hienThiDH(page, mahd,  tenkh,Date, trangThai);
 
@@ -186,7 +192,7 @@ public class DuyetDonController {
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-//        model.addAttribute("tennv", tennv);
+       model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("Date", Date);
         model.addAttribute("trangThai", trangThai);
@@ -296,6 +302,7 @@ public class DuyetDonController {
           }
       NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
         donHang.setTrangThai("Hoàn thành");
+//        donHang.setTrangthaioffline(false);
 //      donHang.setNhanVien(nhanVien);
 //      hoaDon.setNhanVien(nhanVien);
       donHangRepository.save(donHang);
@@ -307,13 +314,20 @@ public class DuyetDonController {
     @PostMapping("/tuchoi")
     public String tuchoi(@RequestParam("lydohuy") String lydohuy,
                          @RequestParam("id") Integer id,
-                         RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes,
+                         @AuthenticationPrincipal UserDetails userDetails) {
         // Lấy thông tin đơn hàng
         DonHang donHang = donHangRepository.getReferenceById(id);
 
         // Lấy danh sách chi tiết hóa đơn
         List<HoaDonCT> hoaDonCTList = hdctService.findID(donHang.getHoaDon().getId());
 
+        String username = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
+        if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
+            return "redirect:/panda/login";
+        }
+        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
         // Lặp qua danh sách hóa đơn chi tiết để cập nhật số lượng sản phẩm trong kho
         for (HoaDonCT hoaDonCT : hoaDonCTList) {
             // Lấy sản phẩm chi tiết từ mỗi hóa đơn chi tiết
@@ -328,6 +342,16 @@ public class DuyetDonController {
                 sanPhamService.saveSanPhamChiTiet(sanPhamChiTiet);
             }
         }
+       if(donHang.getHoaDon().getVoucher()!=null ){
+          Optional<Voucher>  voucher = voucherRepository.findById(donHang.getHoaDon().getVoucher().getId()) ;
+          if(voucher.isPresent()){
+             int sl = Integer.parseInt(voucher.get().getSoLuong() +1);
+              voucher.get().setSoLuong(String.valueOf(sl));
+              voucherRepository.save(voucher.get());
+          }
+       }
+
+        donHang.getHoaDon().setNhanVien(nhanVien);
         donHang.getHoaDon().setTrangthai(0);
         donHang.setLydohuy(lydohuy);
         donHang.setTrangThai("Đã hủy");

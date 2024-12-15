@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -467,7 +468,7 @@ public class BanHangOffline {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi xóa");
         }
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/thanhtoan")
     public String thanhtoan(
             @RequestParam(value = "idhoadon",required = false) int idhoadon,
@@ -486,8 +487,9 @@ public class BanHangOffline {
             @RequestParam("tenkh") String tenkh,
             @RequestParam("mucgiam") String giagiam,
             RedirectAttributes redirectAttributes,
-            Model model
-  //          @AuthenticationPrincipal UserDetails userDetails
+            Model model ,
+            @AuthenticationPrincipal UserDetails userDetails
+
     ) {
         HoaDon hd = hoaDonRepository.finid(idhoadon);
         if (hd == null) {
@@ -495,12 +497,8 @@ public class BanHangOffline {
             redirectAttributes.addFlashAttribute("loi", "Hóa đơn");
             return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
         }
-        NhanVien nhanVien = nhanVienRespository.findById(3).orElse(null);
-        if (nhanVien == null) {
-            System.out.println("nv trống ");
-            redirectAttributes.addFlashAttribute("loi", "Nhân viên");
-            return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
-        }
+//        NhanVien nhanVien = nhanVienRespository.findById(3).orElse(null);
+
 
         List<HoaDonCT> lshdct = hoaDonCTRepository.findhdct(idhoadon);
         if (lshdct == null || lshdct.isEmpty()) {
@@ -612,13 +610,18 @@ public class BanHangOffline {
             }
         }
 
-//        String username = userDetails.getUsername();
-//        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
-//        if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
-//            return "redirect:/panda/login";
-//        }
-//        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
+        String username = userDetails.getUsername();
+        TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
+        if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
+            return "redirect:/panda/login";
+        }
+        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
 
+        if (nhanVien == null) {
+            System.out.println("nv trống ");
+            redirectAttributes.addFlashAttribute("loi", "Nhân viên");
+            return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+        }
         hd.setNhanVien(nhanVien);
         hd.setVoucher(vc);
         hd.setThanhtien(thanhtien);
