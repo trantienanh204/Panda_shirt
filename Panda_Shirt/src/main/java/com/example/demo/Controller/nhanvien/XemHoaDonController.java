@@ -87,6 +87,15 @@ public class XemHoaDonController {
         model.addAttribute("date",formatdate);
         model.addAttribute("time",formattedTime);
 
+        HoaDon hoadon = hoaDonRepository.finid(lshdct.get(0).getHoaDon().getId());
+        System.out.println("đã in ");
+        if (hoadon.getLanin() == null) {
+            hoadon.setLanin(0);
+        }
+        hoadon.setLanin(hoadon.getLanin() +1 );
+        System.out.println("lần in " +hoadon.getLanin());
+        hoaDonRepository.save(hoadon);
+
         model.addAttribute("hoadonct",lshdct);
 //        model.addAttribute("lshd",hoaDonRepository.findAll();
         String directoryPath = "D:\\HocTap\\HoaDon"; // Đường dẫn lưu PDF

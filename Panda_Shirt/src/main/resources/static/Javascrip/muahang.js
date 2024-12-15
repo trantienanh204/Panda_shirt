@@ -358,7 +358,7 @@ function findkhachhang() {
         document.getElementById('khachhang-list-container').innerHTML = initialProductListkh;
         return;
     }
-    fetch(`http://localhost:8080/panda/banhangoffline/update?keyword=${encodeURIComponent(keyword)}`)
+    fetch(`http://localhost:8080/panda/banhangoffline/searchkh?keyword=${encodeURIComponent(keyword)}`)
         .then(response => response.json())
         .then(data => {
             console.log("Dữ liệu trả về từ API:", data);

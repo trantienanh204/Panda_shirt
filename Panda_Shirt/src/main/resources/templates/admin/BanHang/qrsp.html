@@ -6,14 +6,7 @@
 
 </head>
 <body th:fragment="qrcode">
-<div style="text-align: center">
-    <div id="qrCodeContainer" style="display: none;">
-        <p id="maspct"></p>
-        <h3>Mã QR:</h3>
-        <img id="qrCodeImage" class="img-fluid" alt="QR Code" style="width: 300px; height: auto;">
-    </div>
 
-</div>
 
 
 
@@ -46,9 +39,10 @@
             <td th:text="${spct.mauSac.ten}"></td>
             <td th:text="${spct.kichThuoc.ten}"></td>
             <td>
-                <button class="btn btn-danger"
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                         th:data-id="${spct.maspct}"
-                        onclick="generateQRCode(this)">Tạo mã QR</button>
+                        onclick="generateQRCode(this)">Tạo mã QR
+                </button>
             </td>
         </tr>
         </tbody>
@@ -56,6 +50,30 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script th:src="@{/Javascrip/quetmaqr.js}"></script>
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Mã sản phẩm</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center">
+                    <div id="qrCodeContainer" style="display: none;">
+                        <p id="maspct"></p>
+                        <h3>Mã QR:</h3>
+                        <img id="qrCodeImage" class="img-fluid" alt="QR Code" style="width: 300px; height: auto;">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
     * {

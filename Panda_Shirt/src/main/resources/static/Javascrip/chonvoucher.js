@@ -95,13 +95,14 @@ function chonkh(element) {
             $("#idkh-input").val(response.id);
             $("#sdt-input").val(response.sdt);
             $("#diachi-input").val(response.diachi);
-            $("#selectedProvince").val(response.idTinhThanhPho);
-            $("#selectedDistrict").val(response.idQuanHuyen);
-            $("#selectedWard").val(response.idXaPhuong);
 
-            $("#tentinh").val(response.tentinh);
-            $("#tenhuyen").val(response.tenhuyen);
-            $("#tenxa").val(response.tenxa);
+            // $("#selectedProvince").val(response.idTinhThanhPho);
+            // $("#selectedDistrict").val(response.idQuanHuyen);
+            // $("#selectedWard").val(response.idXaPhuong);
+
+            // $("#tentinh").val(response.tentinh);
+            // $("#tenhuyen").val(response.tenhuyen);
+            // $("#tenxa").val(response.tenxa);
 
             $('#chonkhachhangModal').modal('hide');
         },
@@ -121,37 +122,37 @@ function chonkh(element) {
 }
 
 
-function chonkh(element) {
-    var idkh = $(element).data('id');
-    localStorage.removeItem("selectedCustomer");
-    axios.get(`/panda/banhangoffline/chonkh?id=${idkh}`)
-        .then(response => {
-            const data = response.data;
-            console.log("Địa chỉ : ", data);
-            localStorage.setItem("selectedCustomer", JSON.stringify({
-                idTinhThanhPho: data.idTinhThanhPho,
-                idQuanHuyen: data.idQuanHuyen,
-                idXaPhuong: data.idXaPhuong
-            }));
-
-            $("#province").val(data.idTinhThanhPho).trigger("change");
-            // Gọi API để load Quận/Huyện theo Tỉnh/Thành phố
-            callApiDistrict(`https://provinces.open-api.vn/api/p/${data.idTinhThanhPho}?depth=2`)
-                .then(() => {
-                    // Cập nhật giá trị Quận/Huyện
-                    $("#district").val(data.idQuanHuyen).trigger("change");
-
-                    // Gọi API để load Xã/Phường theo Quận/Huyện
-                    callApiWard(`https://provinces.open-api.vn/api/d/${data.idQuanHuyen}?depth=2`)
-                        .then(() => {
-                            // Cập nhật giá trị Xã/Phường
-                            $("#ward").val(data.idXaPhuong);
-                        });
-                });
-            $('#chonkhachhangModal').modal('hide');
-        })
-        .catch(error => {
-            console.error("Error", error);
-        });
-}
+// function chonkh(element) {
+//     var idkh = $(element).data('id');
+//     localStorage.removeItem("selectedCustomer");
+//     axios.get(`/panda/banhangoffline/chonkh?id=${idkh}`)
+//         .then(response => {
+//             const data = response.data;
+//             console.log("Địa chỉ : ", data);
+//             localStorage.setItem("selectedCustomer", JSON.stringify({
+//                 idTinhThanhPho: data.idTinhThanhPho,
+//                 idQuanHuyen: data.idQuanHuyen,
+//                 idXaPhuong: data.idXaPhuong
+//             }));
+//
+//             $("#province").val(data.idTinhThanhPho).trigger("change");
+//             // Gọi API để load Quận/Huyện theo Tỉnh/Thành phố
+//             callApiDistrict(`https://provinces.open-api.vn/api/p/${data.idTinhThanhPho}?depth=2`)
+//                 .then(() => {
+//                     // Cập nhật giá trị Quận/Huyện
+//                     $("#district").val(data.idQuanHuyen).trigger("change");
+//
+//                     // Gọi API để load Xã/Phường theo Quận/Huyện
+//                     callApiWard(`https://provinces.open-api.vn/api/d/${data.idQuanHuyen}?depth=2`)
+//                         .then(() => {
+//                             // Cập nhật giá trị Xã/Phường
+//                             $("#ward").val(data.idXaPhuong);
+//                         });
+//                 });
+//             $('#chonkhachhangModal').modal('hide');
+//         })
+//         .catch(error => {
+//             console.error("Error", error);
+//         });
+// }
 

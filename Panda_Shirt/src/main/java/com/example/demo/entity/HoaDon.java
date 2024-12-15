@@ -32,6 +32,9 @@ public class HoaDon {
     @Column(name = "LAN_IN")
     private Integer lanin;
 
+    @Column(name = "TRANG_THAI_THANH_TOAN")
+    private Integer tttt;
+
     @Column(name = "MAHD")
     private String mahoadon;
 

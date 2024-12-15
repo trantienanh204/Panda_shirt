@@ -6,6 +6,8 @@ import com.example.demo.DTO.NhanVienDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.*;
+import com.example.demo.respository.nhanVien.DonHangRepository;
+import com.example.demo.service.DonHangService;
 import com.example.demo.service.TaiKhoanService;
 import com.example.demo.services.BanHangService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,6 +52,11 @@ public class BanHangOffline {
     KhachHangRepository khachHangRepository;
     @Autowired
     TaiKhoanService taiKhoanService;
+    @Autowired
+    DonHangRepository donHangRepository;
+    @Autowired
+    DonHangService donHangService;
+
 
     private Integer idhd;
     private Integer idmax;;
@@ -264,9 +272,10 @@ public class BanHangOffline {
         newhd.setActive(false);
         newhd.setNgaytao(LocalDate.now());
         hoaDonRepository.save(newhd);
+        int idhdon = newhd.getId();
         Map<String, String> response = new HashMap<>();
         response.put("mahoadon", mahd);
-        BigDecimal tongTien = hoaDonCTRepository.TongTienByHoaDonId(idhd);
+        BigDecimal tongTien = hoaDonCTRepository.TongTienByHoaDonId(idhdon);
         model.addAttribute("tongTien", tongTien);
         return ResponseEntity.ok(response);
     }
@@ -282,6 +291,7 @@ public class BanHangOffline {
                                                  Model model,RedirectAttributes redirectAttributes) {
         HoaDonCT hoaDonCT = new HoaDonCT();
         Map<String, String> response = new HashMap<>();
+        System.out.println("id hd " + idhd);
         if(idhd == null){
             return ResponseEntity.badRequest().body("Chưa chọn hóa đơn!");
         }
@@ -477,6 +487,7 @@ public class BanHangOffline {
             @RequestParam(value = "thanhtien",defaultValue = "0") BigDecimal thanhtien,
             @RequestParam(value = "tongtien",defaultValue = "0") BigDecimal tongtien,
             @RequestParam("sdt") String sdt,
+            @RequestParam("giaohang") String giaohang,
             @RequestParam("tinh") String tinh,
             @RequestParam("huyen") String huyen,
             @RequestParam("xa") String xa,
@@ -493,6 +504,7 @@ public class BanHangOffline {
 //            ,@AuthenticationPrincipal UserDetails userDetails
     ) {
         HoaDon hd = hoaDonRepository.finid(idhoadon);
+        DonHang dh = new DonHang();
         if (hd == null) {
             System.out.println("hd trống ");
             redirectAttributes.addFlashAttribute("loi", "Chưa chọn hóa đơn");
@@ -517,6 +529,7 @@ public class BanHangOffline {
             if (kh1 != null) {
                 System.out.println("Khách hàng mặc định");
                 hd.setKhachHang(kh1);
+                dh.setKhachHang(kh1);
             } else {
                 System.out.println("Không tìm thấy khách hàng mặc định!");
             }
@@ -563,6 +576,8 @@ public class BanHangOffline {
                 khachHangRepository.save(kh);
             }
             hd.setKhachHang(kh);
+            dh.setKhachHang(kh);
+
         }
         Voucher vc = null;
         if (idvoucher != null && idvoucher > 0) {
@@ -623,6 +638,10 @@ public class BanHangOffline {
 
 //        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
         NhanVien nhanVien = nhanVienRespository.findById(1).orElse(null);
+        if(giaohang.equals("1")){
+            dh.setTrangThai("Đã duyệt");
+        }
+
         hd.setNhanVien(nhanVien);
         hd.setVoucher(vc);
         hd.setThanhtien(thanhtien);
@@ -631,7 +650,30 @@ public class BanHangOffline {
         hd.setTrangthai(1);
         hd.setNgaymua(LocalDate.now());
         hd.setGhiChu(ghichu);
+
+
+        if(checkbox.equals("0")){
+            dh.setTrangthaioffline(true);
+            hd.setTttt(0);
+        }else{
+            dh.setTrangthaioffline(false);
+            hd.setTttt(1);
+
+        }
+
         hoaDonRepository.save(hd);
+
+        dh.setHoaDon(hd);
+        dh.setNhanVien(nv);
+
+        dh.setDiaChi(diachicuthe);
+        dh.setGhiChu(ghichu);
+        dh.setTongtien(tongtien);
+        dh.setSdt(sdt);
+        dh.setNgaytao(LocalDate.now());
+        dh.setHinhthuc(1);
+        donHangRepository.save(dh);
+        this.idhd = null;
         return "redirect:/panda/banhangoffline";
     }
 

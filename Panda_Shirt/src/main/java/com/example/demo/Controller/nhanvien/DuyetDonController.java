@@ -100,6 +100,7 @@ public class DuyetDonController {
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
 //        model.addAttribute("tennv", tennv);
+        model.addAttribute("trangThai", trangThai);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("Date", Date);
@@ -256,6 +257,7 @@ public class DuyetDonController {
             if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
                 return "redirect:/panda/login";
             }
+
             NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
             donHang.setNhanVien(nhanVien);
             donHang.setNhanVien(nhanVien);
