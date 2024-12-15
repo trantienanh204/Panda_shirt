@@ -12,12 +12,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +52,7 @@ public class HoaDonCotroller {
     @ModelAttribute("listkhachhang")
     List<KhachHang> getkh (){return khachHangRepository.findAll();}
 
-    @GetMapping("")
+    @GetMapping
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
                           @RequestParam(value = "nv", required = false) String nv,
@@ -76,10 +80,27 @@ public class HoaDonCotroller {
         model.addAttribute("listhdct",listhdct);
         return "/admin/HoaDon/HoaDon";
     }
-    @GetMapping("xuatfile")
-    public String filePdf(@RequestParam("id") int id, Model model) {
+    @GetMapping("/xuatfile")
+    public String filePdf(@RequestParam("id") int id, Model model,
+                          RedirectAttributes redirectAttributes) {
         List<HoaDonCT> lshdct  = hoaDonCTRepository.findhoadonct(id);
+        HoaDon hoadon = hoaDonRepository.finid(lshdct.get(0).getHoaDon().getId());
+        if (hoadon.getLanin() == null) {
+            hoadon.setLanin(0);
+        }
+        hoadon.setLanin(hoadon.getLanin() +1 );
+        System.out.println("lần in " +hoadon.getLanin());
+        
+        hoaDonRepository.save(hoadon);
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter formatterngay= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedTime = time.format(formatter);
+        String formatdate = date.format(formatterngay);
         model.addAttribute("hoadonct",lshdct);
+        model.addAttribute("date",formatdate);
+        model.addAttribute("time",formattedTime);
 //        model.addAttribute("lshd",hoaDonRepository.findAll();
 
         String directoryPath = "D:\\HocTap\\HoaDon"; // Đường dẫn lưu PDF
@@ -87,7 +108,7 @@ public class HoaDonCotroller {
         if (!directory.exists()) {
             directory.mkdirs(); // Tạo thư mục nếu không tồn tại
         }
-        String customFileName = "hoadon_" + lshdct.get(0).getHoaDon().getKhachHang().getId() + "_" +
+        String customFileName = "Hoadon_" + lshdct.get(0).getHoaDon().getMahoadon() + "_" +
         lshdct.get(0).getHoaDon().getKhachHang().getTenkhachhang()  + ".pdf"; // Tên file tùy chỉnh
         String filePath = directoryPath + "\\" + customFileName; // Đường dẫn đầy đủ đến file PDF
 

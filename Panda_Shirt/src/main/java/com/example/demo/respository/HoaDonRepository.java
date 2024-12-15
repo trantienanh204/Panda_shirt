@@ -28,7 +28,8 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             "(?2 IS NULL OR hd.nhanVien.tennhanvien LIKE %?2%) AND " +
             "(?3 IS NULL OR hd.khachHang.sdt LIKE %?3%) AND " +
             "(?4 IS NULL OR hd.khachHang.tenkhachhang LIKE %?4%) AND " +
-            "(?5 IS NULL OR hd.trangthai = ?5)"+
+            "(?5 IS NULL OR hd.trangthai = ?5) "+
+//            " AND (hd.nhanVien.id =:idnv)"+
             "ORDER BY hd.ngaytao DESC")
 
     Page<HoaDon> findByMaAndTenAndTrangthaiHD(String mahd,String nv, String sdt, String tenkh, Integer trangThai, Pageable pageable);
@@ -77,7 +78,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     @Query ("SELECT hd FROM HoaDon hd WHERE hd.nhanVien IS NULL")
     Page<HoaDon> hienthihd(Pageable pageable);
 
-    @Query("SELECT h FROM HoaDon h ORDER BY h.id DESC")
+    @Query("SELECT h FROM HoaDon h WHERE h.khachHang.id IS NULL ORDER BY h.id DESC")
     List<HoaDon> findHoaDonsDesc();
 
     @Query("SELECT CASE WHEN COUNT(hd) > 0 THEN TRUE ELSE FALSE END " +

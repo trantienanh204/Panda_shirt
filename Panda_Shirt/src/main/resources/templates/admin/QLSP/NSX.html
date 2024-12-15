@@ -81,7 +81,7 @@
                         <i class="fa-solid fa-toggle-on" style="color: #00040a; font-size: 25px">
                         </i>
                     </i>
-                    <i th:if="${nsx.trangthai == 0}">
+                    <i th:if="${nsx.trangthai != 1}">
                         <i class="fa-solid fa-toggle-off" style="color: #00040a; font-size: 25px">
                         </i>
                     </i>
@@ -134,7 +134,7 @@
                 statusMessage.style.display = 'none';
             }, 5000);
         }
-    };;
+    };
 </script>
 <style>
     .custom-alert {

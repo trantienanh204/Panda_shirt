@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
     <meta charset="UTF-8">
     <title>Danh sách mã sản phẩm</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
 
 </head>
-<body>
-<button class="btn btn-dark">
-    <a  th:href="@{/panda/hienthi}">QUAY LẠI</a>
-</button>
+<body th:fragment="qrcode">
 <div style="text-align: center">
     <div id="qrCodeContainer" style="display: none;">
         <p id="maspct"></p>
@@ -59,7 +54,9 @@
         </tbody>
     </table>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script th:src="@{/Javascrip/quetmaqr.js}"></script>
+
 <style>
     * {
         box-sizing: border-box;
@@ -102,5 +99,6 @@
         margin-top: 10px;
     }
 </style>
+
 </body>
 </html>

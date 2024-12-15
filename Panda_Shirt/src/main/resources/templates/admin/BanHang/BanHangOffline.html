@@ -128,7 +128,7 @@
                 <th>Hỉnh ảnh</th>
                 <th>Tên sản phẩm</th>
                 <th>Màu sắc</th>
-                <th>Kích thước</th>
+                <th>Size</th>
                 <th>Đơn giá</th>
                 <th>Số lượng</th>
                 <th>Tổng tiền</th>
@@ -137,25 +137,29 @@
             </thead>
             <tbody>
             <tr th:each="hdct : ${hoaDonCTList}">
-                <td ><img th:src="'data:image/png;base64,' + ${hdct.sanPhamChiTiet.sanPham.base64Image}"
-                          class="img-fluid main-image" alt="Áo Thun Chi Tiết"
-                          style="max-width: 120px; height: auto;"></td>
-                <td th:text="${hdct.sanPhamChiTiet.sanPham.tensp}"></td>
-                <td th:text="${hdct.sanPhamChiTiet.mauSac.ten}"></td>
-                <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
-                <td id="giasp" th:text="${hdct.sanPhamChiTiet.dongia}"></td>
-                <td class="so-luong">
+                <td>
+                    <img th:src="'data:image/png;base64,' + ${hdct.sanPhamChiTiet.sanPham.base64Image}"
+                         class="img-fluid main-image" alt="Áo Thun Chi Tiết"
+                         style="width: 120px; height: auto;">
+                </td>
+                <td style="vertical-align: middle;word-wrap: break-word; max-width: 200px;"
+                    th:text="${hdct.sanPhamChiTiet.sanPham.tensp}"></td>
+                <td style="vertical-align: middle;" th:text="${hdct.sanPhamChiTiet.mauSac.ten}"></td>
+                <td style="vertical-align: middle;" th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
+                <td style="vertical-align: middle;" id="giasp" th:text="${hdct.sanPhamChiTiet.dongia}"></td>
+                <td style="vertical-align: middle;" class="so-luong">
                     <input type="number" th:value="${hdct.soluong}" min="1"
                            style="width: 70px; border-radius: 10px; text-align: center"
                            id="soluong-${hdct.id}"
                            class="quantity-input" th:data-id="${hdct.id}"
-                           th:data-product="${hdct.sanPhamChiTiet.id}"
-                    >
+                           th:data-product="${hdct.sanPhamChiTiet.id}">
                     <span class="error-message" style="color: red; display: none;"></span>
-                <td class="tong-tien" id="tongtiensp" th:text="${hdct.tongtien}"></td>
-                <td>
+                </td>
+                <td style="vertical-align: middle;" class="tong-tien" id="tongtiensp" th:text="${hdct.tongtien}"></td>
+                <td style="vertical-align: middle;">
                     <button class="btn btn-secondary remove-btn" th:data-id="${hdct.id}">
-                        <i class="fa-solid fa-trash"></i></button>
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -246,6 +250,9 @@
                                th:name="sdt">
                     </div>
                     <div class="mb-3">
+                        <input type="checkbox" id="thanhtoan-checkbox" th:value="0" th:name="checkbox-tt"> Đã thanh toán ?
+                    </div>
+                    <div class="mb-3">
                         <div class="row" >
                             <div class="col-md-4">
                                 <label for="province" class="form-label">Tỉnh/Thành phố:</label>
@@ -332,7 +339,7 @@
                     <input type="hidden" id="thanhTien" th:name="thanhtien" th:value="${thanhTien}">
                     <!--                    <input type="text" id="thanhtien-input"  th:value="${thanhtien}">-->
                     <span class="total-price fw-4" id="thanhtien" th:text="${'Tổng tiền : '
-                + (thanhtien != '.00' ? thanhtien : '0') + ' VNĐ'}"
+                + (thanhtien != '.00' && thanhtien != null ? thanhtien : '0') + ' VNĐ'}"
                           style="font-size: 25px;text-align: center;font-weight: bold;"></span>
                 </div>
                 <button class="btn w-100" style="background-color: #FE5621 ;color: white">Xác nhận đặt hàng</button>
@@ -604,10 +611,10 @@
         document.getElementById('createInvoiceBtn').addEventListener('click', function () {
             var invoiceTabs = document.getElementById('invoiceTabs');
             var tabs = invoiceTabs.getElementsByTagName('li');
-            if (tabs.length >= 3) {
+            if (tabs.length >= 5) {
                 Swal.fire({
                     title: 'Cảnh báo!',
-                    text: 'Bạn không thể tạo thêm hóa đơn. Tối đa là 3 hóa đơn.',
+                    text: 'Không thể tạo thêm hóa đơn. Tối đa là 5 hóa đơn!',
                     icon: 'warning',
                     confirmButtonText: 'OK'
                 });
