@@ -55,7 +55,7 @@
             <th>Số điện thoại</th>
             <th>Thành tiền</th>
             <th>Ngày mua</th>
-            <th>hình thức mua hàng</th>
+            <th>Hình thức</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
@@ -71,7 +71,6 @@
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
             <td th:text="${hd.khachHang.sdt==null ?'Trống':hd.khachHang.sdt}"></td>
             <td th:text="${#numbers.formatDecimal(hd.thanhtien, 1, 'POINT',0, 'COMMA')}"></td>
-
             <td th:text="${hd.ngaymua}"></td>
             <td th:text="${hd.hinhthucmuahang != null ?'Trực tuyến':'Trực tiếp'}"></td>
             <td>
@@ -86,7 +85,9 @@
                 </a>
                 <a class="btn " th:href="@{/panda/hoadon/xuatfile(id=${hd.id})}"
                    onclick="openPrintPage(event)" target="_self">
-                    <i class="fa-solid fa-inbox" style="color: #000000;font-size: 20px"></i>
+<!--                    <i class="fa-solid fa-inbox" style="color: #000000;font-size: 20px"></i>-->
+                    <i class="fa-solid fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>
+                    <i class="fa-regular fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>
                 </a>
             </td>
         </tr>
@@ -128,10 +129,29 @@
         <div class="modal-content">
             <div th:fragment="hdct">
                 <div class="modal-header">
+
                     <h5 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn ' "></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
+<!--=======-->
+<!--&lt;!&ndash;                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <span aria-hidden="true">&times;</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </button>&ndash;&gt;-->
+
+<!--                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4><br>-->
+<!--                    <div th:if="${hoadon != null && hoadon.khachHang != null}">-->
+<!--                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.makhachhang != null-->
+<!--                        ? hoadon.khachHang.makhachhang : 'Mua tại quầy'}"></span> <br>-->
+<!--                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>-->
+<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tentinh != null ? hoadon.khachHang.tentinh.trim() : '')-->
+<!--                         ? '' : '- ' + hoadon.khachHang.tentinh}"></span>-->
+<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tenhuyen != null ? hoadon.khachHang.tenhuyen.trim() : '')-->
+<!--                        ? '' : '- ' + hoadon.khachHang.tenhuyen}"></span>-->
+<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tenxa != null ? hoadon.khachHang.tenxa.trim() : '')-->
+<!--                        ? '' : '- ' + hoadon.khachHang.tenxa}"></span>-->
+<!--                    </div>-->
+<!--&gt;>>>>>> thai-->
                 </div>
                 <div class="row mb-3">
                 <div class="col-md-8">
@@ -175,24 +195,36 @@
         </div>
     </div>
 </div>
-
+<div class="custom-alert success " id="statusMessage"  th:if="${thongbao != null}">
+    <i class="fa-solid fa-circle-check"></i> <span th:text="${thongbao}"></span>
+</div>
 <script>
     $(document).ready(function() {
         $('#xemhoadon').on('show.bs.modal', function(event) {
             var modal = $(this);
-            modal.find('.modal-content').html(''); // Xóa nội dung cũ
+            modal.find('.modal-content').html('');
             var button = $(event.relatedTarget);
             var id = button.data('id');
 
             // Gửi yêu cầu AJAX
             $.get('/panda/hoadon/chitiet', { id: id }, function(data) {
-                modal.find('.modal-content').html(data); // Chèn nội dung mới
+                modal.find('.modal-content').html(data);
             });
         });
 
     });
-</script>
-<script>
+    window.onload = function() {
+        // Xử lý thông báo thành công
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+
     function openPrintPage(event) {
         // Ngừng hành động mặc định của link
         event.preventDefault();
@@ -205,7 +237,7 @@
         var invoiceId = urlParams.get('id');
 
         // Mở trang in mới với ID
-        var printWindow = window.open('/panda/nhanvien/xemhoadon/xuatfile?id=' + invoiceId, '_blank');
+        var printWindow = window.open('/panda/hoadon/xuatfile?id=' + invoiceId, '_blank');
 
         // Khi trang in đã tải xong, gọi in
         // printWindow.onload = function() {
@@ -217,6 +249,24 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <style>
+    .custom-alert {
+        background-color: #4CAF50;  /* Màu nền thông báo thành công */
+        color: white;  /* Màu chữ */
+        position: fixed;
+        top: 20px;  /* Cách từ đỉnh */
+        right: 20px;  /* Cách từ bên phải */
+        padding: 15px;  /* Padding xung quanh */
+        border-radius: 5px;  /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
+        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0;  /* Ban đầu ẩn */
+        visibility: hidden;  /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+    }
+    .custom-alert.show {
+        opacity: 1;  /* Hiển thị thông báo */
+        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+    }
     .modal-header {
         display: flex;
         flex-direction: column;
@@ -342,8 +392,8 @@
     }
 
     .status-orange {
-        background-color: #ffc107; /* Màu cam */
-        color: black; /* Màu chữ */
+        background-color: #d7344c; /* Màu cam */
+        color: white; /* Màu chữ */
     }
 
     .action-icons {
@@ -355,6 +405,11 @@
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
+    }
+    .discount-price {
+        text-decoration: line-through;
+        color: red;
+        font-weight: bold;
     }
 </style>
 </body>

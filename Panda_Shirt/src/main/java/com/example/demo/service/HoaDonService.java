@@ -32,7 +32,9 @@ public class HoaDonService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
 
+
         return hoaDonRepository.findByMaAndTenAndTrangthaiHD(mahd,nv,  tenkh, trangThai, pageable);
+
     }
 
 

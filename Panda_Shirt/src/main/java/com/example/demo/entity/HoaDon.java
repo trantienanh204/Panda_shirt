@@ -29,6 +29,9 @@ public class HoaDon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "LAN_IN")
+    private Integer lanin;
+
     @Column(name = "MAHD")
     private String mahoadon;
 
@@ -103,6 +106,7 @@ public class HoaDon {
         this.tongtien = tongtien;
         this.thanhtien = thanhtien;
         this.trangthai = trangthai;
+        this.lanin = 0;
     }
 
     public HoaDon(Integer id) {

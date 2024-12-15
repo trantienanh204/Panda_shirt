@@ -1,5 +1,3 @@
-
-
 $(document).ready(function () {
     function checkCart() {
         const tableBody = $('#productTable tbody');
@@ -126,10 +124,9 @@ $(document).ready(function () {
         row.find('.so-luong input').off('input').on('input', function () {
             let soluong = $(this).val();
 
-            // if (soluong.empty()) {
-            //      soluong = 1; // Nếu ô trống, đặt lại thành 1
-            // } else
-            if (isNaN(soluong) || parseInt(soluong) === 0) {
+            if (soluong.empty()) {
+                 soluong = 1; // Nếu ô trống, đặt lại thành 1
+            } else if (isNaN(soluong) || parseInt(soluong) === 0) {
                 soluong = 1;
             } else {
                 soluong = parseInt(soluong);
@@ -180,10 +177,12 @@ $(document).ready(function () {
             error: function (xhr) {
                 const errorMessage = xhr.responseText || 'Có lỗi xảy ra';
                 Swal.fire({
-                    title: 'Cảnh báo!',
+                    title: 'Thông báo!',
                     text: errorMessage,
                     icon: 'warning',
                     confirmButtonText: 'OK'
+                }).finally(() => {
+                    location.reload();
                 });
                 inputElement.val(previousValue);
                 // Hiển thị lại thành tiền cũ

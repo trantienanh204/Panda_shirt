@@ -373,9 +373,11 @@ public class BanHangOffline {
             return ResponseEntity.badRequest().body("Không tìm thấy sản phẩm chi tiết.");
         }
         SanPhamChiTiet spct = spctOptional.get();
-
         if (dto.getSoLuong() > spct.getSoluongsanpham()) {
             return ResponseEntity.badRequest().body("Số lượng nhập vượt quá số lượng tồn kho");
+        }
+        if (dto.getSoLuong() <= 0) {
+            return ResponseEntity.badRequest().body("Số lượng phải lớn hơn 0");
         }
 
         hoaDonCT.setSoluong(dto.getSoLuong());
@@ -471,10 +473,10 @@ public class BanHangOffline {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/thanhtoan")
     public String thanhtoan(
-            @RequestParam(value = "idhoadon",required = false) int idhoadon,
+            @RequestParam(value = "idhoadon",required = false) Integer idhoadon,
             @RequestParam(value = "idvoucher", required = false) Integer idvoucher,
-            @RequestParam("thanhtien") BigDecimal thanhtien,
-            @RequestParam("tongtien") BigDecimal tongtien,
+            @RequestParam(value = "thanhtien",defaultValue = "0") BigDecimal thanhtien,
+            @RequestParam(value = "tongtien",defaultValue = "0") BigDecimal tongtien,
             @RequestParam("sdt") String sdt,
             @RequestParam("tinh") String tinh,
             @RequestParam("huyen") String huyen,
@@ -486,6 +488,7 @@ public class BanHangOffline {
             @RequestParam(value = "ghichu",defaultValue = "trống") String ghichu,
             @RequestParam("tenkh") String tenkh,
             @RequestParam("mucgiam") String giagiam,
+            @RequestParam(value = "checkbox-tt",defaultValue = "1") String checkbox,
             RedirectAttributes redirectAttributes,
             Model model ,
             @AuthenticationPrincipal UserDetails userDetails
@@ -494,8 +497,8 @@ public class BanHangOffline {
         HoaDon hd = hoaDonRepository.finid(idhoadon);
         if (hd == null) {
             System.out.println("hd trống ");
-            redirectAttributes.addFlashAttribute("loi", "Hóa đơn");
-            return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+            redirectAttributes.addFlashAttribute("loi", "Chưa chọn hóa đơn");
+            return "redirect:/panda/banhangoffline";
         }
 //        NhanVien nhanVien = nhanVienRespository.findById(3).orElse(null);
 
