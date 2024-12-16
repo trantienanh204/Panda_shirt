@@ -11,16 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
-    @Service
+@Service
     public class GioHangService {
 
-
-        @Autowired
+    public  List<SanPhamChiTiet> spctLisst = new ArrayList<>();
+    @Autowired
         private GioHangRepository gioHangRepository;
 
         @Autowired
@@ -123,7 +121,13 @@ import java.util.Optional;
             if (cartItems != null && !cartItems.isEmpty())
             { gioHangRepository.deleteAll(cartItems); } }
 
-        public List<GioHang> getCartItemsByIds(int khachHangId, List<Integer> itemIds) { return gioHangRepository.findAllByIdInAndKhachHangId(itemIds, khachHangId); }
+//    List<GioHang>spct = cartItems.stream().filter(gioHang ->
+//            spctLisst.equals(gioHang.getSanPhamChiTiet().getId())).collect(Collectors.toList());
+//            if (cartItems != null && !cartItems.isEmpty())
+//    { gioHangRepository.deleteAll(spct); } }
+
+
+    public List<GioHang> getCartItemsByIds(int khachHangId, List<Integer> itemIds) { return gioHangRepository.findAllByIdInAndKhachHangId(itemIds, khachHangId); }
 
     }
 

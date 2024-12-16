@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api")
@@ -95,16 +96,19 @@ String codevc = null;
         KhachHang khachHang = mapToKhachHang(taiKhoanDto.getKhachHangDTO());
         int khachHangId = khachHang.getId();
         List<GioHang> cartItems = gioHangService.getCartItems(khachHangId);
+        List<SanPhamChiTiet> sanPhamChiTiets = gioHangService.spctLisst;
+
+        System.out.println("Danh sách sản phẩm chi tiết: " + sanPhamChiTiets);
+        System.out.println("Danh sách giỏ hàng: " + cartItems);
 
         if (cartItems == null || cartItems.isEmpty()) {
             model.addAttribute("message", "Giỏ hàng của bạn đang trống.");
             return "khachhang/GioHang";
         }
 
-        // Kiểm tra và log voucherCode để đảm bảo không null
-        System.out.println("Received voucherCode: " + voucherCode);
 
-        // Tạo hóa đơn và đơn hàng
+
+
         HoaDon hoaDon = createHoaDon(khachHang, cartItems, totalAmount, note, paymentMethod);
         DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod, codevc);
 

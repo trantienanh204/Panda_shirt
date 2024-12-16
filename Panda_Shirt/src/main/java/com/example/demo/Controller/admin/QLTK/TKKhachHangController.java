@@ -66,6 +66,7 @@ public class TKKhachHangController {
         model.addAttribute("pageSize", listKH.getSize());
         return "/admin/QLTK/TKKhachHang";
     }
+    // show form add tk khách hàng
     @GetMapping("/tkkhachhang/save")
     public String showFormAdd(Model model){
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
@@ -73,7 +74,6 @@ public class TKKhachHangController {
         model.addAttribute("khachHang",new KhachHang());
         return "admin/QLTK/ADD/AddTKKhachHang";
     }
-    // save
 
     @PostMapping("/tkkhachhang/save")
     public String save(Model model,
@@ -90,9 +90,19 @@ public class TKKhachHangController {
         } else {
             demhd = Integer.parseInt(hd.substring(2)) + 1;
         }
-        String makh = String.format("KH%03d", demhd);
-
-        // Tạo mã hóa đơn
+//đoạn  này lỗi 'hasErrors' ở đâu ?
+//        if(khachHang.getDiachi().trim().isEmpty()){
+//            model.addAttribute("addressEmpty","Vui lòng nhập địa chỉ");
+//            hasErrors = true;
+//        }
+//        if (!khachHang.getSdt().matches("^0\\d{9}$")) {
+//            model.addAttribute("phoneErrors", "Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số");
+//            hasErrors = true;
+//        }
+//        if(khachHang.getSdt().trim().isEmpty()){
+//            model.addAttribute("phoneEmpty", "Vui lòng nhập số điện thoại");
+//            hasErrors = true;
+//        }
 
         if (result.hasErrors()) {
             return "admin/QLTK/ADD/AddTKKhachHang";
@@ -195,7 +205,7 @@ public class TKKhachHangController {
             chiTietVaiTroRepo.save(ctvt);
 
             khachHang.setTaiKhoan(tenDangNhap);
-            khachHang.setMakhachhang(makh);
+            khachHang.setMakhachhang(khachHang.getMakhachhang());
 
             // Lưu khách hàng vào cơ sở dữ liệu
             khachHangService.saveCustomerToDb(file, khachHang);

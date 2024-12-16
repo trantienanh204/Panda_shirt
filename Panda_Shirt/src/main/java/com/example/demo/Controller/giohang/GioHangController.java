@@ -43,6 +43,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/panda/giohang")
 public class GioHangController {
 
+
+
     @Autowired
     private GioHangService gioHangService;
     @Autowired
@@ -413,9 +415,6 @@ public class GioHangController {
                 return "redirect:/panda/login";
             }
 
-
-            System.out.println("KhachHang: " + khachHang);
-
             // Chuyển đổi JSON thành danh sách Integer
             ObjectMapper objectMapper = new ObjectMapper();
             List<Integer> selectedItems = Arrays.asList(objectMapper.readValue(selectedItemsJson, Integer[].class));
@@ -432,13 +431,12 @@ public class GioHangController {
                 model.addAttribute("message", "Không có sản phẩm nào được chọn.");
                 return "khachhang/GioHang";
             }
-
+            List<SanPhamChiTiet> spctLisst = gioHangService.spctLisst;
             // Chuyển đổi dữ liệu byte array thành chuỗi base64
             List<Map<String, Object>> processedCartItems = new ArrayList<>();
             for (GioHang item : cartItems) {
                 Map<String, Object> itemMap = new HashMap<>();
                 double tong = item.getSanPhamChiTiet().getDongia() * item.getSoluong();
-                System.out.println("tổng ỏ giỏ hàng post; "+tong );
                 itemMap.put("id", item.getId());
                 itemMap.put("sanPhamChiTiet", item.getSanPhamChiTiet());
                 itemMap.put("soluong", item.getSoluong());
@@ -450,15 +448,18 @@ public class GioHangController {
                 } else {
                     itemMap.put("anhspBase64", ""); // Giá trị rỗng nếu không có ảnh
                 }
-
+                gioHangService.spctLisst.add(item.getSanPhamChiTiet());
                 processedCartItems.add(itemMap);
             }
+            System.out.println("sản phẩm: "+spctLisst);
+
             List<Voucher> voucher = voucherRepository.findAll();
-            List<Voucher> voucrs = voucher.stream().filter(vc -> vc.isLoaikhachhang()==true).collect(Collectors.toList());
-            model.addAttribute("listvc",voucrs);
+            List<Voucher> voucrs = voucher.stream().filter(vc -> vc.isLoaikhachhang() == true).collect(Collectors.toList());
+            model.addAttribute("listvc", voucrs);
             model.addAttribute("cartItems", processedCartItems);
             model.addAttribute("totalAmount", totalAmount);
             model.addAttribute("khachHang", khachHang); // Thêm thông tin khách hàng vào model
+            model.addAttribute("selectedItems", selectedItems); // Thêm danh sách sản phẩm đã chọn vào model
             return "khachhang/ThanhToan";
 
         } catch (IOException | NumberFormatException e) {

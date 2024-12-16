@@ -13,14 +13,11 @@
     <div class="login-box">
         <h4 class="login-header">
             <img th:src="@{/Image/panda_logo.png}" width="50px" height="50px">Đăng Ký</h4>
-        <form method="post" th:action="@{/panda/register}" th:object="${khachHang}">
+        <form method="post" th:action="@{/panda/register}">
             <!-- Nhập Email -->
             <div class="mb-3">
-                <input type="text" name="tentaikhoan"
-                       class="form-control" placeholder="Email"
-
-                       th:field="*{tentaikhoan}">
-                <div th:if="${#fields.hasErrors('tentaikhoan')}" class="text-dark" th:errors="*{tentaikhoan}"></div>
+                <input readonly type="text" name="tentaikhoan"
+                       class="form-control" placeholder="Email" th:value="${email != null ? email : ''}">
 
                 <div th:if="${emailErrors != null}">
                     <div th:each="error : ${emailErrors}" th:text="${error}"></div>
@@ -29,31 +26,45 @@
                 <div th:if="${emailExists != null}">
                     <div th:each="error : ${emailExists}" th:text="${error}"></div>
                 </div>
+                <!--email empty-->
+                <div th:if="${emailEmpty != null}">
+                    <div th:each="error : ${emailEmpty}" th:text="${error}"></div>
+                </div>
             </div>
             <div class="mb-3">
                 <input type="text" name="tenkhachhang"
-                       class="form-control" placeholder="Họ tên"
-                       th:field="*{tenkhachhang}">
-                <div th:if="${#fields.hasErrors('tenkhachhang')}" class="text-dark" th:errors="*{tenkhachhang}"></div>
+                       class="form-control" placeholder="Họ tên">
+                <!--name empty-->
+                <div th:if="${nameEmpty != null}">
+                    <div th:each="error : ${nameEmpty}" th:text="${error}"></div>
+                </div>
             </div>
             <div class="mb-3">
                 <input type="text" name="sdt"
-                       class="form-control" placeholder="Số điện thoại"
-                       th:field="*{sdt}">
-                <div th:if="${#fields.hasErrors('sdt')}" class="text-dark" th:errors="*{sdt}"></div>
+                       class="form-control" placeholder="Số điện thoại">
              <!-- validtion sdt -->
                 <div th:if="${sdtExists != null}">
                     <div th:each="error : ${sdtExists}" th:text="${error}"></div>
                 </div>
+                <!--sdt empty-->
+                <div th:if="${numberphoneEmpty != null}">
+                    <div th:each="error : ${numberphoneEmpty}" th:text="${error}"></div>
+                </div>
+                <div th:if="${phoneErrors != null}">
+                    <div th:each="error : ${phoneErrors}" th:text="${error}"></div>
+                </div>
             </div>
-            <div class="mb-3">
-                <input type="text" name="diachi"
-                       class="form-control" placeholder="Địa chỉ"
-                       th:field="*{diachi}">
-                <div th:if="${#fields.hasErrors('diachi')}" class="text-dark" th:errors="*{diachi}"></div>
-            </div>
-            <button type="submit" class="btn btn-primary">Đăng Ký</button>
-            <a th:href="@{/panda/login}" class="btn btn-warning">Thoát</a>
+
+<!--            <div class="mb-3">-->
+<!--                <input hidden type="text" name="diachi"-->
+<!--                       class="form-control" placeholder="Địa chỉ">-->
+<!--                &lt;!&ndash;dia chi empty&ndash;&gt;-->
+<!--                <div th:if="${addressEmpty != null}">-->
+<!--                    <div th:each="error : ${addressEmpty}" th:text="${error}"></div>-->
+<!--                </div>-->
+<!--            </div>-->
+            <button type="submit" class="btn btn-primary w-100">Đăng Ký</button>
+
         </form>
     </div>
 </div>

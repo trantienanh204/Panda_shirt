@@ -37,11 +37,10 @@ public class KhachHang {
 
 
     @NotBlank(message = "Số điện thoại không được để trống")
-    @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 số")
+  //  @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 số")
     @Column(name = "SO_DIEN_THOAI")
     private String sdt;
 
-//    @NotBlank(message = "Địa chỉ không được để trống")
     @Column(name = "DIA_CHI_CU_THE")
     private String diachi;
 
