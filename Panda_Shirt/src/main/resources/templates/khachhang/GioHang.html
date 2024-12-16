@@ -73,6 +73,7 @@
     <div th:if="${#lists.isEmpty(cartItems)}">
         <p>Giỏ hàng của bạn đang trống.</p>
     </div>
+<!--    <button id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Chọn tất cả</button>-->
     <div th:if="${!#lists.isEmpty(cartItems)}">
         <button id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Chọn tất cả</button>
         <form id="cartForm">
@@ -92,7 +93,12 @@
                 <tbody>
                 <tr th:each="item : ${cartItems}">
                     <td>
-                        <input id="checkbox${i.count}" type="checkbox" class="form-check-input product-checkbox" th:id="'product' + ${item.id}" th:data-price="${item.sanPhamChiTiet.dongia * item.soluong}">
+
+                        <input type="checkbox" class="form-check-input product-checkbox"
+                               id="checkbox${i.count}"
+                               th:id="'product' + ${item.id}"
+                               th:data-price="${item.sanPhamChiTiet.dongia * item.soluong}">
+
                     </td>
                     <td>
                         <div th:if="${item.anhspBase64 != null}">
@@ -135,15 +141,12 @@
         <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-twitter"></i></a></li>
     </ul>
 </footer>
-
 <script>
     function toggleSelectAll() {
         const checkboxes = document.querySelectorAll('.form-check-input');
         const selectAllBtn = document.getElementById('selectAllBtn');
         const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-
         checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
-
         // Đổi nội dung nút sau khi bấm
         selectAllBtn.textContent = allChecked ? 'Chọn tất cả' : 'Bỏ chọn tất cả';
     }

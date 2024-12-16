@@ -54,7 +54,6 @@ public class DuyetDonController {
     @GetMapping("/hienthi")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "mahd", required = false) String mahd,
-//                          @RequestParam(value = "tennv", required = false) String tennv,
                           @RequestParam(value = "tenkh", required = false) String tenkh,
                           @RequestParam(value = "Date", required = false)
                               @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate Date,
@@ -65,21 +64,17 @@ public class DuyetDonController {
         if (page < 0) {
             page = 0;
         }
-
         Page<DonHang> listDH = donHangService.hienThiDH(page, mahd, tenkh,Date, trangThai);
-
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-//        model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("Date", Date);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";
     }
-
     @GetMapping("/hienthi/daduyet")
     public String hienthi2(@RequestParam(value = "page", defaultValue = "0") int page,
                            @RequestParam(value = "mahd", required = false) String mahd,
@@ -94,19 +89,20 @@ public class DuyetDonController {
         if (page < 0) {
             page = 0;
         }
-
-
         Page<DonHang> listDH = donHangService.hienThiDH(page, mahd,  tenkh,Date, trangThai);
-
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
+<<<<<<< HEAD
 //        model.addAttribute("tennv", tennv);
         model.addAttribute("trangThai", trangThai);
+=======
+>>>>>>> khai
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("Date", Date);
+        model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";
     }
@@ -124,15 +120,11 @@ public class DuyetDonController {
         if (page < 0) {
             page = 0;
         }
-
-
         Page<DonHang> listDH = donHangService.hienThiDH(page, mahd,  tenkh,Date, trangThai);
-
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-//        model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("Date", Date);
         model.addAttribute("trangThai", trangThai);
@@ -153,22 +145,17 @@ public class DuyetDonController {
         if (page < 0) {
             page = 0;
         }
-
-
         Page<DonHang> listDH = donHangService.hienThiDH(page, mahd,  tenkh,Date, trangThai);
-
         model.addAttribute("totalPage", listDH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-//        model.addAttribute("tennv", tennv);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("Date", Date);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";
     }
-
     @GetMapping("/hienthi/dahuy")
     public String hienthi3(@RequestParam(value = "page", defaultValue = "0") int page,
                            @RequestParam(value = "mahd", required = false) String mahd,
@@ -200,8 +187,6 @@ public class DuyetDonController {
         model.addAttribute("pageSize", listDH.getSize());
         return "/nhanvien/DuyetDon";
     }
-
-
     @GetMapping("/update/{id}")
     public String detailDH(@PathVariable Integer id, Model model) {
         String role = "nhanvien"; //Hoặc lấy giá trị role từ session hoặc service
@@ -209,7 +194,6 @@ public class DuyetDonController {
 
         DonHang donHang = donHangRepository.getReferenceById(id);
         model.addAttribute("DonHang", donHang);
-
 
         List<HoaDonCT> hoaDonCT = hdctService.findID(donHang.getHoaDon().getId());
         model.addAttribute("listhdct", hoaDonCT);
@@ -280,8 +264,6 @@ public class DuyetDonController {
             nhanVien.setTennhanvien(dto.getTennhanvien());
             return nhanVien;
         }
-
-
 
     @GetMapping("/xacnhan/{id}")
     public String xacnhan(@PathVariable("id") Integer id) {
