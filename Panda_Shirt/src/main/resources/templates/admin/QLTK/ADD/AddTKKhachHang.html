@@ -101,11 +101,14 @@
                     <div class="form-group col-md-6">
                         <label> Số Điện Thoại:</label>
                         <input type="text" class="form-control" th:field="*{sdt}" placeholder="Số điện thoại">
-                        <div th:if="${#fields.hasErrors('sdt')}" class="text-danger">
-                            <span th:errors="*{sdt}"></span>
-                        </div>
                         <div th:if="${errorsdt}" class="text-danger">
                             <span th:text="${errorsdt}"></span>
+                        </div>
+                        <div th:if="${phoneErrors}" class="text-danger">
+                            <span th:text="${phoneErrors}"></span>
+                        </div>
+                        <div th:if="${phoneEmpty}" class="text-danger">
+                            <span th:text="${phoneEmpty}"></span>
                         </div>
                     </div>
                 </div>
@@ -114,8 +117,8 @@
                     <div class="form-group col-md-6">
                         <label>Địa Chỉ:</label>
                         <input type="text" class="form-control" th:field="*{diachi}" placeholder="Địa chỉ">
-                        <div th:if="${#fields.hasErrors('diachi')}" class="text-danger">
-                            <span th:errors="*{diachi}"></span>
+                        <div th:if="${addressEmpty!= null}">
+                            <div style="color: red" th:each="error : ${addressEmpty}" th:text="${error}"></div>
                         </div>
                     </div>
 
