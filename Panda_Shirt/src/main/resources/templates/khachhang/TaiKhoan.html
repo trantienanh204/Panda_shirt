@@ -93,8 +93,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="updateInfoModal" tabindex="-1" aria-labelledby="updateInfoModalLabel"
-             aria-hidden="true">
+        <div class="modal fade" id="updateInfoModal" tabindex="-1" aria-labelledby="updateInfoModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -109,13 +108,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="updatePhone" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" id="updatePhone"
-                                       placeholder="Nhập số điện thoại">
+                                <input type="number" class="form-control" id="updatePhone" placeholder="Nhập số điện thoại">
                             </div>
                             <div class="mb-3">
-                                <label for="searchBox" class="form-label">Địa chỉ</label>
-                                <input type="text" class="form-control" id="searchBox" placeholder="Nhập địa chỉ">
-                                <ul id="suggestions" class="list-group mt-2"></ul>
+                                <label for="updateAddress" class="form-label">Địa chỉ</label>
+                                <input type="text" class="form-control" id="updateAddress" placeholder="Nhập địa chỉ">
                             </div>
                         </form>
                     </div>
@@ -700,11 +697,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
+
     function updateInfo() {
         const name = document.getElementById("updateName").value;
         const phone = document.getElementById("updatePhone").value;
         const address = document.getElementById("updateAddress").value;
-
 
         console.log("Họ và Tên:", name);
         console.log("Số điện thoại:", phone);
@@ -713,6 +710,56 @@
         const modal = bootstrap.Modal.getInstance(document.getElementById('updateInfoModal'));
         modal.hide();
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const phoneInput = document.getElementById('updatePhone');
+        const submitButton = document.getElementById('submitButton');
+
+        phoneInput.addEventListener('input', function() {
+            if (phoneInput.value.length !== 10 || phoneInput.value[0] !== '0') {
+                phoneInput.setCustomValidity("Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
+                phoneInput.reportValidity();
+            } else {
+                phoneInput.setCustomValidity("");
+            }
+        });
+
+        submitButton.addEventListener('click', function() {
+            const recipientName = document.getElementById('updateName').value;
+            const phoneNumber = phoneInput.value;
+            const address = document.getElementById('updateAddress').value;
+
+            if (!recipientName || phoneNumber.length !== 10 || phoneNumber[0] !== '0' || !address) {
+                alert("Vui lòng nhập đầy đủ thông tin! Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
+                return;
+            }
+
+            const dataToSend = {
+                recipientName,
+                phoneNumber,
+                fullAddress: address
+            };
+
+            fetch('/diachi/api/save-address', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(dataToSend),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "Địa chỉ đã được lưu thành công") {
+                        Swal.fire("Thành công!", "Địa chỉ đã được lưu!", "success");
+                        location.reload();
+                    } else {
+                        Swal.fire("Lỗi", "Không thể lưu địa chỉ!", "error");
+                    }
+                })
+                .catch(err => {
+                    Swal.fire("Lỗi", "Không thể kết nối đến server!", "error");
+                });
+        });
+    });
+
 
 </script>
 <script>
@@ -775,39 +822,6 @@
                 .catch(err => console.error("Lỗi:", err));
         });
 
-        document.getElementById('submitButton').addEventListener('click', () => {
-            const recipientName = document.getElementById('updateName').value;
-            const phoneNumber = document.getElementById('updatePhone').value;
-            const address = selectedAddress;
-            if (!recipientName || !phoneNumber || !selectedAddress) {
-                Swal.fire("Lỗi", "Vui lòng nhập đầy đủ thông tin!", "error");
-                return;
-            }
-
-            const dataToSend = {
-                recipientName,
-                phoneNumber,
-                fullAddress: address
-            };
-
-            fetch('/diachi/api/save-address', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(dataToSend),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message === "Địa chỉ đã được lưu thành công") {
-                        Swal.fire("Thành công!", "Địa chỉ đã được lưu!", "success");
-                        location.reload()
-                    } else {
-                        Swal.fire("Lỗi", "Không thể lưu địa chỉ!", "error");
-                    }
-                })
-                .catch(err => {
-                    Swal.fire("Lỗi", "Không thể kết nối đến server!", "error");
-                });
-        });
     });
 </script>
 </body>

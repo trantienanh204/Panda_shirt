@@ -67,11 +67,14 @@
         <div class="address-section border p-3 mb-4">
             <h5 style="color:#FE5621"><i class="fas fa-map-marker-alt" style="color:#FE5621"></i> Địa Chỉ Nhận Hàng</h5>
             <div class="d-flex justify-content-between align-items-center">
-                <p th:if="${khachHang != null}" th:text="${khachHang.tenkhachhang} + ' (' + ${khachHang.sdt} + '), ' + ${khachHang.diachi}">
+                <p th:if="${khachHang != null}" th:data-khachhang-name="${khachHang.tenkhachhang}" th:data-khachhang-phone="${khachHang.sdt}" th:data-khachhang-address="${khachHang.diachi}" th:text="${khachHang.tenkhachhang} + ' (' + ${khachHang.sdt} + '), ' + ${khachHang.diachi}">
                     Thông tin khách hàng
                 </p>
                 <p th:if="${khachHang == null}">Thông tin khách hàng không có sẵn.</p>
                 <a th:href="@{/diachi/themdiachi}" class="btn btn-link" style="text-decoration: none">Thay Đổi</a>
+            </div>
+            <div id="customerError" class="alert alert-danger" style="display: none;">
+                Vui lòng cập nhật đầy đủ thông tin khách hàng trước khi thanh toán.
             </div>
         </div>
     <!-- Sản phẩm -->
@@ -113,17 +116,7 @@
                 <a class="btn btn-link float-end" data-bs-toggle="modal" data-bs-target="#add"
                    style="text-decoration: none;">Chọn voucher</a>
             </div>
-            <label class="col-sm-2 col-form-label">Nhập mã voucher:</label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" placeholder="Nhập mã...">
-            </div>
-            <div class="row mb-3 align-items-center">
-                <label class="col-sm-2 col-form-label">Nhập ghi chú:</label>
-                <div class="col-sm-12">
-                <textarea class="form-control" id="moTa" rows="2"
-                          placeholder="Ghi chú..."></textarea>
-                </div>
-            </div>
+
         </div>
     </div>
     <!-- Thanh toán và hình thức thanh toán -->
@@ -165,7 +158,13 @@
                     </div>
                     <form id="paymentForm" action="/api/submitOrder" method="post">
                         <input type="hidden" name="totalAmount" id="totalAmountInput">
-                        <input type="hidden" name="orderInfo" id="orderInfoInput" value="mo ta don hang">
+                     <input type="hidden" name="orderInfo" id="orderInfoInput" value="mo ta don hang">
+<!--                        <div class="row mb-3 align-items-center">-->
+<!--                            <div class="col-sm-12">-->
+<!--                        <textarea class="form-control" name="orderInfo" id="orderInfoInput" rows="2"-->
+<!--                          placeholder="Ghi chú..."></textarea>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <input type="hidden" name="paymentMethod" id="paymentMethodInput">
                         <input type="hidden" name="note" id="noteInput" value="Ghi chú">
                         <button type="submit" class="btn btn-primary w-100 mt-3"><i class="fas fa-check"></i> Đặt hàng</button>
@@ -301,6 +300,10 @@
         const discountAmountElement = document.querySelector('.discount-amount');
         const voucherSelectElements = document.querySelectorAll('.voucher-select');
 
+        const khachHangName = document.querySelector('[data-khachhang-name]');
+        const khachHangPhone = document.querySelector('[data-khachhang-phone]');
+        const khachHangAddress = document.querySelector('[data-khachhang-address]');
+
         let selectedVoucherCode = null;
 
         function updateTotalAmount() {
@@ -368,6 +371,16 @@
             console.log("Final total amount:", finalTotal);
         }
 
+        function validateCustomerInfo() {
+            if (!khachHangName || !khachHangName.textContent.trim() ||
+                !khachHangPhone || !khachHangPhone.textContent.trim() ||
+                !khachHangAddress || !khachHangAddress.textContent.trim()) {
+                alert("Vui lòng cập nhật thông tin khách hàng (Tên, Số điện thoại, Địa chỉ) trước khi thanh toán.");
+                return false;
+            }
+            return true;
+        }
+
         updateTotalAmount();
 
         voucherSelectElements.forEach(function(selectElement) {
@@ -382,6 +395,11 @@
 
         paymentForm.addEventListener('submit', function(event) {
             event.preventDefault();
+
+            if (!validateCustomerInfo()) {
+                return; // Dừng lại nếu thông tin khách hàng không đầy đủ
+            }
+
             updateTotalAmount();
 
             const finalTotalText = finalTotalElement.textContent.replace(/[^\d]/g, '');
@@ -399,25 +417,26 @@
 
             paymentForm.submit();
         });
+
+        function saveVoucherCodeToSession(voucherCode) {
+            fetch('/api/save-voucher-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ voucherCode: voucherCode }),
+                credentials: 'same-origin'
+            }).then(response => {
+                if (response.ok) {
+                    console.log("Voucher code saved to session: " + voucherCode);
+                } else {
+                    console.error("Failed to save voucher code to session");
+                }
+            }).catch(error => {
+                console.error("Error saving voucher code to session:", error);
+            });
+        }
     });
-    function saveVoucherCodeToSession(voucherCode) {
-        fetch('/api/save-voucher-code', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ voucherCode: voucherCode }),
-            credentials: 'same-origin'
-        }).then(response => {
-            if (response.ok) {
-                console.log("Voucher code saved to session: " + voucherCode);
-            } else {
-                console.error("Failed to save voucher code to session");
-            }
-        }).catch(error => {
-            console.error("Error saving voucher code to session:", error);
-        });
-    }
 
 </script>
 
