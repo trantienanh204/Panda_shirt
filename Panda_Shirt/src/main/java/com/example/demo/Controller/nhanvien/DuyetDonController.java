@@ -94,11 +94,10 @@ public class DuyetDonController {
         model.addAttribute("currentPage", page);
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
-<<<<<<< HEAD
+
 //        model.addAttribute("tennv", tennv);
         model.addAttribute("trangThai", trangThai);
-=======
->>>>>>> khai
+
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("Date", Date);
