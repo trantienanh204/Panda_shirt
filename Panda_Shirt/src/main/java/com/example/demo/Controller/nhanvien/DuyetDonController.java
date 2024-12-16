@@ -103,6 +103,7 @@ public class DuyetDonController {
         model.addAttribute("listcd", listDH.getContent());
         model.addAttribute("mahd", mahd);
 //        model.addAttribute("tennv", tennv);
+        model.addAttribute("trangThai", trangThai);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("Date", Date);

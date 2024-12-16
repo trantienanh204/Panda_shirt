@@ -11,8 +11,12 @@ import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.GioHangService;
 import com.example.demo.service.HoaDonService;
 import com.example.demo.service.TaiKhoanService;
+import com.example.demo.service.VoucherService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,13 +29,11 @@ import org.springframework.web.util.UriUtils;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/api")
+
 public class VnpayController {
 
     @Autowired
@@ -52,7 +54,9 @@ public class VnpayController {
     private SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
     private VoucherRepository voucherRepository;
-
+    @Autowired
+    private VoucherService voucherService;
+String codevc = null;
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/submitOrder")
     public String submitOrder(@RequestParam("totalAmount") double totalAmount,
@@ -78,7 +82,7 @@ public class VnpayController {
                                  @RequestParam String paymentMethod,
                                  @RequestParam String note,
                                  @AuthenticationPrincipal UserDetails userDetails,
-//                                 @RequestParam String voucherCode,
+                                 @RequestParam(required = false) String voucherCode, // Cho phép null để kiểm tra
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
         String username = userDetails.getUsername();
@@ -97,12 +101,12 @@ public class VnpayController {
             return "khachhang/GioHang";
         }
 
+        // Kiểm tra và log voucherCode để đảm bảo không null
+        System.out.println("Received voucherCode: " + voucherCode);
+
         // Tạo hóa đơn và đơn hàng
         HoaDon hoaDon = createHoaDon(khachHang, cartItems, totalAmount, note, paymentMethod);
-        DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod
-//                ,voucherCode
-        );
-
+        DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod, codevc);
 
         hoaDonService.save(hoaDon);
         donHangRepository.save(donHang);
@@ -110,9 +114,50 @@ public class VnpayController {
         gioHangService.clearCart(khachHangId);
 
         redirectAttributes.addFlashAttribute("successMessage", "Đơn hàng của bạn đã được đặt thành công!");
-
+        codevc=null;
         return "redirect:/panda/trangchu";
     }
+
+    @PostMapping("/save-voucher-code")
+    public ResponseEntity<Void> saveVoucherCode(@RequestBody Map<String, String> payload, HttpServletRequest request) {
+        String voucherCode = payload.get("voucherCode");
+        HttpSession session = request.getSession();
+        session.setAttribute("voucherCode", voucherCode);
+
+        // Đọc lại voucherCode từ session ngay lập tức
+        String savedVoucherCode = (String) session.getAttribute("voucherCode");
+        if(savedVoucherCode != null){
+            codevc = savedVoucherCode;
+        }else{
+            codevc = null;
+        }
+
+        System.out.println("Voucher Code from Session: " + savedVoucherCode);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+        @GetMapping("/api/check-voucher")
+        public ResponseEntity<Map<String, Object>> checkVoucher(@RequestParam String code) {
+            Map<String, Object> response = new HashMap<>();
+
+            Optional<Voucher> voucher = voucherRepository.findByMa(code);
+            Integer sl = Integer.parseInt(voucher.get().getSoLuong());
+            if (voucher != null && sl > 0 && voucher.get().getNgayketthuc().isAfter(LocalDate.now())) {
+                response.put("valid", true);
+                response.put("discountType", voucher.get().isLoai() ? "%" : "VND");
+                response.put("discountValue", Double.parseDouble(voucher.get().getMucGiam()));
+            } else {
+                response.put("valid", false);
+            }
+
+            return ResponseEntity.ok(response);
+        }
+
+
+
+
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/vnpay-payment")
@@ -121,32 +166,39 @@ public class VnpayController {
 
         if (paymentStatus != 1) {
             redirectAttributes.addFlashAttribute("errorMessage", "Thanh toán không thành công. Vui lòng thử lại.");
-            return "redirect:/panda/thatbai";
+            return "redirect:/panda/ThanhToanThatBai";
         }
 
         // Lấy thông tin đơn hàng từ session (hoặc database)
         String orderInfo = (String) request.getSession().getAttribute("orderInfo");
         Double totalAmount = (Double) request.getSession().getAttribute("totalAmount");
         String paymentMethod = (String) request.getSession().getAttribute("paymentMethod");
-        String voucherCode = (String) request.getSession().getAttribute("voucherCode");
-        System.out.println("voucher nè: "+voucherCode);
+        String voucherCode = request.getParameter("voucherCode"); // Lấy từ request thay vì session
+
+        System.out.println("Received orderInfo: " + orderInfo);
+        System.out.println("Received totalAmount: " + totalAmount);
+        System.out.println("Received paymentMethod: " + paymentMethod);
+        System.out.println("Received voucherCode: " + voucherCode); // Ghi nhật giá trị voucherCode
+
         // Kiểm tra các giá trị
-        if (orderInfo == null || totalAmount == null || paymentMethod == null) {
+        if (orderInfo == null || totalAmount == null || paymentMethod == null || voucherCode == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra. Vui lòng thử lại.");
             return "redirect:/panda/thatbai";
         }
 
-        // Kiểm tra nếu voucherCode không có giá trị
-//        if (voucherCode == null) {
-//            redirectAttributes.addFlashAttribute("errorMessage", "Mã giảm giá không tồn tại.");
-//            return "redirect:/panda/thatbai";
-//        }
-
         // Thực hiện xử lý hóa đơn
-        return processInvoice(totalAmount, paymentMethod, orderInfo, userDetails
-//                , voucherCode
-                , model, redirectAttributes);
+        return processInvoice(totalAmount, paymentMethod, orderInfo, userDetails, codevc, model, redirectAttributes);
     }
+
+    @GetMapping("/check-voucher-code")
+    @ResponseBody
+    public String checkVoucherCode(HttpSession session ) {
+        String savedVoucherCode = (String) session.getAttribute("voucherCode");
+        System.out.println("Voucher Code from Session: " + codevc);
+        return codevc != null ? "Voucher code in session: " + codevc : "No voucher code in session";
+    }
+
+
 
 
     private KhachHang mapToKhachHang(KhachHangDTO dto) {
@@ -224,9 +276,7 @@ public class VnpayController {
         return hoaDon;
     }
 
-    private DonHang createDonHang(KhachHang khachHang, HoaDon hoaDon, double totalAmount, String note, String paymentMethod
-//            , String voucher
-    ) {
+    private DonHang createDonHang(KhachHang khachHang, HoaDon hoaDon, double totalAmount, String note, String paymentMethod, String voucherCode) {
         DonHang donHang = new DonHang();
         donHang.setHoaDon(hoaDon);
         donHang.setKhachHang(khachHang);
@@ -239,38 +289,40 @@ public class VnpayController {
         donHang.setGhiChu(note);
         donHang.setLydohuy("");
 
-//        Optional<Voucher> vc = voucherRepository.findByMa(voucher);
-//        if (vc.isPresent()) {
-//            // Áp dụng mã giảm giá vào đơn hàng
-//            donHang.getHoaDon().setVoucher(vc.get());
-//
-//            // Lấy số lượng hiện tại của voucher và chuyển đổi thành số nguyên
-//            Voucher voucherEntity = vc.get();
-//            int currentQuantity;
-//
-//            try {
-//                currentQuantity = Integer.parseInt(voucherEntity.getSoLuong()); // Chuyển đổi từ String sang int
-//            } catch (NumberFormatException e) {
-//                System.out.println("Số lượng voucher không hợp lệ: " + voucherEntity.getSoLuong());
-//                return null; // Ngừng xử lý và trả về null nếu số lượng không hợp lệ
-//            }
-//
-//            int slvcconlai = currentQuantity - 1;
-//
-//            // Kiểm tra nếu số lượng còn lại < 0, tránh số âm
-//            if (slvcconlai < 0) {
-//                System.out.println("Số lượng voucher không đủ");
-//                return null; // Ngừng xử lý và trả về null nếu số lượng không đủ
-//            }
-//
-//            // Cập nhật lại số lượng voucher trong cơ sở dữ liệu
-//            voucherEntity.setSoLuong(String.valueOf(slvcconlai)); // Chuyển đổi từ int sang String
-//            voucherRepository.save(voucherEntity);
-//
-//            System.out.println("Số lượng voucher còn lại: " + slvcconlai);
-//        } else {
-//            System.out.println("Mã giảm giá không tồn tại");
-//        }
+        Optional<Voucher> vc = voucherRepository.findByMa(voucherCode);
+        System.out.println("mã giảm :" +voucherCode);
+        if (vc.isPresent()) {
+            // Áp dụng mã giảm giá vào đơn hàng
+
+            donHang.getHoaDon().setVoucher(vc.get());
+            donHang.getHoaDon().setGiagiam(vc.get().getMucGiam() +" "+(vc.get().isLoai() == true ? "%" : "VNĐ"));
+            // Lấy số lượng hiện tại của voucher và chuyển đổi thành số nguyên
+            Voucher voucherEntity = vc.get();
+            int currentQuantity;
+
+            try {
+                currentQuantity = Integer.parseInt(voucherEntity.getSoLuong()); // Chuyển đổi từ String sang int
+            } catch (NumberFormatException e) {
+                System.out.println("Số lượng voucher không hợp lệ: " + voucherEntity.getSoLuong());
+                return null; // Ngừng xử lý và trả về null nếu số lượng không hợp lệ
+            }
+
+            int slvcconlai = currentQuantity - 1;
+
+            // Kiểm tra nếu số lượng còn lại < 0, tránh số âm
+            if (slvcconlai < 0) {
+                System.out.println("Số lượng voucher không đủ");
+                return null; // Ngừng xử lý và trả về null nếu số lượng không đủ
+            }
+
+            // Cập nhật lại số lượng voucher trong cơ sở dữ liệu
+            voucherEntity.setSoLuong(String.valueOf(slvcconlai)); // Chuyển đổi từ int sang String
+            voucherRepository.save(voucherEntity);
+
+            System.out.println("Số lượng voucher còn lại: " + slvcconlai);
+        } else {
+            System.out.println("Mã giảm giá không tồn tại");
+        }
 
         // Đặt giá trị trangthaioffline dựa trên phương thức thanh toán
         if ("BankTransfer".equals(paymentMethod)) {
@@ -281,4 +333,5 @@ public class VnpayController {
 
         return donHang;
     }
+
 }

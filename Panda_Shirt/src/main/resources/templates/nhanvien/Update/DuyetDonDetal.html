@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
@@ -141,12 +141,17 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
-                            <input type="text" th:field="*{tongtien}" class="form-control" readonly
+                        <div class="col-md-2">
+                            <label class="form-label" style="margin-top: 10px">Tổng tiền</label>
+                            <input type="text" th:value="${DonHang.tongtien != null ? #numbers.formatDecimal(DonHang.tongtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
                                    style="background-color: white; color: black;">
-<!--                            <td th:text="${#numbers.formatDecimal(tongtien, 1, 'POINT',0, 'COMMA')}"></td>-->
                         </div>
+                        <div class="col-md-2">
+                            <label class="form-label" style="margin-top: 10px">Tổng tiền</label>
+                            <input type="text" th:value="${DonHang?.hoaDon?.giagiam  != null ? DonHang?.hoaDon?.giagiam  : '0'}" class="form-control" readonly
+                                   style="background-color: white; color: black;">
+                        </div>
+                    </div>
                     </div>
                 </div>
             </form>
