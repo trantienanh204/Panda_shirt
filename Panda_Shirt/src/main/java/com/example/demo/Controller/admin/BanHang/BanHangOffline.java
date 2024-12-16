@@ -525,7 +525,7 @@ public class BanHangOffline {
         }
 
         if (sdt.isBlank()) {
-            KhachHang kh1 = khachHangRepository.findById(1).orElse(null);
+            KhachHang kh1 = khachHangRepository.findById(2).orElse(null);
             if (kh1 != null) {
                 System.out.println("Khách hàng mặc định");
                 hd.setKhachHang(kh1);
@@ -643,9 +643,9 @@ public class BanHangOffline {
 
 ////        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
 //        NhanVien nhanVien = nhanVienRespository.findById(1).orElse(null);
-//        if(giaohang.equals("1")){
-//            dh.setTrangThai("Đã duyệt");
-//        }
+        if(giaohang.equals("1")){
+            dh.setTrangThai("Đã duyệt");
+        }
 
 
         hd.setNhanVien(nhanVien);

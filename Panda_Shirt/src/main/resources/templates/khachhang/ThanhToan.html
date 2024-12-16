@@ -85,11 +85,10 @@
                 <div th:if="${item.anhspBase64 != null}">
                     <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image" class="img-fluid" style="max-width: 80px;">
                 </div>
-
                 <div th:if="${item.anhspBase64 == null}">
                     <img src="https://placehold.co/600x400?text=Không+có+ảnh" alt="Product Image" class="img-fluid" style="max-width: 80px;" >
                 </div>
-                <div  style="margin-left: 40px">
+                <div style="margin-left: 40px">
                     <p class="product-name mb-1" th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</p>
                     <p class="product-details text-muted"
                        th:text="'Loại: ' + ${item.sanPhamChiTiet.mauSac.ten} + ', Kích thước: ' + ${item.sanPhamChiTiet.kichThuoc.ten}">

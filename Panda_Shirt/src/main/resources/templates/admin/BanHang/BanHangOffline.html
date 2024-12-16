@@ -257,36 +257,6 @@
                     <input type="hidden" id="idkh-input" th:name="idkh">
 
                     <div class="mb-3">
-                        <div class="row" >
-                            <div class="col-md-4">
-                                <label for="province" class="form-label">Tỉnh/Thành phố:</label>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="district" class="form-label">Quận/Huyện:</label>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="ward" class="form-label">Xã/Phường:</label>
-                            </div>
-                        </div>
-                        <div class="row" id="customerSelect">
-                            <div class="col-md-4">
-                                <select class="form-select" id="province" name="province">
-                                    <option value="">Chọn</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <select class="form-select" id="district" name="district">
-                                    <option value="">Chọn</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <select class="form-select" id="ward" name="ward">
-                                    <option value="">Chọn</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
                         <input type="text" class="form-control" placeholder="Địa chỉ cụ thể" id="diachi-input"
                                th:name="diachicuthe">
                     </div>
@@ -363,24 +333,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-4"><h4>Danh mục :</h4>
-                            <select class="form-select" aria-label="Default select example">
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <div class="col-4"><h4>Thương hiệu :</h4>
-                            <select class="form-select" aria-label="Default select example">
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <div class="col-4"><h4>Chât liệu :</h4>
-                            <select class="form-select" aria-label="Default select example">
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                    </div>
-                    <br>
                     <div class="search-container"
                          style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                         <input type="text" id="searchsanpham" onkeyup="updateProductList()"
