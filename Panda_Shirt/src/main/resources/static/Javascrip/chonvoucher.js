@@ -1,11 +1,9 @@
-
 let timeout;
 $(document).on('input', '#mavoucher-input', function () {
     clearTimeout(timeout);
     var voucherId = $(this).val();
-    console.log("Giá trị voucherId: ", voucherId);
     if (voucherId.trim() === "") {
-        console.log("Voucher ID không hợp lệ");
+        console.log("Trống voucher")
         return;
     }
     timeout = setTimeout(function () {
@@ -31,12 +29,12 @@ function nhapvoucher(voucherId) {
             $('#voucherModal').modal('hide');
         },
         error: function (xhr, status, error) {
-            console.error("Lỗi khi gọi AJAX:", error);
             const errorResponse = JSON.parse(xhr.responseText);
+            console.error("Lỗi : ", errorResponse.error);
             if (errorResponse.error) {
                 Swal.fire({
                     title: 'Thông báo',
-                    text:errorResponse,
+                    text:errorResponse.error,
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });

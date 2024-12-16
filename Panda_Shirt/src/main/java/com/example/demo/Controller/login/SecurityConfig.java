@@ -4,6 +4,7 @@ import com.example.demo.DTO.ChiTietVaiTroDTO;
 import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.service.TaiKhoanService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,9 +29,10 @@ import java.util.Set;
 public class SecurityConfig {
 
 
-    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/thongke","/panda/login","/Image/**","panda/mahoa","/panda/banhangoffline","/panda/giohang"};
-    private final String[] QUANLY_ENDPOINTS= {};
+    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa","/panda/banhangoffline","/panda/giohang"};
+    private final String[] QUANLY_ENDPOINTS= {"/panda/hienthi"};
     private final String[] NHANVIEN_ENDPOINTS= {};
+    private final String[] KHACHHANG_ENDPOINTS= {};
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http, TaiKhoanService taiKhoanService) throws Exception {
@@ -41,7 +44,7 @@ public class SecurityConfig {
                                     .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                                     .requestMatchers(QUANLY_ENDPOINTS).hasRole("QUANLY")
                                     .requestMatchers(NHANVIEN_ENDPOINTS).hasAnyRole("QUANLY","NHANVIEN")
-//                        .requestMatchers("/").hasAnyRole("CUSTOMER")
+                                    .requestMatchers("KHACHHANG_ENDPOINTS").hasAnyRole("KHACHHANG")
 //                                    .anyRequest().authenticated()
                                     .anyRequest().permitAll()
                     )
@@ -57,12 +60,30 @@ public class SecurityConfig {
                             .logoutSuccessUrl("/panda/login")
                             .permitAll()
                     )
+//                    .sessionManagement(session -> session
+//                            .sessionFixation().migrateSession()
+//                            .maximumSessions(1)
+//                            .and()
+//                            .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+//                    )
                     .userDetailsService(userDetailsService(taiKhoanService));
+            http
+                    .exceptionHandling(exception -> exception
+                            .accessDeniedHandler((request, response, accessDeniedException) -> {
+                                System.out.println("Người dùng không đủ quyền truy cập: " + accessDeniedException.getMessage());
+                                response.sendRedirect("/panda/error");
+                            })
+                    );
 
             return http.build();
         }
 
-
+    @Bean
+    public ServletContextInitializer servletContextInitializer() {
+        return servletContext -> {
+            servletContext.getSessionCookieConfig().setMaxAge(-1); // Session cookie
+        };
+    }
 
     // Thêm vào lớp xử lý đăng nhập hoặc lớp bảo mật
     @Bean

@@ -82,10 +82,12 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findHoaDonsDesc();
 
     @Query("SELECT CASE WHEN COUNT(hd) > 0 THEN TRUE ELSE FALSE END " +
-            "FROM HoaDon hd WHERE hd.voucher = :voucher " +
-            "AND hd.khachHang = :khachHang ")
-    boolean checkmavoucher(@Param("voucher") Voucher voucher,
-                                        @Param("khachHang") KhachHang khachHang);
+            "FROM HoaDon hd WHERE hd.voucher.id = :voucher " +
+            "AND hd.khachHang.id = :khachHang ")
+    boolean checkmavoucher( int voucher,
+                            int khachHang);
+
+
 //@Query("SELECT CASE WHEN COUNT(hd) > 0 THEN TRUE ELSE FALSE END " +
 //            "FROM HoaDon hd WHERE hd.voucher = :voucher " +
 //            "AND hd.khachHang = :khachHang " +

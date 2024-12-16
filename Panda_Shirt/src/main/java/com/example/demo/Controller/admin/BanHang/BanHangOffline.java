@@ -69,7 +69,7 @@ public class BanHangOffline {
         List<Voucher> voucher = voucherRepository.findAll();
         List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findAll();
         List<Voucher> validVouchers = new ArrayList<>();
-        List<KhachHang> listkh = khachHangRepository.findAll(Sort.by(Sort.Order.desc("id")));
+        List<KhachHang> listkh = khachHangRepository.findAll();
         for (Voucher v : voucher) {
             try {
                 int soLuong = Integer.parseInt(v.getSoLuong());
@@ -102,7 +102,7 @@ public class BanHangOffline {
         List<Voucher> voucher = voucherRepository.findAll();
         List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findAll();
         List<Voucher> validVouchers = new ArrayList<>();
-        List<KhachHang> listkh = khachHangRepository.findAll(Sort.by(Sort.Order.desc("id")));
+        List<KhachHang> listkh = khachHangRepository.findAll();
         for (Voucher v : voucher) {
             try {
                 int soLuong = Integer.parseInt(v.getSoLuong());
@@ -451,9 +451,11 @@ public class BanHangOffline {
                 loai = formattedgiamgia + " VND ";
             }
         } else {
+            response.put("error", "Voucher không tồn tại hoặc đã hết");
             System.out.println("Voucher không tồn tại.");
             thanhtien = tt;
             loai = "0";
+            return ResponseEntity.badRequest().body(response);
         }
         String formattedThanhtien = decimalFormat.format(thanhtien);
 
@@ -589,12 +591,15 @@ public class BanHangOffline {
             }
 
             KhachHang checkkh = khachHangRepository.findBySdt(sdt);
-            boolean checkmavoucher = hoaDonRepository.checkmavoucher(vc, checkkh);
-            if (checkmavoucher) {
-                redirectAttributes.addFlashAttribute("loi", "Voucher đã được sử dụng cho khách hàng này");
-                System.out.println("đã dùng ");
-                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+            if (checkkh != null && vc != null) {
+                boolean checkmavoucher = hoaDonRepository.checkmavoucher(vc.getId(), checkkh.getId());
+                if (checkmavoucher) {
+                    redirectAttributes.addFlashAttribute("loi", "Voucher đã được sử dụng cho khách hàng này");
+                    System.out.println("vc đã dùng ");
+                    return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+                }
             }
+
 
             if (vc != null && Integer.parseInt(vc.getSoLuong()) > 0) {
                 int currentQuantity = Integer.parseInt(vc.getSoLuong());

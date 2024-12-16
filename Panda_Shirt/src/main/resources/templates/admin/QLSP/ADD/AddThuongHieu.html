@@ -20,8 +20,8 @@
 
             <label class="form-lable">Trạng thái</label>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="trangthai" value="1" th:field="*{trangthai}" checked> Còn hàng <br>
-                <input class="form-check-input" type="radio" name="trangthai" value="0"  th:field="*{trangthai}"> Hết hàng
+                <input class="form-check-input" type="radio" name="trangthai" value="1" th:field="*{trangthai}" checked> Hoạt động <br>
+                <input class="form-check-input" type="radio" name="trangthai" value="0"  th:field="*{trangthai}"> Ngừng hoạt động
             </div>
             <button type="submit" class="btn btn-danger">Thêm</button>
             <a th:href="@{/panda/thuonghieu}"type="submit" class="btn btn-danger">Quay lại</a>
