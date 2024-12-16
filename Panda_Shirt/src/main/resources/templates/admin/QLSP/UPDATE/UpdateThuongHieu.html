@@ -19,12 +19,11 @@
             <label class="form-lable">Tên thương hiệu</label>
             <input class="form-control" type="text" th:field="*{tenthuonghieu}">
             <div th:if="${errorten}" th:text="${errorten}" style="color: red;"></div>
+            <br>
+            <input class="form-check-input" type="radio" name="trangthai" value="1" th:field="*{trangthai}" hidden>
+            <input class="form-check-input" type="radio" name="trangthai" value="0" checked th:field="*{trangthai}"hidden>
 
-            <label class="form-lable">Trạng thái</label>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="trangthai" value="1" th:field="*{trangthai}"> Còn hàng <br>
-                <input class="form-check-input" type="radio" name="trangthai" value="0" checked th:field="*{trangthai}"> Hết hàng
-            </div>
+
             <button type="submit" class="btn btn-danger">Sửa</button>
             <a th:href="@{/panda/thuonghieu}"type="submit" class="btn btn-danger">Quay lại</a>
         </div>

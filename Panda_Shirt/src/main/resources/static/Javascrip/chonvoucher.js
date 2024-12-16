@@ -1,11 +1,9 @@
-
 let timeout;
 $(document).on('input', '#mavoucher-input', function () {
     clearTimeout(timeout);
     var voucherId = $(this).val();
-    console.log("Giá trị voucherId: ", voucherId);
     if (voucherId.trim() === "") {
-        console.log("Voucher ID không hợp lệ");
+        console.log("Trống voucher")
         return;
     }
     timeout = setTimeout(function () {
@@ -31,12 +29,12 @@ function nhapvoucher(voucherId) {
             $('#voucherModal').modal('hide');
         },
         error: function (xhr, status, error) {
-            console.error("Lỗi khi gọi AJAX:", error);
             const errorResponse = JSON.parse(xhr.responseText);
+            console.error("Lỗi : ", errorResponse.error);
             if (errorResponse.error) {
                 Swal.fire({
                     title: 'Thông báo',
-                    text:errorResponse,
+                    text:errorResponse.error,
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
@@ -95,13 +93,14 @@ function chonkh(element) {
             $("#idkh-input").val(response.id);
             $("#sdt-input").val(response.sdt);
             $("#diachi-input").val(response.diachi);
-            $("#selectedProvince").val(response.idTinhThanhPho);
-            $("#selectedDistrict").val(response.idQuanHuyen);
-            $("#selectedWard").val(response.idXaPhuong);
 
-            $("#tentinh").val(response.tentinh);
-            $("#tenhuyen").val(response.tenhuyen);
-            $("#tenxa").val(response.tenxa);
+            // $("#selectedProvince").val(response.idTinhThanhPho);
+            // $("#selectedDistrict").val(response.idQuanHuyen);
+            // $("#selectedWard").val(response.idXaPhuong);
+
+            // $("#tentinh").val(response.tentinh);
+            // $("#tenhuyen").val(response.tenhuyen);
+            // $("#tenxa").val(response.tenxa);
 
             $('#chonkhachhangModal').modal('hide');
         },
@@ -121,37 +120,37 @@ function chonkh(element) {
 }
 
 
-function chonkh(element) {
-    var idkh = $(element).data('id');
-    localStorage.removeItem("selectedCustomer");
-    axios.get(`/panda/banhangoffline/chonkh?id=${idkh}`)
-        .then(response => {
-            const data = response.data;
-            console.log("Địa chỉ : ", data);
-            localStorage.setItem("selectedCustomer", JSON.stringify({
-                idTinhThanhPho: data.idTinhThanhPho,
-                idQuanHuyen: data.idQuanHuyen,
-                idXaPhuong: data.idXaPhuong
-            }));
-
-            $("#province").val(data.idTinhThanhPho).trigger("change");
-            // Gọi API để load Quận/Huyện theo Tỉnh/Thành phố
-            callApiDistrict(`https://provinces.open-api.vn/api/p/${data.idTinhThanhPho}?depth=2`)
-                .then(() => {
-                    // Cập nhật giá trị Quận/Huyện
-                    $("#district").val(data.idQuanHuyen).trigger("change");
-
-                    // Gọi API để load Xã/Phường theo Quận/Huyện
-                    callApiWard(`https://provinces.open-api.vn/api/d/${data.idQuanHuyen}?depth=2`)
-                        .then(() => {
-                            // Cập nhật giá trị Xã/Phường
-                            $("#ward").val(data.idXaPhuong);
-                        });
-                });
-            $('#chonkhachhangModal').modal('hide');
-        })
-        .catch(error => {
-            console.error("Error", error);
-        });
-}
+// function chonkh(element) {
+//     var idkh = $(element).data('id');
+//     localStorage.removeItem("selectedCustomer");
+//     axios.get(`/panda/banhangoffline/chonkh?id=${idkh}`)
+//         .then(response => {
+//             const data = response.data;
+//             console.log("Địa chỉ : ", data);
+//             localStorage.setItem("selectedCustomer", JSON.stringify({
+//                 idTinhThanhPho: data.idTinhThanhPho,
+//                 idQuanHuyen: data.idQuanHuyen,
+//                 idXaPhuong: data.idXaPhuong
+//             }));
+//
+//             $("#province").val(data.idTinhThanhPho).trigger("change");
+//             // Gọi API để load Quận/Huyện theo Tỉnh/Thành phố
+//             callApiDistrict(`https://provinces.open-api.vn/api/p/${data.idTinhThanhPho}?depth=2`)
+//                 .then(() => {
+//                     // Cập nhật giá trị Quận/Huyện
+//                     $("#district").val(data.idQuanHuyen).trigger("change");
+//
+//                     // Gọi API để load Xã/Phường theo Quận/Huyện
+//                     callApiWard(`https://provinces.open-api.vn/api/d/${data.idQuanHuyen}?depth=2`)
+//                         .then(() => {
+//                             // Cập nhật giá trị Xã/Phường
+//                             $("#ward").val(data.idXaPhuong);
+//                         });
+//                 });
+//             $('#chonkhachhangModal').modal('hide');
+//         })
+//         .catch(error => {
+//             console.error("Error", error);
+//         });
+// }
 

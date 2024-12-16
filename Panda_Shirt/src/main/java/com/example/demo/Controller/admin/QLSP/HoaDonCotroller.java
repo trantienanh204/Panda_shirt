@@ -83,6 +83,7 @@ public class HoaDonCotroller {
                           RedirectAttributes redirectAttributes) {
         List<HoaDonCT> lshdct  = hoaDonCTRepository.findhoadonct(id);
         HoaDon hoadon = hoaDonRepository.finid(lshdct.get(0).getHoaDon().getId());
+        System.out.println("đã in ");
         if (hoadon.getLanin() == null) {
             hoadon.setLanin(0);
         }

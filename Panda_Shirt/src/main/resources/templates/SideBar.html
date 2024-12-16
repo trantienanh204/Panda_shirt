@@ -147,7 +147,16 @@
 </div>
 
 <!-- Content -->
-<div class="content" style="margin-left: 250px;">
+<div  class="content" style="margin-left: 250px;">
+    <a th:if="${role == 'admin'}" style="transform: scale(1.5);
+    margin-left: 25px;margin-top: 20px" class="btn" th:href="@{/panda/nhanvien/xemsanpham/hienthi}">
+        <i class="fa-solid fa-rotate"></i> Đổi vai trò
+    </a>
+    <a th:if="${role == 'nhanvien'}" style="transform: scale(1.5);
+    margin-left: 25px;margin-top: 20px" class="btn" th:href="@{/panda/hienthi}">
+        <i class="fa-solid fa-rotate"></i> Đổi vai trò
+    </a>
+
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <div class="collapse navbar-collapse" id="navbarNav">

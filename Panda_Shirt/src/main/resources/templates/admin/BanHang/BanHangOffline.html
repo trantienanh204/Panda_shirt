@@ -231,27 +231,31 @@
     <form th:action="@{/panda/banhangoffline/thanhtoan}" th:method="post">
         <div class="row">
             <div class="col-md-6">
+                <div style="display: flex; align-items: center; gap: 10px;margin-bottom: 10px">
+                    <h5 style="font-size: 20px;">Khách hàng</h5>
+                    </a>
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#chonkhachhangModal"
+                       id="chonkh-button2" class="btn btn-primary">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                    <br>
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="Khách lẻ" id="tenkh-input"
+                           th:name="tenkh">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="Số điện thoại" id="sdt-input"
+                           th:name="sdt">
+                </div>
+                <div class="mb-3">
+                    <input type="checkbox" id="thanhtoan-checkbox" th:value="0" th:name="checkbox-tt"
+                           style="transform: scale(1.5); margin-right: 5px;"> Đã thanh toán ?
+                </div>
+
                 <div id="customerForm" style="display: none;">
-                    <div style="display: flex; align-items: center; gap: 10px;margin-bottom: 10px">
-                        <h5>Khách hàng</h5>
-                        </a>
-                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#chonkhachhangModal"
-                           id="chonkh-button2" class="btn btn-primary">
-                            <i class="fa-solid fa-user"></i>
-                        </a>
-                    </div>
                     <input type="hidden" id="idkh-input" th:name="idkh">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Tên khách hàng" id="tenkh-input"
-                               th:name="tenkh">
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Số điện thoại" id="sdt-input"
-                               th:name="sdt">
-                    </div>
-                    <div class="mb-3">
-                        <input type="checkbox" id="thanhtoan-checkbox" th:value="0" th:name="checkbox-tt"> Đã thanh toán ?
-                    </div>
+
                     <div class="mb-3">
                         <div class="row" >
                             <div class="col-md-4">
@@ -320,6 +324,7 @@
 
                 <div class="mb-3">
                     <div class="form-check form-switch">
+                        <input id="giaoHang" type="hidden" th:name="giaohang" th:value="0">
                         <input class="form-check-input" type="checkbox" id="giaoHangToggle">
                         <label class="form-check-label" for="giaoHangToggle">Giao hàng</label>
                     </div>
@@ -471,10 +476,9 @@
                 <!-- Tìm kiếm khách hàng -->
                 <div class="search-container"
                      style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-
                     <input type="text" id="searchkhachhang" placeholder="Tìm kiếm khách hàng" onkeyup="findkhachhang()"
                            class="search-box"
-                           style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 80%;">
+                           style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 100%;">
                 </div>
 
                 <!-- Danh sách khách hàng -->
@@ -488,12 +492,11 @@
                         <div style="flex: 3; text-align: left;">Số điện thoại</div>
                         <div style="flex: 2; text-align: center;">Hành động</div>
                     </div>
-                    <!-- Một hàng khách hàng -->
                     <div id="khachhang-list-container">
                         <div th:each="kh,i : ${listkh}" th:if="${kh.sdt != null}">
                             <div class="customer-row"
                                  style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #ddd;">
-                                <div style="flex: 1; text-align: center;" th:text="${i.index +1}"></div>
+                                <div style="flex: 1; text-align: center;" th:text="${i.index}"></div>
                                 <div style="flex: 3; text-align: center;" th:text="${kh.makhachhang}"></div>
                                 <div style="flex: 3; text-align: left;" th:text="${kh.tenkhachhang}"></div>
                                 <div style="flex: 3; text-align: left;" th:text="${kh.sdt}"></div>
@@ -680,6 +683,9 @@
     // Hiển thị hoặc ẩn form khách hàng khi bật/tắt giao hàng
     document.getElementById('giaoHangToggle').addEventListener('change', function () {
         var customerForm = document.getElementById('customerForm');
+        var giaohang = document.getElementById('giaoHang')
+        customerForm.value = this.checked ? "1" : "0";
+        giaohang.value = this.checked ? "1" : "0";
         if (this.checked) {
             customerForm.style.display = 'block';
         } else {

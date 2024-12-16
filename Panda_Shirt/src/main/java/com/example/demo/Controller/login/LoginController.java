@@ -106,6 +106,11 @@ public class LoginController {
         return "redirect:/";
 
     }
+
+    @GetMapping("/error")
+    public String loi(){
+        return "error";
+    }
 }
 
 

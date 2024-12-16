@@ -75,39 +75,87 @@ var updateAddressResult = () => {
     localStorage.setItem("selectedCustomer", JSON.stringify(selectedCustomer));
 };
 
-$(document).ready(() => {
-    const savedCustomer = JSON.parse(localStorage.getItem("selectedCustomer"));
-    if (savedCustomer) {
-        const {idTinhThanhPho, tentinh, idQuanHuyen, tenhuyen, idXaPhuong, tenxa} = savedCustomer;
-        console.log("Dữ liệu từ localStorage:", savedCustomer);
+// $(document).ready(() => {
+//     const savedCustomer = JSON.parse(localStorage.getItem("selectedCustomer"));
+//     if (savedCustomer) {
+//         const {idTinhThanhPho, tentinh, idQuanHuyen, tenhuyen, idXaPhuong, tenxa} = savedCustomer;
+//         console.log("Dữ liệu từ localStorage:", savedCustomer);
+//
+//         // Gọi lại API để tải danh sách tỉnh thành
+//         callAPI('https://provinces.open-api.vn/api/?depth=1').then(() => {
+//             $("#province").val(idTinhThanhPho).trigger("change");
+//             $("#tentinh").val(tentinh).trigger("change");
+//
+//
+//             callApiDistrict(`https://provinces.open-api.vn/api/p/${idTinhThanhPho}?depth=2`).then(() => {
+//                 $("#district").val(idQuanHuyen).trigger("change");
+//                 $("#tenhuyen").val(tenhuyen).trigger("change");
+//                 callApiWard(`https://provinces.open-api.vn/api/d/${idQuanHuyen}?depth=2`).then(() => {
+//                     $("#ward").val(idXaPhuong).trigger("change");
+//                     $("#tenxa").val(tenxa).trigger("change");
+//                 });
+//             });
+//         });
+//
+//         $("#selectedProvince").val(idTinhThanhPho);
+//         $("#selectedDistrict").val(idQuanHuyen);
+//         $("#selectedWard").val(idXaPhuong);
+//
+//         $("#tentinh").val(tenxa);  // Tên tỉnh
+//         $("#tenhuyen").val(tenhuyen);    // Tên quận
+//         $("#tenxa").val(tenxa);        // Tên phường
+//
+//         // Hiển thị tên địa chỉ trong kết quả
+//         let result = `${tentinh} | ${tenhuyen} | ${tenxa}`;
+//         $("#result").text(result)
+//     }
+// });
 
-        // Gọi lại API để tải danh sách tỉnh thành
-        callAPI('https://provinces.open-api.vn/api/?depth=1').then(() => {
-            $("#province").val(idTinhThanhPho).trigger("change");
-            $("#tentinh").val(tentinh).trigger("change");
 
+const API_KEY = "hXNlf8DeExDWSmhMJljrGfTMspYo5xO5Uix1qHbn";
+const AUTOCOMPLETE_URL = "https://rsapi.goong.io/Place/AutoComplete";
+const GEOCODE_URL = "https://rsapi.goong.io/Geocode";
 
-            callApiDistrict(`https://provinces.open-api.vn/api/p/${idTinhThanhPho}?depth=2`).then(() => {
-                $("#district").val(idQuanHuyen).trigger("change");
-                $("#tenhuyen").val(tenhuyen).trigger("change");
-                callApiWard(`https://provinces.open-api.vn/api/d/${idQuanHuyen}?depth=2`).then(() => {
-                    $("#ward").val(idXaPhuong).trigger("change");
-                    $("#tenxa").val(tenxa).trigger("change");
-                });
-            });
-        });
+const searchBox = document.getElementById('searchBox');
+const suggestionsList = document.getElementById('suggestions');
+let selectedAddress = ""; // Biến để lưu địa chỉ đã chọn
 
-        $("#selectedProvince").val(idTinhThanhPho);
-        $("#selectedDistrict").val(idQuanHuyen);
-        $("#selectedWard").val(idXaPhuong);
+// Lấy gợi ý địa chỉ
+searchBox.addEventListener('input', function() {
+    const query = this.value;
 
-        $("#tentinh").val(tenxa);  // Tên tỉnh
-        $("#tenhuyen").val(tenhuyen);    // Tên quận
-        $("#tenxa").val(tenxa);        // Tên phường
-
-        // Hiển thị tên địa chỉ trong kết quả
-        let result = `${tentinh} | ${tenhuyen} | ${tenxa}`;
-        $("#result").text(result)
+    if (query.trim() === "") {
+        suggestionsList.innerHTML = "";
+        return;
     }
+
+    fetch(`${AUTOCOMPLETE_URL}?api_key=${API_KEY}&input=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            const suggestions = data.predictions || [];
+            suggestionsList.innerHTML = "";
+
+            suggestions.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.textContent = item.description;
+
+                listItem.addEventListener('click', () => {
+                    handleAddressSelection(item.description);
+                });
+
+                suggestionsList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error("Lỗi khi gọi API:", error);
+        });
 });
+
+// Xử lý chọn địa chỉ
+function handleAddressSelection(description) {
+    searchBox.value = description;
+    suggestionsList.innerHTML = "";
+    selectedAddress = description; // Lưu địa chỉ đã chọn
+}
+
 

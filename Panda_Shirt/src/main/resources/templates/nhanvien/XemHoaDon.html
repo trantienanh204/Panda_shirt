@@ -55,7 +55,7 @@
             <th>Số điện thoại</th>
             <th>Thành tiền</th>
             <th>Ngày mua</th>
-            <th>hình thức mua hàng</th>
+            <th>Hình thức</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
@@ -78,15 +78,20 @@
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
             </td>
             <td>
-                <a th:href="@{/panda/hoadon/chitiet(id=${hd.id})}"
+                <a th:href="@{/panda/nhanvien/xemhoadon/chitiet(id=${hd.id})}"
                    data-toggle="modal" data-target="#xemchitiet"
                    th:data-id="${hd.id}">
                     <i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>
                 </a>
-                <a class="btn " th:href="@{/panda/hoadon/xuatfile(id=${hd.id})}"
+                <a class="btn" th:if="${hd.lanin < 4}" th:href="@{/panda/nhanvien/xemhoadon/xuatfile(id=${hd.id})}"
                    onclick="openPrintPage(event)" target="_self">
-                    <i class="fa-solid fa-inbox" style="color: #000000;font-size: 20px"></i>
+                    <i class="fa-solid fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>
+                    <!--                    <i class="fa-regular fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>-->
                 </a>
+                <button th:if="${hd.lanin >= 4}" type="button" class="btn"
+                        data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="fa-solid fa-x" style="color: #000000;font-size: 20px"></i>
+                </button>
             </td>
         </tr>
         </tbody>
@@ -122,6 +127,24 @@
             </li>
         </ul>
     </nav>
+</div>
+
+<!--Báo lỗi in hóa đơn-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Thông báo</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               Bạn không thể in thêm hóa đơn
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- modal-->
 <div class="modal fade" id="xemchitiet" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel"
@@ -212,7 +235,7 @@
 
         // Mở trang in mới với ID
         var printWindow = window.open('/panda/nhanvien/xemhoadon/xuatfile?id=' + invoiceId, '_blank');
-
+        location.reload();
         // // Khi trang in đã tải xong, gọi in
         // printWindow.onload = function() {
         //     printWindow.print();
@@ -320,6 +343,10 @@
     }
 
     .status-label {
+        display: inline-block; /* Đảm bảo chiều rộng và chiều cao áp dụng */
+        width: 130px; /* Đặt chiều rộng cố định */
+        text-align: center; /* Căn giữa nội dung */
+        font-weight: bold; /* In đậm nội dung */
         padding: 5px 10px;
         border-radius: 5px;
         color: white;
