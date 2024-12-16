@@ -2,6 +2,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="dynamic(view)">
+<link rel="icon" type="image/png" href="/Image/HIHI.jpg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -148,14 +149,14 @@
 
 <!-- Content -->
 <div  class="content" style="margin-left: 250px;">
-    <a th:if="${role == 'admin'}" style="transform: scale(1.5);
-    margin-left: 25px;margin-top: 20px" class="btn" th:href="@{/panda/nhanvien/xemsanpham/hienthi}">
-        <i class="fa-solid fa-rotate"></i> Đổi vai trò
-    </a>
-    <a th:if="${role == 'nhanvien'}" style="transform: scale(1.5);
-    margin-left: 25px;margin-top: 20px" class="btn" th:href="@{/panda/hienthi}">
-        <i class="fa-solid fa-rotate"></i> Đổi vai trò
-    </a>
+<!--    <a th:if="${role == 'admin'}" style="transform: scale(1.5);-->
+<!--    margin-left: 25px;margin-top: 20px" class="btn" th:href="@{/panda/nhanvien/xemsanpham/hienthi}">-->
+<!--        <i class="fa-solid fa-rotate"></i> Đổi vai trò-->
+<!--    </a>-->
+<!--    <a th:if="${role == 'nhanvien'}" style="transform: scale(1.5);-->
+<!--    margin-left: 25px;margin-top: 20px" class="btn" th:href="@{/panda/hienthi}">-->
+<!--        <i class="fa-solid fa-rotate"></i> Đổi vai trò-->
+<!--    </a>-->
 
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
@@ -166,9 +167,14 @@
                             <i class="fa-solid fa-user" style="color: #000000;"></i> Tài khoản
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Tôi</a></li>
+                            <li> <a th:if="${role == 'admin'}" class="btn" th:href="@{/panda/nhanvien/xemsanpham/hienthi}">
+                                <i class="fa-solid fa-rotate"></i> Đổi vai trò
+                            </a>
+                                <a th:if="${role == 'nhanvien'}" class="btn" th:href="@{/panda/hienthi}">
+                                    <i class="fa-solid fa-rotate"></i> Đổi vai trò
+                                </a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" th:href="@{/panda/logout}">Đăng xuất</a></li>
+                            <li><a class="dropdown-item" th:href="@{/panda/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
                         </ul>
                     </li>
                 </ul>
