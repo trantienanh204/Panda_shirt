@@ -87,12 +87,11 @@ public class RegisterController {
             model.addAttribute("phoneErrors", "Số điện phải thoại bắt đầu bằng 0 và có 10 số");
             hasErrors = true;
         }
-//        if(diachi.trim().isEmpty()){
-//            model.addAttribute("addressEmpty","Địa chỉ không được để trống");
-//            hasErrors = true;
-//        }
+//
         // Nếu có lỗi, trả về trang đăng ký với thông báo lỗi
         if (hasErrors) {
+            session.setAttribute("email", email); // Đảm bảo email luôn tồn tại trong session
+            model.addAttribute("email", email);
             return "Register";
         }
         // Tạo mật khẩu ngẫu nhiên

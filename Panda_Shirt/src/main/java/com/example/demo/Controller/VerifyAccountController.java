@@ -76,6 +76,7 @@ public class VerifyAccountController {
                 "<h2>Chào mừng bạn mở tài khoản tại web bán áo phông Panda Shirt!</h2>" +
                 "<p>Mã otp xác nhận của bạn là:"+
                 "<div class='password'>" + otp + "</div>" +
+                "<p>Mã otp xác nhận của bạn có hiệu lực trong vòng 1 phút, vui lòng lưa ý !</a>.</p>" +
                 "</div>" +
                 "</body>" +
                 "</html>";
