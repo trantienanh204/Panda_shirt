@@ -90,6 +90,7 @@ public class TKKhachHangController {
 //            demhd = Integer.parseInt(hd.substring(2)) + 1;
 
 //        }
+        
         boolean hasErrors = false;
 
         if(khachHang.getDiachi().trim().isEmpty()){
