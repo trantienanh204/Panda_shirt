@@ -44,7 +44,7 @@ public class ExportExcelService {
         }
 
         // Tạo sheet "Doanh thu theo ngày"
-        Sheet dailyRevenueSheet = workbook.createSheet("Doanh thu theo ngày");
+        Sheet dailyRevenueSheet = workbook.createSheet("Doanh thu 30 ngày qua");
         Row headerDaily = dailyRevenueSheet.createRow(0);
         headerDaily.createCell(0).setCellValue("Ngày");
         headerDaily.createCell(1).setCellValue("Doanh thu (VND)");

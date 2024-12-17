@@ -2,11 +2,8 @@
 package com.example.demo.Controller.admin.QLTK;
 
 import com.example.demo.entity.*;
-import com.example.demo.respository.ChiTietVaiTroRepo;
-import com.example.demo.respository.KhachHangRepository;
+import com.example.demo.respository.*;
 
-import com.example.demo.respository.TaiKhoanRepo;
-import com.example.demo.respository.VaiTroRepo;
 import com.example.demo.service.EmailService;
 import com.example.demo.services.KhachHangService;
 import jakarta.validation.Valid;
@@ -26,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/panda")
@@ -43,6 +41,8 @@ public class TKKhachHangController {
     VaiTroRepo vaiTroRepo;
     @Autowired
     ChiTietVaiTroRepo chiTietVaiTroRepo;
+    @Autowired
+    TaiKhoanRepository taiKhoanRepository;
 
     @GetMapping("/tkkhachhang")
     public String khachhang(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -76,38 +76,49 @@ public class TKKhachHangController {
     }
 
     @PostMapping("/tkkhachhang/save")
-    public String save(Model model,
-                       @Valid @ModelAttribute KhachHang khachHang,
-                       BindingResult result,
+    public String save(Model model, KhachHang khachHang,
                        @RequestParam("file") MultipartFile file,
                        RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
-        String hd = khachHangRepository.findMaxMakh();
-        int demhd;
-        if (hd == null) {
-            demhd = 1;
-        } else {
-            demhd = Integer.parseInt(hd.substring(2)) + 1;
-        }
-//đoạn  này lỗi 'hasErrors' ở đâu ?
-//        if(khachHang.getDiachi().trim().isEmpty()){
-//            model.addAttribute("addressEmpty","Vui lòng nhập địa chỉ");
-//            hasErrors = true;
+//        String hd = khachHangRepository.findMaxMakh();
+//        int demhd;
+//        if (hd == null) {
+//            demhd = 1;
+//        } else {
+//            demhd = Integer.parseInt(hd.substring(2)) + 1;
 //        }
-//        if (!khachHang.getSdt().matches("^0\\d{9}$")) {
-//            model.addAttribute("phoneErrors", "Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số");
-//            hasErrors = true;
-//        }
-//        if(khachHang.getSdt().trim().isEmpty()){
-//            model.addAttribute("phoneEmpty", "Vui lòng nhập số điện thoại");
-//            hasErrors = true;
-//        }
+        boolean hasErrors = false;
 
-        if (result.hasErrors()) {
+        if(khachHang.getDiachi().trim().isEmpty()){
+            model.addAttribute("addressEmpty","Vui lòng nhập địa chỉ");
+            hasErrors = true;
+        }
+        if (!khachHang.getSdt().matches("^0\\d{9}$")) {
+            model.addAttribute("phoneErrors", "Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số");
+            hasErrors = true;
+        }
+        if(khachHang.getSdt().trim().isEmpty()){
+            model.addAttribute("phoneEmpty", "Vui lòng nhập số điện thoại");
+            hasErrors = true;
+        }
+        // check email ton tai
+        boolean emailExists = taiKhoanRepository.existsByTenDangNhap(khachHang.getTentaikhoan());
+        if(emailExists){
+            model.addAttribute("emailExits", "Email đã tồn tại");
+            hasErrors = true;
+        }
+        if(khachHang.getTenkhachhang().trim().isEmpty()){
+            model.addAttribute("nameEmpty", "Vui lòng nhập họ tên");
+            hasErrors = true;
+        }
+        // lưa mã kh tự tạo vào đb
+        String maKhachHang = "KH" + UUID.randomUUID().toString().replace("-", "").substring(0, 6); // 6 ký tự từ UUID
+        System.out.println("KH"+maKhachHang);
+        khachHang.setMakhachhang(maKhachHang);
+        if (hasErrors) {
             return "admin/QLTK/ADD/AddTKKhachHang";
         }
-
         // Kiểm tra mã và số điện thoại đã tồn tại
         boolean maExists = khachHangRepository.existsKhachHangByMakhachhang(khachHang.getMakhachhang());
         boolean sdtExists = khachHangRepository.existsKhachHangBySdt(khachHang.getSdt());
@@ -115,10 +126,15 @@ public class TKKhachHangController {
                 model.addAttribute("errorma", "Mã đã tồn tại");
                 return "admin/QLTK/ADD/AddTKKhachHang";
             }
+
             if (sdtExists) {
                 model.addAttribute("errorsdt", "Số điện thoại đã tồn tại");
                 return "admin/QLTK/ADD/AddTKKhachHang";
             }
+//        if (emailExists) {
+//            model.addAttribute("emailExits", "Email đã tồn tại");
+//            return "admin/QLTK/ADD/AddTKKhachHang";
+//        }
         try {
             // Tạo mật khẩu ngẫu nhiên
             String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
@@ -148,7 +164,6 @@ public class TKKhachHangController {
                 model.addAttribute("errortentk", "Email sai định dạng");
                 return "admin/QLTK/ADD/AddTKKhachHang";
             }
-
             // Gửi email thông báo
             String subject = "Chào mừng khách hàng mới " + khachHang.getTenkhachhang() + " đã tạo tài khoản tại shop Panda Shirt!";
             String body = "<!DOCTYPE html>" +
@@ -198,6 +213,7 @@ public class TKKhachHangController {
             System.out.println("tên " +khachHang.getSdt());
             System.out.println("tên " +tenDangNhap.getTenDangNhap());
             System.out.println("tên " +tentk);
+            System.out.println("makh"+maKhachHang);
             ctvt.setVaiTro(vt);
             khachHang.setTinhtrang(true);
             khachHang.setDelete(true);
@@ -205,7 +221,7 @@ public class TKKhachHangController {
             chiTietVaiTroRepo.save(ctvt);
 
             khachHang.setTaiKhoan(tenDangNhap);
-            khachHang.setMakhachhang(khachHang.getMakhachhang());
+         //   khachHang.setMakhachhang(khachHang.getMakhachhang());
 
             // Lưu khách hàng vào cơ sở dữ liệu
             khachHangService.saveCustomerToDb(file, khachHang);

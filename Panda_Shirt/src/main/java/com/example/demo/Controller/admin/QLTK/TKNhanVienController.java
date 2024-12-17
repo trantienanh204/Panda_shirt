@@ -4,10 +4,7 @@ import com.example.demo.entity.ChiTietVaiTro;
 import com.example.demo.entity.NhanVien;
 import com.example.demo.entity.TaiKhoan;
 import com.example.demo.entity.VaiTro;
-import com.example.demo.respository.ChiTietVaiTroRepo;
-import com.example.demo.respository.NhanVienRespository;
-import com.example.demo.respository.TaiKhoanRepo;
-import com.example.demo.respository.VaiTroRepo;
+import com.example.demo.respository.*;
 import com.example.demo.service.EmailService;
 import com.example.demo.services.NhanVienService;
 import jakarta.validation.Valid;
@@ -44,6 +41,8 @@ public class TKNhanVienController {
     NhanVienRespository nhanVienRespository;
     @Autowired
     EmailService emailService;
+    @Autowired
+    TaiKhoanRepository taiKhoanRepository;
 
     @GetMapping("/tknhanvien")
     public String tknhanvien(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -89,7 +88,7 @@ public class TKNhanVienController {
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
         // check mail tồn tại;
-        if (nhanVienRespository.existsByTentaikhoan(nhanVien.getTentaikhoan())) {
+        if (taiKhoanRepository.existsByTenDangNhap(nhanVien.getTentaikhoan())) {
             model.addAttribute("emailExist","Email đã được đăng ký");
             hasErrors = true;
         }
@@ -98,7 +97,16 @@ public class TKNhanVienController {
             model.addAttribute("errorma", "Mã đã tồn tại");
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
-
+        // check email trống
+        if(nhanVien.getTentaikhoan().trim().isEmpty()){
+            model.addAttribute("emailEmpty","Vui lòng nhập email");
+            hasErrors = true;
+        }
+        // check định dạng email
+        if(!nhanVien.getTentaikhoan().matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")){
+            model.addAttribute("emailFormat","Email không hợp lệ !");
+            hasErrors = true;
+        }
         // trả về trang nếu lỗi
         if (hasErrors) {
             return "admin/QLTK/ADD/AddTKNhanVien";
@@ -224,8 +232,18 @@ public class TKNhanVienController {
         if(result.hasErrors()){
             return "/admin/QLTK/UPDATE/UpdateTKNhanVien";
         }
-        if (!nhanVienRespository.existsByTentaikhoanAndId(nhanVien.getTentaikhoan(), nhanVien.getId())) {
+        if (taiKhoanRepository.existsByTenDangNhap(nhanVien.getTentaikhoan())) {
             model.addAttribute("emailExist","Email này đã được đăng ký");
+            hasErrors = true;
+        }
+        // check mail trống update
+        if (nhanVien.getTentaikhoan().trim().isEmpty()){
+            model.addAttribute("emailEmpty","Vui lòng nhập email");
+            hasErrors = true;
+        }
+        // check định dạng email
+        if(!nhanVien.getTentaikhoan().matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")){
+            model.addAttribute("emailFormat","Email không hợp lệ");
             hasErrors = true;
         }
         // show lỗi
