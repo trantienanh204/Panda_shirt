@@ -12,32 +12,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/png" href="/Image/HIHI.jpg">
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
-        <img th:src="@{/Image/panda_logo.png}" width="70px" ; height="70px">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <img th:src="@{/Image/panda_logo.png}" width="70px"; height="70px">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active"style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
+                    <a class="nav-link"style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
-            <form class="d-flex mx-auto" style="width: 400px;">
-                <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
+                <!--                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
+                <!--&lt;!&ndash;                    <option value="">Tất cả danh mục</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>&ndash;&gt;-->
+                <!--                </select>-->
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
