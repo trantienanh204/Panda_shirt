@@ -24,16 +24,20 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
     boolean existsKhachHangBySdt(String sdt);
 
 
-
+//hiển thị tất cả khách hàng ngoại trừ id = 6 là khách lẻ
     @Query("SELECT kh FROM KhachHang kh WHERE " +
             "(?1 IS NULL OR kh.makhachhang LIKE %?1%) AND " +
             "(?2 IS NULL OR kh.tenkhachhang LIKE %?2%) AND " +
-            "(?3 IS NULL OR kh.trangthai = ?3)"+
+            "(?3 IS NULL OR kh.trangthai = ?3) AND " +
+            "kh.id <> 6 "+
             "ORDER BY kh.ngaytao DESC")
     Page<KhachHang> findByMaAndTenAndTrangthaiKH(String makh, String tenkh, Integer trangThai, Pageable pageable);
 
-    @Query(value = "select * from KHACH_HANG where trang_thai = 1", nativeQuery = true)
-    public List<KhachHang> dskhhoatdong();
+//    hiển thị các khách hàng có trạng thái là hoạt động ngoại trừ khách hàng id = 6 vì là khách lẻ
+    @Query(value = "SELECT * \n" +
+            "FROM khach_hang \n" +
+            "WHERE id <> 6 and TRANG_THAI = 1;", nativeQuery = true)
+    List<KhachHang> dskhhoatdong();
 //
 //    @Query("SELECT kh.tinh_tp.tentinhTP FROM KhachHang kh WHERE kh.id = :id")
 //    String findTenTinhByKhachHangId(@Param("id") Integer id);

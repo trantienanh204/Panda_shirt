@@ -436,7 +436,7 @@ public class BanHangOffline {
 
             int mucgiam = Integer.parseInt(voucher.getMucGiam());
             int giamin = Integer.parseInt(voucher.getDieuKien());
-            if (tt.compareTo(new BigDecimal(giamin)) <= 0) {
+            if (tt.compareTo(new BigDecimal(giamin)) < 0) {
                 response.put("error", "Tổng tiền phải lớn hơn " + decimalFormat.format(new BigDecimal(giamin)) + " để áp dụng voucher.");
                 return ResponseEntity.badRequest().body(response);
             }
@@ -499,7 +499,7 @@ public class BanHangOffline {
             @RequestParam("tenxa") String tenxa,
             @RequestParam(value = "diachicuthe",defaultValue = "trống") String diachicuthe,
             @RequestParam(value = "ghichu",defaultValue = "trống") String ghichu,
-            @RequestParam("tenkh") String tenkh,
+            @RequestParam(value = "tenkh",defaultValue= "Khách lẻ") String tenkh,
             @RequestParam("mucgiam") String giagiam,
             @RequestParam(value = "checkbox-tt",defaultValue = "1") String checkbox,
             RedirectAttributes redirectAttributes,
@@ -516,6 +516,13 @@ public class BanHangOffline {
         }
 //        NhanVien nhanVien = nhanVienRespository.findById(3).orElse(null);
 
+        if(giaohang.equals("1")){
+            if(sdt.isBlank() || diachicuthe.isBlank()){
+                redirectAttributes.addFlashAttribute("loi", "Chưa nhập đầy đủ thông tin người nhận");
+                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+            }
+            dh.setTrangThai("Đã duyệt");
+        }
 
         List<HoaDonCT> lshdct = hoaDonCTRepository.findhdct(idhoadon);
         if (lshdct == null || lshdct.isEmpty()) {
@@ -523,9 +530,15 @@ public class BanHangOffline {
             model.addAttribute("loi", "Chưa có sản phẩm nào");
             return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
         }
-
+        if(giaohang.equals("1")){
+            if(sdt.isBlank() || diachicuthe.isBlank()){
+                redirectAttributes.addFlashAttribute("loi", "Chưa nhập đầy đủ thông tin người nhận");
+                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+            }
+            dh.setTrangThai("Đã duyệt");
+        }
         if (sdt.isBlank()) {
-            KhachHang kh1 = khachHangRepository.findById(2).orElse(null);
+            KhachHang kh1 = khachHangRepository.findById(6).orElse(null);
             if (kh1 != null) {
                 System.out.println("Khách hàng mặc định");
                 hd.setKhachHang(kh1);
@@ -632,17 +645,6 @@ public class BanHangOffline {
             return "redirect:/panda/login";
         }
        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
-
-
-
-        if(giaohang.equals("1")){
-            if(sdt.isBlank() || diachicuthe.isBlank()){
-                redirectAttributes.addFlashAttribute("loi", "Chưa nhập đầy đủ thông tin người nhận");
-                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
-            }
-            dh.setTrangThai("Đã duyệt");
-        }
-
 
         hd.setNhanVien(nhanVien);
         hd.setVoucher(vc);

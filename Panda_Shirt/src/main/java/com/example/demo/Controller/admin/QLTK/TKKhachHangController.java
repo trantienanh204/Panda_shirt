@@ -60,7 +60,7 @@ public class TKKhachHangController {
         model.addAttribute("totalPage", listKH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("list", listKH.getContent());
-        model.addAttribute("makh", makh);
+        model.addAttribute("makh", makh)    ;
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listKH.getSize());
@@ -90,6 +90,7 @@ public class TKKhachHangController {
 //            demhd = Integer.parseInt(hd.substring(2)) + 1;
 
 //        }
+        
         boolean hasErrors = false;
 
         if(khachHang.getDiachi().trim().isEmpty()){
