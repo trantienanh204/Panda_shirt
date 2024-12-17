@@ -230,6 +230,7 @@ String codevc = null;
         }
         String mahd = String.format("HD%03d", demhd);
 
+        
         hoaDon.setMahoadon(mahd);
         hoaDon.setKhachHang(khachHang);
         hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
