@@ -279,6 +279,6 @@ public class TKNhanVienController {
             nhanVienRespository.save(nhanVien);
         }
         redirectAttributes.addFlashAttribute("ChangesStatusMessage", "Chuyển trạng thái thành công !");
-        return "redirect:/panda/tknhanvien";
+        return "redirect:/panda/tknhanvien" ;
     }
 }
