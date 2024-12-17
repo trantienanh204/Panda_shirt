@@ -126,6 +126,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
+                            <th>Mã spct</th>
                             <th>Tên sản phẩm</th>
                             <th>Màu sắc</th>
                             <th>Kích thước</th>
@@ -139,6 +140,7 @@
                         <tbody>
                         <tr th:each="ct,i : ${spct}">
                             <td th:text="${i.count}"></td>
+                            <td th:text="${ct.maspct}"></td>
                             <td th:text="${ct.sanPham.tensp}"></td>
                             <td th:text="${ct.mauSac.ten}"></td>
                             <td th:text="${ct.kichThuoc.ten}"></td>
