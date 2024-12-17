@@ -79,6 +79,10 @@ public class RegisterController {
             model.addAttribute("emailExists","Email đã tồn tại");
             hasErrors = true;
         }
+        if (taiKhoanRepository.existsByTenDangNhap(khachHang.getTentaikhoan())){
+            model.addAttribute("emailExists","Email đã tồn tại");
+            hasErrors = true;
+        }
         if (khachHangRepository.existsBySdt(sdt)){
             model.addAttribute("sdtExists","Số điện thoại đã tồn tại");
             hasErrors = true;

@@ -473,7 +473,7 @@
                     <!-- Tiêu đề -->
                     <div class="customer-header"
                          style="display: flex; gap: 10px; padding: 10px; font-weight: bold; background-color: #f2f2f2; border-bottom: 2px solid #ddd;">
-                        <div style="flex: 1; text-align: center;"></div>
+                        <div style="flex: 1; text-align: center;">#</div>
                         <div style="flex: 3; text-align: center;">Mã khách hàng</div>
                         <div style="flex: 3; text-align: left;">Tên khách hàng</div>
                         <div style="flex: 3; text-align: left;">Số điện thoại</div>
@@ -483,7 +483,7 @@
                         <div th:each="kh,i : ${listkh}" th:if="${kh.sdt != null}">
                             <div class="customer-row"
                                  style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #ddd;">
-                                <div style="flex: 1; text-align: center;" th:text="${i.index}"></div>
+                                <div style="flex: 1; text-align: center;" th:text="${i.index + 1}"></div>
                                 <div style="flex: 3; text-align: center;" th:text="${kh.makhachhang}"></div>
                                 <div style="flex: 3; text-align: left;" th:text="${kh.tenkhachhang}"></div>
                                 <div style="flex: 3; text-align: left;" th:text="${kh.sdt}"></div>
@@ -595,7 +595,7 @@
 
         // Lặp qua tất cả các hàng, ẩn những hàng không khớp với tìm kiếm
         for (i = 1; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
+            td = tr[i].getElementsByTagName("td")[3]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
             // td = tr[i].getElementsByTagName("td")[1]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
             if (td) {
                 txtValue = td.textContent || td.innerText;
