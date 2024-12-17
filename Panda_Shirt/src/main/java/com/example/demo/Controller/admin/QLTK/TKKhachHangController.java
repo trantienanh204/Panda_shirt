@@ -81,12 +81,14 @@ public class TKKhachHangController {
                        RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
+
 //        String hd = khachHangRepository.findMaxMakh();
 //        int demhd;
 //        if (hd == null) {
 //            demhd = 1;
 //        } else {
 //            demhd = Integer.parseInt(hd.substring(2)) + 1;
+
 //        }
         boolean hasErrors = false;
 
@@ -196,6 +198,7 @@ public class TKKhachHangController {
             // Set trạng thái và ngày tạo
             khachHang.setTrangthai(1);
             khachHang.setNgaytao(LocalDate.now());
+            khachHang.setMakhachhang(maKhachHang);
             TaiKhoan tk = new TaiKhoan();
             ChiTietVaiTro ctvt = new ChiTietVaiTro();
             int vaitro = 3;
@@ -221,7 +224,7 @@ public class TKKhachHangController {
             chiTietVaiTroRepo.save(ctvt);
 
             khachHang.setTaiKhoan(tenDangNhap);
-         //   khachHang.setMakhachhang(khachHang.getMakhachhang());
+
 
             // Lưu khách hàng vào cơ sở dữ liệu
             khachHangService.saveCustomerToDb(file, khachHang);

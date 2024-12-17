@@ -172,6 +172,7 @@ public class RegisterController {
         // ma kh
         String maKhachHang = "KH" + UUID.randomUUID().toString().replace("-", "").substring(0, 6); // 6 ký tự từ UUID
         khachHang.setMakhachhang(maKhachHang);
+
         khachHang.setSdt(sdt);
         khachHang.setTenkhachhang(tenkhachhang);
         //khachHang.setDiachi(diachi);

@@ -129,16 +129,29 @@
             <div th:fragment="hdct">
                 <div class="modal-header">
 
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<!--<<<<<<< HEAD-->
+<!--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                        <span aria-hidden="true">&times;</span>-->
+<!--                    </button>-->
+<!--                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4>-->
+<!--                    <br>-->
+<!--                    <div th:if="${hoadon != null && hoadon.khachHang != null}">-->
+<!--                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.ma    khachhang != null-->
+<!--                        ? hoadon.khachHang.makhachhang : 'Mua tại quầy'}"></span> <br>-->
+<!--                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>-->
+<!--                    </div>-->
+<!--=======-->
+                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4>
-                    <br>
+                  </button>
+                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4><br>
                     <div th:if="${hoadon != null && hoadon.khachHang != null}">
-                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.ma    khachhang != null
+                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.makhachhang != null
                         ? hoadon.khachHang.makhachhang : 'Mua tại quầy'}"></span> <br>
                         <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>
                     </div>
+
+<!--&gt;>>>>>> thai-->
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-8">
