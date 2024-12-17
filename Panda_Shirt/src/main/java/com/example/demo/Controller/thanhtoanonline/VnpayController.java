@@ -63,7 +63,6 @@ String codevc = null;
     public String submitOrder(@RequestParam("totalAmount") double totalAmount,
                               @RequestParam("orderInfo") String orderInfo,
                               @RequestParam("paymentMethod") String paymentMethod,
-
                               HttpServletRequest request, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         if ("BankTransfer".equals(paymentMethod)) {
             String vnp_ReturnUrl = "http://localhost:8080/api/vnpay-payment";
@@ -89,9 +88,9 @@ String codevc = null;
         String username = userDetails.getUsername();
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
 
-        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
-            return "/panda/login";
-        }
+//        if (taiKhoanDto == null || taiKhoanDto.getKhachHangDTO() == null) {
+//            return "/panda/login";
+//        }
 
         KhachHang khachHang = mapToKhachHang(taiKhoanDto.getKhachHangDTO());
         int khachHangId = khachHang.getId();
@@ -106,10 +105,15 @@ String codevc = null;
             return "khachhang/GioHang";
         }
 
+        List<GioHang> gioHangList = cartItems.stream()
+                .filter(gioHang -> sanPhamChiTiets.stream()
+                        .anyMatch(spct -> spct.getId().equals(gioHang.getSanPhamChiTiet().getId())))
+                .collect(Collectors.toList());
+
+        System.out.println("Received voucherCode: " + voucherCode);
 
 
-
-        HoaDon hoaDon = createHoaDon(khachHang, cartItems, totalAmount, note, paymentMethod);
+        HoaDon hoaDon = createHoaDon(khachHang, gioHangList, totalAmount, note, paymentMethod);
         DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod, codevc);
 
         hoaDonService.save(hoaDon);
@@ -119,9 +123,10 @@ String codevc = null;
 
         redirectAttributes.addFlashAttribute("successMessage", "Đơn hàng của bạn đã được đặt thành công!");
         codevc=null;
+        gioHangService.spctLisst.clear();
         return "redirect:/panda/trangchu";
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/save-voucher-code")
     public ResponseEntity<Void> saveVoucherCode(@RequestBody Map<String, String> payload, HttpServletRequest request) {
         String voucherCode = payload.get("voucherCode");
@@ -141,7 +146,7 @@ String codevc = null;
         return ResponseEntity.ok().build();
     }
 
-
+    @PreAuthorize("isAuthenticated()")
         @GetMapping("/api/check-voucher")
         public ResponseEntity<Map<String, Object>> checkVoucher(@RequestParam String code) {
             Map<String, Object> response = new HashMap<>();
@@ -185,7 +190,7 @@ String codevc = null;
         System.out.println("Received voucherCode: " + voucherCode); // Ghi nhật giá trị voucherCode
 
         // Kiểm tra các giá trị
-        if (orderInfo == null || totalAmount == null || paymentMethod == null || voucherCode == null) {
+        if (orderInfo == null || totalAmount == null || paymentMethod == null ) {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra. Vui lòng thử lại.");
             return "redirect:/panda/thatbai";
         }
