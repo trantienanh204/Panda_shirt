@@ -93,12 +93,10 @@
                 <tbody>
                 <tr th:each="item : ${cartItems}">
                     <td>
-
                         <input type="checkbox" class="form-check-input product-checkbox"
                                id="checkbox${i.count}"
                                th:id="'product' + ${item.id}"
                                th:data-price="${item.sanPhamChiTiet.dongia * item.soluong}">
-
                     </td>
                     <td>
                         <div th:if="${item.anhspBase64 != null}">
@@ -128,8 +126,8 @@
                 <button type="button" class="btn btn-primary" id="buyButton" style="display: none;">Thanh Toán</button>
             </div>
         </form>
-
     </div>
+
 </div>
 
 <!-- Footer -->
@@ -142,14 +140,49 @@
     </ul>
 </footer>
 <script>
-    function toggleSelectAll() {
-        const checkboxes = document.querySelectorAll('.form-check-input');
+    document.addEventListener('DOMContentLoaded', function() {
         const selectAllBtn = document.getElementById('selectAllBtn');
-        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
-        // Đổi nội dung nút sau khi bấm
-        selectAllBtn.textContent = allChecked ? 'Chọn tất cả' : 'Bỏ chọn tất cả';
-    }
+        const productCheckboxes = document.querySelectorAll('.product-checkbox');
+        const totalPriceElement = document.getElementById('totalPrice');
+        const buyButton = document.getElementById('buyButton');
+
+        let isSelectAll = false;
+
+        function updateTotalPrice() {
+            let totalPrice = 0;
+
+            productCheckboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    totalPrice += parseFloat(checkbox.getAttribute('data-price'));
+                }
+            });
+
+            totalPriceElement.textContent = '₫' + totalPrice.toLocaleString('vi-VN');
+
+            if (totalPrice > 0) {
+                buyButton.style.display = 'block';
+            } else {
+                buyButton.style.display = 'none';
+            }
+        }
+
+        selectAllBtn.addEventListener('click', function() {
+            isSelectAll = !isSelectAll;
+
+            productCheckboxes.forEach(function(checkbox) {
+                checkbox.checked = isSelectAll;
+            });
+
+            updateTotalPrice();
+        });
+
+        productCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', updateTotalPrice);
+        });
+
+        updateTotalPrice(); // Cập nhật tổng tiền khi tải trang lần đầu
+    });
+
 </script>
 <style>
     /* Font and Background for Navbar */

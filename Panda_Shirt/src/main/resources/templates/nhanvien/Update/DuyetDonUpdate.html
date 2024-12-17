@@ -151,8 +151,8 @@
                             </table>
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label" style="margin-top: 10px">Tổng tiền</label>
-                            <input type="text" th:value="${DonHang.tongtien != null ? #numbers.formatDecimal(DonHang.tongtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
+                            <label class="form-label" style="margin-top: 10px">Thành tiền</label>
+                            <input type="text" th:value="${DonHang.hoaDon?.thanhtien != null ? #numbers.formatDecimal(DonHang.hoaDon?.thanhtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
                                    style="background-color: white; color: black;">
                         </div>
                         <div class="col-md-2">

@@ -155,19 +155,15 @@
                         <h5 class="total-price mb-0">Tổng thanh toán:</h5>
                         <h5 class="total-price mb-0" id="finalTotal">₫140.500</h5>
                     </div>
+
                     <form id="paymentForm" action="/api/submitOrder" method="post">
                         <input type="hidden" name="totalAmount" id="totalAmountInput">
-                     <input type="hidden" name="orderInfo" id="orderInfoInput" value="mo ta don hang">
-<!--                        <div class="row mb-3 align-items-center">-->
-<!--                            <div class="col-sm-12">-->
-<!--                        <textarea class="form-control" name="orderInfo" id="orderInfoInput" rows="2"-->
-<!--                          placeholder="Ghi chú..."></textarea>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <input type="hidden" name="orderInfo" id="orderInfoInput" value="mo ta don hang">
                         <input type="hidden" name="paymentMethod" id="paymentMethodInput">
                         <input type="hidden" name="note" id="noteInput" value="Ghi chú">
                         <button type="submit" class="btn btn-primary w-100 mt-3"><i class="fas fa-check"></i> Đặt hàng</button>
                     </form>
+
                 </div>
             </div>
 
@@ -236,6 +232,7 @@
                         <th>Mã voucher</th>
                         <th>Tên voucher</th>
                         <th>Mức giảm</th>
+                        <th>điều kiện</th>
                         <th>Loại</th>
                         <th>Hành động</th>
                     </tr>
@@ -246,9 +243,10 @@
                         <td th:text="${vc.ma}"></td>
                         <td th:text="${vc.ten}"></td>
                         <td th:text="${vc.formattedMucGiam}"></td>
+                        <td th:text="${vc.dieuKien}"></td>
                         <td th:text="${vc.loai == true ? '%':'VND'}"></td>
                         <td>
-                            <a class="voucher-select" href="#" th:data-discount-type="${vc.loai == true ? '%' : 'VND'}" th:data-discount-value="${vc.mucGiam}">
+                            <a class="voucher-select" href="#" th:data-discount-type="${vc.loai == true ? '%' : 'VND'}" th:data-discount-value="${vc.mucGiam}" th:data-voucher-condition="${vc.dieuKien}">
                                 <i class="fa-solid fa-circle-check"></i>
                             </a>
                         </td>
@@ -304,6 +302,7 @@
         const khachHangAddress = document.querySelector('[data-khachhang-address]');
 
         let selectedVoucherCode = null;
+        let selectedVoucherCondition = null; // Điều kiện của voucher được chọn
 
         function updateTotalAmount() {
             let totalProductAmount = 0;
@@ -326,15 +325,20 @@
 
             let discountAmount = 0;
             selectedVoucherCode = null; // Reset selectedVoucherCode before checking
+            selectedVoucherCondition = null; // Reset selectedVoucherCondition before checking
+
             voucherSelectElements.forEach(function(selectElement) {
                 if (selectElement.classList.contains('selected')) {
                     const discountType = selectElement.getAttribute('data-discount-type');
                     const discountValue = parseFloat(selectElement.getAttribute('data-discount-value'));
+                    const voucherCondition = parseFloat(selectElement.getAttribute('data-voucher-condition'));
 
                     const voucherCodeElement = selectElement.closest('tr').querySelector('td:nth-child(2)');
                     if (voucherCodeElement) {
                         selectedVoucherCode = voucherCodeElement.textContent;
+                        selectedVoucherCondition = voucherCondition;
                         console.log("Selected voucher code:", selectedVoucherCode); // Log voucher code for debugging
+                        console.log("Voucher condition:", selectedVoucherCondition); // Log voucher condition for debugging
                         // Lưu mã giảm giá vào session
                         saveVoucherCodeToSession(selectedVoucherCode);
                     } else {
@@ -368,6 +372,9 @@
             console.log("Total product amount:", totalProductAmount);
             console.log("Discount amount:", discountAmount);
             console.log("Final total amount:", finalTotal);
+
+            // Đặt tổng số tiền sản phẩm chưa qua giảm giá vào input hidden
+            totalAmountInput.value = totalProductAmount;
         }
 
         function validateCustomerInfo() {
@@ -384,6 +391,14 @@
 
         voucherSelectElements.forEach(function(selectElement) {
             selectElement.addEventListener('click', function() {
+                const totalProductAmount = parseFloat(totalProductPriceElement.textContent.replace(/[^\d]/g, ''));
+                const voucherCondition = parseFloat(selectElement.getAttribute('data-voucher-condition'));
+
+                if (voucherCondition && totalProductAmount < voucherCondition) {
+                    alert("Số tiền tổng của sản phẩm phải >= " + voucherCondition + " để áp dụng voucher này.");
+                    return; // Dừng lại nếu không đáp ứng điều kiện của voucher
+                }
+
                 voucherSelectElements.forEach(function(el) {
                     el.classList.remove('selected');
                 });
@@ -403,7 +418,14 @@
 
             const finalTotalText = finalTotalElement.textContent.replace(/[^\d]/g, '');
             const finalTotalAmount = parseFloat(finalTotalText);
-            totalAmountInput.value = isNaN(finalTotalAmount) ? 0 : finalTotalAmount;
+
+            if (selectedVoucherCondition && totalAmountInput.value < selectedVoucherCondition) {
+                alert("Số tiền tổng của sản phẩm phải >= " + selectedVoucherCondition + " để áp dụng voucher này.");
+                return; // Dừng lại nếu không đáp ứng điều kiện của voucher
+            }
+
+            // Không cần thiết đặt lại totalAmountInput ở đây, đã được đặt trong updateTotalAmount
+            // totalAmountInput.value = isNaN(finalTotalAmount) ? 0 : finalTotalAmount;
 
             if (bankTransferRadio && bankTransferRadio.checked) {
                 paymentMethodInput.value = 'BankTransfer';
