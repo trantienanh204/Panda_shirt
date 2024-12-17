@@ -113,7 +113,7 @@ String codevc = null;
         System.out.println("Received voucherCode: " + voucherCode);
 
 
-        HoaDon hoaDon = createHoaDon(khachHang, gioHangList, totalAmount, note, paymentMethod);
+        HoaDon hoaDon = createHoaDon(khachHang, gioHangList, totalAmount, note, paymentMethod,codevc);
         DonHang donHang = createDonHang(khachHang, hoaDon, totalAmount, note, paymentMethod, codevc);
 
         hoaDonService.save(hoaDon);
@@ -203,8 +203,8 @@ String codevc = null;
     @ResponseBody
     public String checkVoucherCode(HttpSession session ) {
         String savedVoucherCode = (String) session.getAttribute("voucherCode");
-        System.out.println("Voucher Code from Session: " + codevc);
-        return codevc != null ? "Voucher code in session: " + codevc : "No voucher code in session";
+        System.out.println("Voucher Code from Session: " + savedVoucherCode);
+        return savedVoucherCode != null ? "Voucher code in session: " + savedVoucherCode : "No voucher code in session";
     }
 
 
@@ -220,7 +220,7 @@ String codevc = null;
         return khachHang;
     }
 
-    private HoaDon createHoaDon(KhachHang khachHang, List<GioHang> cartItems, double totalAmount, String note, String paymentMethod) {
+    private HoaDon createHoaDon(KhachHang khachHang, List<GioHang> cartItems , double totalAmount, String note, String paymentMethod,String codevc) {
         HoaDon hoaDon = new HoaDon();
         String hd = hoaDonRepository.findMaxMaHoaDon();
         int demhd;
@@ -235,10 +235,26 @@ String codevc = null;
         }
         String mahd = String.format("HD%03d", demhd);
 
+        
         hoaDon.setMahoadon(mahd);
         hoaDon.setKhachHang(khachHang);
         hoaDon.setTongtien(BigDecimal.valueOf(totalAmount));
-        hoaDon.setThanhtien(BigDecimal.valueOf(totalAmount));
+
+        Optional<Voucher> voucherOptional = voucherRepository.findByMa(codevc);
+
+        if (voucherOptional.isPresent()) {
+            Voucher voucher = voucherOptional.get();
+            BigDecimal giamGia;
+            if (voucher.isLoai()) {
+                giamGia = BigDecimal.valueOf(totalAmount).multiply(new BigDecimal(voucher.getMucGiam())).divide(BigDecimal.valueOf(100));
+            } else {
+                giamGia = new BigDecimal(voucher.getMucGiam());
+            }
+            BigDecimal thanhTien = BigDecimal.valueOf(totalAmount).subtract(giamGia);
+            hoaDon.setThanhtien(thanhTien);
+        } else {
+            hoaDon.setThanhtien(BigDecimal.valueOf(totalAmount));
+        }
         hoaDon.setNgaytao(LocalDate.now());
         hoaDon.setNgaymua(LocalDate.now());
         hoaDon.setHinhthucmuahang(true);

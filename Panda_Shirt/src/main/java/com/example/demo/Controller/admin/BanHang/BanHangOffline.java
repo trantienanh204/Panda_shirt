@@ -541,16 +541,9 @@ public class BanHangOffline {
                     return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
                 }
                 kh = new KhachHang();
-                String ma = khachHangRepository.findMaxMakh();
-                int demhd;
-                if (ma == null) {
-                    demhd = 1;
-                } else {
-                    demhd = Integer.parseInt(ma.substring(2)) + 1;
-                }
-                String makh = String.format("KH%03d", demhd);
+                String maKhachHang = "KH" + UUID.randomUUID().toString().replace("-", "").substring(0, 6);
                 kh.setTenkhachhang(tenkh);
-                kh.setMakhachhang(makh);
+                kh.setMakhachhang(maKhachHang);
                 kh.setTrangthai(1);
                 kh.setSdt(sdt);
                 kh.setDiachi(diachicuthe);
@@ -641,9 +634,12 @@ public class BanHangOffline {
        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
 
 
-////        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
-//        NhanVien nhanVien = nhanVienRespository.findById(1).orElse(null);
+
         if(giaohang.equals("1")){
+            if(sdt.isBlank() || diachicuthe.isBlank()){
+                redirectAttributes.addFlashAttribute("loi", "Chưa nhập đầy đủ thông tin người nhận");
+                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+            }
             dh.setTrangThai("Đã duyệt");
         }
 

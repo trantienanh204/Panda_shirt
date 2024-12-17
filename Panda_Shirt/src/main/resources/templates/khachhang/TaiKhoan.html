@@ -12,32 +12,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/png" href="/Image/HIHI.jpg">
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
-        <img th:src="@{/Image/panda_logo.png}" width="70px" ; height="70px">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <img th:src="@{/Image/panda_logo.png}" width="70px"; height="70px">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active"style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
+                    <a class="nav-link"style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
-            <form class="d-flex mx-auto" style="width: 400px;">
-                <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
+                <!--                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
+                <!--&lt;!&ndash;                    <option value="">Tất cả danh mục</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>&ndash;&gt;-->
+                <!--                </select>-->
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
@@ -80,12 +84,12 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Thông Tin Của Bạn</h5>
-                    <p><strong>Họ và Tên:</strong> <span th:text="${khachHang.tenkhachhang}">John Doe</span>
+                    <p><strong>Họ và Tên:</strong> <span th:text="${khachHang?.tenkhachhang}">John Doe</span>
                     </p>
-                    <p><strong>Email:</strong> <span th:text="${khachHang.tentaikhoan}">johndoe@example.com</span>
-                    <p><strong>Số điện thoại:</strong> <span th:text="${khachHang.sdt}">+84 123 456 789</span></p>
+                    <p><strong>Email:</strong> <span th:text="${khachHang?.tentaikhoan}">johndoe@example.com</span>
+                    <p><strong>Số điện thoại:</strong> <span th:text="${khachHang?.sdt}">+84 123 456 789</span></p>
                     <p><strong>Địa chỉ:</strong> <span
-                            th:text="${khachHang.diachi}">1234 Example Street, City, Country</span></p></p>
+                            th:text="${khachHang?.diachi}">1234 Example Street, City, Country</span></p></p>
                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateInfoModal">Cập
                         Nhật Thông Tin</a>
                 </div>
@@ -169,13 +173,13 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${choduyet}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-warning" th:text="${donHang?.trangThai}">Chờ duyệt</span>
                                     </td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
+                                        <a th:data-id="${donHang?.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
 
                                            class="view-details"
@@ -208,14 +212,14 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${daduyet}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-success" th:text="${donHang?.trangThai}">Đã duyệt</span>
                                     </td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
-                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang?.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang?.id})}"
 
                                            class="view-details"
                                            data-bs-toggle="modal"
@@ -247,14 +251,14 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${danggiao}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-primary" th:text="${donHang?.trangThai}">Đang giao</span>
                                     </td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
-                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang?.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang?.id})}"
 
                                            class="view-details"
                                            data-bs-toggle="modal"
@@ -286,14 +290,14 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${hoanthanh}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-success" th:text="${donHang?.trangThai}">Hoàn thành</span>
                                     </td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
-                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang?.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang?.id})}"
                                            class="view-details"
                                            data-bs-toggle="modal"
                                            data-bs-target="#add">
@@ -324,13 +328,13 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${dahuy}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-danger" th:text="${donHang?.trangThai}">Đã hủy</span></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
-                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang?.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang?.id})}"
                                            class="view-details"
                                            data-bs-toggle="modal"
                                            data-bs-target="#add">
@@ -562,26 +566,25 @@
                                         </thead>
                                         <tbody>
                                         <tr th:each="dd,i: ${listhdct}">
-                                            <td th:text="${dd.sanPhamChiTiet.maspct}"></td>
-                                            <td th:text="${dd.sanPhamChiTiet.sanPham.tensp}"></td>
-                                            <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>
-                                            <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>
-                                            <td th:text="${dd.soluong}"></td>
-                                            <td th:text="${#numbers.formatDecimal(dd.dongia, 1, 'POINT',0, 'COMMA')}"></td>
+                                            <td th:text="${dd?.sanPhamChiTiet?.maspct}"></td>
+                                            <td th:text="${dd?.sanPhamChiTiet?.sanPham?.tensp}"></td>
+                                            <td th:text="${dd?.sanPhamChiTiet?.mauSac?.ten}"></td>
+                                            <td th:text="${dd?.sanPhamChiTiet?.kichThuoc?.ten}"></td>
+                                            <td th:text="${dd?.soluong}"></td>
+                                            <td th:text="${#numbers.formatDecimal(dd?.dongia, 1, 'POINT',0, 'COMMA')}"></td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
-                                    <input type="text" th:value="${DonHang?.hoaDon?.giagiam != null ? #numbers.formatDecimal(DonHang?.hoaDon?.giagiam, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
+                                    <input type="text" th:value="${DonHang?.hoaDon?.giagiam != null ? DonHang?.hoaDon?.giagiam: '0'}" class="form-control" readonly
                                            style="background-color: white; color: black;">
                                     <!--                            <td th:text="${#numbers.formatDecimal(tongtien, 1, 'POINT',0, 'COMMA')}"></td>-->
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
-                                    <input type="text" th:value="${DonHang?.tongtien != null ? #numbers.formatDecimal(DonHang.tongtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}"
-                                     class="form-control" readonly
+                                    <label class="form-label" style="margin-top: 10px">Thành tiền</label>
+                                    <input type="text" th:value="${DonHang?.hoaDon?.thanhtien != null ? #numbers.formatDecimal(DonHang.hoaDon?.thanhtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
                                            style="background-color: white; color: black;">
                                 </div>
                             </div>

@@ -112,7 +112,7 @@ var updateAddressResult = () => {
 // });
 
 
-const API_KEY = "hXNlf8DeExDWSmhMJljrGfTMspYo5xO5Uix1qHbn";
+const API_KEY = "fzAtlNx7be0lF76zrdcwDSMpuyokgXrt2BDTDprF";
 const AUTOCOMPLETE_URL = "https://rsapi.goong.io/Place/AutoComplete";
 const GEOCODE_URL = "https://rsapi.goong.io/Geocode";
 
