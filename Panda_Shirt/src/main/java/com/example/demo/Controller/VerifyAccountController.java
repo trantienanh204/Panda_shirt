@@ -30,7 +30,6 @@ public class VerifyAccountController {
     }
     @GetMapping("/verify")
     public String showVerifyAccount(){
-
         return "VerifyAccount";
     }
     @PostMapping("/verify")

@@ -29,8 +29,8 @@ import java.util.Set;
 public class SecurityConfig {
 
 
-    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa","/panda/banhangoffline","/panda/giohang"};
-    private final String[] QUANLY_ENDPOINTS= {"/panda/hienthi"};
+    private final String[] PUBLIC_ENDPOINTS = { "/panda/thongke","/panda/login","/Image/**","panda/mahoa","/panda/banhangoffline/**","/panda/banhangoffline/thanhtoan","/panda/giohang"};
+    private final String[] QUANLY_ENDPOINTS= {};
     private final String[] NHANVIEN_ENDPOINTS= {};
     private final String[] KHACHHANG_ENDPOINTS= {};
 
@@ -44,7 +44,7 @@ public class SecurityConfig {
                                     .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                                     .requestMatchers(QUANLY_ENDPOINTS).hasRole("QUANLY")
                                     .requestMatchers(NHANVIEN_ENDPOINTS).hasAnyRole("QUANLY","NHANVIEN")
-                                    .requestMatchers("KHACHHANG_ENDPOINTS").hasAnyRole("KHACHHANG")
+//                                    .requestMatchers(KHACHHANG_ENDPOINTS).hasRole("KHACHHANG")
 //                                    .anyRequest().authenticated()
                                     .anyRequest().permitAll()
                     )
@@ -67,23 +67,23 @@ public class SecurityConfig {
 //                            .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
 //                    )
                     .userDetailsService(userDetailsService(taiKhoanService));
-            http
-                    .exceptionHandling(exception -> exception
-                            .accessDeniedHandler((request, response, accessDeniedException) -> {
-                                System.out.println("Người dùng không đủ quyền truy cập: " + accessDeniedException.getMessage());
-                                response.sendRedirect("/panda/error");
-                            })
-                    );
+//            http
+//                    .exceptionHandling(exception -> exception
+//                            .accessDeniedHandler((request, response, accessDeniedException) -> {
+//                                System.out.println("Người dùng không đủ quyền truy cập: " + accessDeniedException.getMessage());
+//                                response.sendRedirect("/panda/error");
+//                            })
+//                    );
 
             return http.build();
         }
 
-    @Bean
-    public ServletContextInitializer servletContextInitializer() {
-        return servletContext -> {
-            servletContext.getSessionCookieConfig().setMaxAge(-1); // Session cookie
-        };
-    }
+//    @Bean
+//    public ServletContextInitializer servletContextInitializer() {
+//        return servletContext -> {
+//            servletContext.getSessionCookieConfig().setMaxAge(-1);
+//        };
+//    }
 
     // Thêm vào lớp xử lý đăng nhập hoặc lớp bảo mật
     @Bean
