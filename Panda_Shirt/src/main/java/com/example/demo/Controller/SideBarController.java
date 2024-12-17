@@ -127,12 +127,6 @@ public class SideBarController {
 //        return "/admin/HoaDon/HDCT";
 //    }
 
-    @GetMapping("/thongke")
-    public String thongke(Model model) {
-        String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
-        model.addAttribute("role", role);
-        return "/admin/ThongKe";
-    }
     //========================
     //Bán Hàng
     @GetMapping("/nhanvien/banhang")

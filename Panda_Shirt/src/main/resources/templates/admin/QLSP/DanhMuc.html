@@ -59,7 +59,9 @@
         </tr>
         </thead>
         <tbody>
-
+        <tr th:if="${lsdanhmuc.empty}">
+            <td colspan="7" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="dm,i : ${lsdanhmuc} ">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${dm.madanhmuc}"></td>
@@ -108,7 +110,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${lsdanhmuc.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/danhmuc(page=${currentPage + 1}, tendm=${tendm}, trangthai=${trangthai})}"
                    aria-label="Next">
@@ -117,8 +119,42 @@
             </li>
         </ul>
     </nav>
+    <div class="custom-alert success" id="statusMessage"  th:if="${thongbao != null}">
+        <i class="fa-solid fa-circle-check"></i> <span th:text="${thongbao}"></span>
+    </div>
 </div>
+<script>
+    // Sau khi trang load xong
+    window.onload = function() {
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
 <style>
+    .custom-alert {
+        position: fixed;
+        top: 20px;  /* Cách từ đỉnh */
+        right: 20px;  /* Cách từ bên phải */
+        background-color: #4CAF50;  /* Màu nền thông báo thành công */
+        color: white;  /* Màu chữ */
+        padding: 15px;  /* Padding xung quanh */
+        border-radius: 5px;  /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
+        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0;  /* Ban đầu ẩn */
+        visibility: hidden;  /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+    }
+    .custom-alert.show {
+        opacity: 1;  /* Hiển thị thông báo */
+        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+    }
     * {
         box-sizing: border-box;
         padding: 0;

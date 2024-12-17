@@ -23,17 +23,26 @@ public class HoaDonService {
     SanPhamChiTietRepository sanPhamChiTietRepository;
     private final int size = 5;
 
-    public Page<HoaDon> hienThiHD(int page, String mahd, String tennv, String tenkh, Integer trangThai) {
+
+    public Page<HoaDon> hienThiHD(int page, String mahd,String nv,  String tenkh, Integer trangThai) {
         if (page < 0) {
             throw new IllegalArgumentException("Chỉ số trang không được nhỏ hơn số không");
         }
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
-        return hoaDonRepository.findByMaAndTenAndTrangthaiHD(mahd, tennv, tenkh, trangThai, pageable);
+
+
+
+        return hoaDonRepository.findByMaAndTenAndTrangthaiHD(mahd,nv,  tenkh, trangThai, pageable);
+
     }
+
 
     public HoaDon findById(Integer id) {
         return hoaDonRepository.findById(id).get();
+    }
+    public void save(HoaDon hoaDon){
+        hoaDonRepository.save(hoaDon);
     }
 
 }

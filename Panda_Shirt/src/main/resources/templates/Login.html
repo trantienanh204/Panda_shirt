@@ -16,26 +16,27 @@
             }
         };
     </script>
-
 </head>
 <body>
 <div class="container-fluid login-container">
     <img  th:src="@{/Image/panda.jpg}" class="background-image" alt="Background Image">
     <div class="login-box">
         <h4 class="login-header">
-
+            <div>
+                <div id="alert" th:if="${message}" class="alert alert-success" role="alert" th:text="${message}"></div>
+            </div>
             <img th:src="@{/Image/panda_logo.png}" width="50px" height="50px">Đăng nhập</h4>
-        <div th:if="${saitk != null}" style="text-align: center">
-            <b th:text="${saitk}" style="color: white;"></b>
+<!--        <div th:if="${param.error != null}" style="text-align: center">-->
+<!--            <b th:text="${param.error}"style="color: white;"></b>-->
+<!--        </div>-->
+        <div th:if="${param.error}" class="alert alert-danger">
+            Sai tên đăng nhập hoặc mật khẩu, vui lòng thử lại.
         </div>
-        <form th:action="@{/panda/account}" class="login-form" method="get">
-            <input oninput="validate()" type="text" id="username" name="username" class="form-control" placeholder="Email/Số điện thoại/Tên đăng nhập">
+        <form th:action="@{/panda/login}" class="login-form" method="POST">
+            <input oninput="validate()" type="text" id="username" name="username" class="form-control" placeholder="Email/Số điện thoại/Tên đăng nhập" required>
             <input oninput="validate()" type="password" id="password" name="password" class="form-control" placeholder="Mật khẩu">
-
             <button type="submit" class="btn btn-warning w-100" id="loginbtn"  style="color: black;">ĐĂNG NHẬP</button>
             <a th:href="@{/quenmatkhau/timtaikhoan}" class="btn btn-link w-100 text-decoration-none" style="color: black;">Quên mật khẩu?</a>
-
-
             <hr>
             <div class="row">
                 <div class="col-6">
@@ -45,8 +46,12 @@
                     <button type="button" class="btn btn-outline-warning w-100" style="color: black;"><i class="fa-brands fa-google" style="color: #005cfa;"></i> Google</button>
                 </div>
             </div>
-
-            <button type="button" class="btn btn-warning w-100" style="color: black;">Đăng ký</button>
+<!--<<<<<<< HEAD-->
+<!--            <a th:href="@{/panda/register}">-->
+<!--            <button type="button" class="btn btn-warning w-100" style="color: black;">Đăng ký</button>-->
+<!--            </a>-->
+<!--=======-->
+            <a th:href="@{/panda/verify}" class="btn btn-warning w-100" style="color: black;">Đăng ký</a>
 
         </form>
     </div>
@@ -88,22 +93,5 @@
 <!-- Bootstrap Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
 </body>
-<!--<script>-->
-<!--    function validate() {-->
-<!--        // Lấy giá trị của username và password-->
-<!--        var user = document.getElementById("username").value;-->
-<!--        var pass = document.getElementById("password").value;-->
-<!--        if (user.trim() !== "" && pass.trim() !== "") {-->
-<!--            document.getElementById("loginbtn").disabled = false; // Kích hoạt nút Đăng nhập-->
-<!--            console.log("Username:", user);-->
-<!--            console.log("Password:", pass);-->
-<!--        } else {-->
-<!--            document.getElementById("loginbtn").disabled = true;-->
-<!--        }-->
-
-<!--    }-->
-<!--</script>-->
-
 </html>

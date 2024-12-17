@@ -1,3 +1,4 @@
+
 package com.example.demo.entity;
 import jakarta.persistence.*;
 
@@ -20,26 +21,48 @@ public class KhachHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
-    @Size(min = 4 , max = 8, message = "Mã từ 4 - 8 ký tự")
-    @NotBlank(message = "Mã khách hàng không được để trống")
+//    @Size(min = 4 , max = 8, message = "Mã từ 4 - 8 ký tự")
+//    @NotBlank(message = "Mã khách hàng không được để trố
+
     @Column(name = "MA_KHACH_HANG")
     private String makhachhang;
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Địa chỉ email không hợp lệ")
-    @NotBlank(message = "Email không được bỏ trống ")
+//    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Địa chỉ email không hợp lệ")
+//    @NotBlank(message = "Email không được bỏ trống ")
     @Column(name = "TEN_TAI_KHOAN")
     private String tentaikhoan;
+
+
     @Column(name = "MAT_KHAU")
     private String matkhau;
+
+
     @NotBlank(message = "Số điện thoại không được để trống")
-    @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 số")
+  //  @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 số")
     @Column(name = "SO_DIEN_THOAI")
     private String sdt;
 
-    @NotBlank(message = "Địa chỉ không được để trống")
     @Column(name = "DIA_CHI_CU_THE")
     private String diachi;
-    @NotBlank(message = "Tên khách hàng không được để trống")
 
+    @Column(name = "ID_TINH_THANH_PHO")
+    private String tinhtp;
+
+    @Column(name = "ID_QUAN_HUYEN")
+    private String quanhuyen;
+
+    @Column(name = "ID_XA_PHUONG")
+    private String xaphuong;
+
+    @Column(name = "TEN_TINH")
+    private String tentinh;
+
+    @Column(name = "TEN_HUYEN")
+    private String tenhuyen;
+
+    @Column(name = "TEN_XA")
+    private String tenxa;
+
+    @NotBlank(message = "Tên khách hàng không được để trống")
     @Column(name = "TEN_KHACH_HANG")
     private String tenkhachhang;
     @Column(name = "TRANG_THAI")
@@ -57,17 +80,36 @@ public class KhachHang {
     @Column(name = "GIOI_TINH")
     private Integer gioitinh;
 
+
     public void toggleTrangThai() {
-        this.trangthai = (this.trangthai == 0) ? 1 : 0; // Đảo ngược giá trị giữa 0 và 1
+        this.trangthai = (this.trangthai == 0) ? 1 : 0;
+    }
+    public void toggledeleteat() {
+        this.delete = !this.delete;
+    }
+    public void toggletinhtrang() {
+        this.tinhtrang = (this.tinhtrang == null || !this.tinhtrang);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "ID_TINH_THANH_PHO")
-    private Tinh_TP tinh_tp;
-    @ManyToOne
-    @JoinColumn(name = "ID_QUAN_HUYEN")
-    private QuanHuyen quanHuyen;
-    @ManyToOne
-    @JoinColumn(name = "ID_XA_PHUONG")
-    private XaPhuong xaPhuong;
+//    @ManyToOne
+//    @JoinColumn(name = "ID_TINH_THANH_PHO")
+//    private Tinh_TP tinh_tp;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "ID_QUAN_HUYEN")
+//    private QuanHuyen quanHuyen;
+//    @ManyToOne
+//    @JoinColumn(name = "ID_XA_PHUONG")
+//    private XaPhuong xaPhuong;
+
+
+    @Column(name = "DELETEAT")
+    private boolean delete;
+
+    @Column(name = "TINH_TRANG")
+    private Boolean tinhtrang;
+    @OneToOne
+    @JoinColumn(name = "TEN_DANG_NHAP")
+    private TaiKhoan taiKhoan;
 }
+

@@ -1,14 +1,16 @@
 package com.example.demo.Controller.admin.QLTK;
+
+import com.example.demo.entity.ChiTietVaiTro;
 import com.example.demo.entity.NhanVien;
-import com.example.demo.respository.NhanVienRespository;
+import com.example.demo.entity.TaiKhoan;
+import com.example.demo.entity.VaiTro;
+import com.example.demo.respository.*;
 import com.example.demo.service.EmailService;
 import com.example.demo.services.NhanVienService;
 import jakarta.validation.Valid;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,9 +32,17 @@ public class TKNhanVienController {
     @Autowired
     NhanVienService nhanVienService;
     @Autowired
+    TaiKhoanRepo taiKhoanRepo;
+    @Autowired
+    VaiTroRepo vaiTroRepo;
+    @Autowired
+    ChiTietVaiTroRepo chiTietVaiTroRepo;
+    @Autowired
     NhanVienRespository nhanVienRespository;
     @Autowired
     EmailService emailService;
+    @Autowired
+    TaiKhoanRepository taiKhoanRepository;
 
     @GetMapping("/tknhanvien")
     public String tknhanvien(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -70,17 +80,38 @@ public class TKNhanVienController {
                                RedirectAttributes redirectAttributes) {
         String role = "admin"; // Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
+        // check lỗi
+        boolean hasErrors = false;
 
         // Kiểm tra lỗi trong BindingResult
         if (result.hasErrors()) {
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
-
+        // check mail tồn tại;
+        if (taiKhoanRepository.existsByTenDangNhap(nhanVien.getTentaikhoan())) {
+            model.addAttribute("emailExist","Email đã được đăng ký");
+            hasErrors = true;
+        }
         // Kiểm tra mã nhân viên đã tồn tại
         if (nhanVienService.existsNhanVienByManhanvien(nhanVien.getManhanvien())) {
             model.addAttribute("errorma", "Mã đã tồn tại");
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
+        // check email trống
+        if(nhanVien.getTentaikhoan().trim().isEmpty()){
+            model.addAttribute("emailEmpty","Vui lòng nhập email");
+            hasErrors = true;
+        }
+        // check định dạng email
+        if(!nhanVien.getTentaikhoan().matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")){
+            model.addAttribute("emailFormat","Email không hợp lệ !");
+            hasErrors = true;
+        }
+        // trả về trang nếu lỗi
+        if (hasErrors) {
+            return "admin/QLTK/ADD/AddTKNhanVien";
+        }
+
 
         try {
             // Tạo mật khẩu ngẫu nhiên
@@ -126,21 +157,44 @@ public class TKNhanVienController {
                     "<h2>Chào mừng bạn gia nhập shop Panda Shirt!</h2>" +
                     "<p>Mật khẩu của bạn đã được tạo thành công. Vui lòng ghi nhớ nó!</p>" +
                     "<div class='password'>" + plainPassword + "</div>" +
-                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='https://your-shop-url.com' style='color: #007bff;'>đây</a>.</p>" +
+                    "<p>Bạn có thể đăng nhập vào tài khoản của mình tại <a href='http://localhost:8080/panda/login' style='color: #007bff;'>đây</a>.</p>" +
                     "<div class='footer'>Nếu bạn có bất kỳ câu hỏi nào, hãy liên hệ với bộ phận hỗ trợ của chúng tôi.</div>" +
                     "</div>" +
                     "</body>" +
                     "</html>";
-            emailService.sendEmail(nhanVien.getTentaikhoan(), subject, body); // Gửi email
-            // Lưu nhân viên vào cơ sở dữ liệu
-            nhanVienService.saveSafftoDbCreate(file, nhanVien);
 
+            emailService.sendEmail(nhanVien.getTentaikhoan(), subject, body); // Gửi email
+
+            TaiKhoan tk = new TaiKhoan();
+            ChiTietVaiTro ctvt = new ChiTietVaiTro();
+
+            String tentk = nhanVien.getTentaikhoan();
+            // Lưu nhân viên vào cơ sở dữ liệu
+            int vaitro = 1;
+            if(nhanVien.getChucvu().equals("Nhân viên")){
+                vaitro = 2;
+            }
+            tk.setMatKhau(hashedPassword);
+            tk.setTenDangNhap(tentk);
+            taiKhoanRepo.save(tk);
+            VaiTro vt = vaiTroRepo.findById(vaitro).get();
+            TaiKhoan tenDangNhap = taiKhoanRepo.findByTenDangNhap(tentk);
+            System.out.println("vaitro " +vt.getTenVaiTro());
+            System.out.println("tên " +tenDangNhap.getTenDangNhap());
+            System.out.println("tên " +tentk);
+            ctvt.setVaiTro(vt);
+            ctvt.setTaiKhoan(tenDangNhap);
+            chiTietVaiTroRepo.save(ctvt);
+
+            nhanVien.setTinhtrang(true);
+            nhanVien.setTaiKhoan(tenDangNhap);
+            nhanVienService.saveSafftoDbCreate(file, nhanVien);
             // Thêm thông báo thành công
             redirectAttributes.addFlashAttribute("saveMassage", "Thêm nhân viên thành công");
             return "redirect:/panda/tknhanvien";
         } catch (Exception e) {
             // Xử lý lỗi khi lưu dữ liệu
-            System.out.println("Lỗi" + e.getMessage());
+            System.out.println("Lỗi :" + e.getMessage());
             return "admin/QLTK/ADD/AddTKNhanVien";
         }
     }
@@ -172,9 +226,31 @@ public class TKNhanVienController {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         // check validation
+
+        boolean hasErrors = false;
+
         if(result.hasErrors()){
             return "/admin/QLTK/UPDATE/UpdateTKNhanVien";
         }
+        if (taiKhoanRepository.existsByTenDangNhap(nhanVien.getTentaikhoan())) {
+            model.addAttribute("emailExist","Email này đã được đăng ký");
+            hasErrors = true;
+        }
+        // check mail trống update
+        if (nhanVien.getTentaikhoan().trim().isEmpty()){
+            model.addAttribute("emailEmpty","Vui lòng nhập email");
+            hasErrors = true;
+        }
+        // check định dạng email
+        if(!nhanVien.getTentaikhoan().matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")){
+            model.addAttribute("emailFormat","Email không hợp lệ");
+            hasErrors = true;
+        }
+        // show lỗi
+        if (hasErrors) {
+            return "/admin/QLTK/UPDATE/UpdateTKNhanVien";
+        }
+
         NhanVien checkNhanVien  = nhanVienService.findById(nhanVien.getId());
             // Cập nhật
         if(checkNhanVien !=null){
@@ -203,6 +279,6 @@ public class TKNhanVienController {
             nhanVienRespository.save(nhanVien);
         }
         redirectAttributes.addFlashAttribute("ChangesStatusMessage", "Chuyển trạng thái thành công !");
-        return "redirect:/panda/tknhanvien";
+        return "redirect:/panda/tknhanvien" ;
     }
 }

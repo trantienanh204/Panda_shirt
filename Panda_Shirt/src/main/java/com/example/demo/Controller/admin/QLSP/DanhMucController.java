@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -62,7 +63,7 @@ public class DanhMucController {
     }
 
     @GetMapping("change")
-    public String delete(@RequestParam("id") int id, Model model) {
+    public String change(@RequestParam("id") int id, Model model, RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         DanhMuc dm = danhMucRepository.findById(id).orElse(null);
@@ -73,13 +74,14 @@ public class DanhMucController {
                 dm.setTrangthai(1);
             }
             danhMucRepository.save(dm);
+            redirectAttributes.addFlashAttribute("thongbao","Thành công !");
         }
         return "redirect:/panda/danhmuc";
     }
 
 
     @PostMapping("add")
-    public String add(@ModelAttribute("danhmuc") DanhMuc danhMuc , Model model) {
+    public String add(@ModelAttribute("danhmuc") DanhMuc danhMuc , Model model,RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         model.addAttribute( "nsx", danhMuc);
@@ -91,37 +93,42 @@ public class DanhMucController {
 
         Matcher tennsxMatcher = pattern.matcher(danhMuc.getTendanhmuc());
         Matcher mansxMatcher = patternma.matcher(danhMuc.getMadanhmuc());
-
+        boolean loi = true ;
         if(danhMuc.getMadanhmuc().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
-            return "admin/QLSP/ADD/AddDanhMuc";
+            loi = false;
         }else if (!mansxMatcher.matches()) {
             model.addAttribute("errorma" ,"Mã chỉ được chứa chữ và số");
-            return "admin/QLSP/ADD/AddDanhMuc";
+            loi = false;
         }
         if(danhMucRepository.existsDanhMucByMadanhmuc(danhMuc.getMadanhmuc())){
             model.addAttribute("errorma","Mã đã tồn tại");
-            return "admin/QLSP/ADD/AddDanhMuc";
+            loi = false;
         }
 
         if(danhMuc.getTendanhmuc().isEmpty() || danhMuc.getMadanhmuc().isEmpty()){
             model.addAttribute("errorten","Không được để trống");
-            return "admin/QLSP/ADD/AddDanhMuc";
+            loi = false;
         }else if (!tennsxMatcher.matches()) {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
-            return "admin/QLSP/ADD/AddDanhMuc";
+            loi = false;
         }
         if(danhMucRepository.existsDanhMucByTendanhmuc(danhMuc.getTendanhmuc())){
             model.addAttribute("errorten","Tên đã tồn tại");
-            return "admin/QLSP/ADD/AddDanhMuc";
+            loi = false;
         }
-
-        danhMucRepository.save(danhMuc);
-        return "redirect:/panda/danhmuc";
+        if(loi == false) {
+            model.addAttribute("thongbao","Thất bại!");
+            return "admin/QLSP/ADD/AddDanhMuc";
+        }else{
+            redirectAttributes.addFlashAttribute("thongbao","Thêm thành công!");
+            danhMucRepository.save(danhMuc);
+            return "redirect:/panda/danhmuc";
+        }
     }
 
     @PostMapping("update")
-    public String update(@ModelAttribute("danhmuc") DanhMuc danhMuc , Model model) {
+    public String update(@ModelAttribute("danhmuc") DanhMuc danhMuc , Model model,RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         model.addAttribute( "nsx", danhMuc);
@@ -141,34 +148,40 @@ public class DanhMucController {
 
         DanhMuc findma = danhMucRepository.findByMadanhmucAndIdNot(ma,danhMuc.getId());
         DanhMuc findten = danhMucRepository.findByTendanhmucAndIdNot(ten,danhMuc.getId());
-
+        boolean loi = true ;
         if(danhMuc.getMadanhmuc().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
-            return "admin/QLSP/UPDATE/UpdateDanhMuc";
+            loi = false;
         }else if (!mansxMatcher.matches()) {
             model.addAttribute("errorma" ,"Mã chỉ được chứa chữ và số");
-            return "admin/QLSP/UPDATE/UpdateDanhMuc";
+            loi = false;
         }
         if(findma != null){
             model.addAttribute("errorma","Mã đã tồn tại");
-            return "admin/QLSP/UPDATE/UpdateDanhMuc";
+            loi = false;
         }
-
         if(danhMuc.getTendanhmuc().isEmpty() || danhMuc.getMadanhmuc().isEmpty()){
             model.addAttribute("errorten","Không được để trống");
-            return "admin/QLSP/UPDATE/UpdateDanhMuc";
+            loi = false;
         }else if (!tennsxMatcher.matches()) {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
-            return "admin/QLSP/UPDATE/UpdateDanhMuc";
+            loi = false;
         }
         if(findten != null){
             model.addAttribute("errorten","Tên đã tồn tại");
+            loi = false;
+        }
+        if(loi == false) {
+            model.addAttribute("thongbao","Thất bại!");
             return "admin/QLSP/UPDATE/UpdateDanhMuc";
+        }else{
+            redirectAttributes.addFlashAttribute("thongbao","Sửa thành công!");
+            danhMuc.setNgaysua(LocalDate.now());
+            danhMucRepository.save(danhMuc);
+            return "redirect:/panda/danhmuc";
         }
 
-        danhMuc.setNgaysua(LocalDate.now());
-        danhMucRepository.save(danhMuc);
-        return "redirect:/panda/danhmuc";
+
     }
 
 }

@@ -1,8 +1,6 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "SAN_PHAM")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+
 public class SanPham {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +28,8 @@ public class SanPham {
     private String tensp;
 
     @Column(name = "ANH_SAN_PHAM")
-    private String anhsp;
+    private byte[] anhsp;
+
 
     @Column(name = "NGAY_TAO")
     private LocalDate ngaytao;
@@ -42,7 +41,7 @@ public class SanPham {
     private Integer soluongsp;
 
     @Column(name = "TRANG_THAI")
-    private Integer trangthai;
+    private int trangthai;
 
     @ManyToOne
     @JoinColumn(name = "ID_DANH_MUC", referencedColumnName = "id")
@@ -64,7 +63,7 @@ public class SanPham {
     @JoinColumn(name = "ID_CHAT_LIEU", referencedColumnName = "id")
     private ChatLieu chatLieu;
 
-    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<SanPhamChiTiet> sanPhamChiTietList = new ArrayList<>();
 
@@ -78,6 +77,19 @@ public class SanPham {
                 .min(Double::compareTo)
                 .orElse(0.0);
     }
+
+
+
+
+        private transient String base64Image;
+
+        public String getBase64Image() {
+            return base64Image;
+        }
+
+        public void setBase64Image(String base64Image) {
+            this.base64Image = base64Image;
+        }
 
 
 

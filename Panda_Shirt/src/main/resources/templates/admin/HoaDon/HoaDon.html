@@ -5,40 +5,42 @@
     <title>Title</title>
 </head>
 <body th:fragment="hoadon">
+<h2>Hóa đơn</h2>
 <form th:action="@{/panda/hoadon}" method="get">
-<div class="filter-container">
-    <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3><hr>
-    <div class="filter-inputs">
-        <div class="filter-input">
-            <label >Mã hóa đơn</label>
-            <input type="text" name="mahd" th:value="${mahd}"  placeholder="Mã hóa đơn">
+    <div class="filter-container">
+        <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
+        <hr>
+        <div class="filter-inputs">
+            <div class="filter-input">
+                <label>Mã hóa đơn</label>
+                <input type="text" name="mahd" th:value="${mahd}" placeholder="Mã hóa đơn">
+            </div>
+            <div class="filter-input">
+                <label>Tên nhân viên</label>
+                <input type="text" name="nv" th:value="${nv}" placeholder="Tên nhân viên">
+            </div>
+            <div class="filter-input">
+                <label>Tên khách hàng</label>
+                <input type="text" name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng ">
+            </div>
+            <div class="filter-input">
+                <label for="period">Trạng thái</label>
+                <select id="period" name="trangThai">
+                    <option value="">-- Chọn trạng thái --</option>
+                    <option th:value="1" th:selected="${trangthai == 1}">Hoàn thành</option>
+                    <option th:value="0" th:selected="${trangthai == 0}">Đã hủy</option>
+                </select>
+            </div>
         </div>
-        <div class="filter-input">
-            <label >Tên nhân viên</label>
-            <input type="text"  name="tennv" th:value="${tennv}" placeholder="Tên nhân viên ">
-        </div>
-        <div class="filter-input">
-            <label >Tên khách hàng</label>
-            <input type="text"  name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng ">
-        </div>
-        <div class="filter-input">
-            <label for="period">Trạng thái</label>
-            <select id="period" name="trangThai">
-                <option value="">-- Chọn trạng thái --</option>
-                <option th:value="1" th:selected="${trangthai == 1}">Hoàn thành</option>
-                <option th:value="0" th:selected="${trangthai == 0}">Đã hủy</option>
-            </select>
+        <div class="filter-buttons">
+            <button type="submit" class="btn btn-dark">
+                <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
+            </button>
+            <a class="btn btn-dark" th:href="@{/panda/hoadon}">
+                <i class="fa-solid fa-rotate-right" style="color: #ffffff;padding-top: 10px"></i> Làm mới
+            </a>
         </div>
     </div>
-    <div class="filter-buttons">
-        <button type="submit" class="btn btn-dark">
-            <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
-        </button>
-        <a class="btn btn-dark" th:href="@{/panda/hoadon}">
-            <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
-        </a>
-    </div>
-</div>
 </form>
 <!-- Danh sách bài viết -->
 <div class="table-container">
@@ -47,50 +49,56 @@
         <thead>
         <tr>
             <th>#</th>
-            <th>Mã hóa đơn </th>
+            <th>Mã hóa đơn</th>
             <th>Tên nhân viên</th>
             <th>Tên khách hàng</th>
-<!--            <th>Số lượng</th>-->
-            <th>Tổng tiền</th>
+            <th>Số điện thoại</th>
+            <th>Thành tiền</th>
             <th>Ngày mua</th>
+            <th>Hình thức</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${lshd.empty}">
+            <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="hd,i : ${lshd} ">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${hd.mahoadon}"></td>
             <td th:text="${hd.nhanVien.tennhanvien}"></td>
             <td th:text="${hd.khachHang.tenkhachhang}"></td>
-<!--            <td th:text="${hd.soluong}"></td>-->
-            <td th:text="${hd.tongtien}"></td>
+            <td th:text="${hd.khachHang.sdt==null ?'Trống':hd.khachHang.sdt}"></td>
+            <td th:text="${#numbers.formatDecimal(hd.thanhtien, 1, 'POINT',0, 'COMMA')}"></td>
             <td th:text="${hd.ngaymua}"></td>
+            <td th:text="${hd.hinhthucmuahang != null ?'Trực tuyến':'Trực tiếp'}"></td>
             <td>
                 <span class="status-label" th:classappend="${hd.trangthai == 1} ? 'status-green' : 'status-orange'"
                       th:text="${hd.trangthai == 1} ? 'Hoàn thành' : 'Đã hủy'"></span>
             </td>
             <td>
-                <a class="btn " th:href="@{/panda/hoadon/update(id=${hd.id})}" >
-                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 20px"></i>
-                </a>
-                <a class="btn " href="#" data-toggle="modal" data-target="#invoiceDetailModal"
-                   th:data-invoice-id="${hd.id}">
+                <a th:href="@{/panda/hoadon/chitiet(id=${hd.id})}"
+                   data-toggle="modal" data-target="#xemhoadon"
+                   th:data-id="${hd.id}">
                     <i class="fa-solid fa-eye" style="color: #000000;font-size: 20px"></i>
                 </a>
-                <a class="btn " th:href="@{/panda/hoadon/xuatfile(id=${hd.id})}">
-                    <i class="fa-solid fa-inbox" style="color: #000000;font-size: 20px"></i>
+                <a class="btn " th:href="@{/panda/hoadon/xuatfile(id=${hd.id})}"
+                   onclick="openPrintPage(event)" target="_self">
+                    <i class="fa-solid fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>
+                    <!--                    <i class="fa-regular fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>-->
                 </a>
             </td>
         </tr>
         </tbody>
     </table>
+    <!--    phân trang -->
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <!-- Nút Previous -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage == 0 ? 0 : currentPage - 1}, mahd=${mahd},nv=${nv},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -103,9 +111,9 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${lshd.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},tennv=${tennv},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/hoadon(page=${currentPage + 1}, mahd=${mahd},nv=${nv},tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
@@ -114,97 +122,170 @@
     </nav>
 </div>
 <!-- modal-->
-<div class="modal fade" id="invoiceDetailModal" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel" aria-hidden="true">
+<div class="modal fade" id="xemhoadon" tabindex="-1" role="dialog" aria-labelledby="invoiceDetailModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="invoiceDetailModalLabel">Chi Tiết Hóa Đơn</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>ID HDCT</th>
-                        <th>Hình ảnh</th>
-                        <th>Tên Sản Phẩm</th>
-                        <th>Kích thước</th>
-                        <th>Màu sắc</th>
-                        <th>Đơn giá</th>
-                        <th>Số Lượng</th>
-                        <th>Thành tiến</th>
-                    </tr>
-                    </thead>
-                    <tbody id="invoiceDetailBody">
-                    <!-- Dữ liệu chi tiết hóa đơn sẽ được thêm vào đây -->
-                    </tbody>
-                </table>
+            <div th:fragment="hdct">
+                <div class="modal-header">
+
+<!--<<<<<<< HEAD-->
+<!--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                        <span aria-hidden="true">&times;</span>-->
+<!--                    </button>-->
+<!--                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4>-->
+<!--                    <br>-->
+<!--                    <div th:if="${hoadon != null && hoadon.khachHang != null}">-->
+<!--                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.ma    khachhang != null-->
+<!--                        ? hoadon.khachHang.makhachhang : 'Mua tại quầy'}"></span> <br>-->
+<!--                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>-->
+<!--                    </div>-->
+<!--=======-->
+                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                  </button>
+                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4><br>
+                    <div th:if="${hoadon != null && hoadon.khachHang != null}">
+                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.makhachhang != null
+                        ? hoadon.khachHang.makhachhang : 'Mua tại quầy'}"></span> <br>
+                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>
+                    </div>
+
+<!--&gt;>>>>>> thai-->
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Mã spct</th>
+                                <th>Sản phẩm</th>
+                                <th>Kích thước</th>
+                                <th>Màu sắc</th>
+                                <th>Số lượng</th>
+                                <th>Đơn giá</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="ct : ${hoaDonCTs}">
+                                <td th:text="${ct.sanPhamChiTiet.maspct}"></td>
+                                <td th:text="${ct.sanPhamChiTiet.sanPham.tensp}"></td>
+                                <td th:text="${ct.sanPhamChiTiet.kichThuoc.ten}"></td>
+                                <td th:text="${ct.sanPhamChiTiet.mauSac.ten}"></td>
+                                <td th:text="${ct.soluong}"></td>
+                                <td th:text="${#numbers.formatDecimal(ct.dongia, 1, 'POINT',0, 'COMMA')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
+                        <input type="text"
+                               th:value="${giagiam?.tongtien != null ? #numbers.formatDecimal(giagiam?.tongtien , 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}"
+                               class="form-control" readonly
+                               style="background-color: white; color: black;margin-top: 13px">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
+                        <input type="text"
+                               th:value="${giagiam?.giagiam != null ? giagiam?.giagiam  : '0'}"
+                               class="form-control" readonly
+                               style="background-color: white; color: black;margin-top: 13px">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<div class="custom-alert success " id="statusMessage" th:if="${thongbao != null}">
+    <i class="fa-solid fa-circle-check"></i> <span th:text="${thongbao}"></span>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#xemhoadon').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            modal.find('.modal-content').html('');
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+
+            // Gửi yêu cầu AJAX
+            $.get('/panda/hoadon/chitiet', {id: id}, function (data) {
+                modal.find('.modal-content').html(data);
+            });
+        });
+
+    });
+    window.onload = function () {
+        // Xử lý thông báo thành công
+        var statusMessage = document.getElementById('statusMessage');
+        if (statusMessage) {
+            statusMessage.classList.add('show');
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(function () {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    };
+
+    function openPrintPage(event) {
+        // Ngừng hành động mặc định của link
+        event.preventDefault();
+
+        // Lấy URL của thẻ <a> chứa href
+        var href = event.target.closest('a').getAttribute('href');
+
+        // Lấy ID từ URL (ví dụ: 'id=12345')
+        var urlParams = new URLSearchParams(href.split('?')[1]);
+        var invoiceId = urlParams.get('id');
+
+        // Mở trang in mới với ID
+        var printWindow = window.open('/panda/hoadon/xuatfile?id=' + invoiceId, '_blank');
+
+        // Khi trang in đã tải xong, gọi in
+        // printWindow.onload = function() {
+        //     printWindow.print();
+        // };
+    }
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    $(document).ready(function() {
-        $('#invoiceDetailModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Nút đã kích hoạt modal
-            var invoiceId = button.data('invoice-id'); // Lấy ID hóa đơn
-
-            // Gửi yêu cầu đến server để lấy thông tin chi tiết hóa đơn
-            $.ajax({
-                url: '/panda/hoadonct?id=' + invoiceId, // Đường dẫn đến API hoặc controller
-                method: 'GET',
-                success: function(lshdct) {
-                    // Xóa dữ liệu cũ
-                    $('#invoiceDetailBody').empty();
-                    // Kiểm tra nếu có chi tiết hóa đơn
-                    if (lshdct.length > 0) {
-                        var mahd = "Danh sách hóa đơn chi tiết: " + lshdct[0].hoaDon.mahoadon;
-                        $('#invoiceDetailModalLabel').text(mahd);
-
-                        // Điền thông tin chi tiết hóa đơn vào modal
-                        lshdct.forEach(function(ls) {
-                            $('#invoiceDetailBody').append(`
-                                <tr class="invoice-row" data-id="${ls.id}">
-                                    <td>${ls.id}</td>
-                                    <td>Trống</td>
-                                    <td>${ls.sanPhamChiTiet.sanPham.tensp}</td>
-                                    <td>${ls.sanPhamChiTiet.kichThuoc.ten}</td>
-                                    <td>${ls.sanPhamChiTiet.mauSac.ten}</td>
-                                    <td>${ls.dongia}</td>
-                                    <td>${ls.soluong}</td>
-                                    <td>${ls.tongtien}</td>
-                                </tr>
-                            `);
-                        });
-                    } else {
-                        // Nếu không có chi tiết, hiển thị thông báo
-                        $('#invoiceDetailModalLabel').text("Không có chi tiết hóa đơn.");
-                        $('#invoiceDetailBody').append(`
-                        <tr>
-                            <td colspan="3" class="text-center">Không có chi tiết hóa đơn.</td>
-                        </tr>
-                        `);
-                    }
-                },
-                error: function() {
-                    // Xử lý lỗi nếu cần
-                    alert('Không thể tải dữ liệu chi tiết hóa đơn.');
-                }
-            });
-        });
-        // Thêm sự kiện click cho các dòng trong bảng
-        $(document).on('click', '.invoice-row', function() {
-            var hoadonctid = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
-            window.location.href = '/panda/hoadonct/update/' + hoadonctid; // Chuyển hướng đến URL update
-        });
-    });
-</script>
 <style>
+    .custom-alert {
+        background-color: #4CAF50; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
+        position: fixed;
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
+    }
+
+    .custom-alert.show {
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt thông báo là có thể nhìn thấy */
+    }
+
+    .modal-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .modal-header .modal-title {
+        margin-bottom: 10px;
+    }
+
+    .modal-header div {
+        margin-bottom: 5px;
+    }
+
     * {
         box-sizing: border-box;
         padding: 0;
@@ -302,17 +383,22 @@
     }
 
     .status-label {
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: white;
+        display: inline-block; /* Đảm bảo chiều rộng và chiều cao áp dụng */
+        width: 100px; /* Đặt chiều rộng cố định */
+        text-align: center; /* Căn giữa nội dung */
+        padding: 5px 0; /* Tùy chỉnh khoảng cách bên trong */
+        border-radius: 5px; /* Tùy chọn, tạo góc bo */
+        font-weight: bold; /* In đậm nội dung */
     }
 
     .status-green {
-        background-color: #4CAF50;
+        background-color: #28a745; /* Màu xanh lá */
+        color: white; /* Màu chữ */
     }
 
     .status-orange {
-        background-color: #ff9800;
+        background-color: #d7344c; /* Màu cam */
+        color: white; /* Màu chữ */
     }
 
     .action-icons {
@@ -324,6 +410,12 @@
         font-size: 18px;
         margin: 0 5px;
         cursor: pointer;
+    }
+
+    .discount-price {
+        text-decoration: line-through;
+        color: red;
+        font-weight: bold;
     }
 </style>
 </body>

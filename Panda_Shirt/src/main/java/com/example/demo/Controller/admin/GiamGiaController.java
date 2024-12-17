@@ -38,7 +38,7 @@ public class GiamGiaController {
                          @RequestParam(value = "ten", required = false) String ten,
                          @RequestParam(value = "startDate", required = false)@DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
                          @RequestParam(value = "endDate", required = false)@DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate,
-                         @RequestParam(value = "trangThai", required = false) String trangThai,
+                         @RequestParam(value = "trangThai", required = false) Integer trangThai,
                          Model model) {
 //        slide bar
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
@@ -90,6 +90,7 @@ public class GiamGiaController {
         Matcher mavcMatcher = patternma.matcher(voucher.getMa());
         Matcher tenvcMatcher = pattern.matcher(voucher.getTen());
         Matcher motavcMatcher = pattern.matcher(voucher.getMota());
+//        String soLuongStr = voucher.getSoLuong().trim();
 
         // mã voucher
         if (voucher.getMa().isEmpty()) {
@@ -137,7 +138,7 @@ public class GiamGiaController {
         }
         if (today.isBefore(voucher.getNgaybatdau())) {
             // Nếu ngày hiện tại bé hơn ngày bắt đầu, trạng thái là "Sắp hoạt động"
-            voucher.setTrangThai("Sắp hoạt động");
+            voucher.setTrangThai(0);
             model.addAttribute("warning", "Chú ý: Voucher chưa thể hoạt động vì ngày bắt đầu chưa đến, sẽ tự động bắt đầu hoạt động khi đến ngày!");
         }
         //ngày kết thúc
@@ -150,8 +151,8 @@ public class GiamGiaController {
             return "admin/QLSP/ADD/AddVC";
         }
         if (voucher.getNgayketthuc().isBefore(today)) {
-            voucher.setTrangThai("Sắp hoạt động"); // Đặt trạng thái thành "Sắp hpạt động"
-            model.addAttribute("errornkt", "Voucher không thể hoạt động vì đã qua ngày kết thúc");
+            voucher.setTrangThai(0); // Đặt trạng thái thành "Sắp hpạt động"
+            model.addAttribute("errornkt", "Voucher không thể tạo vì đã qua ngày kết thúc");
             return "admin/QLSP/ADD/AddVC"; // Trả về trang với thông báo lỗi
         }
         //số lượng
@@ -185,7 +186,7 @@ public class GiamGiaController {
         try {
             Integer dieuKien = Integer.parseInt(voucher.getDieuKien());
             if (dieuKien < 10000) {
-                model.addAttribute("errordk", "Điều kiện phải lớn hơn hoặc bằng 10.000$");
+                model.addAttribute("errordk", "Điều kiện phải lớn hơn hoặc bằng 10.000 VND");
                 return "admin/QLSP/ADD/AddVC";
             }
         } catch (Exception e) {
@@ -235,11 +236,7 @@ public class GiamGiaController {
             model.addAttribute("errormg", "Mức giảm chỉ chứa số");
             return "admin/QLSP/ADD/AddVC";
         }
-//        if (voucher.isLoai() == false) {
-//            model.addAttribute("errorloai", "Trạng thái không được để trống hoặc không hợp lệ");
-//            return "admin/QLSP/ADD/AddVC";
-//        }
-        //mô tả
+
         if (voucher.getMota().isEmpty()) {
             model.addAttribute("errormt", "Không được để trống");
             return "admin/QLSP/ADD/AddVC";
@@ -317,8 +314,8 @@ public class GiamGiaController {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
             return "admin/QLSP/UPDATE/UpdateVC";
         }
-        if (voucher.getTen() == null || voucher.getTen().length() <= 3 || voucher.getTen().length() >= 30) {
-            model.addAttribute("errorten", "Tên phải lớn hơn 3 ký tự và nhỏ hơn 30 ký tự");
+        if (voucher.getTen() == null || voucher.getTen().length() <= 1 || voucher.getTen().length() >= 30) {
+            model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 30 ký tự");
             return "admin/QLSP/UPDATE/UpdateVC";
         }
         if (findten != null) {
@@ -332,7 +329,7 @@ public class GiamGiaController {
         }
         if (today.isBefore(voucher.getNgaybatdau())) {
             // Nếu ngày hiện tại bé hơn ngày bắt đầu, trạng thái là "Sắp hoạt động"
-            voucher.setTrangThai("Sắp hoạt động");
+            voucher.setTrangThai(0);
             model.addAttribute("warning", "Chú ý: Voucher chưa thể hoạt động vì ngày bắt đầu chưa đến, sẽ tự động bắt đầu hoạt động khi đến ngày!");
 
         }
@@ -346,8 +343,8 @@ public class GiamGiaController {
             return "admin/QLSP/UPDATE/UpdateVC";
         }
         if (voucher.getNgayketthuc().isBefore(today)) {
-            voucher.setTrangThai("Hết hạn"); // Đặt trạng thái thành "Ngừng hoạt động"
-            model.addAttribute("errornkt", "Voucher không thể hoạt động vì đã qua ngày kết thúc");
+            voucher.setTrangThai(2); // Đặt trạng thái thành "Ngừng hoạt động"
+            model.addAttribute("errornkt", "Voucher không thể tạo vì đã qua ngày kết thúc");
             return "admin/QLSP/UPDATE/UpdateVC"; // Trả về trang với thông báo lỗi
         }
         //số lượng
@@ -445,10 +442,18 @@ public class GiamGiaController {
                 ngayTao = vc.getNgaytao();
             }
         }
+        System.out.println(voucher.isLoaikhachhang());
         voucher.setNgaytao(ngayTao);
         voucher.setNgaysua(LocalDate.now());
         voucherRepository.save(voucher);
         redirectAttributes.addFlashAttribute("Update", "Sửa thành công!");
         return "redirect:/panda/voucher/hienthi";
     }
+
+        @ResponseBody
+        @GetMapping("/active-public")
+        public List<Voucher> getActivePublicVouchers() {
+            return voucherService.getActivePublicVouchers();
+        }
+
 }

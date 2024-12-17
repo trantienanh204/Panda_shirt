@@ -14,7 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -68,9 +70,13 @@ public class sanphanController {
         }).collect(Collectors.toList());
     }
 
+
+    //dat biet
     @GetMapping("/Listnxs")
     public List<Map<String, Object>> ListNXS() {
-        return sanPhamService.getallNXS().stream().map(nxs -> {
+        return sanPhamService.getallNXS().stream()
+                .filter(nxs -> nxs.getTrangthai()==1)
+                .map(nxs -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", nxs.getId());
             map.put("text", nxs.getTennsx());
@@ -78,9 +84,10 @@ public class sanphanController {
         }).collect(Collectors.toList());
     }
 
+    //dac biet
     @GetMapping("/Listdanhmuc")
     public List<Map<String, Object>> ListDanhmuc() {
-        return sanPhamService.getallDanhmuc().stream().map(danhmuc -> {
+        return sanPhamService.getallDanhmuc().stream().filter(danhMuc -> danhMuc.getTrangthai()==1).map(danhmuc -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", danhmuc.getId());
             map.put("text", danhmuc.getTendanhmuc());
@@ -90,7 +97,7 @@ public class sanphanController {
 
     @GetMapping("/Listchatlieu")
     public List<Map<String, Object>> ListChatLieu() {
-        return sanPhamService.getallCL().stream().map(chatlieu -> {
+        return sanPhamService.getallCL().stream().filter(chatlieu -> chatlieu.getTrangThai()==0).map(chatlieu -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", chatlieu.getId());
             map.put("text", chatlieu.getTenChatLieu());
@@ -98,9 +105,10 @@ public class sanphanController {
         }).collect(Collectors.toList());
     }
 
+    //dac biet
     @GetMapping("/Listthuonghieu")
     public List<Map<String, Object>> ListThuongHieu() {
-        return sanPhamService.getallthuonghieu().stream().map(thuonghieu -> {
+        return sanPhamService.getallthuonghieu().stream().filter(thuonghieu -> thuonghieu.getTrangthai()==1).map(thuonghieu -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", thuonghieu.getId());
             map.put("text", thuonghieu.getTenthuonghieu());
@@ -110,7 +118,7 @@ public class sanphanController {
 
     @GetMapping("/Listcoao")
     public List<Map<String, Object>> ListCoAo() {
-        return sanPhamService.getallcoao().stream().map(coao -> {
+        return sanPhamService.getallcoao().stream().filter(coAo -> coAo.getTrangThai()==0).map(coao -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", coao.getId());
             map.put("text", coao.getTen());
@@ -120,7 +128,7 @@ public class sanphanController {
 
     @GetMapping("/Listkichthuoc")
     public List<Map<String, Object>> Listkichthuoc() {
-        return sanPhamService.getallkichco().stream().map(coao -> {
+        return sanPhamService.getallkichco().stream().filter(kichThuoc -> kichThuoc.getTrangthai()==0).map(coao -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", coao.getId());
             map.put("text", coao.getTen());
@@ -130,7 +138,7 @@ public class sanphanController {
 
     @GetMapping("/Listmausac")
     public List<Map<String, Object>> Listmausac() {
-        return sanPhamService.getallmausac().stream().map(mausac -> {
+        return sanPhamService.getallmausac().stream().filter(mauSac -> mauSac.getTrangthai()==0).map(mausac -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", mausac.getId());
             map.put("text", mausac.getTen());
@@ -226,30 +234,22 @@ public class sanphanController {
         }
     }
 
-    @PostMapping()
-        public Object uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-            try {
-                for (MultipartFile file : files) {
-                    hinhanhService.luuHinhAnh(file);
-                }
-                return new RedirectView("baove/form");
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Upload failed");
-            }
+    @GetMapping("sanpham/hinh-anh/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
+        Optional<SanPham> sanPhamOptional = Optional.ofNullable(sanPhamService.Listtimkiemsp(id));
+        if (sanPhamOptional.isPresent()) {
+            byte[] image = sanPhamOptional.get().getAnhsp();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);  // Đảm bảo ảnh là JPEG hoặc có thể là PNG
+            headers.setContentLength(image.length);
+            return new ResponseEntity<>(image, headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
 
-        @PostMapping("/tai-anh")
-        public String taiAnh(@RequestParam("id") Integer id, Model model) {
-            Optional<Anh_SP> hinhAnh = hinhanhService.findById(id);
-            if (hinhAnh.isPresent()) {
-                model.addAttribute("hinhAnh", hinhAnh.get());
-            } else {
-                model.addAttribute("hinhAnh", null);
-            }
-            return "index";
-        }
 
-        @GetMapping("xoa/{id}")
+    @GetMapping("xoa/{id}")
         public String xoa(@PathVariable Integer id) {
             if(id != null ){
                 hinhanhService.xoa(id);
@@ -396,6 +396,23 @@ public class sanphanController {
     }
 
 
+
+    @PutMapping("/{id}/update-image")
+    public ResponseEntity<?> updateImage(@PathVariable Integer id, @RequestParam("imagePath") MultipartFile imagePath) {
+        System.out.println("Received image data for product " + id + ": " + imagePath.getOriginalFilename());
+
+        // Gọi phương thức dịch vụ để lưu ảnh
+        SanPham updatedSanPham = sanPhamService.updateImage(id, imagePath);
+        if (updatedSanPham != null) {
+            return ResponseEntity.ok(updatedSanPham);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sản phẩm không tồn tại");
+        }
+    }
+
+
+
+
     @GetMapping("/temporarySanPhamChiTietList")
     public ResponseEntity<List<SanPhamChiTiet>> getTemporarySanPhamChiTietList() {
         List<SanPhamChiTiet> list = sanPhamService.getTemporarySanPhamChiTietList();
@@ -408,7 +425,7 @@ public class sanphanController {
     @GetMapping("/sanpham/chitiet")
     @ResponseBody
     public SanPham getSanPhamChiTiet(@RequestParam("id") Integer id) {
-        return sanPhamService.Listtimkiemsp(id); // Phương thức trả về chi tiết sản phẩm theo ID
+        return sanPhamService.Listtimkiemsp(id);
     }
     @PostMapping("/sanpham/update")
     public ResponseEntity<String> updateSanPhamChiTiet(@RequestBody List<SanPhamChiTietDTO> updates) {
@@ -457,11 +474,28 @@ public class sanphanController {
                     .body("Có lỗi xảy ra khi cập nhật: " + e.getMessage());
         }
     }
+    
 
+        @PostMapping("/sanpham/updateStatus")
+        public ResponseEntity<Void> updateProductStatus(@RequestBody Map<String, Object> statusUpdate) {
+            try {
+                // Kiểm tra xem các khóa có tồn tại không trước khi chuyển đổi giá trị
+                if (statusUpdate.containsKey("trangthai") && statusUpdate.containsKey("sanPhamId")) {
+                    int trangThai = Integer.parseInt(statusUpdate.get("trangthai").toString());
+                    Integer sanPhamId = Integer.valueOf(statusUpdate.get("sanPhamId").toString());
+                    System.out.println(trangThai == 1 ? "dangban":"ngungban");
+                    sanPhamService.updateProductStatus(trangThai, sanPhamId);
+                    return ResponseEntity.ok().build();
+                } else {
+                    return ResponseEntity.badRequest().build();
+                }
+            } catch (Exception e) {
+                // Log lỗi chi tiết
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
 
-
-
-
+    }
 
 
 

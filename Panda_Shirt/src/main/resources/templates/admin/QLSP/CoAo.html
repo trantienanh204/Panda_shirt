@@ -74,7 +74,9 @@
         </tr>
         </thead>
         <tbody>
-
+        <tr th:if="${list.empty}">
+            <td colspan="7" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="coAo,i : ${list}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${coAo.ma}"></td>
@@ -126,7 +128,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${list.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/chatlieu/hienthi(page=${currentPage + 1}, tenca=${tenca}, trangthai=${trangthai})}"
                    aria-label="Next">

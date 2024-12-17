@@ -2,6 +2,7 @@ package com.example.demo.Controller.quenmatkhau;
 
 
 import com.example.demo.entity.NhanVien;
+import com.example.demo.entity.TaiKhoan;
 import com.example.demo.service.QuenmatkhauService;
 
 
@@ -46,10 +47,10 @@ public class quenmatkhauController {
             return "quenmatkhau/QuenMatKhai";
         }
 
-        NhanVien nhanVien = quenmatkhauService.timkiemnhanvien(tentaikhoan);
+        TaiKhoan nhanVien = quenmatkhauService.timkiemnhanvien(tentaikhoan);
 
         if (nhanVien != null) {
-            String toEmail = nhanVien.getTentaikhoan();
+            String toEmail = nhanVien.getTenDangNhap();
             if (quenmatkhauService.sendEmail(toEmail)) {
                 session.setAttribute("email", toEmail);
                 return "quenmatkhau/nhapcapcha";
@@ -86,14 +87,13 @@ public class quenmatkhauController {
                              HttpSession session, Model model) {
 
         String email = (String) session.getAttribute("email");
-        NhanVien nhanVien = quenmatkhauService.timkiemnhanvien(email);
+        TaiKhoan taiKhoan = quenmatkhauService.timkiemnhanvien(email);
 
-        if (nhanVien != null) {
+        if (taiKhoan != null) {
             if (matkhaumoi.equals(matkhauXacNhan)) {
                 String hashedPassword = BCrypt.hashpw(matkhauXacNhan, BCrypt.gensalt());
-                nhanVien.setMatkhau(hashedPassword);
-                quenmatkhauService.themnhanvien(nhanVien);
-
+                taiKhoan.setMatKhau(hashedPassword);
+                quenmatkhauService.themnhanvien(taiKhoan);
                 model.addAttribute("successMessage", "Đổi mật khẩu thành công!");
                 return "Login";
             } else {

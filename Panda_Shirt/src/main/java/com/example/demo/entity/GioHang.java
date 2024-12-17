@@ -24,7 +24,7 @@ public class GioHang {
     private Integer soluong;
 
     @Column(name = "TONG_TIEN")
-    private double tongtien;
+    private BigDecimal tongtien;
 
     @ManyToOne
     @JoinColumn(name = "ID_KHACH_HANG", referencedColumnName = "id")

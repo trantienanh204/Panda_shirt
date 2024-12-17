@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class SanPhamService {
     @Autowired
-    sanPhamRepository sanPhamRepository;
+    SanPhamRepository sanPhamRepository;
     @Autowired
     ChatLieuRespository chatLieuRespository;
     @Autowired
@@ -47,37 +47,44 @@ public class SanPhamService {
     private final int size = 5;
 
     public Page<SanPham> hienThiSanPhamTheoDieuKien(int page, String tensp, Integer trangthai) {
-        Sort sort = Sort.by(Sort.Direction.ASC,"id");
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"id");
+
 
         Pageable pageable = PageRequest.of(page, size,sort);
         return sanPhamRepository.findByTenspAndTrangthai(tensp, trangthai, pageable);
     }
 
     public List<SanPham> getallsp() {
-        return sanPhamRepository.findAll();
-    }
-    public List<NhaSanXuat> getallNXS() {
-        return nsxRepository.findAll();
-    }
-    public List<DanhMuc> getallDanhmuc() {
-        return danhMucRepository.findAll();
-    }
-    public List<ChatLieu> getallCL() {
-        return chatLieuRespository.findAll();
-    }
-    public List<ThuongHieu> getallthuonghieu() {
-        return thuongHieuRepository.findAll();
-    }
-    public List<CoAo> getallcoao() {
-        return coAoRepository.findAll();
-    }
-    public List<MauSac> getallmausac() {
-        return mauSacRepsitory.findAll();
-    }
-    public List<KichThuoc> getallkichco() {
-        return kichThuocRepository.findAll();
+
+        return sanPhamRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
+    public List<NhaSanXuat> getallNXS() {
+        return nsxRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+    public List<DanhMuc> getallDanhmuc() {
+        return danhMucRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+    public List<ChatLieu> getallCL() {
+        return chatLieuRespository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+    public List<ThuongHieu> getallthuonghieu() {
+        return thuongHieuRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+    public List<CoAo> getallcoao() {
+        return coAoRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+    public List<MauSac> getallmausac() {
+        return mauSacRepsitory.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+    public List<KichThuoc> getallkichco() {
+        return kichThuocRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+
+    }
+    public void saveSanPhamChiTiet(SanPhamChiTiet sanPhamChiTiet) {
+        sanPhamChiTietRepository.save(sanPhamChiTiet);
+    }
 
     private List<SanPhamChiTiet> temporarySanPhamChiTietList = new ArrayList<>();
 
@@ -228,8 +235,6 @@ public class SanPhamService {
         return exists;
     }
 
-
-
     public void addsanpham(SanPham sanPham) {
         sanPhamRepository.save(sanPham);
     }
@@ -254,22 +259,118 @@ public class SanPhamService {
         coAoRepository.save(coAo);
     }
 
+//    @Transactional
+//    public void saveSanPham(SanPhamDTO sanPhamDTO) {
+//        if (sanPhamDTO == null || sanPhamDTO.getTenSanPham() == null) {
+//            throw new IllegalArgumentException("Thông tin sản phẩm không hợp lệ!");
+//        }
+//
+//        SanPham sanPham = sanPhamRepository.findById(sanPhamDTO.getTenSanPham())
+//                .orElseThrow(() -> new EntityNotFoundException("Sản phẩm không tìm thấy với tên: " + sanPhamDTO.getTenSanPham()));
+//
+//
+//
+//// Lấy tất cả chi tiết sản phẩm theo ID của sản phẩm
+//        List<SanPhamChiTiet> chiTietSanPhamList = sanPhamChiTietRepository.findBySanPhamId(sanPham.getId());
+//
+//// In ra các chi tiết sản phẩm để kiểm tra
+//        chiTietSanPhamList.forEach(chitiet -> {
+//            System.out.println("ID: " + chitiet.getId() + ", Số lượng: " + chitiet.getSoluongsanpham());
+//        });
+//
+//// Kiểm tra và tính tổng số lượng sản phẩm từ chi tiết sản phẩm
+//        int totalQuantity = chiTietSanPhamList.stream()
+//                .filter(chitiet -> chitiet.getSoluongsanpham() != null)
+//                .mapToInt(SanPhamChiTiet::getSoluongsanpham)
+//                .sum();
+//        sanPham.setSoluongsp(totalQuantity);
+//
+//// In ra tổng số lượng sản phẩm
+//        System.out.println("Tổng số lượng sản phẩm: " + totalQuantity);
+//
+//
+//
+//        // Tìm các thông tin liên quan như danh mục, thương hiệu, chất liệu, nhà sản xuất, cổ áo
+//        DanhMuc danhMuc = danhMucRepository.findById(sanPhamDTO.getDanhMucId())
+//                .orElseThrow(() -> new EntityNotFoundException("Danh mục không tìm thấy với ID: " + sanPhamDTO.getDanhMucId()));
+//        sanPham.setDanhMuc(danhMuc);
+//
+//        ThuongHieu thuongHieu = thuongHieuRepository.findById(sanPhamDTO.getThuongHieuId())
+//                .orElseThrow(() -> new EntityNotFoundException("Thương hiệu không tìm thấy với ID: " + sanPhamDTO.getThuongHieuId()));
+//        sanPham.setThuongHieu(thuongHieu);
+//
+//        ChatLieu chatLieu = chatLieuRespository.findById(sanPhamDTO.getChatLieuId())
+//                .orElseThrow(() -> new EntityNotFoundException("Chất liệu không tìm thấy với ID: " + sanPhamDTO.getChatLieuId()));
+//        sanPham.setChatLieu(chatLieu);
+//
+//        NhaSanXuat nhaSanXuat = nsxRepository.findById(sanPhamDTO.getNhaSanXuatId())
+//                .orElseThrow(() -> new EntityNotFoundException("Nhà sản xuất không tìm thấy với ID: " + sanPhamDTO.getNhaSanXuatId()));
+//        sanPham.setNhaSanXuat(nhaSanXuat);
+//
+//        CoAo coAo = coAoRepository.findById(sanPhamDTO.getCoAoId())
+//                .orElseThrow(() -> new EntityNotFoundException("Cổ áo không tìm thấy với ID: " + sanPhamDTO.getCoAoId()));
+//        sanPham.setCoAo(coAo);
+//
+//        // Duyệt qua từng chi tiết sản phẩm trong DTO
+//        if (sanPhamDTO.getChiTietSanPham() != null) {
+//            List<SanPhamChiTiet> existingChiTietList = sanPham.getSanPhamChiTietList();
+//
+//            sanPhamDTO.getChiTietSanPham().forEach(chiTietDTO -> {
+//                String colorInput = chiTietDTO.getMauSac();
+//                String color = colorInput.contains(":") ? colorInput.split(":")[1].trim() : colorInput;
+//
+//                // Tìm màu sắc và kích thước
+//                MauSac mauSac = mauSacRepsitory.findByTen(color)
+//                        .orElseThrow(() -> new EntityNotFoundException("Màu sắc không tìm thấy với tên: " + color));
+//                KichThuoc kichThuoc = kichThuocRepository.findByten(chiTietDTO.getKichThuoc())
+//                        .orElseThrow(() -> new EntityNotFoundException("Kích thước không tìm thấy với tên: " + chiTietDTO.getKichThuoc()));
+//
+//                SanPhamChiTiet existingChiTiet = existingChiTietList.stream()
+//                        .filter(chiTiet -> chiTiet.getMauSac().equals(mauSac) && chiTiet.getKichThuoc().equals(kichThuoc))
+//                        .findFirst()
+//                        .orElse(null);
+//
+//                // Sử dụng images từ chiTietDTO
+////                byte[] imageBytes = chiTietDTO.getImages();
+////                if (imageBytes != null) {
+////                    // Chuyển đổi mảng byte thành chuỗi base64
+////                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+////                    System.out.println("Base64 Image: " + base64Image);
+////                } else {
+////                    System.out.println("Không có dữ liệu hình ảnh.");
+////                }
+////                System.out.println("Đang kiểm tra hình ảnh: " + (imageBytes != null ? imageBytes.length : "null"));
+////                if (imageBytes == null || imageBytes.length == 0) {
+////                    throw new IllegalArgumentException("Hình ảnh không hợp lệ!");
+////                }
+//
+//                if (existingChiTiet != null) {
+//                    existingChiTiet.setSoluongsanpham(existingChiTiet.getSoluongsanpham() + chiTietDTO.getSoLuong());
+//                } else {
+//                    SanPhamChiTiet newChiTiet = new SanPhamChiTiet();
+//                    newChiTiet.setMauSac(mauSac);
+//                    newChiTiet.setKichThuoc(kichThuoc);
+//                    newChiTiet.setDongia(chiTietDTO.getGia());
+//                    newChiTiet.setSoluongsanpham(chiTietDTO.getSoLuong());
+//                    newChiTiet.setSanPham(sanPham);
+//                    newChiTiet.setAnhSanPhamChiTiet(null);
+////                    System.out.println("Mã ảnh: " + (imageBytes != null ? imageBytes.length : "null"));
+//                    sanPham.getSanPhamChiTietList().add(newChiTiet);
+//                }
+//            });
+//        }
+//        sanPhamRepository.save(sanPham);
+//    }
+
     @Transactional
     public void saveSanPham(SanPhamDTO sanPhamDTO) {
         if (sanPhamDTO == null || sanPhamDTO.getTenSanPham() == null) {
             throw new IllegalArgumentException("Thông tin sản phẩm không hợp lệ!");
         }
 
+        // Giả sử sản phẩm luôn tồn tại trước
         SanPham sanPham = sanPhamRepository.findById(sanPhamDTO.getTenSanPham())
                 .orElseThrow(() -> new EntityNotFoundException("Sản phẩm không tìm thấy với tên: " + sanPhamDTO.getTenSanPham()));
-
-        int totalQuantity = sanPhamDTO.getChiTietSanPham() != null
-                ? sanPhamChiTietRepository.findBySanPhamId(sanPham.getId()).stream()
-                .mapToInt(chitiet -> chitiet.getSoluongsanpham() != null ? chitiet.getSoluongsanpham() : 0)
-                .sum()
-                : 0;
-        sanPham.setSoluongsp(totalQuantity);
-        System.out.println("Tổng số lượng sản phẩm: " + totalQuantity);
 
         // Tìm các thông tin liên quan như danh mục, thương hiệu, chất liệu, nhà sản xuất, cổ áo
         DanhMuc danhMuc = danhMucRepository.findById(sanPhamDTO.getDanhMucId())
@@ -292,11 +393,16 @@ public class SanPhamService {
                 .orElseThrow(() -> new EntityNotFoundException("Cổ áo không tìm thấy với ID: " + sanPhamDTO.getCoAoId()));
         sanPham.setCoAo(coAo);
 
+        // Khởi tạo danh sách chi tiết sản phẩm nếu chưa có
+        if (sanPham.getSanPhamChiTietList() == null) {
+            sanPham.setSanPhamChiTietList(new ArrayList<>());
+        }
+
+        List<SanPhamChiTiet> existingChiTietList = sanPham.getSanPhamChiTietList();
+
         // Duyệt qua từng chi tiết sản phẩm trong DTO
         if (sanPhamDTO.getChiTietSanPham() != null) {
-            List<SanPhamChiTiet> existingChiTietList = sanPham.getSanPhamChiTietList();
-
-            sanPhamDTO.getChiTietSanPham().forEach(chiTietDTO -> {
+            for (SanPhamChiTietDTO chiTietDTO : sanPhamDTO.getChiTietSanPham()) {
                 String colorInput = chiTietDTO.getMauSac();
                 String color = colorInput.contains(":") ? colorInput.split(":")[1].trim() : colorInput;
 
@@ -306,42 +412,65 @@ public class SanPhamService {
                 KichThuoc kichThuoc = kichThuocRepository.findByten(chiTietDTO.getKichThuoc())
                         .orElseThrow(() -> new EntityNotFoundException("Kích thước không tìm thấy với tên: " + chiTietDTO.getKichThuoc()));
 
+                // Tìm kiếm sản phẩm chi tiết hiện có
                 SanPhamChiTiet existingChiTiet = existingChiTietList.stream()
-                        .filter(chiTiet -> chiTiet.getMauSac().equals(mauSac) && chiTiet.getKichThuoc().equals(kichThuoc))
+                        .filter(chiTiet -> chiTiet.getMauSac().getId().equals(mauSac.getId()) && chiTiet.getKichThuoc().getId().equals(kichThuoc.getId()))
                         .findFirst()
                         .orElse(null);
 
-                // Sử dụng images từ chiTietDTO
-//                byte[] imageBytes = chiTietDTO.getImages();
-//                if (imageBytes != null) {
-//                    // Chuyển đổi mảng byte thành chuỗi base64
-//                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-//                    System.out.println("Base64 Image: " + base64Image);
-//                } else {
-//                    System.out.println("Không có dữ liệu hình ảnh.");
-//                }
-//                System.out.println("Đang kiểm tra hình ảnh: " + (imageBytes != null ? imageBytes.length : "null"));
-//                if (imageBytes == null || imageBytes.length == 0) {
-//                    throw new IllegalArgumentException("Hình ảnh không hợp lệ!");
-//                }
-
                 if (existingChiTiet != null) {
+                    // Cập nhật sản phẩm chi tiết hiện có
                     existingChiTiet.setSoluongsanpham(existingChiTiet.getSoluongsanpham() + chiTietDTO.getSoLuong());
+                    existingChiTiet.setDongia(chiTietDTO.getGia());
+                    if (chiTietDTO.getImages() != null) {
+                        existingChiTiet.setAnhSanPhamChiTiet(chiTietDTO.getImages());
+                    }
                 } else {
+                    // Thêm sản phẩm chi tiết mới
                     SanPhamChiTiet newChiTiet = new SanPhamChiTiet();
+                    String SPCT = sanPhamChiTietRepository.findMaxspct();
+                    int demhdCT;
+                    if (SPCT == null) {
+                        demhdCT = 1; // Nếu chưa có hóa đơn nào thì bắt đầu từ 1
+                    } else {
+                        // Thêm kiểm tra định dạng mã sản phẩm chi tiết
+                        if (SPCT.length() > 2 && SPCT.startsWith("SPCT")) {
+                            try {
+                                demhdCT = Integer.parseInt(SPCT.substring(4)) + 1; // Lấy phần số và tăng lên 1
+                            } catch (NumberFormatException e) {
+                                throw new RuntimeException("Lỗi định dạng số từ mã sản phẩm chi tiết: " + SPCT, e);
+                            }
+                        } else {
+                            throw new RuntimeException("Mã sản phẩm chi tiết không đúng định dạng: " + SPCT);
+                        }
+                    }
+                    String maspct = String.format("SPCT%03d", demhdCT);
+                    newChiTiet.setMaspct(maspct);
                     newChiTiet.setMauSac(mauSac);
                     newChiTiet.setKichThuoc(kichThuoc);
                     newChiTiet.setDongia(chiTietDTO.getGia());
                     newChiTiet.setSoluongsanpham(chiTietDTO.getSoLuong());
                     newChiTiet.setSanPham(sanPham);
-                    newChiTiet.setAnhSanPhamChiTiet(null);
-//                    System.out.println("Mã ảnh: " + (imageBytes != null ? imageBytes.length : "null"));
-                    sanPham.getSanPhamChiTietList().add(newChiTiet);
+                    newChiTiet.setNgaytao(LocalDate.now());
+                    newChiTiet.setTrangthai(true);
+                    newChiTiet.setAnhSanPhamChiTiet(chiTietDTO.getImages());
+                    existingChiTietList.add(newChiTiet); // Thêm vào danh sách hiện có
                 }
-            });
+            }
         }
+
+        // Cập nhật tổng số lượng sản phẩm sau khi thêm hoặc cập nhật các chi tiết sản phẩm
+        int totalQuantity = existingChiTietList.stream()
+                .mapToInt(SanPhamChiTiet::getSoluongsanpham)
+                .sum();
+        sanPham.setSoluongsp(totalQuantity);
+
+        // In ra tổng số lượng sản phẩm
+        System.out.println("Tổng số lượng sản phẩm: " + totalQuantity);
+
         sanPhamRepository.save(sanPham);
     }
+
 
     public Optional<SanPham> findSanPhamById(Integer id) {
         return sanPhamRepository.findById(id);
@@ -368,24 +497,13 @@ public class SanPhamService {
         return sanPhamChiTietRepository.findkichThuocsBySanPhamId(sanPhamId);
     }
 
-    public List<Map<String, Object>> getSizesAndColors(Integer sanPhamId) {
-        List<Object[]> result = sanPhamChiTietRepository.findSizesAndColorsBySanPhamId(sanPhamId);
-        List<Map<String, Object>> sizesAndColors = new ArrayList<>();
-
-        for (Object[] row : result) {
-            KichThuoc size = (KichThuoc) row[0];
-            MauSac color = (MauSac) row[1];
-
-            System.out.println("Size: " + size.getTen() + ", Color: " + color.getTen()); // Kiểm tra dữ liệu
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("size", size);
-            map.put("color", color);
-            sizesAndColors.add(map);
-        }
-
-        return sizesAndColors;
-    }
+    public List<Map<String, Object>> getSizesAndColors(Integer sanPhamId)
+    { List<Map<String, Object>> sizesAndColors = new ArrayList<>();
+    List<SanPhamChiTiet> chiTiets = sanPhamChiTietRepository.findBySanPhamId(sanPhamId);
+    for (SanPhamChiTiet chiTiet : chiTiets) { Map<String, Object> map = new HashMap<>();
+        map.put("size", chiTiet.getKichThuoc()); map.put("color", chiTiet.getMauSac());
+        map.put("sanPhamChiTiet", chiTiet); // Bao gồm thông tin SanPhamChiTiet
+         sizesAndColors.add(map); } return sizesAndColors; }
 
 //    public List<Map<String, Object>> getSizesAndColorsWithPriceAndQuantity(Integer productId) {
 //        return sanPhamChiTietRepository.getSizesAndColorsWithPriceAndQuantity(productId);
@@ -396,7 +514,8 @@ public class SanPhamService {
     }
 
 
-
+    public List<SanPham> findByDanhMuc(DanhMuc danhMuc) { return sanPhamRepository.findByDanhMuc(danhMuc); }
+//    public List<SanPham> findAllByOrderByGiaAsc() { return sanPhamRepository.findAllByOrderByNgaytaoDesc(); } public List<SanPham> findAllByOrderByNgayTaoDesc() { return sanPhamRepository.findAllByOrderByNgayTaoDesc(); }
     public SanPham Listtimkiemsp(Integer id) {
         return  sanPhamRepository.findById(id).orElse(null);
     }
@@ -412,6 +531,71 @@ public class SanPhamService {
     public void addspct(SanPhamChiTiet sanPhamChiTiet) {
         spctRepository.save(sanPhamChiTiet);
     }
+
+
+
+    public SanPham updateImage(Integer id, MultipartFile imagePath) {
+        Optional<SanPham> optionalSanPham = sanPhamRepository.findById(id);
+        if (optionalSanPham.isPresent()) {
+            SanPham sanPham = optionalSanPham.get();
+            try {
+                // Lưu ảnh vào cơ sở dữ liệu dưới dạng byte[]
+                sanPham.setAnhsp(imagePath.getBytes());
+                return sanPhamRepository.save(sanPham);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+
+
+//        public int findIdBySizeAndColorId(Integer sizeId, Integer colorId,Integer productId) {
+//            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findBySizeIdColorIdAndProductId(sizeId, colorId,productId);
+//            if (sanPhamChiTiet != null) {
+//                return sanPhamChiTiet.getId();
+//            } else {
+//                throw new RuntimeException("Không tìm thấy sản phẩm chi tiết với kích thước và màu sắ  public SanPham updateImage(Integer id, String imagePath) {
+//        Optional<SanPham> optionalSanPham = sanPhamRepository.findById(id);
+//        if (optionalSanPham.isPresent()) {
+//            SanPham sanPham = optionalSanPham.get();
+//            sanPham.setAnhsp(imagePath); // Lưu đường dẫn ảnh vào thuộc tính `anhsp`
+//            return sanPhamRepository.save(sanPham);
+//        }
+//        return null;
+//    }c đã chọn.");
+//            }
+//
+//        }
+
+
+        public SanPhamService(SanPhamRepository sanPhamRepository) {
+            this.sanPhamRepository = sanPhamRepository;
+        }
+
+        public List<SanPham> searchSanPham(String query) {
+            return sanPhamRepository.findByTenspContainingIgnoreCase(query);
+        }
+
+        public List<SanPham> searchSanPhamByCategory(String query, int categoryId) {
+            return sanPhamRepository.findByTenspContainingIgnoreCaseAndDanhMucId(query, categoryId);
+        }
+
+
+
+
+        public void updateProductStatus(int trangThai, Integer sanPhamId) {
+        SanPham sp = sanPhamRepository.findById(sanPhamId).orElse(null);
+        if(sp!= null){
+            sp.setTrangthai(trangThai);
+            sanPhamRepository.save(sp);
+        }
+
+        }
+
+
 
 
 

@@ -26,7 +26,8 @@ public interface MauSacRepsitory extends JpaRepository<MauSac,Integer> {
 
     @Query("SELECT ms FROM MauSac ms WHERE " +
             "(?1 IS NULL OR ms.ten LIKE %?1%) AND " +
-            "(?2 IS NULL OR ms.trangthai = ?2)")
+            "(?2 IS NULL OR ms.trangthai = ?2)"+
+            "ORDER BY ms.ngaytao DESC")
     Page<MauSac> findByTenAndTrangthai(String tenms, Integer trangthai, Pageable pageable);
 
 }

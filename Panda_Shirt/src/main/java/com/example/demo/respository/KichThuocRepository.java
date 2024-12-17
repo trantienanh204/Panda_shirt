@@ -21,7 +21,8 @@ public interface KichThuocRepository extends JpaRepository<KichThuoc,Integer> {
 
     @Query("SELECT kt FROM KichThuoc kt WHERE " +
             "(?1 IS NULL OR kt.ten LIKE %?1%) AND " +
-            "(?2 IS NULL OR kt.trangthai = ?2)")
+            "(?2 IS NULL OR kt.trangthai = ?2)"+
+            "ORDER BY kt.ngaytao DESC")
     Page<KichThuoc> findByTenAndTrangthaiKT(String tenms, Integer trangthai, Pageable pageable);
 
 }

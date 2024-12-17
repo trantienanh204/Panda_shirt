@@ -1,14 +1,14 @@
 package com.example.demo.Controller.admin.QLSP;
 
-import com.example.demo.entity.DanhMuc;
-import com.example.demo.respository.ThuongHieuRepository;
 import com.example.demo.entity.ThuongHieu;
+import com.example.demo.respository.ThuongHieuRepository;
 import com.example.demo.service.ThuongHieuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -54,7 +54,7 @@ public class ThuongHieuController {
     }
 
     @GetMapping("update")
-    public String formupdate(@RequestParam("id") int id, Model model) {
+    public String formupdate(@RequestParam("id") int id, Model model, RedirectAttributes redirectAttributes) {
         String role = "admin"; //Hoặc lấy giá trị role từ session hoặc service
         model.addAttribute("role", role);
         model.addAttribute( "thuonghieu", thuongHieuRepository.findById(id));
@@ -62,7 +62,7 @@ public class ThuongHieuController {
     }
 
     @GetMapping("change")
-    public String delete(@RequestParam("id") int id, Model model) {
+    public String change(@RequestParam("id") int id, Model model,RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         ThuongHieu th = thuongHieuRepository.findById(id).orElse(null);
@@ -73,13 +73,14 @@ public class ThuongHieuController {
                 th.setTrangthai(1);
             }
             thuongHieuRepository.save(th);
+            redirectAttributes.addFlashAttribute("thongbao","Thành công !");
         }
         return "redirect:/panda/thuonghieu";
     }
 
 
     @PostMapping("add")
-    public String add(@ModelAttribute("thuonghieu") ThuongHieu thuongHieu , Model model) {
+    public String add(@ModelAttribute("thuonghieu") ThuongHieu thuongHieu , Model model,RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         model.addAttribute( "nsx", thuongHieu);
@@ -91,37 +92,43 @@ public class ThuongHieuController {
 
         Matcher tennsxMatcher = pattern.matcher(thuongHieu.getMathuonghieu());
         Matcher mansxMatcher = patternma.matcher(thuongHieu.getMathuonghieu());
+        boolean loi = true ;
 
         if(thuongHieu.getMathuonghieu().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }else if (!mansxMatcher.matches()) {
             model.addAttribute("errorma" ,"Mã chỉ được chứa chữ và số");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }
         if(thuongHieuRepository.existsThuongHieuByMathuonghieu(thuongHieu.getMathuonghieu())){
             model.addAttribute("errorma","Mã đã tồn tại");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }
 
         if(thuongHieu.getTenthuonghieu().isEmpty()){
             model.addAttribute("errorten","Không được để trống");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }else if (!tennsxMatcher.matches()) {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }
         if(thuongHieuRepository.existsThuongHieuByTenthuonghieu(thuongHieu.getTenthuonghieu())){
             model.addAttribute("errorten","Tên đã tồn tại");
-            return "admin/QLSP/ADD/AddThuongHieu";
+            loi = false;
         }
-
-        thuongHieuRepository.save(thuongHieu);
-        return "redirect:/panda/thuonghieu";
-    }
+        if(loi == false) {
+            model.addAttribute("thongbao","Thất bại!");
+            return "admin/QLSP/ADD/AddThuongHieu";
+        }else{
+            redirectAttributes.addFlashAttribute("thongbao","Thêm thành công!");
+            thuongHieuRepository.save(thuongHieu);
+            return "redirect:/panda/thuonghieu";
+        }
+}
 
     @PostMapping("update")
-    public String update(@ModelAttribute("thuonghieu") ThuongHieu thuongHieu , Model model) {
+    public String update(@ModelAttribute("thuonghieu") ThuongHieu thuongHieu , Model model,RedirectAttributes redirectAttributes) {
         String role = "admin";
         model.addAttribute("role", role);
         model.addAttribute( "nsx", thuongHieu);
@@ -142,33 +149,39 @@ public class ThuongHieuController {
 
         ThuongHieu findma = thuongHieuRepository.findByMathuonghieuAndIdNot(ma,thuongHieu.getId());
         ThuongHieu findten = thuongHieuRepository.findByTenthuonghieuAndIdNot(ten,thuongHieu.getId());
-
+        boolean loi = true ;
         if(thuongHieu.getMathuonghieu().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }else if (!mansxMatcher.matches()) {
             model.addAttribute("errorma" ,"Mã chỉ được chứa chữ và số");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }
         if(findma != null){
             model.addAttribute("errorma","Mã đã tồn tại");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }
 
         if(thuongHieu.getTenthuonghieu().isEmpty()){
             model.addAttribute("errorten","Không được để trống");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }else if (!tennsxMatcher.matches()) {
             model.addAttribute("errorten", "Tên chỉ được chứa chữ và số");
-            return "admin/QLSP/UPDATE/UpdateThuongHieu";
+            loi = false;
         }
         if(findten != null){
             model.addAttribute("errorten","Tên đã tồn tại");
+            loi = false;
+        }
+        if(loi == false) {
+            model.addAttribute("thongbao","Thất bại!");
             return "admin/QLSP/UPDATE/UpdateThuongHieu";
+        }else{
+            redirectAttributes.addFlashAttribute("thongbao","Sửa thành công!");
+            thuongHieu.setNgaysua(LocalDate.now());
+            thuongHieuRepository.save(thuongHieu);
+            return "redirect:/panda/thuonghieu";
         }
 
-        thuongHieu.setNgaysua(LocalDate.now());
-        thuongHieuRepository.save(thuongHieu);
-        return "redirect:/panda/thuonghieu";
     }
 }

@@ -55,6 +55,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${listms.empty}">
+            <td colspan="7" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="ms,i: ${listms}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td th:text="${ms.ma}"></td>
@@ -107,7 +110,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${listms.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/mausac/hienthi(page=${currentPage + 1}, tenms=${tenms}, trangthai=${trangthai})}"
                    aria-label="Next">

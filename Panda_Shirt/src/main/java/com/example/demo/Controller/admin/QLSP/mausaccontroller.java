@@ -5,6 +5,7 @@ import com.example.demo.entity.MauSac;
 import com.example.demo.entity.SanPham;
 import com.example.demo.respository.MauSacRepsitory;
 import com.example.demo.service.MauSacService;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,6 +49,7 @@ public class mausaccontroller {
         model.addAttribute("trangthai", trangthai);
         model.addAttribute("MauSac", new MauSac());
         model.addAttribute("pageSize", listMS.getSize());
+
         return "/admin/QLSP/MauSac";
     }
 
@@ -81,6 +83,10 @@ public class mausaccontroller {
         }
         if (mauSac.getTen() == null || mauSac.getTen().length() < 2 || mauSac.getTen().length() > 14) {
             model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
+            return "admin/QLSP/ADD/AddMS";
+        }
+        if (!Character.isLetter(mauSac.getTen().charAt(0))) {
+            model.addAttribute("errorten", "Ký tự đầu tiên phải là chữ cái");
             return "admin/QLSP/ADD/AddMS";
         }
         if (mauSacRepsitory.existsMauSacByTen(mauSac.getTen())) {
@@ -141,12 +147,12 @@ public class mausaccontroller {
         String regex = "^[\\p{L}0-9\\s]+$";
 
         Pattern pattern = Pattern.compile(regex);
-
         Matcher tenmsMatcher = pattern.matcher(tenms);
 
         MauSac findma = mauSacRepsitory.findByMaAndIdNot(ma,mauSac.getId());
         MauSac findten = mauSacRepsitory.findByTenAndIdNot(tenms,mauSac.getId());
 
+        // Kiểm tra sự thay đổi
         if(mauSac.getMa().isEmpty()){
             model.addAttribute("errorma","Không được để trống");
             return "admin/QLSP/UPDATE/UpdateMS";
@@ -168,6 +174,10 @@ public class mausaccontroller {
         }
         if (mauSac.getTen() == null || mauSac.getTen().length() < 2 || mauSac.getTen().length() > 14) {
             model.addAttribute("errorten", "Tên phải lớn hơn 1 ký tự và nhỏ hơn 15 ký tự");
+            return "admin/QLSP/UPDATE/UpdateMS";
+        }
+        if (!Character.isLetter(mauSac.getTen().charAt(0))) {
+            model.addAttribute("errorten", "Ký tự đầu tiên phải là chữ cái");
             return "admin/QLSP/UPDATE/UpdateMS";
         }
         if(findten != null){

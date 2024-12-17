@@ -21,45 +21,31 @@
 </head>
 <body th:fragment="xemspct">
 <div class="container">
-    <h2 class="mt-4 text-center">Danh Sách Sản Phẩm</h2>
+    <a th:href="@{/panda/sanpham}">
+        <i class="fa-solid fa-arrow-right fa-flip-horizontal" style="color: #000000;"></i>
+    </a>
+    <h2 class="mt-4 text-center">Danh Sách Sản Phẩm Chi Tiết</h2>
 
-    <div class="filter-container mb-3">
-        <div class="row">
-            <div class="col-md-4">
-                <label for="filter-tensp">Tên sản phẩm</label>
-                <input type="text" id="filter-tensp" class="form-control" placeholder="Nhập tên sản phẩm" aria-label="Tên sản phẩm">
-            </div>
-            <div class="col-md-4">
-                <label for="filter-trangthai">Trạng thái</label>
-                <select id="filter-trangthai" class="form-select">
-                    <option value="">Tất cả</option>
-                    <option value="1">Đang bán</option>
-                    <option value="0">Ngừng bán</option>
-                </select>
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-                <button id="filter-button" class="btn btn-primary w-100"><i class="fa fa-search"></i> Tìm kiếm</button>
-            </div>
-        </div>
-    </div>
+
     <div class="table-container">
-        <h3><i class="fa-solid fa-list" style="color: #000;"></i> Danh sách sản phẩm chi tiết</h3>
+        <h3><i class="fa-solid fa-list" style="color: #000;"></i></h3>
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
             <tr>
                 <th style="width: 1%;"><input type="checkbox" id="select-all"></th>
+                <th style="width: 10%;">mã SPCT</th>
                 <th style="width: 10%;">Danh mục</th>
                 <th style="width: 7%;">NSX</th>
-                <th style="width: 10%;">Thương hiệu</th>
+                <th style="width: 6%;">Thương hiệu</th>
                 <th style="width: 7%;">Cổ áo</th>
                 <th style="width: 8%;">Chất liệu</th>
                 <th style="width: 8%;">Số lượng</th>
-                <th style="width: 8%;">Đơn giá</th>
+                <th style="width: 10%;">Đơn giá</th>
                 <th style="width: 8%;">Ngày tạo</th>
                 <th style="width: 8%;">Trạng thái</th>
-                <th style="width: 9%;">Kích thước</th>
+                <th style="width: 5%;">Kích thước</th>
                 <th style="width: 7%;">Màu sắc</th>
-                <th style="width: 15%;">Thao tác</th>
+<!--                <th style="width: 15%;">Thao tác</th>-->
             </tr>
             </thead>
             <tbody id="sanPhamDetails">
@@ -125,7 +111,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
 
-        // Ẩn nút Lưu thay đổi khi tải trang
         $('#saveChanges').hide();
 
         if (id) {
@@ -135,34 +120,39 @@
                 type: 'GET',
                 data: { id: id },
                 success: function(data) {
+                    console.log("Dữ liệu nhận được từ server:", data);
+
                     if (data.sanPhamChiTietList && data.sanPhamChiTietList.length > 0) {
                         let productDetailHtml = '';
-                        data.sanPhamChiTietList.forEach(function(chiTiet, index) {
+                        data.sanPhamChiTietList.forEach(function(chiTiet) {
+                            let kichThuoc = chiTiet.kichThuoc && typeof chiTiet.kichThuoc === 'object' ? chiTiet.kichThuoc.ten : 'Không có kích thước';
+                            let kichThuocId = chiTiet.kichThuoc && typeof chiTiet.kichThuoc === 'object' ? chiTiet.kichThuoc.id : '';
+                            let mauSac = chiTiet.mauSac && typeof chiTiet.mauSac === 'object' ? chiTiet.mauSac.ten : 'Không có màu sắc';
+                            let mauSacId = chiTiet.mauSac && typeof chiTiet.mauSac === 'object' ? chiTiet.mauSac.id : '';
+
                             productDetailHtml += `
-                                <tr data-id="${chiTiet.id}">
-                                    <td><input type="checkbox" class="select-row"></td>                                    <td>${data.danhMuc.tendanhmuc}</td>
-                                    <td>${data.nhaSanXuat.tennsx}</td>
-                                    <td>${data.thuongHieu.tenthuonghieu}</td>
-                                    <td>${data.coAo.ten}</td>
-                                    <td>${data.chatLieu.tenChatLieu}</td>
-                                    <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" disabled></td>
-                                    <td><input type="number" class="form-control dongia-edit" value="${chiTiet.dongia}" disabled></td>
-                                    <td>${data.ngayTao}</td>
-                                    <td>${data.trangthai === 1 ? 'Đang bán' : 'Ngừng bán'}</td>
-                                    <td>
-                                        <input type="hidden" class="kich-thuoc-id" value="${chiTiet.kichThuoc.id}">
-                                        ${chiTiet.kichThuoc.ten}
-                                    </td>
-                                    <td>
-                                        <input type="hidden" class="mau-sac-id" value="${chiTiet.mauSac.id}">
-                                        ${chiTiet.mauSac.ten}
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm">Sửa</button>
-                                        <button class="btn btn-danger btn-sm">Xóa</button>
-                                    </td>
-                                </tr>
-                            `;
+                            <tr data-id="${chiTiet.id}">
+                                <td><input type="checkbox" class="select-row"></td>
+                                <td>${chiTiet.maspct ? chiTiet.maspct : 'Không có mã'}</td>
+                                <td>${data.danhMuc ? data.danhMuc.tendanhmuc : 'Không có danh mục'}</td>
+                                <td>${data.nhaSanXuat ? data.nhaSanXuat.tennsx : 'Không có nhà sản xuất'}</td>
+                                <td>${data.thuongHieu ? data.thuongHieu.tenthuonghieu : 'Không có thương hiệu'}</td>
+                                <td>${data.coAo ? data.coAo.ten : 'Không có cổ áo'}</td>
+                                <td>${data.chatLieu ? data.chatLieu.tenChatLieu : 'Không có chất liệu'}</td>
+                                <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" min="0" disabled></td>
+                                <td><input type="number" class="form-control dongia-edit" value="${chiTiet.dongia}" disabled></td>
+                                <td>${chiTiet.ngaytao ? chiTiet.ngaytao : 'Không có ngày tạo'}</td>
+                                <td>${chiTiet.trangthai == 1 ? 'Đang bán' : 'Ngừng bán'}</td>
+                                <td>
+                                    <input type="hidden" class="kich-thuoc-id" value="${kichThuocId}">
+                                    ${kichThuoc}
+                                </td>
+                                <td>
+                                    <input type="hidden" class="mau-sac-id" value="${mauSacId}">
+                                    ${mauSac}
+                                </td>
+                            </tr>
+                        `;
                         });
                         $('#sanPhamDetails').html(productDetailHtml);
                     } else {
@@ -191,13 +181,12 @@
                 $('.soluong-edit, .dongia-edit').prop('disabled', true);
                 selectedRows.clear();
             }
-            // Cập nhật trạng thái nút Lưu thay đổi
             updateSaveButtonVisibility();
         });
 
         $(document).on('change', '.select-row', function() {
             const row = $(this).closest('tr');
-            const rowId = row.data('id'); // Lấy ID từ thuộc tính data-id
+            const rowId = row.data('id');
             if (this.checked) {
                 selectedRows.add(rowId);
                 row.find('.soluong-edit, .dongia-edit').prop('disabled', false);
@@ -205,12 +194,10 @@
                 selectedRows.delete(rowId);
                 row.find('.soluong-edit, .dongia-edit').prop('disabled', true);
             }
-            // Cập nhật trạng thái nút Lưu thay đổi
             updateSaveButtonVisibility();
         });
 
         function updateSaveButtonVisibility() {
-            // Hiển thị nút Lưu thay đổi nếu có ít nhất một hàng được chọn
             if (selectedRows.size > 0) {
                 $('#saveChanges').show();
             } else {
@@ -220,24 +207,31 @@
 
         $('#saveChanges').on('click', function() {
             const updates = [];
+            let totalQuantity = 0;
+
             $('#sanPhamDetails tr').each(function() {
                 const row = $(this);
                 const rowId = row.data('id');
                 if (selectedRows.has(rowId)) {
-                    const soluong = row.find('.soluong-edit').val();
+                    const soluong = Math.max(0, Number(row.find('.soluong-edit').val())); // Đảm bảo số lượng không âm
                     const dongia = row.find('.dongia-edit').val();
-                    // Lấy giá trị ID của màu sắc và kích thước
-                    const mauSacId = row.find('.mau-sac-id').val(); // Giá trị ID màu sắc
-                    const kichThuocId = row.find('.kich-thuoc-id').val(); // Giá trị ID kích thước
+                    const mauSacId = row.find('.mau-sac-id').val();
+                    const kichThuocId = row.find('.kich-thuoc-id').val();
+
+                    console.log(' trangThai trả về  = ' +soluong)
 
                     updates.push({
                         idSanPham: rowId,
-                        soLuong: Number(soluong),
+                        soLuong: soluong,
                         gia: Number(dongia),
                         mauSac: mauSacId,
-                        kichThuoc: kichThuocId
+                        kichThuoc: kichThuocId,
                     });
+
+                    totalQuantity += soluong;
+
                 }
+                console.log(' số lượng sp = ' +totalQuantity)
             });
 
             console.log("Updates before sending:", updates);
@@ -249,8 +243,24 @@
                     contentType: 'application/json',
                     data: JSON.stringify(updates),
                     success: function(response) {
-                        alert('Lưu thay đổi thành công!');
-                        location.reload();
+
+                        let trangThai = totalQuantity === 0 ? 0 : 1;
+                        console.log(' số lượng sp = ' +totalQuantity)
+                        console.log(' trangThai trả về  = ' +trangThai)
+                        $.ajax({
+                            url: '/panda/sanpham/updateStatus',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ trangthai: trangThai, sanPhamId: id }), // Gửi cả trạng thái và ID sản phẩm
+                            success: function() {
+                                alert(`Trạng thái sản phẩm đã được cập nhật thành ${trangThai === 0 ? 'hết hàng' : 'còn hàng'}!`);
+                                // location.reload();
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error updating product status:', xhr.responseText);
+                                alert('Có lỗi xảy ra khi cập nhật trạng thái sản phẩm! ' + xhr.responseText);
+                            }
+                        });
                     },
                     error: function(xhr, status, error) {
                         console.error('Error updating product details:', error);
@@ -263,7 +273,12 @@
         });
     });
 
-
 </script>
+
+
+
+
+
+
 </body>
 </html>

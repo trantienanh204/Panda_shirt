@@ -1,18 +1,21 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 
-@Data
+@Entity
+@Table(name = "HOA_DON_CHI_TIET")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "HOA_DON_CHI_TIET")
-@Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class HoaDonCT {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +26,9 @@ public class HoaDonCT {
 
     @Column(name = "SO_LUONG")
     private int soluong;
+
+    @Column(name = "TRANG_THAI")
+    private int trangthai;
 
     @Column(name = "DON_GIA")
     private BigDecimal dongia;
@@ -37,11 +43,23 @@ public class HoaDonCT {
     private String hinhthucthanhtoan;
 
     @ManyToOne
-    @JoinColumn(name = "ID_SAN_PHAM_CHI_TIET",referencedColumnName = "id")
+    @JoinColumn(name = "ID_SAN_PHAM_CHI_TIET", referencedColumnName = "id")
     private SanPhamChiTiet sanPhamChiTiet;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_HOA_DON",referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_HOA_DON", referencedColumnName = "id")
     private HoaDon hoaDon;
 
+    public String getFormattongtien() {
+        if (tongtien == null) {
+            return "0"; // Trả về nếu giá trị null
+        }
+        try {
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+            return formatter.format(tongtien);
+        } catch (NumberFormatException e) {
+            return "Không hợp lệ"; //
+        }
+    }
 }
+

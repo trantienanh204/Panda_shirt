@@ -33,7 +33,7 @@
             <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i> Tìm kiếm
         </button>
         <a class="btn btn-dark" th:href="@{/panda/tknhanvien}">
-            <i class="fa-solid fa-rotate-right" style="color: #ffffff;"></i> Làm mới
+            <i class="fa-solid fa-rotate-right" style="color: #ffffff;padding-top: 10px"></i> Làm mới
         </a>
     </div>
 </div>
@@ -72,6 +72,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${list.empty}">
+            <td colspan="10" style="text-align: center; color: red;">Không có dữ liệu</td>
+        </tr>
         <tr th:each="taikhoannv,i : ${list}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td>
@@ -101,15 +104,15 @@
             </td>
             <td>
                 <a style="margin-right: 10px" th:href="@{/panda/tknhanvien/update(id=${taikhoannv.id})}">
-                    <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
+                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
                 </a>
                 <a th:href="@{/panda/tknhanvien/change(id=${taikhoannv.id})}">
                     <i th:if="${taikhoannv.trangthai == 1}">
-                        <i class="fa-solid fa-toggle-on"  style="color: #00040a;">
+                        <i class="fa-solid fa-toggle-on"  style="color: #00040a; font-size: 25px">
                         </i>
                     </i>
                     <i th:if="${taikhoannv.trangthai == 0}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a;">
+                        <i class="fa-solid fa-toggle-off" style="color: #00040a; font-size: 25px">
                         </i>
                     </i>
                 </a>
@@ -136,7 +139,7 @@
             </li>
 
             <!-- Nút Next -->
-            <li class="page-item" th:classappend="${currentPage == totalPage - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${list.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/panda/tknhanvien(page=${currentPage + 1},manv=${manv},tennv=${tennv}, trangThai=${trangthai})}"
                    aria-label="Next">

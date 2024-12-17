@@ -40,6 +40,9 @@ public class DonHang {
     @Column(name = "TONGTIEN")
     private BigDecimal tongtien;
 
+    @Column(name = "HINH_THUC_MUA")
+    private Integer hinhthuc;
+
     @Column(name = "DIACHI")
     private String diaChi;
 
@@ -55,5 +58,7 @@ public class DonHang {
     @Column(name = "Mota")
     private String lydohuy;
 
+    @Column(name = "TRANG_THAI_OFFLINE")
+    private Boolean trangthaioffline;
 
 }

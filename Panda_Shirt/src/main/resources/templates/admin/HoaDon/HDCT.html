@@ -32,9 +32,10 @@
             <td th:text="${hdct.sanPhamChiTiet.sanPham.tensp}"></td>
             <td th:text="${hdct.sanPhamChiTiet.kichThuoc.ten}"></td>
             <td th:text="${hdct.sanPhamChiTiet.mauSac.ten}"></td>
-            <td th:text="${hdct.sanPhamChiTiet.dongia}"></td>
+            <td th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.dongia, 0, 'COMMA')}"></td>
             <td th:text="${hdct.soluong}"></td>
-            <td th:text="${hdct.tongtien}"></td>
+            <td th:text="${#numbers.formatDecimal(hdct.tongtien, 0, 'COMMA')}"></td>
+<!--            <td th:text="${hdct.tongtien}"></td>-->
 <!--            <td>-->
 <!--                <a th:href="@{/panda/hoadon/update(id=${hd.id})}" style="margin-right:15px">-->
 <!--                    <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 28px"></i>-->

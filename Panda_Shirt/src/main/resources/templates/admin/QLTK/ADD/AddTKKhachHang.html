@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/SideBar::dynamic(~{::body})}">
 <head>
@@ -52,29 +53,30 @@
             <a th:href="@{/panda/tkkhachhang}">
                 <i class="fa-solid fa-arrow-right fa-flip-horizontal" style="color: #000000;"></i>
             </a>
-            <h2>Thêm Mới Tài Khoản Khách Hàng</h2>
+            <h2 class="text-center">Thêm Mới Tài Khoản Khách Hàng</h2>
         </div>
         <div class="card-body p-4">
             <h3>Thông Tin Tài Khoản</h3>
             <form th:action="@{/panda/tkkhachhang/save}" method="post" enctype="multipart/form-data"
                   th:object="${khachHang}">
-                <div class="form-group">
-                    <label for="image"> Ảnh Đại Diện:</label>
-                    <input type="file" class="form-control-file" id="image" name="file" accept="image/*" required>
-                </div>
+
 
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label> Mã Khách Hàng:</label>
-                        <input type="text" class="form-control" th:field="*{makhachhang}"
-                               placeholder="Mã khách hàng">
-                        <div th:if="${#fields.hasErrors('makhachhang')}" class="text-danger">
-                            <span th:errors="*{makhachhang}"></span>
-                        </div>
-                        <div th:if="${errorma}" class="text-danger">
-                            <span th:text="${errorma}"></span>
-                        </div>
+                        <label for="image"> Ảnh Đại Diện:</label>
+                        <input type="file" class="form-control-file" id="image" name="file" accept="image/*" required>
                     </div>
+<!--                    <div class="form-group col-md-6">-->
+<!--                        <label> Mã Khách Hàng:</label>-->
+<!--                        <input type="text" class="form-control" th:field="*{makhachhang}"-->
+<!--                               placeholder="Mã khách hàng">-->
+<!--                        <div th:if="${#fields.hasErrors('makhachhang')}" class="text-danger">-->
+<!--                            <span th:errors="*{makhachhang}"></span>-->
+<!--                        </div>-->
+<!--                        <div th:if="${errorma}" class="text-danger">-->
+<!--                            <span th:text="${errorma}"></span>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
                     <div class="form-group col-md-6">
                         <label> Họ Tên:</label>
@@ -83,26 +85,38 @@
                         <div th:if="${#fields.hasErrors('tenkhachhang')}" class="text-danger">
                             <span th:errors="*{tenkhachhang}"></span>
                         </div>
+                        <div th:if="${nameEmpty}" class="text-danger">
+                            <span th:text="${nameEmpty}"></span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label> Email:</label>
-                        <input type="email" class="form-control" th:field="*{tentaikhoan}" placeholder="Email">
+                        <input type="text" class="form-control" th:field="*{tentaikhoan}" placeholder="Email">
                         <div th:if="${#fields.hasErrors('tentaikhoan')}" class="text-danger">
                             <span th:errors="*{tentaikhoan}"></span>
+                        </div>
+                        <div th:if="${errortentk}" class="text-danger">
+                            <span th:text="${errortentk}"></span>
+                        </div>
+                        <div th:if="${emailExits}" class="text-danger">
+                            <span th:text="${emailExits}"></span>
                         </div>
                     </div>
 
                     <div class="form-group col-md-6">
                         <label> Số Điện Thoại:</label>
                         <input type="text" class="form-control" th:field="*{sdt}" placeholder="Số điện thoại">
-                        <div th:if="${#fields.hasErrors('sdt')}" class="text-danger">
-                            <span th:errors="*{sdt}"></span>
-                        </div>
                         <div th:if="${errorsdt}" class="text-danger">
                             <span th:text="${errorsdt}"></span>
+                        </div>
+                        <div th:if="${phoneErrors}" class="text-danger">
+                            <span th:text="${phoneErrors}"></span>
+                        </div>
+                        <div th:if="${phoneEmpty}" class="text-danger">
+                            <span th:text="${phoneEmpty}"></span>
                         </div>
                     </div>
                 </div>
@@ -111,8 +125,8 @@
                     <div class="form-group col-md-6">
                         <label>Địa Chỉ:</label>
                         <input type="text" class="form-control" th:field="*{diachi}" placeholder="Địa chỉ">
-                        <div th:if="${#fields.hasErrors('diachi')}" class="text-danger">
-                            <span th:errors="*{diachi}"></span>
+                        <div th:if="${addressEmpty!= null}">
+                            <div style="color: red" th:each="error : ${addressEmpty}" th:text="${error}"></div>
                         </div>
                     </div>
 
@@ -139,3 +153,4 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

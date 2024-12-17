@@ -1,3 +1,4 @@
+
 package com.example.demo.entity;
 
 
@@ -53,6 +54,9 @@ public class Voucher {
     @Column(name = "DIEU_KIEN_KHUYEN_MAI")
     private String dieuKien;
 
+    @Column(name = "LOAI_KHACH_HANG")
+    private boolean loaikhachhang;
+
     //    @NotNull(message = "Ngay bắt đầu không trống")
     @Column(name = "NGAY_BAT_DAU")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -73,9 +77,15 @@ public class Voucher {
     @Column(name = "LOAI")
     private boolean loai;
 
+//    @Column(name = "LOAI_KHACH_HANG")
+//    private boolean loaikh;
+
 
     @Column(name = "TRANG_THAI")
-    private String trangThai;
+    private int trangThai;
+//
+//    @Column(name = "TRANG_THAI")
+//    private String trangThai;
 
     public String getFormattedMucGiam() {
         try {
@@ -87,5 +97,15 @@ public class Voucher {
         }
     }
 
+    public String getFormattedDieukien() {
+        try {
+            double dieukien = Double.parseDouble(this.dieuKien);
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            return formatter.format(dieukien);
+        } catch (NumberFormatException e) {
+            return "Không hợp lệ"; //
+        }
+    }
 
 }
+

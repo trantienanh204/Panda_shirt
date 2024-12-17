@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SanPhamDTO {
+
     private String masp;
     private Integer tenSanPham;
     private Integer danhMucId;
@@ -18,6 +19,7 @@ public class SanPhamDTO {
     private Integer chatLieuId;
     private Integer nhaSanXuatId;
     private Integer coAoId;
+
     private List<SanPhamChiTietDTO> chiTietSanPham;
 
     @Override
@@ -33,4 +35,7 @@ public class SanPhamDTO {
                 ", chiTietSanPham=" + chiTietSanPham +
                 '}';
     }
+
+
 }
+
