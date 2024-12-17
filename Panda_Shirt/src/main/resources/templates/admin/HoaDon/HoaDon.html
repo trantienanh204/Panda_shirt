@@ -129,28 +129,16 @@
             <div th:fragment="hdct">
                 <div class="modal-header">
 
-                    <h5 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn ' "></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                    </button>
-<!--=======-->
-<!--&lt;!&ndash;                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">&ndash;&gt;-->
-<!--&lt;!&ndash;                        <span aria-hidden="true">&times;</span>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </button>&ndash;&gt;-->
+                  </button>
+                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4><br>
+                    <div th:if="${hoadon != null && hoadon.khachHang != null}">
+                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.makhachhang != null
+                        ? hoadon.khachHang.makhachhang : 'Mua tại quầy'}"></span> <br>
+                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>
+                    </div>
 
-<!--                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4><br>-->
-<!--                    <div th:if="${hoadon != null && hoadon.khachHang != null}">-->
-<!--                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.makhachhang != null-->
-<!--                        ? hoadon.khachHang.makhachhang : 'Mua tại quầy'}"></span> <br>-->
-<!--                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>-->
-<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tentinh != null ? hoadon.khachHang.tentinh.trim() : '')-->
-<!--                         ? '' : '- ' + hoadon.khachHang.tentinh}"></span>-->
-<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tenhuyen != null ? hoadon.khachHang.tenhuyen.trim() : '')-->
-<!--                        ? '' : '- ' + hoadon.khachHang.tenhuyen}"></span>-->
-<!--                        <span th:text="${#strings.isEmpty(hoadon.khachHang.tenxa != null ? hoadon.khachHang.tenxa.trim() : '')-->
-<!--                        ? '' : '- ' + hoadon.khachHang.tenxa}"></span>-->
-<!--                    </div>-->
-<!--&gt;>>>>>> thai-->
                 </div>
                 <div class="row mb-3">
                 <div class="col-md-8">

@@ -83,7 +83,6 @@
             <th>Tên Khách hàng</th>
             <th>Ngày đặt</th>
             <th>Thành tiền</th>
-            <th>Trạng thái thanh toán</th>
             <th>Trạng thái</th>
             <th>Hình thức</th>
             <th>Thao tác</th>
@@ -123,8 +122,8 @@
             </td>
 
             <td th:if="${dd.trangThai == 'Đã duyệt'}">
-                    <span th:if="${dd.trangthaioffline}" class="status-label status-blue" th:text="${dd.trangThai} + ' - Đã thanh toán'"> </span>
-                    <span th:if="${!dd.trangthaioffline}" class="status-label status-orange" th:text="${dd.trangThai} + ' - Chưa thanh toán'"></span>
+                    <span th:if="${dd.trangthaioffline}" class="status-label status-blue" th:text="${dd.trangThai} "> </span>
+                    <span th:if="${!dd.trangthaioffline}" class="status-label status-orange" th:text="${dd.trangThai}"></span>
             </td>
             <td th:if="${dd.trangThai == 'Đang giao'}">
                 <span class="status-label status-blue"
@@ -359,7 +358,7 @@
 
     .status-label {
         display: inline-block;
-        width: 70%;  /* Đảm bảo chúng chiếm toàn bộ không gian của ô */
+        width: 50%;  /* Đảm bảo chúng chiếm toàn bộ không gian của ô */
         font-weight: bold;
         font-size: 14px;
         text-align: center;  /* Căn giữa nội dung trong các nút */
