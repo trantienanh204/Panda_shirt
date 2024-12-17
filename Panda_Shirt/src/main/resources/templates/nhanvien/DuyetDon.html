@@ -82,7 +82,7 @@
 <!--            <th>Tên nhân viên</th>-->
             <th>Tên Khách hàng</th>
             <th>Ngày đặt</th>
-            <th>Thành tiền</th>
+            <th>Tổng tiền</th>
             <th>Trạng thái thanh toán</th>
             <th>Trạng thái</th>
             <th>Hình thức</th>
@@ -110,11 +110,11 @@
                       th:text="${dd.trangthaioffline==true ?'Đã thanh toán':'Chưa thanh toán'}">
                 </span>
             </td>
-<!--            <td th:if="${dd.trangThai == 'Hoàn thành'}">-->
-<!--                <span-->
-<!--                      th:text="${dd.trangthaioffline==true ?'Chuyển khoản':'Tiền mặt'}">-->
-<!--                </span>-->
-<!--            </td>-->
+            <td th:if="${dd.trangThai == 'Hoàn thành'}">
+                <span
+                      th:text="${dd.trangthaioffline==true ?'Chuyển khoản':'Tiền mặt'}">
+                </span>
+            </td>
 
             <td th:if="${dd.trangThai == 'Chờ duyệt'}">
                 <span class="status-label status-orange"

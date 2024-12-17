@@ -243,7 +243,8 @@
                         <td th:text="${vc.ma}"></td>
                         <td th:text="${vc.ten}"></td>
                         <td th:text="${vc.formattedMucGiam}"></td>
-                        <td th:text="${vc.dieuKien}"></td>
+
+                        <td th:text="${#numbers.formatDecimal(vc.dieuKien, 1, 'POINT',0, 'COMMA')}"></td>
                         <td th:text="${vc.loai == true ? '%':'VND'}"></td>
                         <td>
                             <a class="voucher-select" href="#" th:data-discount-type="${vc.loai == true ? '%' : 'VND'}" th:data-discount-value="${vc.mucGiam}" th:data-voucher-condition="${vc.dieuKien}">
