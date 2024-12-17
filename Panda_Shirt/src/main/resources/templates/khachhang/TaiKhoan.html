@@ -12,32 +12,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/png" href="/Image/HIHI.jpg">
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
-        <img th:src="@{/Image/panda_logo.png}" width="70px" ; height="70px">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <img th:src="@{/Image/panda_logo.png}" width="70px"; height="70px">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active"style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 20px" href="#">Liên Hệ</a>
+                    <a class="nav-link"style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
-            <form class="d-flex mx-auto" style="width: 400px;">
-                <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
+                <!--                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
+                <!--&lt;!&ndash;                    <option value="">Tất cả danh mục</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>&ndash;&gt;-->
+                <!--                </select>-->
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
@@ -80,12 +84,12 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Thông Tin Của Bạn</h5>
-                    <p><strong>Họ và Tên:</strong> <span th:text="${khachHang.tenkhachhang}">John Doe</span>
+                    <p><strong>Họ và Tên:</strong> <span th:text="${khachHang?.tenkhachhang}">John Doe</span>
                     </p>
-                    <p><strong>Email:</strong> <span th:text="${khachHang.tentaikhoan}">johndoe@example.com</span>
-                    <p><strong>Số điện thoại:</strong> <span th:text="${khachHang.sdt}">+84 123 456 789</span></p>
+                    <p><strong>Email:</strong> <span th:text="${khachHang?.tentaikhoan}">johndoe@example.com</span>
+                    <p><strong>Số điện thoại:</strong> <span th:text="${khachHang?.sdt}">+84 123 456 789</span></p>
                     <p><strong>Địa chỉ:</strong> <span
-                            th:text="${khachHang.diachi}">1234 Example Street, City, Country</span></p></p>
+                            th:text="${khachHang?.diachi}">1234 Example Street, City, Country</span></p></p>
                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateInfoModal">Cập
                         Nhật Thông Tin</a>
                 </div>
@@ -93,8 +97,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="updateInfoModal" tabindex="-1" aria-labelledby="updateInfoModalLabel"
-             aria-hidden="true">
+        <div class="modal fade" id="updateInfoModal" tabindex="-1" aria-labelledby="updateInfoModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -109,13 +112,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="updatePhone" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" id="updatePhone"
-                                       placeholder="Nhập số điện thoại">
+                                <input type="number" class="form-control" id="updatePhone" placeholder="Nhập số điện thoại">
                             </div>
                             <div class="mb-3">
-                                <label for="searchBox" class="form-label">Địa chỉ</label>
-                                <input type="text" class="form-control" id="searchBox" placeholder="Nhập địa chỉ">
-                                <ul id="suggestions" class="list-group mt-2"></ul>
+                                <label for="updateAddress" class="form-label">Địa chỉ</label>
+                                <input type="text" class="form-control" id="updateAddress" placeholder="Nhập địa chỉ">
                             </div>
                         </form>
                     </div>
@@ -172,13 +173,13 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${choduyet}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-warning" th:text="${donHang.trangThai}">Chờ duyệt</span>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-warning" th:text="${donHang?.trangThai}">Chờ duyệt</span>
                                     </td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
+                                        <a th:data-id="${donHang?.id}"
                                            th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
 
                                            class="view-details"
@@ -211,14 +212,14 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${daduyet}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Đã duyệt</span>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-success" th:text="${donHang?.trangThai}">Đã duyệt</span>
                                     </td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
-                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang?.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang?.id})}"
 
                                            class="view-details"
                                            data-bs-toggle="modal"
@@ -250,14 +251,14 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${danggiao}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-primary" th:text="${donHang.trangThai}">Đang giao</span>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-primary" th:text="${donHang?.trangThai}">Đang giao</span>
                                     </td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
-                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang?.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang?.id})}"
 
                                            class="view-details"
                                            data-bs-toggle="modal"
@@ -289,14 +290,14 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${hoanthanh}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-success" th:text="${donHang.trangThai}">Hoàn thành</span>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-success" th:text="${donHang?.trangThai}">Hoàn thành</span>
                                     </td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
-                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang?.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang?.id})}"
                                            class="view-details"
                                            data-bs-toggle="modal"
                                            data-bs-target="#add">
@@ -327,13 +328,13 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="donHang : ${dahuy}">
-                                    <td th:text="${donHang.hoaDon.mahoadon}">Đơn Hàng</td>
-                                    <td th:text="${donHang.ngaytao}">Ngày Đặt</td>
-                                    <td><span class="badge bg-danger" th:text="${donHang.trangThai}">Đã hủy</span></td>
-                                    <td th:text="${#numbers.formatDecimal(donHang.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
+                                    <td th:text="${donHang?.hoaDon?.mahoadon}">Đơn Hàng</td>
+                                    <td th:text="${donHang?.ngaytao}">Ngày Đặt</td>
+                                    <td><span class="badge bg-danger" th:text="${donHang?.trangThai}">Đã hủy</span></td>
+                                    <td th:text="${#numbers.formatDecimal(donHang?.tongtien, 1, 'POINT',0, 'COMMA')+ ' VNĐ'}"></td>
                                     <td>
-                                        <a th:data-id="${donHang.id}"
-                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang.id})}"
+                                        <a th:data-id="${donHang?.id}"
+                                           th:href="@{/panda/donhangchitiet/chitiet(id=${donHang?.id})}"
                                            class="view-details"
                                            data-bs-toggle="modal"
                                            data-bs-target="#add">
@@ -565,26 +566,25 @@
                                         </thead>
                                         <tbody>
                                         <tr th:each="dd,i: ${listhdct}">
-                                            <td th:text="${dd.sanPhamChiTiet.maspct}"></td>
-                                            <td th:text="${dd.sanPhamChiTiet.sanPham.tensp}"></td>
-                                            <td th:text="${dd.sanPhamChiTiet.mauSac.ten}"></td>
-                                            <td th:text="${dd.sanPhamChiTiet.kichThuoc.ten}"></td>
-                                            <td th:text="${dd.soluong}"></td>
-                                            <td th:text="${#numbers.formatDecimal(dd.dongia, 1, 'POINT',0, 'COMMA')}"></td>
+                                            <td th:text="${dd?.sanPhamChiTiet?.maspct}"></td>
+                                            <td th:text="${dd?.sanPhamChiTiet?.sanPham?.tensp}"></td>
+                                            <td th:text="${dd?.sanPhamChiTiet?.mauSac?.ten}"></td>
+                                            <td th:text="${dd?.sanPhamChiTiet?.kichThuoc?.ten}"></td>
+                                            <td th:text="${dd?.soluong}"></td>
+                                            <td th:text="${#numbers.formatDecimal(dd?.dongia, 1, 'POINT',0, 'COMMA')}"></td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
-                                    <input type="text" th:value="${DonHang?.hoaDon?.giagiam != null ? #numbers.formatDecimal(DonHang?.hoaDon?.giagiam, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
+                                    <input type="text" th:value="${DonHang?.hoaDon?.giagiam != null ? DonHang?.hoaDon?.giagiam: '0'}" class="form-control" readonly
                                            style="background-color: white; color: black;">
                                     <!--                            <td th:text="${#numbers.formatDecimal(tongtien, 1, 'POINT',0, 'COMMA')}"></td>-->
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
-                                    <input type="text" th:value="${DonHang?.tongtien != null ? #numbers.formatDecimal(DonHang.tongtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}"
-                                     class="form-control" readonly
+                                    <label class="form-label" style="margin-top: 10px">Thành tiền</label>
+                                    <input type="text" th:value="${DonHang?.hoaDon?.thanhtien != null ? #numbers.formatDecimal(DonHang.hoaDon?.thanhtien, 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}" class="form-control" readonly
                                            style="background-color: white; color: black;">
                                 </div>
                             </div>
@@ -700,11 +700,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
+
     function updateInfo() {
         const name = document.getElementById("updateName").value;
         const phone = document.getElementById("updatePhone").value;
         const address = document.getElementById("updateAddress").value;
-
 
         console.log("Họ và Tên:", name);
         console.log("Số điện thoại:", phone);
@@ -713,6 +713,56 @@
         const modal = bootstrap.Modal.getInstance(document.getElementById('updateInfoModal'));
         modal.hide();
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const phoneInput = document.getElementById('updatePhone');
+        const submitButton = document.getElementById('submitButton');
+
+        phoneInput.addEventListener('input', function() {
+            if (phoneInput.value.length !== 10 || phoneInput.value[0] !== '0') {
+                phoneInput.setCustomValidity("Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
+                phoneInput.reportValidity();
+            } else {
+                phoneInput.setCustomValidity("");
+            }
+        });
+
+        submitButton.addEventListener('click', function() {
+            const recipientName = document.getElementById('updateName').value;
+            const phoneNumber = phoneInput.value;
+            const address = document.getElementById('updateAddress').value;
+
+            if (!recipientName || phoneNumber.length !== 10 || phoneNumber[0] !== '0' || !address) {
+                alert("Vui lòng nhập đầy đủ thông tin! Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
+                return;
+            }
+
+            const dataToSend = {
+                recipientName,
+                phoneNumber,
+                fullAddress: address
+            };
+
+            fetch('/diachi/api/save-address', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(dataToSend),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "Địa chỉ đã được lưu thành công") {
+                        Swal.fire("Thành công!", "Địa chỉ đã được lưu!", "success");
+                        location.reload();
+                    } else {
+                        Swal.fire("Lỗi", "Không thể lưu địa chỉ!", "error");
+                    }
+                })
+                .catch(err => {
+                    Swal.fire("Lỗi", "Không thể kết nối đến server!", "error");
+                });
+        });
+    });
+
 
 </script>
 <script>
@@ -775,39 +825,6 @@
                 .catch(err => console.error("Lỗi:", err));
         });
 
-        document.getElementById('submitButton').addEventListener('click', () => {
-            const recipientName = document.getElementById('updateName').value;
-            const phoneNumber = document.getElementById('updatePhone').value;
-            const address = selectedAddress;
-            if (!recipientName || !phoneNumber || !selectedAddress) {
-                Swal.fire("Lỗi", "Vui lòng nhập đầy đủ thông tin!", "error");
-                return;
-            }
-
-            const dataToSend = {
-                recipientName,
-                phoneNumber,
-                fullAddress: address
-            };
-
-            fetch('/diachi/api/save-address', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(dataToSend),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message === "Địa chỉ đã được lưu thành công") {
-                        Swal.fire("Thành công!", "Địa chỉ đã được lưu!", "success");
-                        location.reload()
-                    } else {
-                        Swal.fire("Lỗi", "Không thể lưu địa chỉ!", "error");
-                    }
-                })
-                .catch(err => {
-                    Swal.fire("Lỗi", "Không thể kết nối đến server!", "error");
-                });
-        });
     });
 </script>
 </body>

@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-
+    <link rel="icon" type="image/png" href="/Image/HIHI.jpg">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg">
@@ -23,36 +23,43 @@
         </script>
     </div>
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img th:src="@{/Image/panda_logo.png}" width="50px"; height="50px"></a>
+        <img th:src="@{/Image/panda_logo.png}" width="70px"; height="70px">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/panda/trangchu}">Trang Chủ</a>
+                    <a class="nav-link active"style="font-size: 20px" th:href="@{/panda/trangchu}">Trang Chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Giới Thiệu</a>
+                    <a class="nav-link" style="font-size: 20px" href="#">Giới Thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Liên Hệ</a>
+                    <a class="nav-link"style="font-size: 20px" href="#">Liên Hệ</a>
                 </li>
             </ul>
             <!-- Form Search -->
-            <form class="d-flex mx-auto" style="width: 400px;">
-                <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..." aria-label="Search">
+                <!--                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
+                <!--&lt;!&ndash;                    <option value="">Tất cả danh mục</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>&ndash;&gt;-->
+                <!--                </select>-->
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
+                    <a class="nav-link" th:href="@{/panda/giohang}">
+                        <i class="fas fa-shopping-cart" style="font-size: 25px"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/panda/taikhoan}"><i class="fas fa-user"></i></a>
+                    <a class="nav-link" th:href="@{/panda/taikhoan}">
+                        <i class="fas fa-user" style="font-size: 25px"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/panda/logout}"><i class="fas fa-sign-in-alt"></i></a>
+                    <a class="nav-link" th:href="@{/panda/logout}">
+                        <i class="fas fa-sign-in-alt" style="font-size: 25px"></i></a>
                 </li>
             </ul>
         </div>
@@ -67,11 +74,14 @@
         <div class="address-section border p-3 mb-4">
             <h5 style="color:#FE5621"><i class="fas fa-map-marker-alt" style="color:#FE5621"></i> Địa Chỉ Nhận Hàng</h5>
             <div class="d-flex justify-content-between align-items-center">
-                <p th:if="${khachHang != null}" th:text="${khachHang.tenkhachhang} + ' (' + ${khachHang.sdt} + '), ' + ${khachHang.diachi}">
+                <p th:if="${khachHang != null}" th:data-khachhang-name="${khachHang.tenkhachhang}" th:data-khachhang-phone="${khachHang.sdt}" th:data-khachhang-address="${khachHang.diachi}" th:text="${khachHang.tenkhachhang} + ' (' + ${khachHang.sdt} + '), ' + ${khachHang.diachi}">
                     Thông tin khách hàng
                 </p>
                 <p th:if="${khachHang == null}">Thông tin khách hàng không có sẵn.</p>
                 <a th:href="@{/diachi/themdiachi}" class="btn btn-link" style="text-decoration: none">Thay Đổi</a>
+            </div>
+            <div id="customerError" class="alert alert-danger" style="display: none;">
+                Vui lòng cập nhật đầy đủ thông tin khách hàng trước khi thanh toán.
             </div>
         </div>
     <!-- Sản phẩm -->
@@ -82,11 +92,10 @@
                 <div th:if="${item.anhspBase64 != null}">
                     <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image" class="img-fluid" style="max-width: 80px;">
                 </div>
-
                 <div th:if="${item.anhspBase64 == null}">
                     <img src="https://placehold.co/600x400?text=Không+có+ảnh" alt="Product Image" class="img-fluid" style="max-width: 80px;" >
                 </div>
-                <div  style="margin-left: 40px">
+                <div style="margin-left: 40px">
                     <p class="product-name mb-1" th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</p>
                     <p class="product-details text-muted"
                        th:text="'Loại: ' + ${item.sanPhamChiTiet.mauSac.ten} + ', Kích thước: ' + ${item.sanPhamChiTiet.kichThuoc.ten}">
@@ -113,17 +122,7 @@
                 <a class="btn btn-link float-end" data-bs-toggle="modal" data-bs-target="#add"
                    style="text-decoration: none;">Chọn voucher</a>
             </div>
-            <label class="col-sm-2 col-form-label">Nhập mã voucher:</label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" placeholder="Nhập mã...">
-            </div>
-            <div class="row mb-3 align-items-center">
-                <label class="col-sm-2 col-form-label">Nhập ghi chú:</label>
-                <div class="col-sm-12">
-                <textarea class="form-control" id="moTa" rows="2"
-                          placeholder="Ghi chú..."></textarea>
-                </div>
-            </div>
+
         </div>
     </div>
     <!-- Thanh toán và hình thức thanh toán -->
@@ -163,6 +162,7 @@
                         <h5 class="total-price mb-0">Tổng thanh toán:</h5>
                         <h5 class="total-price mb-0" id="finalTotal">₫140.500</h5>
                     </div>
+
                     <form id="paymentForm" action="/api/submitOrder" method="post">
                         <input type="hidden" name="totalAmount" id="totalAmountInput">
                         <input type="hidden" name="orderInfo" id="orderInfoInput" value="mo ta don hang">
@@ -170,6 +170,7 @@
                         <input type="hidden" name="note" id="noteInput" value="Ghi chú">
                         <button type="submit" class="btn btn-primary w-100 mt-3"><i class="fas fa-check"></i> Đặt hàng</button>
                     </form>
+
                 </div>
             </div>
 
@@ -238,6 +239,7 @@
                         <th>Mã voucher</th>
                         <th>Tên voucher</th>
                         <th>Mức giảm</th>
+                        <th>điều kiện</th>
                         <th>Loại</th>
                         <th>Hành động</th>
                     </tr>
@@ -248,9 +250,11 @@
                         <td th:text="${vc.ma}"></td>
                         <td th:text="${vc.ten}"></td>
                         <td th:text="${vc.formattedMucGiam}"></td>
+
+                        <td th:text="${#numbers.formatDecimal(vc.dieuKien, 1, 'POINT',0, 'COMMA')}"></td>
                         <td th:text="${vc.loai == true ? '%':'VND'}"></td>
                         <td>
-                            <a class="voucher-select" href="#" th:data-discount-type="${vc.loai == true ? '%' : 'VND'}" th:data-discount-value="${vc.mucGiam}">
+                            <a class="voucher-select" href="#" th:data-discount-type="${vc.loai == true ? '%' : 'VND'}" th:data-discount-value="${vc.mucGiam}" th:data-voucher-condition="${vc.dieuKien}">
                                 <i class="fa-solid fa-circle-check"></i>
                             </a>
                         </td>
@@ -301,7 +305,12 @@
         const discountAmountElement = document.querySelector('.discount-amount');
         const voucherSelectElements = document.querySelectorAll('.voucher-select');
 
+        const khachHangName = document.querySelector('[data-khachhang-name]');
+        const khachHangPhone = document.querySelector('[data-khachhang-phone]');
+        const khachHangAddress = document.querySelector('[data-khachhang-address]');
+
         let selectedVoucherCode = null;
+        let selectedVoucherCondition = null; // Điều kiện của voucher được chọn
 
         function updateTotalAmount() {
             let totalProductAmount = 0;
@@ -324,15 +333,20 @@
 
             let discountAmount = 0;
             selectedVoucherCode = null; // Reset selectedVoucherCode before checking
+            selectedVoucherCondition = null; // Reset selectedVoucherCondition before checking
+
             voucherSelectElements.forEach(function(selectElement) {
                 if (selectElement.classList.contains('selected')) {
                     const discountType = selectElement.getAttribute('data-discount-type');
                     const discountValue = parseFloat(selectElement.getAttribute('data-discount-value'));
+                    const voucherCondition = parseFloat(selectElement.getAttribute('data-voucher-condition'));
 
                     const voucherCodeElement = selectElement.closest('tr').querySelector('td:nth-child(2)');
                     if (voucherCodeElement) {
                         selectedVoucherCode = voucherCodeElement.textContent;
+                        selectedVoucherCondition = voucherCondition;
                         console.log("Selected voucher code:", selectedVoucherCode); // Log voucher code for debugging
+                        console.log("Voucher condition:", selectedVoucherCondition); // Log voucher condition for debugging
                         // Lưu mã giảm giá vào session
                         saveVoucherCodeToSession(selectedVoucherCode);
                     } else {
@@ -366,12 +380,33 @@
             console.log("Total product amount:", totalProductAmount);
             console.log("Discount amount:", discountAmount);
             console.log("Final total amount:", finalTotal);
+
+            // Đặt tổng số tiền sản phẩm chưa qua giảm giá vào input hidden
+            totalAmountInput.value = totalProductAmount;
+        }
+
+        function validateCustomerInfo() {
+            if (!khachHangName || !khachHangName.textContent.trim() ||
+                !khachHangPhone || !khachHangPhone.textContent.trim() ||
+                !khachHangAddress || !khachHangAddress.textContent.trim()) {
+                alert("Vui lòng cập nhật thông tin khách hàng (Tên, Số điện thoại, Địa chỉ) trước khi thanh toán.");
+                return false;
+            }
+            return true;
         }
 
         updateTotalAmount();
 
         voucherSelectElements.forEach(function(selectElement) {
             selectElement.addEventListener('click', function() {
+                const totalProductAmount = parseFloat(totalProductPriceElement.textContent.replace(/[^\d]/g, ''));
+                const voucherCondition = parseFloat(selectElement.getAttribute('data-voucher-condition'));
+
+                if (voucherCondition && totalProductAmount < voucherCondition) {
+                    alert("Số tiền tổng của sản phẩm phải >= " + voucherCondition + " để áp dụng voucher này.");
+                    return; // Dừng lại nếu không đáp ứng điều kiện của voucher
+                }
+
                 voucherSelectElements.forEach(function(el) {
                     el.classList.remove('selected');
                 });
@@ -382,11 +417,23 @@
 
         paymentForm.addEventListener('submit', function(event) {
             event.preventDefault();
+
+            if (!validateCustomerInfo()) {
+                return; // Dừng lại nếu thông tin khách hàng không đầy đủ
+            }
+
             updateTotalAmount();
 
             const finalTotalText = finalTotalElement.textContent.replace(/[^\d]/g, '');
             const finalTotalAmount = parseFloat(finalTotalText);
-            totalAmountInput.value = isNaN(finalTotalAmount) ? 0 : finalTotalAmount;
+
+            if (selectedVoucherCondition && totalAmountInput.value < selectedVoucherCondition) {
+                alert("Số tiền tổng của sản phẩm phải >= " + selectedVoucherCondition + " để áp dụng voucher này.");
+                return; // Dừng lại nếu không đáp ứng điều kiện của voucher
+            }
+
+            // Không cần thiết đặt lại totalAmountInput ở đây, đã được đặt trong updateTotalAmount
+            // totalAmountInput.value = isNaN(finalTotalAmount) ? 0 : finalTotalAmount;
 
             if (bankTransferRadio && bankTransferRadio.checked) {
                 paymentMethodInput.value = 'BankTransfer';
@@ -399,25 +446,26 @@
 
             paymentForm.submit();
         });
+
+        function saveVoucherCodeToSession(voucherCode) {
+            fetch('/api/save-voucher-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ voucherCode: voucherCode }),
+                credentials: 'same-origin'
+            }).then(response => {
+                if (response.ok) {
+                    console.log("Voucher code saved to session: " + voucherCode);
+                } else {
+                    console.error("Failed to save voucher code to session");
+                }
+            }).catch(error => {
+                console.error("Error saving voucher code to session:", error);
+            });
+        }
     });
-    function saveVoucherCodeToSession(voucherCode) {
-        fetch('/api/save-voucher-code', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ voucherCode: voucherCode }),
-            credentials: 'same-origin'
-        }).then(response => {
-            if (response.ok) {
-                console.log("Voucher code saved to session: " + voucherCode);
-            } else {
-                console.error("Failed to save voucher code to session");
-            }
-        }).catch(error => {
-            console.error("Error saving voucher code to session:", error);
-        });
-    }
 
 </script>
 

@@ -64,7 +64,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="image"> Ảnh Đại Diện:</label>
-                        <input type="file" class="form-control-file" id="image" name="file" accept="image/*">
+                        <input type="file" class="form-control-file" id="image" name="file" accept="image/*" required>
                     </div>
 <!--                    <div class="form-group col-md-6">-->
 <!--                        <label> Mã Khách Hàng:</label>-->
@@ -85,6 +85,9 @@
                         <div th:if="${#fields.hasErrors('tenkhachhang')}" class="text-danger">
                             <span th:errors="*{tenkhachhang}"></span>
                         </div>
+                        <div th:if="${nameEmpty}" class="text-danger">
+                            <span th:text="${nameEmpty}"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -97,6 +100,9 @@
                         </div>
                         <div th:if="${errortentk}" class="text-danger">
                             <span th:text="${errortentk}"></span>
+                        </div>
+                        <div th:if="${emailExits}" class="text-danger">
+                            <span th:text="${emailExits}"></span>
                         </div>
                     </div>
 

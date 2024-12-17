@@ -325,14 +325,20 @@ public class DuyetDonController {
                 sanPhamService.saveSanPhamChiTiet(sanPhamChiTiet);
             }
         }
-       if(donHang.getHoaDon().getVoucher()!=null ){
-          Optional<Voucher>  voucher = voucherRepository.findById(donHang.getHoaDon().getVoucher().getId()) ;
-          if(voucher.isPresent()){
-             int sl = Integer.parseInt(voucher.get().getSoLuong() +1);
-              voucher.get().setSoLuong(String.valueOf(sl));
-              voucherRepository.save(voucher.get());
-          }
-       }
+        if (donHang.getHoaDon().getVoucher() != null) {
+            Optional<Voucher> voucher = voucherRepository.findById(donHang.getHoaDon().getVoucher().getId());
+            if (voucher.isPresent()) {
+                try {
+                    int currentQuantity = Integer.parseInt(voucher.get().getSoLuong().trim());
+                    int updatedQuantity = currentQuantity + 1;
+                    voucher.get().setSoLuong(String.valueOf(updatedQuantity));
+                    voucherRepository.save(voucher.get());
+                } catch (NumberFormatException e) {
+                    System.out.println("Lỗi éo gì đó ở voucher: " + e.getMessage());
+                }
+            }
+        }
+
 
         donHang.getHoaDon().setNhanVien(nhanVien);
         donHang.getHoaDon().setTrangthai(0);

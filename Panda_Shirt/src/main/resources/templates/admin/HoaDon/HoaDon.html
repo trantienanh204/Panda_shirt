@@ -86,7 +86,7 @@
                 <a class="btn " th:href="@{/panda/hoadon/xuatfile(id=${hd.id})}"
                    onclick="openPrintPage(event)" target="_self">
                     <i class="fa-solid fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>
-<!--                    <i class="fa-regular fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>-->
+                    <!--                    <i class="fa-regular fa-file-powerpoint" style="color: #000000;font-size: 20px"></i>-->
                 </a>
             </td>
         </tr>
@@ -129,6 +129,18 @@
             <div th:fragment="hdct">
                 <div class="modal-header">
 
+<!--<<<<<<< HEAD-->
+<!--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                        <span aria-hidden="true">&times;</span>-->
+<!--                    </button>-->
+<!--                    <h4 class="modal-title" id="invoiceDetailModalLabel" th:text="'Chi Tiết Hóa Đơn : ' +${hd}"></h4>-->
+<!--                    <br>-->
+<!--                    <div th:if="${hoadon != null && hoadon.khachHang != null}">-->
+<!--                        <span th:text="'Khách hàng: '+ ${hoadon.khachHang.ma    khachhang != null-->
+<!--                        ? hoadon.khachHang.makhachhang : 'Mua tại quầy'}"></span> <br>-->
+<!--                        <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>-->
+<!--                    </div>-->
+<!--=======-->
                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                   </button>
@@ -139,74 +151,77 @@
                         <span th:text="'Địa chỉ : '+ ${hoadon.khachHang.diachi == null ?'Trống' : hoadon.khachHang.diachi}"></span>
                     </div>
 
+<!--&gt;>>>>>> thai-->
                 </div>
                 <div class="row mb-3">
-                <div class="col-md-8">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Mã spct</th>
-                            <th>Sản phẩm</th>
-                            <th>Kích thước</th>
-                            <th>Màu sắc</th>
-                            <th>Số lượng</th>
-                            <th>Đơn giá</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="ct : ${hoaDonCTs}">
-                            <td th:text="${ct.sanPhamChiTiet.maspct}"></td>
-                            <td th:text="${ct.sanPhamChiTiet.sanPham.tensp}"></td>
-                            <td th:text="${ct.sanPhamChiTiet.kichThuoc.ten}"></td>
-                            <td th:text="${ct.sanPhamChiTiet.mauSac.ten}"></td>
-                            <td th:text="${ct.soluong}"></td>
-                            <td th:text="${#numbers.formatDecimal(ct.dongia, 1, 'POINT',0, 'COMMA')}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
-                    <input type="text"
-                           th:value="${giagiam?.tongtien != null ? #numbers.formatDecimal(giagiam?.tongtien , 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}"
-                           class="form-control" readonly style="background-color: white; color: black;margin-top: 13px">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
-                    <input type="text"
-                           th:value="${giagiam?.giagiam != null ? giagiam?.giagiam  : '0'}"
-                           class="form-control" readonly style="background-color: white; color: black;margin-top: 13px">
-                </div>
+                    <div class="col-md-8">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Mã spct</th>
+                                <th>Sản phẩm</th>
+                                <th>Kích thước</th>
+                                <th>Màu sắc</th>
+                                <th>Số lượng</th>
+                                <th>Đơn giá</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="ct : ${hoaDonCTs}">
+                                <td th:text="${ct.sanPhamChiTiet.maspct}"></td>
+                                <td th:text="${ct.sanPhamChiTiet.sanPham.tensp}"></td>
+                                <td th:text="${ct.sanPhamChiTiet.kichThuoc.ten}"></td>
+                                <td th:text="${ct.sanPhamChiTiet.mauSac.ten}"></td>
+                                <td th:text="${ct.soluong}"></td>
+                                <td th:text="${#numbers.formatDecimal(ct.dongia, 1, 'POINT',0, 'COMMA')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" style="margin-top: 10px;">Tổng tiền</label>
+                        <input type="text"
+                               th:value="${giagiam?.tongtien != null ? #numbers.formatDecimal(giagiam?.tongtien , 1, 'POINT', 0, 'COMMA') + ' VNĐ' : '0'}"
+                               class="form-control" readonly
+                               style="background-color: white; color: black;margin-top: 13px">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" style="margin-top: 10px;">Giảm giá</label>
+                        <input type="text"
+                               th:value="${giagiam?.giagiam != null ? giagiam?.giagiam  : '0'}"
+                               class="form-control" readonly
+                               style="background-color: white; color: black;margin-top: 13px">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="custom-alert success " id="statusMessage"  th:if="${thongbao != null}">
+<div class="custom-alert success " id="statusMessage" th:if="${thongbao != null}">
     <i class="fa-solid fa-circle-check"></i> <span th:text="${thongbao}"></span>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#xemhoadon').on('show.bs.modal', function(event) {
+    $(document).ready(function () {
+        $('#xemhoadon').on('show.bs.modal', function (event) {
             var modal = $(this);
             modal.find('.modal-content').html('');
             var button = $(event.relatedTarget);
             var id = button.data('id');
 
             // Gửi yêu cầu AJAX
-            $.get('/panda/hoadon/chitiet', { id: id }, function(data) {
+            $.get('/panda/hoadon/chitiet', {id: id}, function (data) {
                 modal.find('.modal-content').html(data);
             });
         });
 
     });
-    window.onload = function() {
+    window.onload = function () {
         // Xử lý thông báo thành công
         var statusMessage = document.getElementById('statusMessage');
         if (statusMessage) {
             statusMessage.classList.add('show');
             // Tự động ẩn sau 5 giây (5000ms)
-            setTimeout(function() {
+            setTimeout(function () {
                 statusMessage.style.display = 'none';
             }, 5000);
         }
@@ -237,23 +252,25 @@
 
 <style>
     .custom-alert {
-        background-color: #4CAF50;  /* Màu nền thông báo thành công */
-        color: white;  /* Màu chữ */
+        background-color: #4CAF50; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
         position: fixed;
-        top: 20px;  /* Cách từ đỉnh */
-        right: 20px;  /* Cách từ bên phải */
-        padding: 15px;  /* Padding xung quanh */
-        border-radius: 5px;  /* Bo góc */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
-        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
-        opacity: 0;  /* Ban đầu ẩn */
-        visibility: hidden;  /* Không hiển thị */
-        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
     }
+
     .custom-alert.show {
-        opacity: 1;  /* Hiển thị thông báo */
-        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt thông báo là có thể nhìn thấy */
     }
+
     .modal-header {
         display: flex;
         flex-direction: column;
@@ -268,6 +285,7 @@
     .modal-header div {
         margin-bottom: 5px;
     }
+
     * {
         box-sizing: border-box;
         padding: 0;
@@ -393,6 +411,7 @@
         margin: 0 5px;
         cursor: pointer;
     }
+
     .discount-price {
         text-decoration: line-through;
         color: red;

@@ -118,8 +118,14 @@ import java.util.stream.Collectors;
 
         public void clearCart(int khachHangId) {
             List<GioHang> cartItems = gioHangRepository.findByKhachHangId(khachHangId);
-            if (cartItems != null && !cartItems.isEmpty())
-            { gioHangRepository.deleteAll(cartItems); } }
+            if (cartItems != null && !cartItems.isEmpty()) {
+                List<GioHang> gioHangList = cartItems.stream()
+                        .filter(gioHang -> spctLisst.stream()
+                                .anyMatch(spct -> spct.getId().equals(gioHang.getSanPhamChiTiet().getId())))
+                        .collect(Collectors.toList());
+
+                gioHangRepository.deleteAll(gioHangList);
+            } }
 
 //    List<GioHang>spct = cartItems.stream().filter(gioHang ->
 //            spctLisst.equals(gioHang.getSanPhamChiTiet().getId())).collect(Collectors.toList());

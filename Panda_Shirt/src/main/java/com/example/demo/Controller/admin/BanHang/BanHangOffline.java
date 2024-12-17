@@ -525,7 +525,7 @@ public class BanHangOffline {
         }
 
         if (sdt.isBlank()) {
-            KhachHang kh1 = khachHangRepository.findById(1).orElse(null);
+            KhachHang kh1 = khachHangRepository.findById(2).orElse(null);
             if (kh1 != null) {
                 System.out.println("Khách hàng mặc định");
                 hd.setKhachHang(kh1);
@@ -634,6 +634,7 @@ public class BanHangOffline {
        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
 
 
+
         if(giaohang.equals("1")){
             if(sdt.isBlank() || diachicuthe.isBlank()){
                 redirectAttributes.addFlashAttribute("loi", "Chưa nhập đầy đủ thông tin người nhận");
@@ -641,7 +642,7 @@ public class BanHangOffline {
             }
             dh.setTrangThai("Đã duyệt");
         }
-// push lại
+
 
         hd.setNhanVien(nhanVien);
         hd.setVoucher(vc);

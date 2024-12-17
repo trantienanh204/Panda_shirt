@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nhập Địa Chỉ Nhận Hàng</title>
+    <link rel="icon" type="image/png" href="/Image/HIHI.jpg">
     <script src="https://kit.fontawesome.com/bd9b5e640d.js" crossorigin="anonymous"></script>
     <style>
         body {
@@ -114,10 +115,10 @@
     <h1>Nhập Địa Chỉ</h1>
     <form id="addressForm">
         <label for="recipientName">Tên người nhận</label>
-        <input  type="text" id="recipientName" th:value="${khachhang.tenkhachhang}" placeholder="Nhập tên người nhận">
+        <input type="text" id="recipientName" th:value="${khachhang.tenkhachhang}" placeholder="Nhập tên người nhận">
 
         <label for="phoneNumber">Số điện thoại</label>
-        <input type="text" id="phoneNumber" placeholder="Nhập số điện thoại">
+        <input type="number" id="phoneNumber" placeholder="Nhập số điện thoại">
 
         <label for="searchBox">Tìm kiếm địa điểm</label>
         <input type="text" id="searchBox" placeholder="Nhập địa chỉ, số nhà, quận,..." autocomplete="off">
@@ -126,93 +127,109 @@
         <button type="button" class="btn-submit" id="submitButton">Gửi thông tin</button>
     </form>
 </div>
+
 <script>
-    const API_KEY = "hXNlf8DeExDWSmhMJljrGfTMspYo5xO5Uix1qHbn";
-    const AUTOCOMPLETE_URL = "https://rsapi.goong.io/Place/AutoComplete";
-    const GEOCODE_URL = "https://rsapi.goong.io/Geocode";
+    document.addEventListener('DOMContentLoaded', function() {
+        const API_KEY = "hXNlf8DeExDWSmhMJljrGfTMspYo5xO5Uix1qHbn";
+        const AUTOCOMPLETE_URL = "https://rsapi.goong.io/Place/AutoComplete";
+        const GEOCODE_URL = "https://rsapi.goong.io/Geocode";
 
-    const searchBox = document.getElementById('searchBox');
-    const suggestionsList = document.getElementById('suggestions');
-    let selectedAddress = ""; // Biến để lưu địa chỉ đã chọn
+        const searchBox = document.getElementById('searchBox');
+        const suggestionsList = document.getElementById('suggestions');
+        const phoneInput = document.getElementById('phoneNumber');
+        const submitButton = document.getElementById('submitButton');
+        let selectedAddress = ""; // Biến để lưu địa chỉ đã chọn
 
-    // Lấy gợi ý địa chỉ
-    searchBox.addEventListener('input', function() {
-        const query = this.value;
+        // Lấy gợi ý địa chỉ
+        searchBox.addEventListener('input', function() {
+            const query = this.value;
 
-        if (query.trim() === "") {
+            if (query.trim() === "") {
+                suggestionsList.innerHTML = "";
+                return;
+            }
+
+            fetch(`${AUTOCOMPLETE_URL}?api_key=${API_KEY}&input=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const suggestions = data.predictions || [];
+                    suggestionsList.innerHTML = "";
+
+                    suggestions.forEach(item => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = item.description;
+
+                        listItem.addEventListener('click', () => {
+                            handleAddressSelection(item.description);
+                        });
+
+                        suggestionsList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error("Lỗi khi gọi API:", error);
+                });
+        });
+
+        // Xử lý chọn địa chỉ
+        function handleAddressSelection(description) {
+            searchBox.value = description;
             suggestionsList.innerHTML = "";
-            return;
+            selectedAddress = description;
         }
 
-        fetch(`${AUTOCOMPLETE_URL}?api_key=${API_KEY}&input=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(data => {
-                const suggestions = data.predictions || [];
-                suggestionsList.innerHTML = "";
+        // Kiểm tra số điện thoại
+        phoneInput.addEventListener('input', function() {
+            if (phoneInput.value.length !== 10 || phoneInput.value[0] !== '0') {
+                phoneInput.setCustomValidity("Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
+                phoneInput.reportValidity();
+            } else {
+                phoneInput.setCustomValidity("");
+            }
+        });
 
-                suggestions.forEach(item => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = item.description;
+        // Xử lý gửi thông tin
+        submitButton.addEventListener('click', function() {
+            const recipientName = document.getElementById('recipientName').value;
+            const phoneNumber = phoneInput.value;
+            const address = selectedAddress;
 
-                    listItem.addEventListener('click', () => {
-                        handleAddressSelection(item.description);
-                    });
+            if (!recipientName || phoneNumber.length !== 10 || phoneNumber[0] !== '0' || !address) {
+                alert("Vui lòng nhập đầy đủ thông tin! Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
+                return;
+            }
 
-                    suggestionsList.appendChild(listItem);
+            const dataToSend = {
+                recipientName,
+                phoneNumber,
+                fullAddress: address
+            };
+
+            // Gửi dữ liệu lên server bằng AJAX
+            fetch('/diachi/api/save-address', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToSend)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "Địa chỉ đã được lưu thành công") {
+                        Swal.fire('Thành công!', 'Địa chỉ đã được lưu thành công', 'success')
+                            .then(() => {
+                                // Chuyển hướng về trang thanh toán
+                                window.location.href = 'http://localhost:8080/panda/giohang/thanhtoan';
+                            });
+                    } else {
+                        Swal.fire('Lỗi!', 'Có lỗi xảy ra khi lưu địa chỉ', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gửi dữ liệu:', error);
+                    Swal.fire('Lỗi!', 'Có lỗi xảy ra khi gửi dữ liệu', 'error');
                 });
-            })
-            .catch(error => {
-                console.error("Lỗi khi gọi API:", error);
-            });
-    });
-
-    // Xử lý chọn địa chỉ
-    function handleAddressSelection(description) {
-        searchBox.value = description;
-        suggestionsList.innerHTML = "";
-        selectedAddress = description;
-    }
-
-    // Xử lý gửi thông tin
-    document.getElementById('submitButton').addEventListener('click', function() {
-        const recipientName = document.getElementById('recipientName').value;
-        const phoneNumber = document.getElementById('phoneNumber').value;
-        const address = selectedAddress;
-
-        const fullAddress = address;
-
-        // Tạo đối tượng dữ liệu để gửi lên server
-        const dataToSend = {
-            recipientName: recipientName,
-            phoneNumber: phoneNumber,
-            address: address,
-            fullAddress: fullAddress
-        };
-
-        // Gửi dữ liệu lên server bằng AJAX
-        fetch('/diachi/api/save-address', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dataToSend)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message === "Địa chỉ đã được lưu thành công") {
-                    Swal.fire('Thành công!', 'Địa chỉ đã được lưu thành công', 'success')
-                        .then(() => {
-                            // Chuyển hướng về trang thanh toán
-                            window.location.href = 'http://localhost:8080/panda/giohang/thanhtoan';
-                        });
-                } else {
-                    Swal.fire('Lỗi!', 'Có lỗi xảy ra khi lưu địa chỉ', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi khi gửi dữ liệu:', error);
-                Swal.fire('Lỗi!', 'Có lỗi xảy ra khi gửi dữ liệu', 'error');
-            });
+        });
     });
 </script>
 

@@ -287,11 +287,13 @@
 <!--                        </div>-->
 <!--                    </div>-->
                     <div class="mb-3">
+
 <!--                        <input type="text" class="form-control" placeholder="Địa chỉ cụ thể" id="diachi-input"-->
 <!--                               th:name="diachicuthe">-->
 
                         <input type="text" class="form-control" id="searchBox" placeholder="Nhập địa chỉ, số nhà, quận,..." autocomplete="off" th:name="diachicuthe">
                         <ul id="suggestions"></ul>
+
                     </div>
                     <div class="mb-3">
                         <textarea class="form-control" placeholder="Ghi chú" rows="3" th:name="ghichu"></textarea>
@@ -366,24 +368,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-4"><h4>Danh mục :</h4>
-                            <select class="form-select" aria-label="Default select example">
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <div class="col-4"><h4>Thương hiệu :</h4>
-                            <select class="form-select" aria-label="Default select example">
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <div class="col-4"><h4>Chât liệu :</h4>
-                            <select class="form-select" aria-label="Default select example">
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                    </div>
-                    <br>
                     <div class="search-container"
                          style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                         <input type="text" id="searchsanpham" onkeyup="updateProductList()"

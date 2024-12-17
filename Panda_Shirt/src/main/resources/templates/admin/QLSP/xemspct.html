@@ -33,6 +33,7 @@
             <thead class="thead-dark">
             <tr>
                 <th style="width: 1%;"><input type="checkbox" id="select-all"></th>
+                <th style="width: 10%;">mã SPCT</th>
                 <th style="width: 10%;">Danh mục</th>
                 <th style="width: 7%;">NSX</th>
                 <th style="width: 6%;">Thương hiệu</th>
@@ -132,6 +133,7 @@
                             productDetailHtml += `
                             <tr data-id="${chiTiet.id}">
                                 <td><input type="checkbox" class="select-row"></td>
+                                <td>${chiTiet.maspct ? chiTiet.maspct : 'Không có mã'}</td>
                                 <td>${data.danhMuc ? data.danhMuc.tendanhmuc : 'Không có danh mục'}</td>
                                 <td>${data.nhaSanXuat ? data.nhaSanXuat.tennsx : 'Không có nhà sản xuất'}</td>
                                 <td>${data.thuongHieu ? data.thuongHieu.tenthuonghieu : 'Không có thương hiệu'}</td>

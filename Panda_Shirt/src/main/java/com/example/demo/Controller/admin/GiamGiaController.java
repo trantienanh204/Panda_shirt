@@ -442,6 +442,7 @@ public class GiamGiaController {
                 ngayTao = vc.getNgaytao();
             }
         }
+        System.out.println(voucher.isLoaikhachhang());
         voucher.setNgaytao(ngayTao);
         voucher.setNgaysua(LocalDate.now());
         voucherRepository.save(voucher);
