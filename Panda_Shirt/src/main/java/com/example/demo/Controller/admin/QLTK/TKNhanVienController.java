@@ -232,10 +232,10 @@ public class TKNhanVienController {
         if(result.hasErrors()){
             return "/admin/QLTK/UPDATE/UpdateTKNhanVien";
         }
-        if (taiKhoanRepository.existsByTenDangNhap(nhanVien.getTentaikhoan())) {
-            model.addAttribute("emailExist","Email này đã được đăng ký");
-            hasErrors = true;
-        }
+//        if (taiKhoanRepository.existsByTenDangNhap(nhanVien.getTentaikhoan())) {
+//            model.addAttribute("emailExist","Email này đã được đăng ký");
+//            hasErrors = true;
+//        }
         // check mail trống update
         if (nhanVien.getTentaikhoan().trim().isEmpty()){
             model.addAttribute("emailEmpty","Vui lòng nhập email");

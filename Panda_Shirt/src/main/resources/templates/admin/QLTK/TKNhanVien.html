@@ -106,15 +106,21 @@
                 <a style="margin-right: 10px" th:href="@{/panda/tknhanvien/update(id=${taikhoannv.id})}">
                     <i class="fa-regular fa-pen-to-square" style="color: #000000;font-size: 25px"></i>
                 </a>
-                <a th:href="@{/panda/tknhanvien/change(id=${taikhoannv.id})}">
-                    <i th:if="${taikhoannv.trangthai == 1}">
-                        <i class="fa-solid fa-toggle-on"  style="color: #00040a; font-size: 25px">
+                <a th:if="${taikhoannv.chucvu == 'Nhân viên'}">
+                    <a th:href="@{/panda/tknhanvien/change(id=${taikhoannv.id})}">
+                        <i th:if="${taikhoannv.trangthai == 1}">
+                            <i class="fa-solid fa-toggle-on"  style="color: #00040a; font-size: 25px">
+                            </i>
                         </i>
-                    </i>
-                    <i th:if="${taikhoannv.trangthai == 0}">
-                        <i class="fa-solid fa-toggle-off" style="color: #00040a; font-size: 25px">
+                        <i th:if="${taikhoannv.trangthai == 0}">
+                            <i class="fa-solid fa-toggle-off" style="color: #00040a; font-size: 25px">
+                            </i>
                         </i>
-                    </i>
+                    </a>
+                </a>
+              <!-- Icon-->
+                <a th:if="${taikhoannv.chucvu != 'Nhân viên'}">
+                    <i class="fa-solid fa-circle-xmark" style="color: #00040a; font-size: 25px"></i>
                 </a>
             </td>
         </tr>
