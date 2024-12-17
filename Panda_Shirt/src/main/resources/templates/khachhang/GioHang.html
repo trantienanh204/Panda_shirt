@@ -13,18 +13,18 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-        <!-- Thêm SweetAlert -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Thêm SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/png" href="/Image/HIHI.jpg">
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img th:src="@{/Image/panda_logo.png}" width="50px" height="50px">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <img th:src="@{/Image/panda_logo.png}" width="70px" ; height="70px">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -40,19 +40,27 @@
                 </li>
             </ul>
             <!-- Form Search -->
-            <form class="d-flex mx-auto" style="width: 400px;">
-                <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <form class="d-flex mx-auto" style="width: 600px;" action="/panda/search" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Tìm kiếm..."
+                       aria-label="Search">
+                <!--                <select class="form-select me-2" name="category" aria-label="Chọn danh mục">-->
+                <!--&lt;!&ndash;                    <option value="">Tất cả danh mục</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>&ndash;&gt;-->
+                <!--                </select>-->
                 <button class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/giohang}"><i class="fas fa-shopping-cart"></i></a>
+                    <a class="nav-link" th:href="@{/panda/giohang}">
+                        <i class="fas fa-shopping-cart" style="font-size: 25px"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/taikhoan}"><i class="fas fa-user"></i></a>
+                    <a class="nav-link" th:href="@{/panda/taikhoan}">
+                        <i class="fas fa-user" style="font-size: 25px"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="font-size: 25px" th:href="@{/panda/logout}"><i class="fas fa-sign-in-alt"></i></a>
+                    <a class="nav-link" th:href="@{/panda/logout}">
+                        <i class="fas fa-sign-in-alt" style="font-size: 25px"></i></a>
                 </li>
             </ul>
         </div>
@@ -73,7 +81,7 @@
     <div th:if="${#lists.isEmpty(cartItems)}">
         <p>Giỏ hàng của bạn đang trống.</p>
     </div>
-<!--    <button id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Chọn tất cả</button>-->
+    <!--    <button id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Chọn tất cả</button>-->
     <div th:if="${!#lists.isEmpty(cartItems)}">
         <button id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Chọn tất cả</button>
         <form id="cartForm">
@@ -100,16 +108,20 @@
                     </td>
                     <td>
                         <div th:if="${item.anhspBase64 != null}">
-                            <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image" class="img-fluid" style="max-width: 100px;">
+                            <img th:src="'data:image/png;base64,' + ${item.anhspBase64}" alt="Product Image"
+                                 class="img-fluid" style="max-width: 100px;">
                         </div>
                         <div th:if="${item.anhspBase64 == null}">
-                            <img src="https://placehold.co/600x400?text=No+Image" class="img-fluid" style="max-width: 100px;" alt="Product Image">
+                            <img src="https://placehold.co/600x400?text=No+Image" class="img-fluid"
+                                 style="max-width: 100px;" alt="Product Image">
                         </div>
                     </td>
                     <td th:text="${item.sanPhamChiTiet.sanPham.tensp}">Tên sản phẩm</td>
                     <td th:text="${item.sanPhamChiTiet.mauSac.ten}">Màu sắc</td>
                     <td th:text="${item.sanPhamChiTiet.kichThuoc.ten}">Kích thước</td>
-                    <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.dongia, 1, 'POINT',0, 'COMMA') + '₫'}">Giá</td>
+                    <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.dongia, 1, 'POINT',0, 'COMMA') + '₫'}">
+                        Giá
+                    </td>
                     <td>
                         <input type="number" class="form-control quantity-input" th:value="${item.soluong}"
                                th:data-max="${item['sanPhamChiTiet'].soluongsanpham}"
@@ -140,7 +152,7 @@
     </ul>
 </footer>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const selectAllBtn = document.getElementById('selectAllBtn');
         const productCheckboxes = document.querySelectorAll('.product-checkbox');
         const totalPriceElement = document.getElementById('totalPrice');
@@ -151,7 +163,7 @@
         function updateTotalPrice() {
             let totalPrice = 0;
 
-            productCheckboxes.forEach(function(checkbox) {
+            productCheckboxes.forEach(function (checkbox) {
                 if (checkbox.checked) {
                     totalPrice += parseFloat(checkbox.getAttribute('data-price'));
                 }
@@ -166,17 +178,17 @@
             }
         }
 
-        selectAllBtn.addEventListener('click', function() {
+        selectAllBtn.addEventListener('click', function () {
             isSelectAll = !isSelectAll;
 
-            productCheckboxes.forEach(function(checkbox) {
+            productCheckboxes.forEach(function (checkbox) {
                 checkbox.checked = isSelectAll;
             });
 
             updateTotalPrice();
         });
 
-        productCheckboxes.forEach(function(checkbox) {
+        productCheckboxes.forEach(function (checkbox) {
             checkbox.addEventListener('change', updateTotalPrice);
         });
 
@@ -263,7 +275,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const buyButton = document.getElementById('buyButton');
         const totalPriceElement = document.getElementById('totalPrice');
@@ -286,7 +298,7 @@
                     }
                 }
             });
-            totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+            totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
         }
 
         function handleQuantityInput(event) {
@@ -321,12 +333,12 @@
                     gioHangId: gioHangId,
                     quantity: quantity
                 }),
-                success: function(response) {
+                success: function (response) {
                     const checkbox = document.getElementById('product' + gioHangId);
                     checkbox.setAttribute('data-price', response.newPrice);
                     updateTotalPrice();
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error:', xhr.responseText);
                     alert('Có lỗi khi cập nhật số lượng! ' + xhr.responseText);
                 }
@@ -358,12 +370,12 @@
                     gioHangId: gioHangId,
                     quantity: quantity
                 }),
-                success: function(response) {
+                success: function (response) {
                     const checkbox = document.getElementById('product' + gioHangId);
                     checkbox.setAttribute('data-price', response.newPrice);
                     updateTotalPrice();
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error:', xhr.responseText);
                     alert('Có lỗi khi cập nhật số lượng! ' + xhr.responseText);
                 }
@@ -381,12 +393,12 @@
                 data: JSON.stringify({
                     gioHangId: gioHangId
                 }),
-                success: function(response) {
+                success: function (response) {
                     row.remove();
                     updateTotalPrice();
                     location.reload();
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error:', xhr.responseText);
                     alert('Có lỗi khi xóa sản phẩm! ' + xhr.responseText);
                 }
@@ -414,7 +426,7 @@
                 });
             });
 
-            buyButton.addEventListener('click', function(event) {
+            buyButton.addEventListener('click', function (event) {
                 event.preventDefault();
 
                 const selectedItems = [];
@@ -434,8 +446,8 @@
                     type: 'POST',
                     url: '/panda/giohang/checkInventory',
                     contentType: 'application/json',
-                    data: JSON.stringify({ selectedItems: selectedItems }),
-                    success: function(response) {
+                    data: JSON.stringify({selectedItems: selectedItems}),
+                    success: function (response) {
                         if (response.valid) {
                             const form = document.createElement('form');
                             form.method = 'POST';
@@ -479,7 +491,7 @@
                             });
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error('Error:', xhr.responseText);
                         Swal.fire({
                             icon: 'error',
