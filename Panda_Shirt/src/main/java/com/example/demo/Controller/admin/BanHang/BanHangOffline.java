@@ -426,28 +426,35 @@ public class BanHangOffline {
         Map<String, String> response = new HashMap<>();
         DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
         BigDecimal tt = tongtien(idhd);
-        BigDecimal thanhtien;
+        BigDecimal thanhtien = BigDecimal.ZERO;
         String loai = "0";
 
         Optional<Voucher> checkvoucher = voucherRepository.findByMa(id);
-        if (checkvoucher.isPresent()) {
+        if (checkvoucher.isPresent() && checkvoucher.get().getTrangThai() == 1 &&
+                Integer.parseInt(checkvoucher.get().getSoLuong()) >= 1) {
             Voucher voucher = checkvoucher.get();
             System.out.println("Voucher ID nhận từ client: " + id);
-
             int mucgiam = Integer.parseInt(voucher.getMucGiam());
             int giamin = Integer.parseInt(voucher.getDieuKien());
-            if (tt.compareTo(new BigDecimal(giamin)) <= 0) {
+            if (tt.compareTo(new BigDecimal(giamin)) < 0) {
                 response.put("error", "Tổng tiền phải lớn hơn " + decimalFormat.format(new BigDecimal(giamin)) + " để áp dụng voucher.");
                 return ResponseEntity.badRequest().body(response);
             }
             if (voucher.isLoai()) {
                 BigDecimal mucGiamBD = new BigDecimal(mucgiam);
                 BigDecimal sophantram = tt.divide(new BigDecimal(100), RoundingMode.HALF_UP).multiply(mucGiamBD);
-                thanhtien = tt.subtract(sophantram);
                 loai = voucher.getMucGiam() + "% ";
             } else {
                 thanhtien = tt.subtract(new BigDecimal(mucgiam));
                 BigDecimal giamgia = new BigDecimal(voucher.getMucGiam());
+                if(thanhtien.compareTo(giamgia) <= 0){
+                    thanhtien = BigDecimal.ZERO;
+                    System.out.println("0dd" +thanhtien);
+                    System.out.println("mức giảm vnd : " +giamgia);
+                }else{
+                    thanhtien = tt.subtract(giamgia);
+                    System.out.println("tiền gốc " +thanhtien);
+                }
                 String formattedgiamgia = decimalFormat.format(giamgia);
                 loai = formattedgiamgia + " VND ";
             }
@@ -455,13 +462,15 @@ public class BanHangOffline {
             response.put("error", "Voucher không tồn tại hoặc đã hết");
             System.out.println("Voucher không tồn tại.");
             thanhtien = tt;
+            System.out.println("không vc :" +thanhtien);
             loai = "0";
             return ResponseEntity.badRequest().body(response);
         }
         String formattedThanhtien = decimalFormat.format(thanhtien);
+        System.out.println("a"+formattedThanhtien+"a");
 
         response.put("thanhtien", formattedThanhtien);
-        response.put("thanhtien", formattedThanhtien);
+//        response.put("thanhtien", formattedThanhtien);
         response.put("thanhTien", String.valueOf(thanhtien));
         response.put("tt", String.valueOf(tt));
         response.put("mavocher", checkvoucher.isPresent() ? checkvoucher.get().getMa() : "");
@@ -491,13 +500,13 @@ public class BanHangOffline {
             @RequestParam(value = "tongtien",defaultValue = "0") BigDecimal tongtien,
             @RequestParam("sdt") String sdt,
             @RequestParam("giaohang") String giaohang,
-            @RequestParam("tinh") String tinh,
-            @RequestParam("huyen") String huyen,
-            @RequestParam("xa") String xa,
-            @RequestParam("tentinh") String tentinh,
-            @RequestParam("tenhuyen") String tenhuyen,
-            @RequestParam("tenxa") String tenxa,
-            @RequestParam(value = "diachicuthe",defaultValue = "trống") String diachicuthe,
+//            @RequestParam("tinh") String tinh,
+//            @RequestParam("huyen") String huyen,
+//            @RequestParam("xa") String xa,
+//            @RequestParam("tentinh") String tentinh,
+//            @RequestParam("tenhuyen") String tenhuyen,
+//            @RequestParam("tenxa") String tenxa,
+            @RequestParam(value = "diachicuthe",defaultValue = "Trống") String diachicuthe,
             @RequestParam(value = "ghichu",defaultValue = "trống") String ghichu,
             @RequestParam("tenkh") String tenkh,
             @RequestParam("mucgiam") String giagiam,
@@ -524,8 +533,16 @@ public class BanHangOffline {
             return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
         }
 
+        if(giaohang.equals("1")){
+            if(sdt.trim().isEmpty() || diachicuthe.trim().isEmpty()){
+                redirectAttributes.addFlashAttribute("loi", "Chưa nhập đầy đủ thông tin người nhận");
+                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
+            }
+            dh.setTrangThai("Đã duyệt");
+        }
+
         if (sdt.isBlank()) {
-            KhachHang kh1 = khachHangRepository.findById(2).orElse(null);
+            KhachHang kh1 = khachHangRepository.findById(1).orElse(null);
             if (kh1 != null) {
                 System.out.println("Khách hàng mặc định");
                 hd.setKhachHang(kh1);
@@ -542,29 +559,34 @@ public class BanHangOffline {
                 }
                 kh = new KhachHang();
                 String maKhachHang = "KH" + UUID.randomUUID().toString().replace("-", "").substring(0, 6);
-                kh.setTenkhachhang(tenkh);
                 kh.setMakhachhang(maKhachHang);
+                kh.setTenkhachhang(tenkh);
                 kh.setTrangthai(1);
+                kh.setDelete(true);
+                kh.setTinhtrang(true);
                 kh.setSdt(sdt);
                 kh.setDiachi(diachicuthe);
-                kh.setTinhtp(tinh);
-                kh.setQuanhuyen(huyen);
-                kh.setXaphuong(xa);
-                kh.setTentinh(tentinh);
-                kh.setTenhuyen(tenhuyen);
-                kh.setTenxa(tenxa);
+//                kh.setTinhtp(tinh);
+//                kh.setQuanhuyen(huyen);
+//                kh.setXaphuong(xa);
+//                kh.setTentinh(tentinh);
+//                kh.setTenhuyen(tenhuyen);
+//                kh.setTenxa(tenxa);
                 System.out.println("Thêm khách hàng mới");
                 khachHangRepository.save(kh);
             } else {
                 kh.setTenkhachhang(tenkh);
                 kh.setSdt(sdt);
                 kh.setDiachi(diachicuthe);
-                kh.setTinhtp(tinh);
-                kh.setQuanhuyen(huyen);
-                kh.setXaphuong(xa);
-                kh.setTentinh(tentinh);
-                kh.setTenhuyen(tenhuyen);
-                kh.setTenxa(tenxa);
+                kh.setTrangthai(1);
+                kh.setTinhtrang(true);
+                kh.setDelete(true);
+//                kh.setTinhtp(tinh);
+//                kh.setQuanhuyen(huyen);
+//                kh.setXaphuong(xa);
+//                kh.setTentinh(tentinh);
+//                kh.setTenhuyen(tenhuyen);
+//                kh.setTenxa(tenxa);
                 System.out.println("Cập nhật khách hàng");
                 khachHangRepository.save(kh);
             }
@@ -633,17 +655,6 @@ public class BanHangOffline {
         }
        NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
 
-
-
-        if(giaohang.equals("1")){
-            if(sdt.isBlank() || diachicuthe.isBlank()){
-                redirectAttributes.addFlashAttribute("loi", "Chưa nhập đầy đủ thông tin người nhận");
-                return "redirect:/panda/banhangoffline/muahang/" + idhoadon;
-            }
-            dh.setTrangThai("Đã duyệt");
-        }
-
-
         hd.setNhanVien(nhanVien);
         hd.setVoucher(vc);
         hd.setThanhtien(thanhtien);
@@ -653,14 +664,12 @@ public class BanHangOffline {
         hd.setNgaymua(LocalDate.now());
         hd.setGhiChu(ghichu);
 
-
         if(checkbox.equals("0")){
             dh.setTrangthaioffline(true);
             hd.setTttt(0);
         }else{
             dh.setTrangthaioffline(false);
             hd.setTttt(1);
-
         }
 
         hoaDonRepository.save(hd);
@@ -676,6 +685,8 @@ public class BanHangOffline {
         dh.setHinhthuc(1);
         donHangRepository.save(dh);
         this.idhd = null;
+        redirectAttributes.addFlashAttribute("message","Thanh toán thành công");
+        model.addAttribute("message","Thanh toán thành công");
         return "redirect:/panda/banhangoffline";
     }
 
