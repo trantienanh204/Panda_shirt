@@ -51,6 +51,10 @@ public interface SanPhamRepository extends JpaRepository<SanPham,Integer> {
 //    List<SanPham> findByDanhMuc(DanhMuc danhMuc);
 //    List<SanPham> findAllByOrderByNgaytaoDesc();
 
-
+    // Truy vấn để lấy tên sản phẩm và tổng số lượng từ SanPhamChiTiet
+    @Query("SELECT sp.tensp, SUM(spct.soluongsanpham) " +
+            "FROM SanPham sp JOIN sp.sanPhamChiTietList spct " +
+            "GROUP BY sp.id, sp.tensp")
+    List<Object[]> findProductNameAndQuantity();
 }
 

@@ -70,7 +70,7 @@ public class BanHangOffline {
         List<Voucher> voucher = voucherRepository.findAll();
         List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findAll();
         List<Voucher> validVouchers = new ArrayList<>();
-        List<KhachHang> listkh = khachHangRepository.findAll();
+        List<KhachHang> listkh = khachHangRepository.timkhachhang();
         for (Voucher v : voucher) {
             try {
                 int soLuong = Integer.parseInt(v.getSoLuong());
@@ -103,7 +103,7 @@ public class BanHangOffline {
         List<Voucher> voucher = voucherRepository.findAll();
         List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findAll();
         List<Voucher> validVouchers = new ArrayList<>();
-        List<KhachHang> listkh = khachHangRepository.findAll();
+        List<KhachHang> listkh = khachHangRepository.timkhachhang();
         for (Voucher v : voucher) {
             try {
                 int soLuong = Integer.parseInt(v.getSoLuong());
@@ -332,6 +332,10 @@ public class BanHangOffline {
         SanPhamChiTiet spct = sanPhamChiTietRepository.findByMaspct(maspct);
         System.out.println("mã spct" + maspct);
         HoaDonCT hoaDonCT = new HoaDonCT();
+        if(spct == null){
+            redirectAttributes.addFlashAttribute("loi", "Không tìm thấy sản phẩm");
+            return ResponseEntity.badRequest().body(Map.of("message","Không tìm thấy sản phẩm!"));
+        }
         if(idhd == null){
             redirectAttributes.addFlashAttribute("loi", "Chưa chọn hóa đơn!");
             return ResponseEntity.badRequest().body(Map.of("message","Chưa chọn hóa đơn!"));
