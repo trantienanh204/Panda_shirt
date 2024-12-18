@@ -491,14 +491,14 @@ public class BanHangOffline {
             @RequestParam(value = "tongtien",defaultValue = "0") BigDecimal tongtien,
             @RequestParam("sdt") String sdt,
             @RequestParam("giaohang") String giaohang,
-            @RequestParam("tinh") String tinh,
-            @RequestParam("huyen") String huyen,
-            @RequestParam("xa") String xa,
-            @RequestParam("tentinh") String tentinh,
-            @RequestParam("tenhuyen") String tenhuyen,
-            @RequestParam("tenxa") String tenxa,
-            @RequestParam(value = "diachicuthe",defaultValue = "trống") String diachicuthe,
-            @RequestParam(value = "ghichu",defaultValue = "trống") String ghichu,
+//            @RequestParam("tinh") String tinh,
+//            @RequestParam("huyen") String huyen,
+//            @RequestParam("xa") String xa,
+//            @RequestParam("tentinh") String tentinh,
+//            @RequestParam("tenhuyen") String tenhuyen,
+//            @RequestParam("tenxa") String tenxa,
+            @RequestParam(value = "diachicuthe",defaultValue = "Trống") String diachicuthe,
+            @RequestParam(value = "ghichu",defaultValue = "Trống") String ghichu,
             @RequestParam(value = "tenkh",defaultValue= "Khách lẻ") String tenkh,
             @RequestParam("mucgiam") String giagiam,
             @RequestParam(value = "checkbox-tt",defaultValue = "1") String checkbox,
@@ -560,24 +560,24 @@ public class BanHangOffline {
                 kh.setTrangthai(1);
                 kh.setSdt(sdt);
                 kh.setDiachi(diachicuthe);
-                kh.setTinhtp(tinh);
-                kh.setQuanhuyen(huyen);
-                kh.setXaphuong(xa);
-                kh.setTentinh(tentinh);
-                kh.setTenhuyen(tenhuyen);
-                kh.setTenxa(tenxa);
+//                kh.setTinhtp(tinh);
+//                kh.setQuanhuyen(huyen);
+//                kh.setXaphuong(xa);
+//                kh.setTentinh(tentinh);
+//                kh.setTenhuyen(tenhuyen);
+//                kh.setTenxa(tenxa);
                 System.out.println("Thêm khách hàng mới");
                 khachHangRepository.save(kh);
             } else {
                 kh.setTenkhachhang(tenkh);
                 kh.setSdt(sdt);
                 kh.setDiachi(diachicuthe);
-                kh.setTinhtp(tinh);
-                kh.setQuanhuyen(huyen);
-                kh.setXaphuong(xa);
-                kh.setTentinh(tentinh);
-                kh.setTenhuyen(tenhuyen);
-                kh.setTenxa(tenxa);
+//                kh.setTinhtp(tinh);
+//                kh.setQuanhuyen(huyen);
+//                kh.setXaphuong(xa);
+//                kh.setTentinh(tentinh);
+//                kh.setTenhuyen(tenhuyen);
+//                kh.setTenxa(tenxa);
                 System.out.println("Cập nhật khách hàng");
                 khachHangRepository.save(kh);
             }

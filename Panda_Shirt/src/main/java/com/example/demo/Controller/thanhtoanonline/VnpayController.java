@@ -245,12 +245,17 @@ String codevc = null;
         if (voucherOptional.isPresent()) {
             Voucher voucher = voucherOptional.get();
             BigDecimal giamGia;
+
             if (voucher.isLoai()) {
                 giamGia = BigDecimal.valueOf(totalAmount).multiply(new BigDecimal(voucher.getMucGiam())).divide(BigDecimal.valueOf(100));
             } else {
                 giamGia = new BigDecimal(voucher.getMucGiam());
             }
+
             BigDecimal thanhTien = BigDecimal.valueOf(totalAmount).subtract(giamGia);
+            if (thanhTien.compareTo(BigDecimal.ZERO) < 0) {
+                thanhTien = BigDecimal.ZERO;
+            }
             hoaDon.setThanhtien(thanhTien);
         } else {
             hoaDon.setThanhtien(BigDecimal.valueOf(totalAmount));
