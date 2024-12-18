@@ -77,7 +77,6 @@
             </td>
 
             <td th:text="${tkkhachhang.makhachhang}"></td>
-<!--            <td th:text="${tkkhachhang.tinh_tp.tentinhTP}"></td>-->
             <td th:text="${tkkhachhang.tenkhachhang}"></td>
             <td th:text="${tkkhachhang.gioitinh == 1 ? 'Nam' : 'Nữ'}"></td>
             <td th:text="${tkkhachhang.ngaytao != null ? #temporals.format(tkkhachhang.ngaytao, 'dd/MM/yyyy') : 'Chưa có'}"></td>
@@ -95,10 +94,6 @@
                    th:data-tentk="${tkkhachhang.tentaikhoan}"
                    th:data-sdt="${tkkhachhang.sdt}"
                    th:data-diachi="${tkkhachhang.diachi}">
-<!--                   th:data-tinh="${tkkhachhang.tinhtp.tentinhTP}">-->
-
-<!--                   th:data-xaPhuong="${tkkhachhang.xaPhuong.tenxaphuong}"-->
-
                     <i class="fa-regular fa-eye" style="color: #000000;font-size: 25px"></i>
                 </a>
             </td>
@@ -149,10 +144,10 @@
                             <li id="modal-tentk"></li>
                             <li id="modal-gioitinh"></li>
                             <li id="modal-sdt"></li>
-<!--                            <li>-->
-<!--                                <span id="modal-diachi"></span>-->
-<!--                                <span id="modal-tinh"></span>-->
-<!--                            </li>-->
+                            <!--                            <li>-->
+                            <!--                                <span id="modal-diachi"></span>-->
+                            <!--                                <span id="modal-tinh"></span>-->
+                            <!--                            </li>-->
                             <li>
                                 <lable>Ngày tạo:</lable>
                                 <span style="padding-right: 50px" id="modal-ngaytao"></span>
@@ -326,6 +321,7 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ cho ảnh */
         margin-left: 50px;
     }
+
     .modal-body ul li {
         margin-bottom: 15px; /* Thay đổi giá trị theo nhu cầu */
     }

@@ -497,8 +497,10 @@ public class BanHangOffline {
 //            @RequestParam("tentinh") String tentinh,
 //            @RequestParam("tenhuyen") String tenhuyen,
 //            @RequestParam("tenxa") String tenxa,
-            @RequestParam(value = "diachicuthe",defaultValue = "Trống") String diachicuthe,
-            @RequestParam(value = "ghichu",defaultValue = "Trống") String ghichu,
+
+            @RequestParam(value = "diachicuthe",defaultValue = "trống") String diachicuthe,
+            @RequestParam(value = "ghichu",defaultValue = "trống") String ghichu,
+
             @RequestParam(value = "tenkh",defaultValue= "Khách lẻ") String tenkh,
             @RequestParam("mucgiam") String giagiam,
             @RequestParam(value = "checkbox-tt",defaultValue = "1") String checkbox,

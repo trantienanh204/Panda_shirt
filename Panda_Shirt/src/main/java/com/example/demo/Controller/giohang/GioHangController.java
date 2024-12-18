@@ -232,7 +232,7 @@ public class GioHangController {
             return "khachhang/GioHang";
         }
         List<Voucher> voucher = voucherRepository.findAll();
-        List<Voucher> voucrs = voucher.stream().filter(vc -> vc.isLoaikhachhang() == true && vc.getTrangThai() == 1).collect(Collectors.toList());
+        List<Voucher> voucrs = voucher.stream().filter(vc -> vc.isLoaikhachhang() == true && vc.getTrangThai() == 1 && Integer.parseInt(vc.getSoLuong())>=1).collect(Collectors.toList());
         model.addAttribute("listvc", voucrs);
         model.addAttribute("cartItems", processedCartItems);
         model.addAttribute("khachHang", khachHang);
@@ -454,8 +454,7 @@ public class GioHangController {
             System.out.println("sản phẩm: "+spctLisst);
 
             List<Voucher> voucher = voucherRepository.findAll();
-            List<Voucher> voucrs = voucher.stream().filter(vc -> vc.isLoaikhachhang() == true && vc.getTrangThai() == 1).collect(Collectors.toList());
-            model.addAttribute("listvc", voucrs);
+            List<Voucher> voucrs = voucher.stream().filter(vc -> vc.isLoaikhachhang() == true && vc.getTrangThai() == 1 && Integer.parseInt(vc.getSoLuong())>=1).collect(Collectors.toList());            model.addAttribute("listvc", voucrs);
             model.addAttribute("cartItems", processedCartItems);
             model.addAttribute("totalAmount", totalAmount);
             model.addAttribute("khachHang", khachHang); // Thêm thông tin khách hàng vào model

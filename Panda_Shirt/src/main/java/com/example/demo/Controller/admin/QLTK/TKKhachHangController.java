@@ -56,11 +56,11 @@ public class TKKhachHangController {
         if (page < 0) {
             page = 0;
         }
-        Page<KhachHang> listKH = khachHangService.hienThiKH(page, makh , tenkh  , trangThai);
+        Page<KhachHang> listKH = khachHangService.hienThiKH(page, makh ,tenkh, trangThai);
         model.addAttribute("totalPage", listKH.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("list", listKH.getContent());
-        model.addAttribute("makh", makh)    ;
+        model.addAttribute("makh", makh);
         model.addAttribute("tenkh", tenkh);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageSize", listKH.getSize());
