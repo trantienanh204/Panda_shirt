@@ -75,7 +75,7 @@ public class RegisterController {
             model.addAttribute("emailErrors","Email không đúng định dạng");
             hasErrors = true;
         }
-        if (khachHangRepository.existsByTentaikhoan(email)){
+        if (taiKhoanRepository.existsByTenDangNhap(khachHang.getTentaikhoan())){
             model.addAttribute("emailExists","Email đã tồn tại");
             hasErrors = true;
         }

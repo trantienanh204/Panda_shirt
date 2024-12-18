@@ -7,6 +7,7 @@ import com.example.demo.entity.KhachHang;
 import com.example.demo.respository.KhachHangRepository;
 import com.example.demo.service.TaiKhoanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("diachi")
@@ -45,14 +47,25 @@ public class diachigiaohangController {
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
         KhachHang khachHang = khachHangRepository.findById(taiKhoanDto.getKhachHangDTO().getId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
+
+        // Kiểm tra nếu số điện thoại đã tồn tại
+        KhachHang existingKhachHang = khachHangRepository.findBySdtAndNotId(diaChiDTO.getPhoneNumber(), khachHang.getId());
+        if (existingKhachHang != null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Số điện thoại đã tồn tại, vui lòng sử dụng số khác.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+
         khachHang.setDiachi(diaChiDTO.getFullAddress());
         khachHang.setSdt(diaChiDTO.getPhoneNumber());
         khachHang.setTenkhachhang(diaChiDTO.getRecipientName());
         khachHangRepository.save(khachHang);
+
         Map<String, String> response = new HashMap<>();
         response.put("message", "Địa chỉ đã được lưu thành công");
         return ResponseEntity.ok(response);
     }
+
 
     private KhachHang mapToKhachHang(KhachHangDTO dto) {
         KhachHang khachHang = new KhachHang();

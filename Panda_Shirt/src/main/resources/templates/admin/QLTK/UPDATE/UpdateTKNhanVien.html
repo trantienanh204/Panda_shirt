@@ -96,7 +96,7 @@
 
                     <div class="form-group">
                         <label for="tentaikhoan">  Email:</label>
-                        <input type="text" class="form-control" id="tentaikhoan" th:field="*{tentaikhoan}">
+                        <input readonly type="text" class="form-control" id="tentaikhoan" th:field="*{tentaikhoan}">
                         <div th:if="${#fields.hasErrors('tentaikhoan')}" class="text-danger">
                             <span th:errors="*{tentaikhoan}"></span>
                         </div>
@@ -136,7 +136,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" hidden>
                         <label for="trangthai">Trạng Thái:</label>
                         <select class="form-control" id="trangthai" th:field="*{trangthai}">
                             <option value="1" selected>Hoạt động</option>

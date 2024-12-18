@@ -57,7 +57,5 @@ public class XemTKKhachHangController {
     @ResponseBody
     public KhachHang chiTietKhachHang(@RequestParam("id") Integer id) {
         return khachHangService.findById(id);
-
-
     }
 }

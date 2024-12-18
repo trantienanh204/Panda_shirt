@@ -41,8 +41,9 @@ public class ThongKeController {
         int currentYear = LocalDate.now().getYear();
         Map<Integer, BigDecimal> monthlyRevenue = thongKeService.calculateMonthlyRevenue();
         System.out.println("Doanh thu:" + monthlyRevenue);
-        // Truyền tổng doanh thu và số lượng sản phẩm thành công vào model
+        // Tổng doanh thu
         BigDecimal totalRevenue = thongKeService.calculateTotalRevenue();
+        // Đếm số hóa đơn có trạng thái thành công
         long successfulProductsCount = thongKeService.countSuccessfulProducts();
         // Định dạng doanh thu
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));

@@ -3,11 +3,10 @@ package com.example.demo.services;
 import com.example.demo.entity.HoaDon;
 import com.example.demo.respository.HoaDonRepository;
 import com.example.demo.respository.KhachHangRepository;
-
-
 import com.example.demo.respository.SanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -16,9 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class ThongKeService {
     @Autowired
-
     private SanPhamRepository sanPhamRepository;
-
 
     @Autowired
     private HoaDonRepository hoaDonRepository;
@@ -27,50 +24,59 @@ public class ThongKeService {
     private KhachHangRepository khachHangRepository;
 
     // Tìm tổng số sản phẩm và số lượng
+//    public List<Object[]> findProductNameAndQuantity() {
+//        List<Object[]> productData = sanPhamRepository.findAll().stream()
+//                .map(sp -> new Object[]{sp.getTensp(), sp.getSoluongsp()})
+//                .collect(Collectors.toList());
+//
+//        System.out.println("Số lượng sản phẩm lấy được: " + productData.size());
+//        return productData;
+//    }
     public List<Object[]> findProductNameAndQuantity() {
-        List<Object[]> productData = sanPhamRepository.findAll().stream()
-                .map(sp -> new Object[]{sp.getTensp(), sp.getSoluongsp()})
-                .collect(Collectors.toList());
+        // Gọi repository để lấy dữ liệu
+        List<Object[]> productData = sanPhamRepository.findProductNameAndQuantity();
 
+        // Log dữ liệu để kiểm tra
         System.out.println("Số lượng sản phẩm lấy được: " + productData.size());
+        productData.forEach(data -> {
+            System.out.println("Tên sản phẩm: " + data[0] + ", Tổng số lượng: " + data[1]);
+        });
+
         return productData;
     }
 
-
-// Tính tổng doanh thu
+    // Tính tổng doanh thu
     public BigDecimal calculateTotalRevenue() {
         return hoaDonRepository.findAll().stream()
-                .filter(hd -> hd.getTrangthai() == 1) // Lọc hóa đơn có trạng thái thành công
-                .map(hd -> hd.getThanhtien() != null ? hd.getThanhtien() : BigDecimal.ZERO) // Thay thế `null` bằng `BigDecimal.ZERO`
-                .reduce(BigDecimal.ZERO, BigDecimal::add); // Cộng dồn doanh thu
+                .filter(hd -> hd.getTrangthai() == 1
+                        && hd.getNhanVien() != null
+                        && hd.getKhachHang() != null) // Kiểm tra nhân viên và khách hàng không null
+                .map(hd -> hd.getThanhtien() != null ? hd.getThanhtien() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
-
 
     // Tính doanh thu theo tháng
     public Map<Integer, BigDecimal> calculateMonthlyRevenue() {
-        List<HoaDon> hoaDons = hoaDonRepository.findAll().stream()
-                .filter(hd -> hd.getTrangthai() == 1)
-                .collect(Collectors.toList());
-
-        Map<Integer, BigDecimal> monthlyRevenue = new HashMap<>();
-        for (HoaDon hoaDon : hoaDons) {
-            int month = hoaDon.getNgaymua().getMonthValue(); // Lấy tháng
-            BigDecimal revenueForInvoice = hoaDon.getThanhtien(); // Doanh thu từ cột `thanhtien`
-
-
-            // Kiểm tra nếu `revenueForInvoice` không null
-            if (revenueForInvoice != null) {
-                monthlyRevenue.merge(month, revenueForInvoice, BigDecimal::add);
-            }
-        }
-        return monthlyRevenue;
+        return hoaDonRepository.findAll().stream()
+                .filter(hd -> hd.getTrangthai() == 1
+                        && hd.getNhanVien() != null
+                        && hd.getKhachHang() != null) // Kiểm tra nhân viên và khách hàng không null
+                .collect(Collectors.groupingBy(
+                        hd -> hd.getNgaymua().getMonthValue(),
+                        Collectors.reducing(
+                                BigDecimal.ZERO,
+                                hd -> hd.getThanhtien() != null ? hd.getThanhtien() : BigDecimal.ZERO,
+                                BigDecimal::add
+                        )
+                ));
     }
 
     // Đếm số hóa đơn thành công
     public long countSuccessfulProducts() {
         return hoaDonRepository.findAll().stream()
-                .filter(hd -> hd.getTrangthai() == 1)
+                .filter(hd -> hd.getTrangthai() == 1
+                        && hd.getNhanVien() != null
+                        && hd.getKhachHang() != null) // Kiểm tra nhân viên và khách hàng không null
                 .count();
     }
 
@@ -90,32 +96,33 @@ public class ThongKeService {
             ngayHienTai = ngayHienTai.plusDays(1);
         }
 
-        // Lấy danh sách hóa đơn từ cơ sở dữ liệu
-        List<HoaDon> danhSachHoaDon = hoaDonRepository.findAll();
-
+        // Lọc hóa đơn
+        List<HoaDon> danhSachHoaDon = hoaDonRepository.findAll().stream()
+                .filter(hd -> hd.getTrangthai() == 1
+                        && hd.getNhanVien() != null
+                        && hd.getKhachHang() != null) // Kiểm tra nhân viên và khách hàng không null
+                .collect(Collectors.toList());
 
         for (HoaDon hoaDon : danhSachHoaDon) {
-            if (hoaDon.getTrangthai() == 1) { // Kiểm tra trạng thái hóa đơn
-                LocalDate ngayMua = hoaDon.getNgaymua();
-
-                // Chỉ tính doanh thu nếu ngày mua nằm trong khoảng ngày bắt đầu và ngày kết thúc
-                if (!ngayMua.isBefore(ngayBatDau) && !ngayMua.isAfter(ngayKetThuc)) {
-                    BigDecimal doanhThu = hoaDon.getThanhtien() != null ? hoaDon.getThanhtien() : BigDecimal.ZERO; // Xử lý null
-                    doanhThuTheoNgay.put(ngayMua, doanhThuTheoNgay.get(ngayMua).add(doanhThu));
-                }
+            LocalDate ngayMua = hoaDon.getNgaymua();
+            if (!ngayMua.isBefore(ngayBatDau) && !ngayMua.isAfter(ngayKetThuc)) {
+                BigDecimal doanhThu = hoaDon.getThanhtien() != null ? hoaDon.getThanhtien() : BigDecimal.ZERO;
+                doanhThuTheoNgay.put(ngayMua, doanhThuTheoNgay.get(ngayMua).add(doanhThu));
             }
         }
         return doanhThuTheoNgay;
     }
 
-    // Doanh thu theo ngày (cộng dồn tất cả hóa đơn trong ngày)
+    // Doanh thu theo ngày
     public List<Map<String, Object>> getDailyRevenue(LocalDate startDate, LocalDate endDate) {
         List<Map<String, Object>> revenueList = new ArrayList<>();
 
-        // Lấy danh sách hóa đơn thành công trong khoảng thời gian
         List<HoaDon> hoaDons = hoaDonRepository.findAll().stream()
-                .filter(hd -> hd.getTrangthai() == 1)
-                .filter(hd -> !hd.getNgaymua().isBefore(startDate) && !hd.getNgaymua().isAfter(endDate))
+                .filter(hd -> hd.getTrangthai() == 1
+                        && hd.getNhanVien() != null
+                        && hd.getKhachHang() != null
+                        && !hd.getNgaymua().isBefore(startDate)
+                        && !hd.getNgaymua().isAfter(endDate))
                 .collect(Collectors.toList());
 
         LocalDate currentDate = startDate;
@@ -126,9 +133,7 @@ public class ThongKeService {
             LocalDate finalCurrentDate = currentDate;
             BigDecimal totalRevenueForDay = hoaDons.stream()
                     .filter(hd -> hd.getNgaymua().equals(finalCurrentDate))
-
-                    .map(hd -> hd.getThanhtien() != null ? hd.getThanhtien() : BigDecimal.ZERO)// Lấy `thanhtien` trực tiếp
-
+                    .map(hd -> hd.getThanhtien() != null ? hd.getThanhtien() : BigDecimal.ZERO)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             revenueData.put("revenue", totalRevenueForDay);
@@ -139,27 +144,17 @@ public class ThongKeService {
         return revenueList;
     }
 
-
     // Doanh thu theo từng tháng trong năm
-
     public List<Map<String, Object>> getRevenueByYear(int year) {
         List<Map<String, Object>> revenueList = new ArrayList<>();
 
         for (int month = 1; month <= 12; month++) {
-
-            // Lấy doanh thu theo tháng từ repository
             BigDecimal monthlyRevenue = hoaDonRepository.getRevenueByMonth(year, month);
-
-            // Tạo map để lưu dữ liệu doanh thu
             Map<String, Object> revenueData = new HashMap<>();
             revenueData.put("month", "Tháng " + month);
-            revenueData.put("revenue", monthlyRevenue != null ? monthlyRevenue : BigDecimal.ZERO); // Xử lý null
-
-            // Thêm vào danh sách
-
+            revenueData.put("revenue", monthlyRevenue != null ? monthlyRevenue : BigDecimal.ZERO);
             revenueList.add(revenueData);
         }
         return revenueList;
     }
-
 }

@@ -290,6 +290,7 @@ function updateProductListUI(products) {
                 <div class="product-price" style="flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; font-size: 16px;">
                     <span style="font-weight: bold;">${spct.dongia}</span>
                 </div>
+                <if></if>
                 <div class="product-action" style="flex: 1; display: flex; align-items: center; justify-content: center;">
                     <button class="btn-dark"  
                     style="background-color: #FE5621; color: white; padding: 5px 15px; border: none; cursor: pointer; border-radius: 5px;">
@@ -409,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const tenKhInput = document.getElementById("tenkh-input");
     const sdtInput = document.getElementById("sdt-input");
-    const diachiInput = document.getElementById("diachi-input");
+    const diachiInput = document.getElementById("searchBox");
 
     // Sử dụng sessionStorage với khóa chứa ID hóa đơn
     const tenKhKey = `tenkh_${idHoaDon}`;

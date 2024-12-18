@@ -169,17 +169,17 @@
 <!--        <p th:text="'Giảm giá: ' + ${hoadonct[0].hoaDon.giagiam != null ? hoadonct[0].hoaDon.giagiam : '0'}"></p>-->
 <!--        <strong th:text="'Thành tiền: ' + ${hoadonct[0].hoaDon.thanhtien}"></strong>-->
 
-        <p th:text="'Tổng cộng: ' +${#numbers.formatDecimal(hoadonct[0].hoaDon.tongtien, 1, 'POINT',0, 'COMMA')} + ' Đ'"></p>
+        <p th:text="'Tổng cộng: ' +${#numbers.formatDecimal(hoadonct[0].hoaDon.tongtien, 1, 'POINT',0, 'COMMA')} + ' VND'"></p>
         <p th:text="'Giảm giá: ' + ${hoadonct[0].hoaDon.giagiam == '0' ||
-        hoadonct[0].hoaDon.giagiam == null ? '0 Đ' : hoadonct[0].hoaDon.giagiam} "></p>
+        hoadonct[0].hoaDon.giagiam == null ? '0 VND' : hoadonct[0].hoaDon.giagiam} "></p>
 <!--        <p th:text="${hd.giagiam == '0' || hd.giagiam == null ? '0 Đ' : hd.giagiam}"></p>-->
-        <strong th:text="'Thành tiền: ' + ${#numbers.formatDecimal(hoadonct[0].hoaDon.thanhtien, 1, 'POINT',0, 'COMMA')} + ' Đ'"></strong>
+        <strong th:text="'Thành tiền: ' + ${#numbers.formatDecimal(hoadonct[0].hoaDon.thanhtien, 1, 'POINT',0, 'COMMA')} + ' VND'"></strong>
         <br>
         <div th:if="${hoadonct[0].hoaDon.tttt == 1 && hoadonct[0].hoaDon.tttt != null}">
-            <strong th:text="'Tiền cần trả : ' + ${#numbers.formatDecimal(hoadonct[0].hoaDon.thanhtien, 1, 'POINT',0, 'COMMA')} + ' Đ'"></strong>
+            <strong th:text="'Tiền cần trả : ' + ${#numbers.formatDecimal(hoadonct[0].hoaDon.thanhtien, 1, 'POINT',0, 'COMMA')} + ' VND'"></strong>
         </div>
         <div th:if="${hoadonct[0].hoaDon.tttt == 0 || hoadonct[0].hoaDon.tttt == null}">
-            <strong th:text="'Tiền cần trả : 0 Đ'"></strong>
+            <strong th:text="'Tiền cần trả : 0 VND'"></strong>
         </div>
     </div>
 

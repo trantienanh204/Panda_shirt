@@ -139,9 +139,44 @@
                 </div>
             </form>
             <div class="modal-footer" style="gap:10px">
+                <a data-bs-toggle="modal" data-bs-target="#tuchoi">
+                    <button class="btn btn-danger">Hủy đơn</button>
+                </a>
                 <a th:href="@{/panda/nhanvien/duyetdon/dagiao/{id} (id=${id})}">
                     <button class="btn btn-primary">Hoàn thành</button>
                 </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="tuchoi" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    Bạn muốn hủy đơn ?
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form sử dụng POST để gửi dữ liệu -->
+                <form th:action="@{/panda/nhanvien/duyetdon/tuchoi}" th:object="${DonHang}" method="post">
+                    <!-- Hidden fields để giữ lại thông tin đơn hàng -->
+                    <input type="text" th:field="*{id}" class="form-control" hidden>
+                    <!-- Lý do từ chối -->
+                    <div class="col-md-12">
+                        <label class="form-label"><b style="color: red">*</b> Lý do:</label>
+                        <div class="input-group">
+                            <textarea th:name="lydohuy" class="form-control" aria-label="With textarea"
+                                      placeholder="Nêu lý do hủy đơn" required></textarea>
+                        </div>
+                    </div>
+                    <!-- Nút xác nhận -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Xác nhận</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -160,7 +160,7 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="total-price mb-0">Tổng thanh toán:</h5>
-                        <h5 class="total-price mb-0" id="finalTotal">₫140.500</h5>
+                        <h5 class="total-price mb-0" id="finalTotal">0</h5>
                     </div>
 
                     <form id="paymentForm" action="/api/submitOrder" method="post">
@@ -359,7 +359,8 @@
                     } else {
                         if (discountType === '%') {
                             discountAmount += (totalProductAmount * discountValue / 100);
-                        } else {
+                        }
+                        else  {
                             discountAmount += discountValue;
                         }
                     }
@@ -368,14 +369,11 @@
 
             discountAmountElement.textContent = '₫' + discountAmount.toLocaleString('vi-VN');
 
-            const finalTotal = totalProductAmount - discountAmount;
+            let finalTotal = totalProductAmount - discountAmount;
 
-            if (isNaN(finalTotal)) {
-                console.error("Final total amount is NaN: ", finalTotal);
-                finalTotalElement.textContent = '₫0';
-            } else {
-                finalTotalElement.textContent = '₫' + finalTotal.toLocaleString('vi-VN');
-            }
+            // Ensure finalTotal is never negative
+            finalTotal = Math.max(0, finalTotal);
+            finalTotalElement.textContent = '₫' + finalTotal.toLocaleString('vi-VN');
 
             console.log("Total product amount:", totalProductAmount);
             console.log("Discount amount:", discountAmount);

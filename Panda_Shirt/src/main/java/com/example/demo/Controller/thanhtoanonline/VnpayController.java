@@ -245,12 +245,17 @@ String codevc = null;
         if (voucherOptional.isPresent()) {
             Voucher voucher = voucherOptional.get();
             BigDecimal giamGia;
+
             if (voucher.isLoai()) {
                 giamGia = BigDecimal.valueOf(totalAmount).multiply(new BigDecimal(voucher.getMucGiam())).divide(BigDecimal.valueOf(100));
             } else {
                 giamGia = new BigDecimal(voucher.getMucGiam());
             }
+
             BigDecimal thanhTien = BigDecimal.valueOf(totalAmount).subtract(giamGia);
+            if (thanhTien.compareTo(BigDecimal.ZERO) < 0) {
+                thanhTien = BigDecimal.ZERO;
+            }
             hoaDon.setThanhtien(thanhTien);
         } else {
             hoaDon.setThanhtien(BigDecimal.valueOf(totalAmount));
@@ -262,6 +267,11 @@ String codevc = null;
         hoaDon.setDiaChi(khachHang.getDiachi());
         hoaDon.setGhiChu(note);
         hoaDon.setActive(true);
+        if ("BankTransfer".equals(paymentMethod)) {
+            hoaDon.setTttt(0);
+        } else {
+            hoaDon.setTttt(1);
+        }
 
         List<HoaDonCT> chiTietList = new ArrayList<>();
         for (GioHang item : cartItems) {
@@ -288,14 +298,15 @@ String codevc = null;
             chiTiet.setHoaDon(hoaDon);
             chiTietList.add(chiTiet);
 
-            // Giảm số lượng sản phẩm trong kho
-            SanPhamChiTiet sanPhamChiTiet = item.getSanPhamChiTiet();
-            int soLuongConLai = sanPhamChiTiet.getSoluongsanpham() - item.getSoluong();
-            if (soLuongConLai < 0) {
-                throw new RuntimeException("Số lượng sản phẩm không đủ");
-            }
-            sanPhamChiTiet.setSoluongsanpham(soLuongConLai);
-            sanPhamChiTietRepository.save(sanPhamChiTiet);
+//            // Giảm số lượng sản phẩm trong kho
+//            không sử dụng đc nữa
+//            SanPhamChiTiet sanPhamChiTiet = item.getSanPhamChiTiet();
+//            int soLuongConLai = sanPhamChiTiet.getSoluongsanpham() - item.getSoluong();
+//            if (soLuongConLai < 0) {
+//                throw new RuntimeException("Số lượng sản phẩm không đủ");
+//            }
+//            sanPhamChiTiet.setSoluongsanpham(soLuongConLai);
+//            sanPhamChiTietRepository.save(sanPhamChiTiet);
         }
         hoaDon.setChiTietHoaDons(chiTietList);
         return hoaDon;
@@ -352,8 +363,10 @@ String codevc = null;
         // Đặt giá trị trangthaioffline dựa trên phương thức thanh toán
         if ("BankTransfer".equals(paymentMethod)) {
             donHang.setTrangthaioffline(true);
+
         } else {
             donHang.setTrangthaioffline(false);
+
         }
 
         return donHang;
