@@ -70,7 +70,7 @@ public class BanHangOffline {
         List<Voucher> voucher = voucherRepository.findAll();
         List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findAll();
         List<Voucher> validVouchers = new ArrayList<>();
-        List<KhachHang> listkh = khachHangRepository.findAll();
+        List<KhachHang> listkh = khachHangRepository.timkhachhang();
         for (Voucher v : voucher) {
             try {
                 int soLuong = Integer.parseInt(v.getSoLuong());
@@ -103,7 +103,7 @@ public class BanHangOffline {
         List<Voucher> voucher = voucherRepository.findAll();
         List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findAll();
         List<Voucher> validVouchers = new ArrayList<>();
-        List<KhachHang> listkh = khachHangRepository.findAll();
+        List<KhachHang> listkh = khachHangRepository.timkhachhang();
         for (Voucher v : voucher) {
             try {
                 int soLuong = Integer.parseInt(v.getSoLuong());
@@ -336,6 +336,10 @@ public class BanHangOffline {
             redirectAttributes.addFlashAttribute("loi", "Chưa chọn hóa đơn!");
             return ResponseEntity.badRequest().body(Map.of("message","Chưa chọn hóa đơn!"));
         }
+        if(spct == null){
+            redirectAttributes.addFlashAttribute("loi", "Không tìm thấy sản phẩm");
+            return ResponseEntity.badRequest().body(Map.of("message","Không tìm thấy sản phẩm!"));
+        }
         int soLuongTonKho = spct.getSoluongsanpham();
 
         if (soLuongTonKho <= 0) {
@@ -409,7 +413,7 @@ public class BanHangOffline {
         response.put("tenkh", kh.getTenkhachhang());
         response.put("id", String.valueOf(kh.getId()));
         response.put("sdt", kh.getSdt());
-        response.put("diachi", kh.getDiachi());
+        response.put("diachi", kh.getDiachi() != null ? kh.getDiachi() :"Trống");
         response.put("idTinhThanhPho", kh.getTinhtp() != null ? kh.getTinhtp() : "");
         response.put("idQuanHuyen", kh.getQuanhuyen() != null ? kh.getQuanhuyen() : "");
         response.put("idXaPhuong", kh.getXaphuong() != null ? kh.getXaphuong() : "");
@@ -541,6 +545,15 @@ public class BanHangOffline {
             dh.setTrangThai("Đã duyệt");
         }
 
+        if(checkbox.equals("0") && giaohang.equals("1") ){
+            dh.setTrangthaioffline(true);
+            hd.setTttt(0);
+        }else{
+            dh.setTrangthaioffline(false);
+            hd.setTttt(1);
+        }
+
+
         if (sdt.isBlank()) {
             KhachHang kh1 = khachHangRepository.findById(1).orElse(null);
             if (kh1 != null) {
@@ -664,13 +677,7 @@ public class BanHangOffline {
         hd.setNgaymua(LocalDate.now());
         hd.setGhiChu(ghichu);
 
-        if(checkbox.equals("0")){
-            dh.setTrangthaioffline(true);
-            hd.setTttt(0);
-        }else{
-            dh.setTrangthaioffline(false);
-            hd.setTttt(1);
-        }
+
 
         hoaDonRepository.save(hd);
 

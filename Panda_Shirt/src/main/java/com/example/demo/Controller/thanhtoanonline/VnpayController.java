@@ -262,6 +262,11 @@ String codevc = null;
         hoaDon.setDiaChi(khachHang.getDiachi());
         hoaDon.setGhiChu(note);
         hoaDon.setActive(true);
+        if ("BankTransfer".equals(paymentMethod)) {
+            hoaDon.setTttt(0);
+        } else {
+            hoaDon.setTttt(1);
+        }
 
         List<HoaDonCT> chiTietList = new ArrayList<>();
         for (GioHang item : cartItems) {

@@ -482,7 +482,7 @@
                         <div th:each="kh,i : ${listkh}" th:if="${kh.sdt != null}">
                             <div class="customer-row"
                                  style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #ddd;">
-                                <div style="flex: 1; text-align: center;" th:text="${i.index}"></div>
+                                <div style="flex: 1; text-align: center;" th:text="${i.index+1}"></div>
                                 <div style="flex: 3; text-align: center;" th:text="${kh.makhachhang}"></div>
                                 <div style="flex: 3; text-align: left;" th:text="${kh.tenkhachhang}"></div>
                                 <div style="flex: 3; text-align: left;" th:text="${kh.sdt}"></div>
