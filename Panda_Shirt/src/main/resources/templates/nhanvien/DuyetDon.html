@@ -15,6 +15,14 @@
 : '/panda/nhanvien/duyetdon/hienthi/dahuy')))}"
       method="get">
 
+<!--    ////dđ-->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 20px;">
+        <i class="fa-solid fa-circle-exclamation" style="margin-right: 10px;"></i>
+        <p th:text="${errorMessage}" style="display: inline;"></p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+
     <div class="filter-container">
         <h3><i class="fa-solid fa-filter" style="color: #000000;"></i> Bộ lọc</h3>
         <hr>

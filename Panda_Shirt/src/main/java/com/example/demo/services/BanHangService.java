@@ -42,8 +42,8 @@ public class BanHangService {
             return List.of();
         }
         String queryString = "SELECT kh FROM KhachHang kh WHERE " +
-                "LOWER(kh.makhachhang) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-                "OR LOWER(kh.sdt) LIKE LOWER(CONCAT('%', :keyword, '%'))";
+//                "LOWER(kh.makhachhang) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                "LOWER(kh.sdt) LIKE LOWER(CONCAT('%', :keyword, '%'))";
         TypedQuery<KhachHang> query = entityManager.createQuery(queryString, KhachHang.class);
         query.setParameter("keyword", keyword.trim());
 

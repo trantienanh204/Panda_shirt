@@ -293,14 +293,15 @@ String codevc = null;
             chiTiet.setHoaDon(hoaDon);
             chiTietList.add(chiTiet);
 
-            // Giảm số lượng sản phẩm trong kho
-            SanPhamChiTiet sanPhamChiTiet = item.getSanPhamChiTiet();
-            int soLuongConLai = sanPhamChiTiet.getSoluongsanpham() - item.getSoluong();
-            if (soLuongConLai < 0) {
-                throw new RuntimeException("Số lượng sản phẩm không đủ");
-            }
-            sanPhamChiTiet.setSoluongsanpham(soLuongConLai);
-            sanPhamChiTietRepository.save(sanPhamChiTiet);
+//            // Giảm số lượng sản phẩm trong kho
+//            không sử dụng đc nữa
+//            SanPhamChiTiet sanPhamChiTiet = item.getSanPhamChiTiet();
+//            int soLuongConLai = sanPhamChiTiet.getSoluongsanpham() - item.getSoluong();
+//            if (soLuongConLai < 0) {
+//                throw new RuntimeException("Số lượng sản phẩm không đủ");
+//            }
+//            sanPhamChiTiet.setSoluongsanpham(soLuongConLai);
+//            sanPhamChiTietRepository.save(sanPhamChiTiet);
         }
         hoaDon.setChiTietHoaDons(chiTietList);
         return hoaDon;

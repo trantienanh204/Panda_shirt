@@ -6,6 +6,7 @@ import com.example.demo.DTO.TaiKhoanDTO;
 import com.example.demo.entity.*;
 import com.example.demo.respository.HoaDonCTRepository;
 import com.example.demo.respository.NhanVienRespository;
+import com.example.demo.respository.SanPhamChiTietRepository;
 import com.example.demo.respository.VoucherRepository;
 import com.example.demo.respository.nhanVien.DonHangRepository;
 import com.example.demo.service.*;
@@ -51,6 +52,8 @@ public class DuyetDonController {
     private TaiKhoanService taiKhoanService;
     @Autowired
     private VoucherRepository voucherRepository;
+    @Autowired
+    private SanPhamChiTietRepository sanPhamChiTietRepository;
 
     @GetMapping("/hienthi")
     public String hienthi(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -245,7 +248,7 @@ public class DuyetDonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/dongy/{id}")
-    public String dongy(@PathVariable("id") Integer id, @AuthenticationPrincipal UserDetails userDetails) {
+    public String dongy(@PathVariable("id") Integer id, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         DonHang donHang = donHangRepository.getReferenceById(id);
         HoaDon hoaDon = hoaDonService.findById(donHang.getHoaDon().getId());
         donHang.setTrangThai("Đã duyệt");
@@ -257,12 +260,27 @@ public class DuyetDonController {
 
         NhanVien nhanVien = mapToNhanvien(taiKhoanDto.getNhanVienDTO());
         donHang.setNhanVien(nhanVien);
-        donHang.setNhanVien(nhanVien);
         hoaDon.setNhanVien(nhanVien);
+
+        // Cập nhật số lượng sản phẩm trong kho
+        List<HoaDonCT> chiTietList = hoaDon.getChiTietHoaDons();
+        for (HoaDonCT chiTiet : chiTietList) {
+            SanPhamChiTiet sanPhamChiTiet = chiTiet.getSanPhamChiTiet();
+            int soLuongConLai = sanPhamChiTiet.getSoluongsanpham() - chiTiet.getSoluong();
+            if (soLuongConLai < 0) {
+                // Hiển thị thông báo lỗi cho người dùng
+                redirectAttributes.addFlashAttribute("errorMessage", "Số lượng sản phẩm không đủ cho " + sanPhamChiTiet.getSanPham().getTensp());
+                return "redirect:/panda/nhanvien/duyetdon/hienthi";
+            }
+            sanPhamChiTiet.setSoluongsanpham(soLuongConLai);
+            sanPhamChiTietRepository.save(sanPhamChiTiet);
+        }
+
         donHangRepository.save(donHang);
         hoaDonService.save(hoaDon);
         return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
+
 
     private NhanVien mapToNhanvien(NhanVienDTO dto) {
         NhanVien nhanVien = new NhanVien();
@@ -276,6 +294,7 @@ public class DuyetDonController {
     public String xacnhan(@PathVariable("id") Integer id) {
         DonHang donHang = donHangRepository.getReferenceById(id);
         donHang.setTrangThai("Đang giao");
+
         donHangRepository.save(donHang);
         return "redirect:/panda/nhanvien/duyetdon/hienthi";
     }
