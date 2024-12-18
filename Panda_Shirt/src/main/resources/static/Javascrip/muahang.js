@@ -409,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const tenKhInput = document.getElementById("tenkh-input");
     const sdtInput = document.getElementById("sdt-input");
-    const diachiInput = document.getElementById("diachi-input");
+    const diachiInput = document.getElementById("searchBox");
 
     // Sử dụng sessionStorage với khóa chứa ID hóa đơn
     const tenKhKey = `tenkh_${idHoaDon}`;

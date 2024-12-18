@@ -58,7 +58,12 @@ function chonVoucher(element) {
             $("#mucgiam-input").val(response.mucgiam);
             $("#mucgiam").text(response.mucgiam);
             // $("#mucgiam").text(response.loai);
-            $("#thanhtien").text('Tổng tiền : ' + response.thanhtien);
+            if(response.thanhtien === ".00" || response.thanhtien === null){
+                $("#thanhtien").text('Thành tiền: ' + 0 +' VND');
+            }else{
+                $("#thanhtien").text('Thành tiền: ' + response.thanhtien +' VND');
+
+            }
             $("#thanhTien").val(response.thanhTien);
             $("#thanhtien-input").val(response.thanhTien);
             $('#voucherModal').modal('hide');

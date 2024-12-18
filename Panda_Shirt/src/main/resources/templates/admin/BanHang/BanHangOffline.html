@@ -254,6 +254,13 @@
                 </div>
 
                 <div id="customerForm" style="display: none;">
+                    <div class="mb-3">
+                        <!--                        <input type="text" class="form-control" placeholder="Địa chỉ cụ thể" id="diachi-input"-->
+                        <!--                               th:name="diachicuthe">-->
+                        <input type="text" class="form-control" id="searchBox" placeholder="Nhập địa chỉ, số nhà, quận,..." autocomplete="off" th:name="diachicuthe">
+                        <ul id="suggestions"></ul>
+
+                    </div>
                     <input type="hidden" id="idkh-input" th:name="idkh">
 
 <!--                    <div class="mb-3">-->
@@ -286,25 +293,17 @@
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                    </div>-->
-                    <div class="mb-3">
 
-<!--                        <input type="text" class="form-control" placeholder="Địa chỉ cụ thể" id="diachi-input"-->
-<!--                               th:name="diachicuthe">-->
-
-                        <input type="text" class="form-control" id="searchBox" placeholder="Nhập địa chỉ, số nhà, quận,..." autocomplete="off" th:name="diachicuthe">
-                        <ul id="suggestions"></ul>
-
-                    </div>
                     <div class="mb-3">
                         <textarea class="form-control" placeholder="Ghi chú" rows="3" th:name="ghichu"></textarea>
                     </div>
-                    <input type="hidden" id="selectedProvince" name="tinh" >
-                    <input type="hidden" id="selectedDistrict" name="huyen" >
-                    <input type="hidden" id="selectedWard" name="xa" >
+<!--                    <input type="hidden" id="selectedProvince" name="tinh" >-->
+<!--                    <input type="hidden" id="selectedDistrict" name="huyen" >-->
+<!--                    <input type="hidden" id="selectedWard" name="xa" >-->
 
-                    <input type="hidden" id="tentinh" name="tentinh" >
-                    <input type="hidden" id="tenhuyen" name="tenhuyen" >
-                    <input type="hidden" id="tenxa" name="tenxa" >
+<!--                    <input type="hidden" id="tentinh" name="tentinh" >-->
+<!--                    <input type="hidden" id="tenhuyen" name="tenhuyen" >-->
+<!--                    <input type="hidden" id="tenxa" name="tenxa" >-->
                 </div>
             </div>
             <div class="col-md-6">
@@ -348,8 +347,8 @@
                 <div class="d-flex justify-content-center mb-3">
                     <input type="hidden" id="thanhTien" th:name="thanhtien" th:value="${thanhTien}">
                     <!--                    <input type="text" id="thanhtien-input"  th:value="${thanhtien}">-->
-                    <span class="total-price fw-4" id="thanhtien" th:text="${'Tổng tiền : '
-                + (thanhtien != '.00' && thanhtien != null ? thanhtien : '0') + ' VNĐ'}"
+                    <span class="total-price fw-4" id="thanhtien" th:text="${'Thành tiền : '
+                + (thanhtien == '.00' || thanhtien == null ? '0' : thanhtien) + ' VNĐ'}"
                           style="font-size: 25px;text-align: center;font-weight: bold;"></span>
                 </div>
                 <button class="btn w-100" style="background-color: #FE5621 ;color: white">Xác nhận đặt hàng</button>
@@ -557,10 +556,11 @@
         </div>
     </div>
 </div>
-<div class="custom-alert success" id="statusMessage" th:if="${loi != null}">
-    <i class="fa-solid fa-triangle-exclamation"></i></i> <span th:text="${loi}"></span>
 
-</div>
+<!--<div class="custom-alert success" id="statusMessage" th:if="${loi != null}">-->
+<!--    <i class="fa-solid fa-triangle-exclamation"></i></i> <span th:text="${loi}"></span>-->
+<!--</div>-->
+
 <div class="custom-alert success" id="statusMessage" th:if="${message != null}">
     <i class="fa-solid fa-triangle-exclamation"></i></i> <span th:text="${message}"></span>
 </div>
