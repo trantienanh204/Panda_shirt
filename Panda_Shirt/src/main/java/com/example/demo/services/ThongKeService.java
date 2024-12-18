@@ -24,12 +24,24 @@ public class ThongKeService {
     private KhachHangRepository khachHangRepository;
 
     // Tìm tổng số sản phẩm và số lượng
+//    public List<Object[]> findProductNameAndQuantity() {
+//        List<Object[]> productData = sanPhamRepository.findAll().stream()
+//                .map(sp -> new Object[]{sp.getTensp(), sp.getSoluongsp()})
+//                .collect(Collectors.toList());
+//
+//        System.out.println("Số lượng sản phẩm lấy được: " + productData.size());
+//        return productData;
+//    }
     public List<Object[]> findProductNameAndQuantity() {
-        List<Object[]> productData = sanPhamRepository.findAll().stream()
-                .map(sp -> new Object[]{sp.getTensp(), sp.getSoluongsp()})
-                .collect(Collectors.toList());
+        // Gọi repository để lấy dữ liệu
+        List<Object[]> productData = sanPhamRepository.findProductNameAndQuantity();
 
+        // Log dữ liệu để kiểm tra
         System.out.println("Số lượng sản phẩm lấy được: " + productData.size());
+        productData.forEach(data -> {
+            System.out.println("Tên sản phẩm: " + data[0] + ", Tổng số lượng: " + data[1]);
+        });
+
         return productData;
     }
 
