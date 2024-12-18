@@ -92,7 +92,7 @@ function chonkh(element) {
             $("#tenkh-input").val(response.tenkh);
             $("#idkh-input").val(response.id);
             $("#sdt-input").val(response.sdt);
-            $("#diachi-input").val(response.diachi);
+            $("#searchBox").val(response.diachi);
 
             // $("#selectedProvince").val(response.idTinhThanhPho);
             // $("#selectedDistrict").val(response.idQuanHuyen);

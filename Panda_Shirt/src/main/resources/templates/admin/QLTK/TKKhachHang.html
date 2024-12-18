@@ -11,7 +11,8 @@
 <div class="custom-alert success" id="statusMessage" th:text="${saveMassage}" th:if="${saveMassage != null}">
     <i class="fa-solid fa-circle-check"></i>
 </div>
-<div class="custom-alert success" id="statusMessage" th:text="${ChangesStatusMessage}" th:if="${ChangesStatusMessage != null}">
+<div class="custom-alert success" id="statusMessage" th:text="${ChangesStatusMessage}"
+     th:if="${ChangesStatusMessage != null}">
     <i class="fa-solid fa-circle-check"></i>
 </div>
 <h2>Tài Khoản Khách Hàng</h2>
@@ -21,11 +22,11 @@
         <hr>
         <div class="filter-inputs">
             <div class="filter-input">
-                <label >Mã khách hàng</label>
+                <label>Mã khách hàng</label>
                 <input type="text" name="makh" th:value="${makh}" placeholder="Mã khách hàng ">
             </div>
             <div class="filter-input">
-                <label >Tên khách hàng</label>
+                <label>Tên khách hàng</label>
                 <input type="text" name="tenkh" th:value="${tenkh}" placeholder="Tên khách hàng">
             </div>
             <div class="filter-input">
@@ -66,9 +67,6 @@
             <th>Mã khách hàng</th>
             <th>Tên khách hàng</th>
             <th>Giới tính</th>
-<!--            <th>Số điện thoại</th>-->
-<!--            <th>Địa chỉ</th>-->
-<!--            <th>Email</th>-->
             <th>Ngày tạo</th>
             <th>Ngày sửa</th>
             <th>Trạng thái</th>
@@ -79,7 +77,7 @@
         <tr th:if="${list.empty}">
             <td colspan="10" style="text-align: center; color: #ff0000;">Không có dữ liệu</td>
         </tr>
-        <tr  th:each="tkkhachhang,i : ${list}" th:if="${tkkhachhang.makhachhang != null}">
+        <tr th:each="tkkhachhang,i : ${list}" th:if="${tkkhachhang.makhachhang != null}">
             <td th:text="${(currentPage * pageSize) + i.index + 1}"></td>
             <td>
                 <img th:if="${tkkhachhang.image != null}"
@@ -118,7 +116,7 @@
                 </button>
                 <a style="margin-left: 10px" th:href="@{/panda/tkkhachhang/change(id=${tkkhachhang.id})}">
                     <i th:if="${tkkhachhang.trangthai == 1}">
-                        <i class="fa-solid fa-toggle-on"  style="color: #00040a; font-size: 25px"></i>
+                        <i class="fa-solid fa-toggle-on" style="color: #00040a; font-size: 25px"></i>
                     </i>
                     <i th:if="${tkkhachhang.trangthai == 0}">
                         <i class="fa-solid fa-toggle-off" style="color: #00040a; font-size: 25px"></i>
@@ -130,25 +128,19 @@
     </table>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-            <!-- Nút Previous -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/tkkhachhang(page=${currentPage == 0 ? 0 : currentPage - 1}, makh=${makh},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/tkkhachhang(page=${currentPage == 0 ? 0 : currentPage - 1}, makh=${makh}, tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-
-            <!-- Hiển thị danh sách trang -->
             <li class="page-item">
-                <a class="page-link"
-                   th:text="${currentPage +1 }" disabled></a>
+                <a class="page-link" th:text="${currentPage + 1}" disabled></a>
             </li>
-
-            <!-- Nút Next -->
             <li class="page-item" th:classappend="${list.size() < pageSize} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/panda/tkhachhang(page=${currentPage + 1},makh=${makh},tenkh=${tenkh}, trangThai=${trangthai})}"
+                   th:href="@{/panda/tkkhachhang(page=${currentPage + 1}, makh=${makh}, tenkh=${tenkh}, trangThai=${trangthai})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
@@ -318,27 +310,29 @@
 
     .custom-alert {
         position: fixed;
-        top: 20px;  /* Cách từ đỉnh */
-        right: 20px;  /* Cách từ bên phải */
-        background-color: #4CAF50;  /* Màu nền thông báo thành công */
-        color: white;  /* Màu chữ */
-        padding: 15px;  /* Padding xung quanh */
-        border-radius: 5px;  /* Bo góc */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Đổ bóng */
-        z-index: 9999;  /* Đảm bảo thông báo luôn nằm trên cùng */
-        opacity: 0;  /* Ban đầu ẩn */
-        visibility: hidden;  /* Không hiển thị */
-        transition: opacity 0.5s ease-in-out, visibility 0.5s;  /* Hiệu ứng chuyển đổi */
+        top: 20px; /* Cách từ đỉnh */
+        right: 20px; /* Cách từ bên phải */
+        background-color: #4CAF50; /* Màu nền thông báo thành công */
+        color: white; /* Màu chữ */
+        padding: 15px; /* Padding xung quanh */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+        z-index: 9999; /* Đảm bảo thông báo luôn nằm trên cùng */
+        opacity: 0; /* Ban đầu ẩn */
+        visibility: hidden; /* Không hiển thị */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s; /* Hiệu ứng chuyển đổi */
     }
 
     .custom-alert.show {
-        opacity: 1;  /* Hiển thị thông báo */
-        visibility: visible;  /* Đặt thông báo là có thể nhìn thấy */
+        opacity: 1; /* Hiển thị thông báo */
+        visibility: visible; /* Đặt thông báo là có thể nhìn thấy */
     }
+
     .modal-header {
         background-color: #fe5621; /* Màu nền */
         color: white; /* Màu chữ */
     }
+
     .btn-close {
         background-color: transparent; /* Để làm rõ nút đóng */
         border: none; /* Không có đường viền */

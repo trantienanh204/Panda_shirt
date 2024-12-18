@@ -34,10 +34,10 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
     Page<KhachHang> findByMaAndTenAndTrangthaiKH(String makh, String tenkh, Integer trangThai, Pageable pageable);
 
 //    hiển thị các khách hàng có trạng thái là hoạt động ngoại trừ khách hàng id = 6 vì là khách lẻ
-    @Query(value = "SELECT * \n" +
-            "FROM khach_hang \n" +
-            "WHERE id <> 6 and TRANG_THAI = 1;", nativeQuery = true)
-    List<KhachHang> dskhhoatdong();
+@Query(value = "SELECT * \n" +
+        "FROM khach_hang \n" +
+        "WHERE id <> 6 AND TRANG_THAI = 1 AND TEN_TAI_KHOAN IS NOT NULL;", nativeQuery = true)
+List<KhachHang> dskhhoatdong();
 //
 //    @Query("SELECT kh.tinh_tp.tentinhTP FROM KhachHang kh WHERE kh.id = :id")
 //    String findTenTinhByKhachHangId(@Param("id") Integer id);
