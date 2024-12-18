@@ -23,7 +23,8 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
 
     boolean existsKhachHangBySdt(String sdt);
 
-
+    @Query("SELECT kh from KhachHang  kh where kh.sdt is not null")
+    List<KhachHang> timkhachhang();
 //hiển thị tất cả khách hàng ngoại trừ id = 6 là khách lẻ
     @Query("SELECT kh FROM KhachHang kh WHERE " +
             "(?1 IS NULL OR kh.makhachhang LIKE %?1%) AND " +

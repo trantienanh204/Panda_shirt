@@ -514,7 +514,7 @@
             </div>
             <div class="modal-body">
                 <div class="search-container">
-                    <input type="text" id="modalSearchInput" placeholder="Tìm kiếm mã voucher" class="search-box"
+                    <input type="text" id="modalSearchInput" placeholder="Tìm kiếm mã voucher" onclick="searchInModal()" class="search-box"
                            style="border-radius: 10px;padding-bottom: 10px; margin-right: 15px">
                     <button class="btn btn-primary" onclick="searchInModal()"><i
                             class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
@@ -595,8 +595,7 @@
 
         // Lặp qua tất cả các hàng, ẩn những hàng không khớp với tìm kiếm
         for (i = 1; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[3]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
-            // td = tr[i].getElementsByTagName("td")[1]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
+            td = tr[i].getElementsByTagName("td")[0]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
             if (td) {
                 txtValue = td.textContent || td.innerText;
                 if (txtValue.toUpperCase().indexOf(filter) > -1) {
