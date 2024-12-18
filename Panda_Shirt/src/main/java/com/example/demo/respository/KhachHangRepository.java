@@ -24,7 +24,6 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
     boolean existsKhachHangBySdt(String sdt);
 
 
-
     //hiển thị tất cả khách hàng ngoại trừ id = 6 là khách lẻ
 
     @Query("SELECT kh FROM KhachHang kh WHERE " +

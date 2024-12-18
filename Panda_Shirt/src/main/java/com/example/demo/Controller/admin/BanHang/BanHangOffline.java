@@ -560,6 +560,17 @@ public class BanHangOffline {
             }
             dh.setTrangThai("Đã duyệt");
         }
+
+        if(checkbox.equals("0") && giaohang.equals("1") ){
+            dh.setTrangthaioffline(true);
+            hd.setTttt(0);
+        }else{
+            dh.setTrangthaioffline(false);
+            hd.setTttt(1);
+        }
+
+
+
         if (sdt.isBlank()) {
             KhachHang kh1 = khachHangRepository.findById(6).orElse(null);
 
@@ -686,13 +697,7 @@ public class BanHangOffline {
         hd.setNgaymua(LocalDate.now());
         hd.setGhiChu(ghichu);
 
-        if(checkbox.equals("0")){
-            dh.setTrangthaioffline(true);
-            hd.setTttt(0);
-        }else{
-            dh.setTrangthaioffline(false);
-            hd.setTttt(1);
-        }
+
 
         hoaDonRepository.save(hd);
 
