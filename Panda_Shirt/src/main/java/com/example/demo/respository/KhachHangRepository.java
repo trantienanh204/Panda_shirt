@@ -59,6 +59,14 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
 
     KhachHang findBySdt(String sdt);
 
+
+
+        @Query("SELECT k FROM KhachHang k WHERE k.sdt = :sdt AND k.id <> :id")
+        KhachHang findBySdtAndNotId(@Param("sdt") String sdt, @Param("id") Integer id);
+
+
+
+
     @Query("SELECT MAX(kh.makhachhang) FROM KhachHang kh")
     String findMaxMakh();
 

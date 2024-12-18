@@ -267,6 +267,11 @@ String codevc = null;
         hoaDon.setDiaChi(khachHang.getDiachi());
         hoaDon.setGhiChu(note);
         hoaDon.setActive(true);
+        if ("BankTransfer".equals(paymentMethod)) {
+            hoaDon.setTttt(0);
+        } else {
+            hoaDon.setTttt(1);
+        }
 
         List<HoaDonCT> chiTietList = new ArrayList<>();
         for (GioHang item : cartItems) {
@@ -358,8 +363,10 @@ String codevc = null;
         // Đặt giá trị trangthaioffline dựa trên phương thức thanh toán
         if ("BankTransfer".equals(paymentMethod)) {
             donHang.setTrangthaioffline(true);
+
         } else {
             donHang.setTrangthaioffline(false);
+
         }
 
         return donHang;

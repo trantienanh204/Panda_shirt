@@ -171,8 +171,10 @@ public class TrangChuController {
         KhachHang khachHang = khachHangRepository.findById(taiKhoanDto.getKhachHangDTO().getId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
 
-
         List<DonHang> donHangs = donHangService.findByKhachHangId(khachHang.getId());
+
+        // Sắp xếp danh sách đơn hàng theo ngày tạo giảm dần
+        donHangs.sort(Comparator.comparing(DonHang::getId).reversed());
 
         List<DonHang> choduyet = donHangs.stream().filter(d -> "Chờ duyệt".equals(d.getTrangThai())).collect(Collectors.toList());
         List<DonHang> daduyet = donHangs.stream().filter(d -> "Đã duyệt".equals(d.getTrangThai())).collect(Collectors.toList());

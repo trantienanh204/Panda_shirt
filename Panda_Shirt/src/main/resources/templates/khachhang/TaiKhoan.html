@@ -754,16 +754,17 @@
                     if (data.message === "Địa chỉ đã được lưu thành công") {
                         Swal.fire("Thành công!", "Địa chỉ đã được lưu!", "success");
                         location.reload();
+                    } else if (response.status === 409) {
+                        Swal.fire("Lỗi", data.message, "error");
                     } else {
                         Swal.fire("Lỗi", "Không thể lưu địa chỉ!", "error");
                     }
                 })
                 .catch(err => {
-                    Swal.fire("Lỗi", "Không thể kết nối đến server!", "error");
+                    Swal.fire("Lỗi", "Không thể lưu địa chỉ!", "error");
                 });
         });
     });
-
 
 </script>
 <script>
