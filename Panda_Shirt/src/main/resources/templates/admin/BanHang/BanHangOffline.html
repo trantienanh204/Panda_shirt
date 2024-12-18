@@ -716,7 +716,29 @@
 <script th:src="@{/Javascrip/muahang.js}"></script>
 <script th:src="@{/Javascrip/chonvoucher.js}"></script>
 <script th:src="@{/Javascrip/quetmaqr.js}"></script>
+<!--//tìm kiếm trong modal voucher -->
+<script>
+    function searchInModal() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("modalSearchInput");
+        filter = input.value.toUpperCase();
+        table = document.querySelector(".modal-body table");
+        tr = table.getElementsByTagName("tr");
 
+        // Lặp qua tất cả các hàng, ẩn những hàng không khớp với tìm kiếm
+        for (i = 1; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0]; // Cột Tên khách hàng (hoặc thay bằng cột bạn muốn tìm kiếm)
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
