@@ -148,7 +148,7 @@ $(document).ready(function () {
         const idHoaDonCT = inputElement.data('id'); // Lấy ID từ data-id
         const productId = inputElement.data('product');// Lấy ID từ data-product
         const row = $(this).closest('tr'); // Lấy hàng tương ứng
-        const dongia = parseFloat($('#giasp').text());
+        const dongia = parseFloat(row.find('.giasp').text());
         const soluong = parseInt($(this).val()) || 1;
         console.log('ID HoaDonCT: ', idHoaDonCT);
         console.log('ID spct: ', productId);

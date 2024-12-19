@@ -33,7 +33,7 @@
             <thead class="thead-dark">
             <tr>
                 <th style="width: 1%;"><input type="checkbox" id="select-all"></th>
-                <th style="width: 10%;">mã SPCT</th>
+                <th style="width: 10%;">Mã SPCT</th>
                 <th style="width: 10%;">Danh mục</th>
                 <th style="width: 7%;">NSX</th>
                 <th style="width: 6%;">Thương hiệu</th>
@@ -43,7 +43,7 @@
                 <th style="width: 10%;">Đơn giá</th>
                 <th style="width: 8%;">Ngày tạo</th>
                 <th style="width: 8%;">Trạng thái</th>
-                <th style="width: 5%;">Kích thước</th>
+                <th style="width: 5%;">Size</th>
                 <th style="width: 7%;">Màu sắc</th>
 <!--                <th style="width: 15%;">Thao tác</th>-->
             </tr>
@@ -107,7 +107,6 @@
 <script>
     jQuery(document).ready(function($) {
         const selectedRows = new Set();
-
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
 
@@ -131,28 +130,28 @@
                             let mauSacId = chiTiet.mauSac && typeof chiTiet.mauSac === 'object' ? chiTiet.mauSac.id : '';
 
                             productDetailHtml += `
-                            <tr data-id="${chiTiet.id}">
-                                <td><input type="checkbox" class="select-row"></td>
-                                <td>${chiTiet.maspct ? chiTiet.maspct : 'Không có mã'}</td>
-                                <td>${data.danhMuc ? data.danhMuc.tendanhmuc : 'Không có danh mục'}</td>
-                                <td>${data.nhaSanXuat ? data.nhaSanXuat.tennsx : 'Không có nhà sản xuất'}</td>
-                                <td>${data.thuongHieu ? data.thuongHieu.tenthuonghieu : 'Không có thương hiệu'}</td>
-                                <td>${data.coAo ? data.coAo.ten : 'Không có cổ áo'}</td>
-                                <td>${data.chatLieu ? data.chatLieu.tenChatLieu : 'Không có chất liệu'}</td>
-                                <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" min="0" disabled></td>
-                                <td><input type="number" class="form-control dongia-edit" value="${chiTiet.dongia}" disabled></td>
-                                <td>${chiTiet.ngaytao ? chiTiet.ngaytao : 'Không có ngày tạo'}</td>
-                                <td>${chiTiet.trangthai == 1 ? 'Đang bán' : 'Ngừng bán'}</td>
-                                <td>
-                                    <input type="hidden" class="kich-thuoc-id" value="${kichThuocId}">
-                                    ${kichThuoc}
-                                </td>
-                                <td>
-                                    <input type="hidden" class="mau-sac-id" value="${mauSacId}">
-                                    ${mauSac}
-                                </td>
-                            </tr>
-                        `;
+                        <tr data-id="${chiTiet.id}">
+                            <td><input type="checkbox" class="select-row"></td>
+                            <td>${chiTiet.maspct ? chiTiet.maspct : 'Không có mã'}</td>
+                            <td>${data.danhMuc ? data.danhMuc.tendanhmuc : 'Không có danh mục'}</td>
+                            <td>${data.nhaSanXuat ? data.nhaSanXuat.tennsx : 'Không có nhà sản xuất'}</td>
+                            <td>${data.thuongHieu ? data.thuongHieu.tenthuonghieu : 'Không có thương hiệu'}</td>
+                            <td>${data.coAo ? data.coAo.ten : 'Không có cổ áo'}</td>
+                            <td>${data.chatLieu ? data.chatLieu.tenChatLieu : 'Không có chất liệu'}</td>
+                            <td><input type="number" class="form-control soluong-edit" value="${chiTiet.soluongsanpham}" min="0" disabled></td>
+                            <td><input type="number" class="form-control dongia-edit" value="${chiTiet.dongia}" min="1" disabled></td>
+                            <td>${chiTiet.ngaytao ? chiTiet.ngaytao : 'Không có ngày tạo'}</td>
+                            <td>${chiTiet.trangthai == 1 ? 'Đang bán' : 'Ngừng bán'}</td>
+                            <td>
+                                <input type="hidden" class="kich-thuoc-id" value="${kichThuocId}">
+                                ${kichThuoc}
+                            </td>
+                            <td>
+                                <input type="hidden" class="mau-sac-id" value="${mauSacId}">
+                                ${mauSac}
+                            </td>
+                        </tr>
+                    `;
                         });
                         $('#sanPhamDetails').html(productDetailHtml);
                     } else {
@@ -197,6 +196,19 @@
             updateSaveButtonVisibility();
         });
 
+        // Thêm sự kiện input để ngăn người dùng nhập giá trị không hợp lệ
+        $(document).on('blur', '.soluong-edit, .dongia-edit', function() {
+            const value = parseFloat(this.value);
+            if (this.classList.contains('soluong-edit') && (isNaN(value) || value < 0)) {
+                this.value = 0;
+                alert('Số lượng phải là số không âm và không được để trống!');
+            }
+            if (this.classList.contains('dongia-edit') && (isNaN(value) || value <= 1)) {
+                this.value = 1;
+                alert('Đơn giá phải lớn hơn 1 và không được để trống!');
+            }
+        });
+
         function updateSaveButtonVisibility() {
             if (selectedRows.size > 0) {
                 $('#saveChanges').show();
@@ -214,24 +226,26 @@
                 const rowId = row.data('id');
                 if (selectedRows.has(rowId)) {
                     const soluong = Math.max(0, Number(row.find('.soluong-edit').val())); // Đảm bảo số lượng không âm
-                    const dongia = row.find('.dongia-edit').val();
+                    const dongia = Math.max(1, Number(row.find('.dongia-edit').val())); // Đảm bảo đơn giá lớn hơn 1
                     const mauSacId = row.find('.mau-sac-id').val();
                     const kichThuocId = row.find('.kich-thuoc-id').val();
 
-                    console.log(' trangThai trả về  = ' +soluong)
+                    // Kiểm tra nếu số lượng hoặc đơn giá để trống hoặc không hợp lệ
+                    if (isNaN(soluong) || soluong < 0 || isNaN(dongia) || dongia <= 1) {
+                        alert('Số lượng phải không âm và đơn giá phải lớn hơn 1!');
+                        return false; // Dừng lại nếu có giá trị không hợp lệ
+                    }
 
                     updates.push({
                         idSanPham: rowId,
                         soLuong: soluong,
-                        gia: Number(dongia),
+                        gia: dongia,
                         mauSac: mauSacId,
                         kichThuoc: kichThuocId,
                     });
 
                     totalQuantity += soluong;
-
                 }
-                console.log(' số lượng sp = ' +totalQuantity)
             });
 
             console.log("Updates before sending:", updates);
@@ -243,10 +257,14 @@
                     contentType: 'application/json',
                     data: JSON.stringify(updates),
                     success: function(response) {
+                        // Tính tổng số lượng các sản phẩm sau khi cập nhật
+                        let overallTotalQuantity = 0;
+                        $('#sanPhamDetails .soluong-edit').each(function() {
+                            overallTotalQuantity += Number($(this).val());
+                        });
 
-                        let trangThai = totalQuantity === 0 ? 0 : 1;
-                        console.log(' số lượng sp = ' +totalQuantity)
-                        console.log(' trangThai trả về  = ' +trangThai)
+                        let trangThai = overallTotalQuantity === 0 ? 0 : 1;
+
                         $.ajax({
                             url: '/panda/sanpham/updateStatus',
                             type: 'POST',
@@ -273,12 +291,9 @@
         });
     });
 
+
+
 </script>
-
-
-
-
-
 
 </body>
 </html>

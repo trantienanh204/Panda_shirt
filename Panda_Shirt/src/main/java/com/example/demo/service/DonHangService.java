@@ -19,7 +19,7 @@ import java.util.List;
 public class DonHangService {
     @Autowired
     DonHangRepository donHangRepository;
-    private final int size = 5;
+    private final int size = 10;
 
 
     public Page<DonHang> hienThiDH(int page, String mahd,
