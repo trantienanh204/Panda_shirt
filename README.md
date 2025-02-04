@@ -1,2 +1,2 @@
-#  nói không với bug 🐞
+#  bug🐞
 
