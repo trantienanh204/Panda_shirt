@@ -251,7 +251,7 @@ public class DuyetDonController {
     public String dongy(@PathVariable("id") Integer id, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         DonHang donHang = donHangRepository.getReferenceById(id);
         HoaDon hoaDon = hoaDonService.findById(donHang.getHoaDon().getId());
-        donHang.setTrangThai("Đã duyệt");
+
         String username = userDetails.getUsername();
         TaiKhoanDTO taiKhoanDto = taiKhoanService.findByTenDangNhap(username);
         if (taiKhoanDto == null || taiKhoanDto.getNhanVienDTO() == null) {
@@ -275,7 +275,7 @@ public class DuyetDonController {
             sanPhamChiTiet.setSoluongsanpham(soLuongConLai);
             sanPhamChiTietRepository.save(sanPhamChiTiet);
         }
-
+        donHang.setTrangThai("Đã duyệt");
         donHangRepository.save(donHang);
         hoaDonService.save(hoaDon);
         return "redirect:/panda/nhanvien/duyetdon/hienthi";

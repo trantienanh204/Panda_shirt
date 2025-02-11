@@ -131,16 +131,16 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const API_KEY = "hXNlf8DeExDWSmhMJljrGfTMspYo5xO5Uix1qHbn";
+
         const AUTOCOMPLETE_URL = "https://rsapi.goong.io/Place/AutoComplete";
         const GEOCODE_URL = "https://rsapi.goong.io/Geocode";
-
         const searchBox = document.getElementById('searchBox');
         const suggestionsList = document.getElementById('suggestions');
         const phoneInput = document.getElementById('phoneNumber');
         const submitButton = document.getElementById('submitButton');
-        let selectedAddress = ""; // Biến để lưu địa chỉ đã chọn
+        let selectedAddress = ""; // biến để tạm số 11 :v
 
-        // Lấy gợi ý địa chỉ
+        // lấy địa chỉ tiếp nhận từ API ném zô
         searchBox.addEventListener('input', function() {
             const query = this.value;
 
