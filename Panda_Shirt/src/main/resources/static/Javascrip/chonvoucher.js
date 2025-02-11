@@ -24,7 +24,11 @@ function nhapvoucher(voucherId) {
             $("#idvoucher-input").val(response.idvoucher);
             $("#mucgiam-input").val(response.mucgiam);
             $("#mucgiam").text(response.mucgiam);
-            $("#thanhtien").text('Tổng tiền : ' + response.thanhtien);
+            if(!response.thanhtien || response.thanhtien === ".00"  ){
+                $("#thanhtien").text('Thành tiền: ' + 0 +' VND');
+            }else{
+                $("#thanhtien").text('Thành tiền: ' + response.thanhtien +' VND');
+            }
             $("#thanhTien").val(response.thanhTien);
             $('#voucherModal').modal('hide');
         },

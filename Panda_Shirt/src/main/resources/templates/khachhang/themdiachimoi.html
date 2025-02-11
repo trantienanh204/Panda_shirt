@@ -138,9 +138,8 @@
         const suggestionsList = document.getElementById('suggestions');
         const phoneInput = document.getElementById('phoneNumber');
         const submitButton = document.getElementById('submitButton');
-        let selectedAddress = ""; // biến để tạm số 11 :v
+        let selectedAddress = "";
 
-        // lấy địa chỉ tiếp nhận từ API ném zô
         searchBox.addEventListener('input', function() {
             const query = this.value;
 
@@ -171,14 +170,12 @@
                 });
         });
 
-        // Xử lý chọn địa chỉ
         function handleAddressSelection(description) {
             searchBox.value = description;
             suggestionsList.innerHTML = "";
             selectedAddress = description;
         }
 
-        // Kiểm tra số điện thoại
         phoneInput.addEventListener('input', function() {
             if (phoneInput.value.length !== 10 || phoneInput.value[0] !== '0') {
                 phoneInput.setCustomValidity("Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
@@ -188,7 +185,6 @@
             }
         });
 
-        // Xử lý gửi thông tin
         submitButton.addEventListener('click', function() {
             const recipientName = document.getElementById('recipientName').value;
             const phoneNumber = phoneInput.value;
@@ -205,7 +201,6 @@
                 fullAddress: address
             };
 
-            // Gửi dữ liệu lên server bằng AJAX
             fetch('/diachi/api/save-address', {
                 method: 'POST',
                 headers: {
@@ -218,7 +213,6 @@
                     if (data.message === "Địa chỉ đã được lưu thành công") {
                         Swal.fire('Thành công!', 'Địa chỉ đã được lưu thành công', 'success')
                             .then(() => {
-                                // Chuyển hướng về trang thanh toán
                                 window.location.href = 'http://localhost:8080/panda/giohang/thanhtoan';
                             });
                     } else {

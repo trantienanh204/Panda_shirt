@@ -519,7 +519,7 @@ public class BanHangOffline {
 //            @RequestParam("tenhuyen") String tenhuyen,
 //            @RequestParam("tenxa") String tenxa,
 
-            @RequestParam(value = "diachicuthe",defaultValue = "Trống") String diachicuthe,
+            @RequestParam(value = "diachicuthe",defaultValue = "Hà Nội") String diachicuthe,
 
             @RequestParam(value = "ghichu",defaultValue = "trống") String ghichu,
 
